@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Scene } from '../models/workflow/scene.model';
 
 @Component({
   selector: 'app-scene',
@@ -7,6 +8,6 @@ import { Component, Input } from '@angular/core';
 })
 export class SceneComponent {
 
-  @Input() name?: string
-  
+  @Input() scene?: Scene
+
 }
