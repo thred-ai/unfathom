@@ -1,0 +1,29 @@
+.rounded-10 {
+  border-radius: 10px !important;
+}
+
+.mb-field {
+  margin-bottom: 0.55rem !important;
+}
+
+// :host ::ng-deep .vertical-terminal {
+//   .as-split-gutter-icon {
+//     color: #131313;
+//     background-color: #131313;
+//     border-top: 1px solid #7f7f7f;
+//     border-right: 0px;
+//   }
+// }
+
+
+
+
+:host ::ng-deep .horizontal-terminal {
+  .as-split-gutter-icon {
+    color: var(--secondaryBackgroundColor) !important;
+    background-color: var(--secondaryBackgroundColor) !important;
+    // border-right: 1px solid #7f7f7f !important;
+    border-top: 1px solid var(--secondaryBackgroundColor) !important;
+    border-bottom: 0px !important;
+  }
+}

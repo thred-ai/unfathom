@@ -1,0 +1,16 @@
+.rounded-10 {
+  border-radius: 10px;
+}
+
+// .clickable{
+//   cursor: grab !important;
+
+// }
+
+// .non-clickable{
+//   cursor: pointer !important;
+// }
+
+:host ::ng-deep .clickable ion-input .native-input[disabled] {
+  cursor: grab;
+}

@@ -1,0 +1,53 @@
+.mobile-menu {
+  animation: example 1s ease-in-out forwards;
+}
+
+@keyframes example {
+  from {
+    transform: transition(0, 0);
+  }
+  to {
+    transform: transition(3em, 0);
+  }
+}
+
+.bar-dark{
+  background-color: white;
+}
+
+.bar-light{
+  background-color: rgb(17, 17, 17);
+}
+
+// .search-bar-extend {
+//   animation: animateThis 0.25s ease-in;
+//   animation-fill-mode: forwards;
+// }
+
+.logo-container {
+  position: sticky;
+  display: block;
+}
+
+// .search-bar-back {
+//     animation: animateBack 0.25s ease-in;
+//     animation-fill-mode: forwards;
+// }
+
+@keyframes animateThis {
+  0% {
+    width: 265px;
+  }
+  100% {
+    width: 320px;
+  }
+}
+
+@keyframes animateBack {
+    0% {
+      width: 320px;
+    }
+    100% {
+      width: 265px;
+    }
+  }

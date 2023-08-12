@@ -1,0 +1,64 @@
+<div class="w-100 px-0 m-0" *ngIf="simplify; else full">
+  <ng-container *ngTemplateOutlet="input"></ng-container>
+</div>
+
+<ng-template #full>
+  <div class="wrap-input1 w-100 pt-3 m-0">
+    <p class="w-100 mb-3 fw-bold" [style.color]="textColor">{{ title }}</p>
+    <div class="px-0 w-100">
+      <ng-container *ngTemplateOutlet="input"></ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #input>
+  <div
+    class="rounded-10 w-100 px-2 pe-{{
+      btn && btnIcon ? '1' : '3'
+    }} d-flex justify-content-between align-content-center {{
+      clickable ? 'clickable' : 'non-clickable'
+    }}"
+    style="border-width: 1; border-style: solid"
+    [style.color]="textColor"
+    [style.background-color]="bgColor"
+    [style.border-color]="borderColor"
+    (click)="clickable ? btnClicked.emit() : null"
+  >
+    <ion-input
+      class="text-truncate"
+      *ngIf="type == 'number'; else textField"
+      fill="solid"
+      [ngModel]="value"
+      [type]="type"
+      [min]="range.min"
+      [max]="range.max"
+      [placeholder]="placeholder"
+      [name]="'timeInput'"
+      (ngModelChange)="onInput($event)"
+    ></ion-input>
+
+    <ng-template #textField>
+      <ion-input
+        class="text-truncate"
+        fill="solid"
+        [ngModel]="value"
+        [type]="type"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        (ngModelChange)="onInput($event)"
+      ></ion-input>
+    </ng-template>
+
+    <div
+      *ngIf="btn && btnIcon"
+      class="my-auto ms-2 d-flex justify-content-center align-content-center"
+      style="height: 27.5px; aspect-ratio: 1"
+      [style.color]="btnColor"
+      role="button"
+      (click)="clickable ? null : btnPressed()"
+      id="btn"
+    >
+      <mat-icon class="m-auto"> {{ btnIcon }} </mat-icon>
+    </div>
+  </div>
+</ng-template>

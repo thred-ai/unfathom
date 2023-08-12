@@ -1,0 +1,38 @@
+.notif-icon {
+  transition: transform 0.25s ease-in-out;
+}
+
+.notif-icon:hover {
+  transform: rotate(180deg) scale(1.2, 1.2);
+  background-color: #01df5d !important;
+}
+
+#hide{
+    animation: show 0.25s forwards;
+}
+
+#kicon:hover + #hide {
+  animation: hide 0.25s forwards;
+}
+
+@keyframes hide {
+  0% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+}
+
+@keyframes show {
+    0% {
+      opacity: 0%;
+    }
+    100% {
+      opacity: 100%;
+    }
+  }
+
+/* #one:hover + #two {
+    display:none;
+  } */

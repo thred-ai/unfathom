@@ -1,0 +1,19 @@
+
+:host ::ng-deep .mat-form-field-underline {
+    display: none;
+  }
+  
+  :host ::ng-deep .mat-form-field-wrapper {
+    margin: 0 !important;
+    padding: 0;
+  }
+  
+  :host ::ng-deep .mat-form-field-label{
+    color:#b5b5b5 !important;
+}
+
+#particles-js{
+  
+  background-size: cover;
+  background-position: 50% 50%;
+}

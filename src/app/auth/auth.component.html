@@ -1,0 +1,272 @@
+<div
+  class="w-100 bg-dark"
+  style="
+    height: calc(calc(var(--vh, 1vh) * 100));
+  "
+>
+  <div
+    class="w-100 h-100 position-relative d-flex flex-column justify-content-center align-items-center"
+  >
+  
+    <div
+      class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center px-3 py-2 py-md-0"
+    >
+      <div
+        class="position-relative w-100 h-100 d-flex justify-content-center align-items-center px-3 py-2 py-md-0"
+      >
+        <div
+          class="w-100 position-absolute position-md-static d-flex justify-content-center align-content-center px-0 px-md-2"
+          style="opacity: 0.5"
+        >
+          <!-- <div
+            class="rounded-circle mx-0 mx-md-3 layout-container"
+            id="particles-js"
+          ></div> -->
+        </div>
+        <div
+          class="w-100 w-md-auto position-absolute d-flex justify-content-center align-content-center px-3 px-md-2"
+          style="z-index: 50"
+          *ngIf="show"
+        >
+          <form
+            style="
+              max-height: calc(var(--vh, 1vh) * 80);
+              width: 600px;
+              max-width: 100%;
+            "
+            [formGroup]="
+              mode == 0 ? signUpForm : mode == 1 ? signInForm : passResetForm
+            "
+          >
+            <div
+              class="big-design-card rounded shadow h-100 w-100 animate__animated animate__fadeIn"
+              style="z-index: 50;"
+            >
+              <ng-container *ngIf="mode == 0">
+                <div
+                  class="w-100 h-100 animate__animated animate__fadeIn"
+                  style="overflow-y: scroll"
+                >
+                  <div class="w-100 big-design-header">
+                    <h4 class="w-100 text-center text-dark">
+                      Create an account
+                    </h4>
+
+                    
+                  </div>
+
+                  <div class="w-100 py-4">
+                    <div class="w-100 mb-3">
+                      <verticalai-text-field
+                        [title]="'Email'"
+                        [value]="signUpForm.controls['email'].value"
+                        [type]="'email'"
+                        [defaultValue]="''"
+                        [bgColor]="'#e9eff4'"
+                        [textColor]="'#4f5a63'"
+                        [placeholder]="'Ex. john@hello.com'"
+                        (changed)="
+                          signUpForm.controls['email'].setValue($event)
+                        "
+                      >
+                      </verticalai-text-field>
+                    </div>
+
+                    <div class="w-100 mb-3">
+                      <verticalai-text-field
+                        [title]="'Password'"
+                        [value]="signUpForm.controls['password'].value"
+                        [bgColor]="'#e9eff4'"
+                        [textColor]="'#4f5a63'"
+                        [placeholder]="'Secure Password'"
+                        [type]="viewPass ? 'text' : 'password'"
+                        [btn]="true"
+                        [btnColor]="'gray'"
+                        [btnIcon]="viewPass ? 'visibility' : 'visibility_off'"
+                        (btnClicked)="viewPass = !viewPass"
+                        (changed)="
+                          signUpForm.controls['password'].setValue($event)
+                        "
+                      >
+                      </verticalai-text-field>
+                    </div>
+                    <div class="w-100 mb-3">
+                      <verticalai-text-field
+                        [title]="'Confirm Password'"
+                        [value]="signUpForm.controls['confirmPass'].value"
+                        [bgColor]="'#e9eff4'"
+                        [textColor]="'#4f5a63'"
+                        [placeholder]="'Confirm Password'"
+                        [type]="viewPass ? 'text' : 'password'"
+                        [btn]="true"
+                        [btnColor]="'gray'"
+                        [btnIcon]="viewPass ? 'visibility' : 'visibility_off'"
+                        (btnClicked)="viewPass = !viewPass"
+                        (changed)="
+                          signUpForm.controls['confirmPass'].setValue($event)
+                        "
+                      >
+                      </verticalai-text-field>
+                    </div>
+
+                    <div class="w-100 py-1 mt-2 px-2" *ngIf="!err">
+                      <p
+                        class="w-100 text-center animate__animated animate__fadeIn text-dark  "
+                        style="font-size: small"
+                        role="button"
+                        (click)="
+                          window.open('https://verticalai.io/tos', '_blank')
+                        "
+                      >
+                        By joining
+                        <b class="fw-bold text-dark">Vertical AI</b>, you agree
+                        to our
+                        <b class="text-dark" role="button">Terms of Service</b
+                        >.
+                      </p>
+                    </div>
+                    <div class="w-100 py-1 mt-2 px-2" *ngIf="err">
+                      <p
+                        class="w-100 text-center text-danger animate__animated animate__fadeIn"
+                        style="font-size: small"
+                      >
+                        {{ err }}
+                      </p>
+                    </div>
+                    <div class="w-100 py-1 mt-3">
+                      <button
+                        class="btn bg-orange rounded text-white  px-5 py-3 fw-bold w-100 mt-1"
+                        (click)="continue()"
+                        id="continue"
+                      >
+                        Continue
+                        <span
+                          *ngIf="loading"
+                          class="spinner-border spinner-border-sm ms-1"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                      </button>
+                    </div>
+
+                    <div class="w-100 py-1 mt-3 px-2">
+                      <p
+                        class="w-100 text-center text-dark  "
+                        style="font-size: small"
+                        role="button"
+                        (click)="mode = 1"
+                      >
+                        Already have an account?
+                        <b role="button" class="fw-bold text-dark">Sign in</b>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="mode == 1">
+                <div
+                  class="w-100 h-100 animate__animated animate__fadeIn"
+                  style="overflow-y: scroll"
+                >
+                  <div class="w-100 big-design-header">
+                    <h4 class="w-100 text-center text-dark  ">
+                      Sign in to your account
+                    </h4>
+                  </div>
+                  <div class="w-100 py-4">
+                    <div class="w-100 mb-3">
+                      <verticalai-text-field
+                        [title]="'Email'"
+                        [value]="signInForm.controls['email'].value"
+                        [type]="'email'"
+                        [bgColor]="'#e9eff4'"
+                        [textColor]="'#4f5a63'"
+                        [placeholder]="'Ex. john@hello.com'"
+                        (changed)="
+                          signInForm.controls['email'].setValue($event)
+                        "
+                      >
+                      </verticalai-text-field>
+                    </div>
+
+                    <div class="w-100 mb-3">
+                      <verticalai-text-field
+                        [title]="'Password'"
+                        [value]="signInForm.controls['password'].value"
+                        [bgColor]="'#e9eff4'"
+                        [textColor]="'#4f5a63'"
+                        [placeholder]="'Secure Password'"
+                        [type]="viewPass ? 'text' : 'password'"
+                        [btn]="true"
+                        [btnColor]="'gray'"
+                        [btnIcon]="viewPass ? 'visibility' : 'visibility_off'"
+                        (btnClicked)="viewPass = !viewPass"
+                        (changed)="
+                          signInForm.controls['password'].setValue($event)
+                        "
+                      >
+                      </verticalai-text-field>
+                    </div>
+                    <div class="w-100 py-1 mt-2 px-2" *ngIf="!err">
+                      <p class="w-100 text-center" style="font-size: small">
+                        <b
+                          role="button"
+                          class="fw-bold text-dark  animate__animated animate__fadeIn"
+                        >
+                          I forgot my password
+                        </b>
+                      </p>
+                    </div>
+                    <div class="w-100 py-1 mt-2 px-2" *ngIf="err">
+                      <p
+                        class="w-100 text-center text-danger animate__animated animate__fadeIn"
+                        style="font-size: small"
+                      >
+                        {{ err }}
+                      </p>
+                    </div>
+                    <div class="w-100 py-1 mt-3">
+                      <button
+                        class="btn bg-orange rounded text-white px-5 py-3 fw-bold w-100 mt-1"
+                        (click)="continue()"
+                        id="continue"
+                      >
+                        Continue
+                        <span
+                          *ngIf="loading"
+                          class="spinner-border spinner-border-sm ms-1"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                      </button>
+                    </div>
+
+                    <div class="w-100 py-1 mt-3 px-2">
+                      <p
+                        class="w-100 text-center text-dark  "
+                        style="font-size: small"
+                        role="button"
+                        (click)="mode = 0"
+                      >
+                        Don't have an account?
+                        <b role="button" class="fw-bold text-dark">Sign Up</b>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-circle icons position-absolute" style="aspect-ratio: 1; height: 80px; bottom: 10px; left: 10px;">
+      <img
+        class="px-2 h-100 logo"
+        style="object-fit: contain"
+        [src]="'assets/verticalai_short_dark.png'"
+      />
+    </div>
+  </div>
+</div>

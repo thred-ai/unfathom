@@ -1,0 +1,84 @@
+ion-accordion.accordion-collapsing > ion-item[slot="header"],
+ion-accordion.accordion-collapsed > ion-item[slot="header"] {
+  --background: transparent;
+  --color: var(--primaryTextColor);
+}
+
+ion-accordion.accordion-expanding > ion-item[slot="header"],
+ion-accordion.accordion-expanded > ion-item[slot="header"] {
+  --background: transparent;
+  --color: var(--primaryTextColor);
+  //border-bottom: 1px solid #6c757d;
+
+  //   --border-color: #6c757d;
+  //   --inner-border-width: 1;
+}
+
+:host::ng-deep .ion-padding {
+  padding-right: 0px;
+  padding-left: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  overflow: hidden;
+}
+
+:host::ng-deep .ion-accordion-toggle-icon {
+  font-size: small;
+  color: var(--secondaryTextColor)
+}
+
+// :host ::ng-deep .item-native{
+//   --border-radius: 10px !important;
+//   border-bottom-left-radius: 10px !important;
+//   overflow: hidden !important;
+// }
+
+.file-item {
+  --border-color: transparent;
+  color: #ffffff;
+  font-weight: normal;
+  --background: transparent !important;
+  cursor: pointer;
+}
+
+.file-item.selected {
+  --background:  var(--secondarySectionHoverColor) !important;
+}
+
+.file-item:not(.selected):hover {
+  --background:  var(--secondarySectionHoverColor) !important;
+  
+}
+
+
+// .sqd-theme-dark .sqd-toolbox-item {
+
+//   }
+//   .sqd-theme-dark .sqd-toolbox-item:hover {
+//     background: #b2b2b25f;
+//   }
+
+.layout-top {
+  height: calc(calc(var(--vh, 1vh) * 100) - 320px );
+  width: 100%;
+}
+
+ion-thumbnail {
+  --size: 25px;
+  // --border-radius: 6px;
+}
+
+ion-icon {
+  font-size: 30px;
+  // --border-radius: 6px;
+}
+
+.proj:hover{
+  background-color: var(--secondarySectionHoverColor);
+}
+
+.proj-select{
+  background-color: var(--primarySectionHoverColor);
+}

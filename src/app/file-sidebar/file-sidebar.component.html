@@ -1,0 +1,156 @@
+<div
+  class="primary-background h-100 d-flex flex-column justify-content-between align-items-center border-table-right"
+  style="width: 250px !important; overflow-y: scroll;"
+>
+  <!-- [value]="openLayouts"
+      (ionChange)="setOpenLayouts($event)" -->
+
+
+
+  <ng-container *ngIf="executable">
+
+    <div class="w-100 h-100 pb-3" style="overflow-y: scroll">
+      <ng-container
+        *ngTemplateOutlet="recursiveList; context: { $implicit: items }"
+      ></ng-container>
+    </div>
+  </ng-container>
+
+  <ng-template #recursiveList let-list>
+    <div class="w-100" *ngFor="let item of list">
+      <ng-container *ngIf="item.type == 'category'; else modelTab">
+        <ion-accordion-group
+          class="example-headers-align bg-transparent"
+          [multiple]="true"
+          [value]="['code']"
+        >
+          <ion-accordion class="bg-transparent" [value]="'code'">
+            <ion-item slot="header" class="primary-text no-padding">
+              <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
+                <img class="border-table p-0" [src]="item.metadata.img ?? ''" />
+              </ion-thumbnail>
+
+              <ion-label
+                style="font-size: 12px"
+                (contextmenu)="
+                  item.id == 'app' ? onRightClick($event, item) : undefined
+                "
+                >{{ item.name }}</ion-label
+              >
+            </ion-item>
+
+            <div class="ion-padding primary-text" slot="content">
+              <ng-container *ngIf="item.categoryTask as catTask">
+                <ng-container
+                  *ngTemplateOutlet="modelItem; context: { $implicit: catTask }"
+                ></ng-container>
+              </ng-container>
+
+              <ng-container
+                *ngTemplateOutlet="
+                  recursiveList;
+                  context: { $implicit: item.sequence }
+                "
+              ></ng-container>
+            </div>
+          </ion-accordion>
+        </ion-accordion-group>
+      </ng-container>
+      <ng-template #modelTab>
+        <ng-container
+          *ngTemplateOutlet="modelItem; context: { $implicit: item }"
+        ></ng-container>
+      </ng-template>
+    </div>
+  </ng-template>
+  <ng-template #modelItem let-item>
+    <ion-item
+      slot="header"
+      class="primary-text w-100 border-0 file-item {{
+        selectedFile == item.id ? 'selected' : ''
+      }}"
+      role="button"
+      (click)="selectedFile = item.id; selectedFileChanged.emit(item.id)"
+    >
+      <ng-container>
+        <!-- <ion-icon
+            *ngIf="item.id == 'main'"
+            class="text-orange me-3"
+            [name]="'cube'"
+            slot="start"
+          ></ion-icon> -->
+        <!-- --border-radius: 50%; -->
+
+        <ion-thumbnail slot="start" [style.--border-radius]="'50%'">
+          <img class="border-table p-0" style="object-fit: cover;" [src]="item.metadata.img ?? ''" />
+        </ion-thumbnail>
+        <ion-label
+          style="font-size: small"
+          (contextmenu)="
+            item.id != 'main' ? onRightClick($event, item) : undefined
+          "
+          >{{ item.name }}</ion-label
+        >
+        <ion-icon
+          *ngIf="item.id != 'main'"
+          class="secondary-text my-auto"
+          style="font-size: 15px; cursor: pointer"
+          [name]="'ellipsis-vertical'"
+          slot="end"
+          role="button"
+          [matTooltip]="'Actions'"
+          (click)="onRightClick($event, item)"
+        ></ion-icon>
+      </ng-container>
+      <!-- <ng-container *ngIf="editingTask?.id == item.id">
+        <ion-input #selectedName type="text" [value]="editingTask?.name">
+        </ion-input>
+        <ion-icon
+          class="text-orange"
+          name="checkmark-circle"
+          slot="end"
+          (click)="saveFieldName(editingTask!, selectedName.value)"
+        ></ion-icon>
+      </ng-container> -->
+    </ion-item>
+  </ng-template>
+</div>
+
+<!-- an hidden div is created to set the position of appearance of the menu-->
+<div
+  style="visibility: hidden; position: fixed"
+  [style.left]="menuTopLeftPosition.x"
+  [style.top]="menuTopLeftPosition.y"
+  [matMenuTriggerFor]="rightMenu"
+></div>
+
+<!-- standard material menu -->
+<mat-menu #rightMenu="matMenu" class="primary-background">
+  <ng-template matMenuContent let-item="item">
+    <ng-container
+      *ngIf="item.id != 'app' && item.id != 'main'; else appSettings"
+    >
+      <button
+        mat-menu-item
+        class="primary-text"
+        (click)="openControllerSettings(item.id)"
+      >
+        Configure
+      </button>
+
+      <button mat-menu-item class="primary-text" (click)="removeFile(item.id)">
+        Delete
+      </button>
+    </ng-container>
+    <ng-template #appSettings>
+      <button
+        mat-menu-item
+        class="primary-text"
+        (click)="openControllerSettings('main')"
+      >
+        Project Settings
+      </button>
+    </ng-template>
+  </ng-template>
+</mat-menu>
+

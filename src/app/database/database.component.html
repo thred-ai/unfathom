@@ -1,0 +1,227 @@
+<div class="d-flex justify-content-center align-items-center w-100 h-100">
+  <div
+    class="primary-background w-100 h-100 d-flex justify-content-start align-items-center flex-column"
+    style="overflow: hidden;"
+  >
+    <!-- [value]="openLayouts"
+      (ionChange)="setOpenLayouts($event)" -->
+
+    <ng-container *ngIf="executable">
+      <div
+        class="w-100 primary-text p-3 d-flex justify-content-between align-items-center"
+      >
+        <span class="text-start h5 fw-bold">Database</span>
+        <a
+          class="btn bg-transparent shadow-0 border-0 rounded-10 fw-bold primary-text d-flex justify-content-center px-0 align-content-center"
+          (click)="newCollection()"
+        >
+          Add
+          <mat-icon class="fw-bold ms-2" style="aspect-ratio: 1; font-size: 18px;">
+            add
+          </mat-icon>
+        </a>
+      </div>
+
+      <ng-container *ngIf="items && !loading; else loadingt">
+        <ng-container *ngIf="items.length > 0; else emptyDatabase">
+          <div class="w-100 h-100 p-3" style="overflow-y: scroll">
+            <ng-container
+              *ngTemplateOutlet="recursiveList; context: { $implicit: items }"
+            ></ng-container>
+          </div>
+
+          <ng-template #recursiveList let-list>
+            <div class="w-100" *ngFor="let item of list">
+              <ng-container *ngIf="item.type == 'category'; else modelTab">
+                <ion-accordion-group
+                  class="example-headers-align bg-transparent"
+                  [multiple]="true"
+                  (ionChange)="accordionOpened($event, item)"
+                  id="accordion"
+                >
+                  <ion-accordion class="bg-transparent" [value]="item.id">
+                    <ion-item slot="header" class="primary-text no-padding">
+                      <ion-label class="fw-bold">{{ item.name }}</ion-label>
+                      <ion-icon
+                        class="secondary-text"
+                        [name]="'ellipsis-vertical'"
+                        slot="end"
+                        role="button"
+                        (click)="onRightClick($event, item)"
+                      ></ion-icon>
+                    </ion-item>
+
+                    <div class="ion-padding primary-text" slot="content">
+                      <ion-item
+                        slot="header"
+                        class="primary-text border-0 add-item"
+                        role="button"
+                      >
+                        <ion-icon
+                          class="primary-text"
+                          [name]="'add'"
+                          slot="end"
+                          role="button"
+                          (click)="newDoc(item)"
+                        ></ion-icon>
+                      </ion-item>
+
+                      <ng-template #loadingc>
+                        <div
+                          class="w-100 d-flex flex-column justify-content-center align-items-center"
+                          style="height: 250px"
+                        >
+                          <verticalai-loader [mode]="theme"></verticalai-loader>
+                        </div>
+                      </ng-template>
+
+                      <ng-container *ngIf="!loadingCol[item.id]; else loadingc">
+                        <ng-container
+                          *ngIf="item.sequence.length > 0; else emptyCollection"
+                        >
+                          <ng-container
+                            *ngTemplateOutlet="
+                              recursiveList;
+                              context: { $implicit: item.sequence }
+                            "
+                          ></ng-container>
+                        </ng-container>
+
+                        <ng-template #emptyCollection>
+                          <div
+                            class="w-100 d-flex justify-content-center align-items-center"
+                            style="height: 250px"
+                          >
+                            <span class="primary-text text-center">
+                              No documents in this collection
+                            </span>
+                          </div>
+                        </ng-template>
+                      </ng-container>
+                    </div>
+                  </ion-accordion>
+                </ion-accordion-group>
+              </ng-container>
+              <ng-template #modelTab>
+                <ng-container
+                  *ngTemplateOutlet="modelItem; context: { $implicit: item }"
+                ></ng-container>
+              </ng-template>
+            </div>
+          </ng-template>
+        </ng-container>
+
+        <ng-template #emptyDatabase>
+          <div
+            class="w-100 h-100 d-flex justify-content-center align-items-center"
+          >
+            <span class="primary-text text-center">
+              No collections to show
+            </span>
+          </div>
+        </ng-template>
+
+        <ng-template #modelItem let-item>
+          <ion-item
+            slot="header"
+            class="primary-text w-100 border-0 file-item py-2"
+            role="button"
+          >
+            <ng-container>
+              <ion-textarea
+                [placeholder]="'No Data'"
+                labelPlacement="stacked"
+                [value]="item.metadata.text"
+                [autoGrow]="true"
+                (ionChange)="editDoc($event, item)"
+                id="textArea"
+              >
+                <div
+                  class="secondary-text text-start"
+                  style="font-size: small"
+                  slot="label"
+                >
+                  ID: {{ item.id }}
+                  <!-- item.metadata.embedding.length > 0
+                        ? (item.metadata.embedding | prettifyJson)
+                        : "" -->
+                </div>
+              </ion-textarea>
+            </ng-container>
+            <!-- <ion-icon
+              class="primary-text p-0"
+              *ngIf="editingDocs[item.id]"
+              [name]="'checkmark-circle'"
+              slot="end"
+              role="button"
+              (click)="updateDoc(item)"
+            ></ion-icon> -->
+
+            <ion-item
+              class="header-button-item"
+              slot="end"
+              *ngIf="editingDocs[item.id]"
+            >
+              <ion-button
+                class="header-button"
+                fill="solid"
+                slot="end"
+                (click)="updateDoc(item)"
+                >Save</ion-button
+              >
+            </ion-item>
+
+            <ion-icon
+              class="secondary-text"
+              [name]="'ellipsis-vertical'"
+              slot="end"
+              role="button"
+              (click)="onRightClick($event, item)"
+            ></ion-icon>
+          </ion-item>
+        </ng-template>
+      </ng-container>
+
+      <ng-template #loadingt>
+        <div
+          class="w-100 h-100 d-flex flex-column justify-content-center align-items-center"
+        >
+          <verticalai-loader
+            [mode]="theme"
+            [text]="'Loading...'"
+          ></verticalai-loader>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>
+
+<div
+  style="visibility: hidden; position: fixed"
+  [style.left]="menuTopLeftPosition.x"
+  [style.top]="menuTopLeftPosition.y"
+  [matMenuTriggerFor]="rightMenu"
+></div>
+
+<mat-menu #rightMenu="matMenu" class="primary-background">
+  <ng-template matMenuContent let-item="item">
+    <ng-container *ngIf="item.type == 'category'; else docSettings">
+      <button
+        mat-menu-item
+        class="primary-text"
+        (click)="deleteCollection(item)"
+      >
+        Delete Collection
+      </button>
+    </ng-container>
+    <ng-template #docSettings>
+      <button
+        mat-menu-item
+        class="primary-text"
+        (click)="deleteCollectionDoc(item)"
+      >
+        Delete Document
+      </button>
+    </ng-template>
+  </ng-template>
+</mat-menu>

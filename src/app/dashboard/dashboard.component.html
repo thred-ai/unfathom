@@ -1,0 +1,316 @@
+<div
+  class="layout-container-full animate__animated animate__fadeIn primary-background"
+>
+
+  <div id="content" class="tab">
+    <!-- <mat-tab-group
+    mat-stretch-tabs
+    #menu
+    class="w-100"
+    dynamicHeight
+    animationDuration="0ms"
+    style="overflow-y: hidden; background-color: white"
+  > -->
+    <!-- <mat-tab class="tab">
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon text-dark">public</mat-icon>
+        <span class="ms-2 text-dark big-design-body fw-bold">
+          Analytics
+        </span>
+      </ng-template>
+
+      <div class="px-2 bg-light" *ngIf="dev; else loader">
+        <div class="w-100 pt-1 bg-light px-4">
+          <div
+            class="d-flex justify-content-between align-items-center py-3"
+            style="width: 100%"
+          >
+            <p
+              class="big-design-title"
+              style="
+                font-weight: lighter;
+                font-size: 2rem;
+                font-weight: 300;
+                line-height: 2.5rem;
+              "
+            >
+              Analytics
+            </p>
+
+            <button
+              class="d-none d-md-flex justify-content-center align-items-center btn bg-orange primary-text  rounded-pill py-2 px-3"
+              role="button"
+              (click)="picker.open()"
+              [mdbPopover]="template"
+              placement="bottom"
+              [trigger]="'hover'"
+            >
+              <div class="d-flex justify-content-center align-items-center">
+                <mat-form-field
+                  class="big-design-title px-0 mat-form-field-no-padding"
+                  style="font-size: large; font-weight: 500"
+                  floatLabel="never"
+                  appearance="legacy"
+                >
+                  <mat-date-range-input
+                    [formGroup]="dateRange"
+                    [rangePicker]="picker"
+                    [comparisonStart]="dateRange.value.start"
+                    role="button"
+                    class="ms-1 w-100"
+                    [comparisonEnd]="dateRange.value.end"
+                    [max]="today"
+                  >
+                    <input
+                      matStartDate
+                      readonly
+                      (click)="picker.open()"
+                      role="button"
+                      placeholder="Start date"
+                      formControlName="start"
+                      #dateRangeStart
+                    />
+                    <input
+                      matEndDate
+                      readonly
+                      (click)="picker.open()"
+                      role="button"
+                      placeholder="End date"
+                      formControlName="end"
+                      #dateRangeEnd
+                      (dateChange)="
+                        dateRangeChange(dateRangeStart, dateRangeEnd)
+                      "
+                    />
+                  </mat-date-range-input>
+
+                  <a
+                    mat-icon-button
+                    class="p-0 me-0 my-auto date-icon"
+                    matPrefix
+                    (click)="picker.open()"
+                  >
+                    <mat-icon class="m-0" style="font-size: x-large"
+                      >event</mat-icon
+                    >
+                  </a>
+
+                  <mat-date-range-picker
+                    touchUi
+                    #picker
+                  ></mat-date-range-picker>
+                </mat-form-field>
+              </div>
+              <ng-template #template>
+                <div class="h-100" style="width: 250px">
+                  <mat-calendar
+                    class="h-100 no-header pt-3"
+                    [selected]="selectedDateRange"
+                  ></mat-calendar>
+                </div>
+              </ng-template>
+            </button>
+          </div>
+          <div
+            class="w-100 h-100 d-flex flex-column-reverse flex-md-row justify-content-between align-items-start pb-md-4"
+          >
+            <div
+              class="w-100 w-md-50 d-flex justify-content-start align-items-top flex-column pe-md-2 pb-2"
+            >
+              <div class="my-2 mt-md-0">
+                <app-notification
+                  [canClose]="false"
+                  [title]="'Welcome, ' + dev.name"
+                  [subtitle]="'You have new updates!'"
+                  [icon]="'smart_toy'"
+                  [iconColor]="'purple'"
+                >
+                </app-notification>
+              </div>
+            
+              <div class="big-design-card my-0 rounded-15">
+                <app-data-table
+                  [analytics]="{
+                    name: 'Activity',
+                    locData: (views | location),
+                    nftData: (views | location: undefined:1:dev.utils)
+                  }"
+                  [utils]="dev.utils"
+                  (clicked)="
+                    $event.mode == 0 ? scrollToLocation($event.data) : ''
+                  "
+                ></app-data-table>
+              </div>
+            </div>
+
+            <div
+              class="w-100 w-md-50 pb-md-1 d-flex justify-content-between align-items-center flex-column earth-frame"
+            >
+              <div class="p-0 h-100 w-100">
+                <div
+                  class="h-100 w-100 big-design-card p-0 primary-background rounded-15"
+                  style="overflow: hidden"
+                >
+                  <div
+                    class="big-design-body position-relative h-100 w-100 primary-background rounded-15"
+                  >
+                    <img
+                      class="w-100 h-100 position-absolute primary-background animate__animated animate__fadeIn rounded-15"
+                      style="object-fit: cover"
+                      [src]="
+                        'https://storage.googleapis.com/thred-protocol.appspot.com/resources/space.png'
+                      "
+                    />
+
+                    <iframe
+                      style="border-radius: 0.25rem"
+                      *ngIf="views"
+                      class="w-100 h-100 position-absolute rounded-15"
+                      id="earthFrame"
+                      [srcdoc]="str | liveEarthViewPipe: views | safeHtml"
+                    >
+                    </iframe>
+
+                    <div
+                      class="d-inline-flex align-items-top justify-content-between"
+                      style="top: 1.2rem; left: 1.5rem; position: absolute"
+                    >
+                      <div class="h-100">
+                        <a
+                          class="side d-flex align-items-center justify-content-start"
+                          style="font-size: large"
+                        >
+                          <mat-icon
+                            [inline]="true"
+                            class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                            style="
+                              background-color: #ff003f;
+                              aspect-ratio: 1;
+                            "
+                          >
+                          </mat-icon>
+                          <p
+                            class="my-0 big-design-body"
+                            style="color: white; font-size: larger"
+                          >
+                            {{
+                              (views | views)?.length ?? 0
+                                | i18nPlural: viewMapping
+                            }}
+                          </p>
+                        </a>
+
+                      </div>
+                    </div>
+
+                    <div
+                      *ngIf="selectedCoord"
+                      class="position-absolute w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+                      style="
+                        border-radius: 0.25rem;
+                        background-color: rgba(0, 0, 0, 0.406);
+                      "
+                      (click)="closeCard()"
+                    ></div>
+
+                    <div
+                      class="big-design-card p-0 bg-white animate__animated animate__fadeInRight animate__faster animate__delay-0s rounded-15"
+                      *ngIf="selectedCoord"
+                      style="
+                        top: 10px;
+                        right: 10px;
+                        position: absolute;
+                        width: 275px;
+                      "
+                    >
+                      <app-view-coord
+                        [coord]="selectedCoord"
+                        (close)="closeCard()"
+                      ></app-view-coord>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab> -->
+    <!-- <mat-tab class="tab">
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon text-dark">
+          account_balance_wallet</mat-icon
+        >
+        <span class="ms-2 text-dark big-design-body fw-bold">
+          Workflows
+        </span>
+      </ng-template> -->
+    <div class="h-100 w-100" *ngIf="dev?.utils; else loader">
+      <!-- <div class="px-2 py-2 w-100">
+        <div class="w-100 py-5 pb-1 pt-3 px-4">
+          <div
+            class="d-flex justify-content-between align-items-center py-2"
+            style="width: 100%"
+          >
+            <p
+              class="big-design-title primary-text  "
+              style="
+                font-weight: lighter;
+                font-size: 2rem;
+                font-weight: 300;
+                line-height: 2.5rem;
+              "
+            >
+              AI Systems
+            </p>
+            <p
+              class="btn rounded-10 fw-bold bg-orange primary-text  d-none d-md-flex justify-content-between align-content-center px-3 py-2"
+              (click)="openUtil()"
+            >
+              <mat-icon class="me-1" style="aspect-ratio: 1"> add </mat-icon>
+              Add new
+            </p>
+            <p
+              class="btn rounded-circle fw-bold bg-orange primary-text  d-flex justify-content-center align-content-center d-md-none p-2"
+              style="aspect-ratio: 1"
+              (click)="openUtil()"
+            >
+              <mat-icon style="aspect-ratio: 1"> add </mat-icon>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="px-3 w-100">
+        <div class="w-100 h-100 p-4 pt-0 px-3 ">
+          <div
+            class="w-100 big-design-card rounded-10 p-0 shadow"
+            style="background-color: #282828;"
+            *ngIf="dev?.utils ?? [] | workflowStatus: [0, 1] as workflows"
+          >
+            <app-collection-table
+              [utils]="workflows"
+              [count]="workflows.length"
+              (clicked)="openUtil($event.app, $event.mode)"
+              (planClicked)="openPlans($event.plan, $event.index)"
+            >
+            </app-collection-table>
+          </div>
+        </div>
+      </div> -->
+
+      <app-workflow></app-workflow>
+    </div>
+    <ng-template #loader>
+      <div
+        class="w-100 d-flex flex-column justify-content-center align-items-center layout-container-full"
+      >
+        <verticalai-loader
+          [mode]="theme"
+          [text]="'Loading...'"
+        ></verticalai-loader>
+      </div>
+    </ng-template>
+    <!-- </mat-tab>
+  </mat-tab-group> -->
+  </div>
+</div>

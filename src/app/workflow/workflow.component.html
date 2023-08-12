@@ -1,0 +1,87 @@
+<div
+  class="layout-container-full secondary-background my-0 d-flex justify-content-between align-content-center flex-column"
+>
+  <app-icon-sidebar
+    [selectedIcon]="selectedIcon"
+    [theme]="theme"
+    (selectedIconChanged)="selectFile(openStep.value!.id, $event)"
+    (openPrototype)="openPrototype($event)"
+    (openDatabase)="openDatabase()"
+    (openProj)="setWorkflow($event)"
+    (publish)="publish()"
+  ></app-icon-sidebar>
+  <div
+    class="w-100 h-100 d-flex justify-content-between align-content-start"
+    style="overflow-y: hidden"
+    *ngIf="workflow.value && items.value; else noWorkflow"
+  >
+      <app-file-sidebar
+        [hidden]="mode != 'sidebar'"
+        [models]="models"
+        [selectedIcon]="selectedIcon"
+        [triggers]="triggers"
+        [apiKeys]="apiKeys"
+        [apiRequests]="apiRequests"
+        [workflow]="workflow.value"
+        [executable]="workflow.value"
+        [items]="items.value"
+        (detailsChanged)="edited = true; workflow.next($event); save(1, true)"
+        (selectedFileChanged)="selectFile($event, selectedIcon)"
+      >
+      </app-file-sidebar>
+    <div class="w-100 h-100">
+      <ng-container *ngIf="selectedIcon == 'design'">
+        <verticalai-workflow-designer
+          #designer
+          [models]="models"
+          [workflow]="workflow.value"
+          [theme]="theme"
+          (detailsChanged)="
+            edited = true; workflow.next($event); save(1, true)
+          "
+          (iconChanged)="edited = true; workflowIcon = $event; save(0)"
+          (selectedFileChanged)="selectFile($event, selectedIcon)"
+        >
+        </verticalai-workflow-designer>
+      </ng-container>
+    </div>
+
+    <!-- <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+      <as-split class="w-100 h-100" class="vertical" direction="vertical">
+        <as-split-area class="horizontal" [size]="70">
+          <as-split class="w-100 h-100" direction="horizontal">
+            <as-split-area [size]="60">
+              <ng-container *ngIf="selectedIcon == 'design'">
+                <verticalai-workflow-designer
+                  #designer
+                  [models]="models"
+                  [workflow]="workflow.value"
+                  [theme]="theme"
+                  (detailsChanged)="
+                    edited = true; workflow.next($event); save(1, true)
+                  "
+                  (iconChanged)="edited = true; workflowIcon = $event; save(0)"
+                  (selectedFileChanged)="selectFile($event, selectedIcon)"
+                >
+                </verticalai-workflow-designer>
+              </ng-container>
+
+         
+            </as-split-area>
+          </as-split>
+        </as-split-area>
+      </as-split>
+    </div> -->
+  </div>
+
+  <ng-template #noWorkflow>
+    <div
+      class="layout-container h-100 d-flex flex-column justify-content-center align-items-center"
+    >
+      <verticalai-loader
+        [mode]="theme"
+        [text]="'Loading...'"
+      ></verticalai-loader>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,26 @@
+<div class="wrap-input1 w-100 pt-3">
+  <p class="w-100 mb-3 fw-bold" [style.color]="textColor">{{ title }}</p>
+  <div class="px-0 w-100">
+    <div
+      class="rounded-10 w-100 pe-3"
+      [style.background-color]="bgColor"
+      [style.color]="textColor"
+    >
+      <ion-select
+        (ngModelChange)="change($event)"
+        (ionDismiss)="refresh.emit()"
+        fill="solid"
+        interface="popover"
+        [placeholder]="placeholder"
+        [interfaceOptions]="{ cssClass: 'custom-popover' }"
+        [ngModel]="value"
+      >
+        <ion-select-option
+          *ngFor="let option of data ?? []"
+          [value]="valueField ? option[valueField] : option"
+          >{{ displayField ? option[displayField] : option }}</ion-select-option
+        >
+      </ion-select>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+.layout1 {
+  min-height: 100vh; /* fall-back */
+  min-height: -moz-available;
+  min-height: -webkit-fill-available;
+  min-height: fill-available;
+}
+
+.layout-top {
+  height: calc(calc(var(--vh, 1vh) * 100) - 320px);
+  width: 100%;
+}
+
+.terminal-width {
+  height: 100%;
+  width: calc(100vw - 320px);
+}
+
+.sidebar {
+  box-shadow: 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
+}
+
+
+// :host ::ng-deep .horizontal {
+//   .as-split-gutter-icon {
+//     color: #1f1f1f !important;
+//     background-color: #0A0F14 !important;
+//     border-right: 1px solid #7F7F7F !important;
+//     border-top: 0px !important
+//   }
+// }
+
+// :host ::ng-deep .vertical {
+//   .as-split-gutter-icon {
+//     color: #151515;
+//     background-color: #000000;
+//     border-top: 1px solid #7F7F7F;
+//     border-right: 0px
+//   }
+// }

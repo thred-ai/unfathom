@@ -1,0 +1,45 @@
+<div
+  class="w-100 h-100 d-flex justify-content-between align-items-center flex-column primary-background p-3 pb-4"
+>
+  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+    <div class="primary-background w-100 h-100 m-auto" *ngIf="collection">
+      <div class="w-100 h-100">
+        <div class="w-100">
+          <div class="primary-text fw-bold mb-3" style="font-size: 20px;">New Collection</div>
+
+          <div class="wrap-input1 w-100 pb-3" style="max-width: 600px">
+            <verticalai-text-field
+              [title]="'Collection ID'"
+              [value]="collection.id"
+              [placeholder]="'Collection ID'"
+              (changed)="collection.id = $event"
+              [btn]="true"
+              [btnIcon]="'add-circle'"
+              (btnClicked)="autoId()"
+            >
+            </verticalai-text-field>
+          </div>
+        </div>
+      </div>
+      <button
+        class="btn bg-orange border-0 rounded-10 fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
+        (click)="save()"
+      >
+        <!-- (click)="edited ? save() : publish(workflow)"
+        [disabled]="loading" -->
+        <ng-container *ngIf="loading; else buttonTitles">
+          <span class="mx-auto">
+            {{ "Saving" }}
+            <span
+              class="spinner-border spinner-border-sm ms-2 m-auto"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </span>
+        </ng-container>
+
+        <ng-template #buttonTitles> Create </ng-template>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "frontend": {
+      "name": "frontend",
+      "integrations": {},
+      "type": "angular"
+    }
+  },
+  "defaultProject": "frontend"
+}

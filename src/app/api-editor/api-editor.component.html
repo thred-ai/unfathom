@@ -1,0 +1,329 @@
+<div
+  class="w-100 h-100 d-flex justify-content-between flex-column align-content-center secondary-background "
+  style="overflow: hidden"
+>
+  <div
+    class="px-2 w-100 d-flex justify-content-between align-items-center secondary-background "
+    style="height: 70px; border-bottom: #7f7f7f solid 0.5px"
+  >
+    <div class="d-flex justify-content-center align-items-center my-auto">
+      <p
+        class="btn bg-transparent rounded-pill fw-bold primary-text  border-0 d-flex justify-content-between align-content-center px-2 py-2 my-auto"
+        (click)="close()"
+      >
+        <mat-icon class="me-0" style="aspect-ratio: 1"> close </mat-icon>
+      </p>
+    </div>
+    <button
+      class="btn bg-orange border-0 rounded fw-bold primary-text  d-flex justify-content-between align-content-center px-3 py-2 my-auto"
+      (click)="save(); dialogRef.close(api)"
+    >
+      <!-- (click)="edited ? save() : publish(workflow)"
+        [disabled]="loading" -->
+
+      Save
+      <mat-icon class="fw-bold ms-2" style="aspect-ratio: 1">
+        check_circle
+      </mat-icon>
+    </button>
+  </div>
+
+  <div
+    class="w-100 h-100 d-flex flex-column justify-content-start align-items-center py-2"
+    style="overflow-y: scroll"
+  >
+    <div style="width: 90%; max-width: 800px" *ngIf="api">
+      <div class="w-100 border-bottom mb-3">
+        <div class="w-100 mb-3">
+          <verticalai-text-field
+            [title]="'API URL'"
+            [value]="api.url"
+            [type]="'text'"
+            [disabled]="false"
+            [defaultValue]="''"
+            [bgColor]="'#1F1F1F'"
+            [placeholder]="'API URL'"
+            (changed)="api.url = $event"
+          >
+          </verticalai-text-field>
+        </div>
+        <div class="w-100 mb-3">
+          <verticalai-select-field
+            [title]="'Request Type'"
+            [data]="requestTypes | dictToArr"
+            [value]="api.method"
+            [displayField]="'name'"
+            [valueField]="'name'"
+            [defaultValue]="'POST'"
+            [bgColor]="'#1F1F1F'"
+            [placeholder]="'Request Type'"
+            (changed)="api.method = $event"
+          >
+          </verticalai-select-field>
+        </div>
+
+        <ng-container
+          *ngIf="requestTypes[api.method].fields | rawEditFilter as rawFields"
+        >
+          <ng-container *ngIf="rawFields.length == 0; else tabs">
+            <div class="py-3">
+              <p class="w-100 mb-3 text-white">Request Fields</p>
+              <ng-container *ngTemplateOutlet="bodyFields"></ng-container>
+            </div>
+          </ng-container>
+
+          <ng-template #tabs>
+            <mat-tab-group
+              mat-stretch-tabs
+              #menu
+              class="w-100 mb-3"
+              dynamicHeight
+              animationDuration="0ms"
+              (selectedIndexChange)="save()"
+            >
+              <mat-tab class="tab">
+                <ng-template mat-tab-label>
+                  <span class="primary-text  "> Fields </span>
+                </ng-template>
+                <ng-template matTabContent>
+                  <ng-container *ngTemplateOutlet="bodyFields"></ng-container>
+                </ng-template>
+              </mat-tab>
+
+              <mat-tab class="tab">
+                <ng-template mat-tab-label>
+                  <span class="primary-text  "> Raw Data </span>
+                </ng-template>
+
+                <ng-template matTabContent>
+                  <mat-accordion
+                    class="example-headers-align bg-danger animate__animated animate__fadeIn w-100"
+                    multi
+                    *ngIf="requestTypes[api.method] as request"
+                  >
+                    <ng-container *ngFor="let field of rawFields">
+                      <mat-expansion-panel
+                        class="shadow-0 rounded-10 my-2 w-100 bg-theme"
+                        *ngIf="sameRequest(field.id, request.name) as same"
+                        [expanded]="true"
+                      >
+                        <mat-expansion-panel-header>
+                          <mat-panel-title class="primary-text  ">
+                            {{ same.name }}
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <ng-template matExpansionPanelContent>
+                          <ng-container
+                            *ngIf="same.id | cast : APIDetails as id"
+                          >
+                            <div
+                              class="w-100 rounded"
+                              style="
+                                overflow: hidden;
+                                border: #1f1f1f solid 1px;
+                                height: 300px;
+                              "
+                            >
+                              <ngs-code-editor
+                                style="height: 100%"
+                                [theme]="'hc-black'"
+                                [codeModel]="{
+                                  language: 'json',
+                                  uri: id,
+                                  value: (api![id] | json)
+                                }"
+                                [options]="{
+                                  contextmenu: false,
+                                  minimap: {
+                                    enabled: false
+                                  },
+                                  scrollbar: {
+                                    vertical: 'hidden'
+                                  },
+                                  overviewRulerBorder: false,
+                                  overviewRulerLanes: 0,
+                                  hideCursorInOverviewRuler: true
+                                }"
+                                (valueChanged)="apiFieldChanged($event, id)"
+                              >
+                              </ngs-code-editor>
+                            </div>
+                          </ng-container>
+                        </ng-template>
+                      </mat-expansion-panel>
+                    </ng-container>
+                  </mat-accordion>
+                </ng-template>
+              </mat-tab>
+            </mat-tab-group>
+          </ng-template>
+        </ng-container>
+
+        <div class="w-100 pt-3 pb-2 primary-text  text-center fw-bold">
+          <i><span style="font-size: small">General</span></i>
+        </div>
+      </div>
+
+      <div class="w-100 mt-5 mb-2">
+        <div class="w-100 mt-3 mb-3">
+          <verticalai-text-field
+            [title]="'Response Field (Optional)'"
+            [value]="api.responseFields"
+            [type]="'text'"
+            [disabled]="false"
+            [defaultValue]="''"
+            [bgColor]="'#1F1F1F'"
+            [placeholder]="'Response Field'"
+            (changed)="api.responseFields = $event"
+          >
+          </verticalai-text-field>
+        </div>
+
+        <div class="w-100 mb-3">
+          <verticalai-text-field
+            [title]="'Input Field (Optional)'"
+            [value]="api.inputFields"
+            [type]="'text'"
+            [disabled]="false"
+            [defaultValue]="''"
+            [placeholder]="'Input Field'"
+            [bgColor]="'#1F1F1F'"
+            (changed)="api.inputFields = $event"
+          >
+          </verticalai-text-field>
+        </div>
+        <div class="w-100 pt-3 pb-2 primary-text  text-center fw-bold">
+          <i><span style="font-size: small">Advanced</span></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #bodyFields>
+  <mat-accordion
+    class="example-headers-align bg-danger animate__animated animate__fadeIn w-100"
+    multi
+    *ngIf="requestTypes[api!.method] as request"
+  >
+    <ng-container *ngFor="let field of request.fields">
+      <mat-expansion-panel
+        class="shadow-0 rounded-10 my-2 w-100 bg-theme"
+        *ngIf="sameRequest(field.id, request.name) as same"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title class="primary-text  ">
+            {{ same.name }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-container *ngIf="same.id | cast : APIDetails as id">
+          <div
+            class="w-100 d-flex justify-content-between align-content-center mb-3"
+          >
+            <div
+              class="w-100 d-flex justify-content-between align-content-center"
+            >
+              <div class="w-100 pe-1">
+                <verticalai-text-field
+                  [title]="'Key'"
+                  [value]="newFields[id]['name'] ?? ''"
+                  [type]="'text'"
+                  [disabled]="false"
+                  [defaultValue]="''"
+                  [placeholder]="'Key'"
+                  [borderColor]="'#1f1f1f'"
+                  [bgColor]="'#1F1F1F'"
+                  (changed)="newFields[id]['name'] = $event"
+                >
+                </verticalai-text-field>
+              </div>
+              <div class="w-100 ps-1">
+                <verticalai-text-field
+                  [title]="'Value'"
+                  [value]="newFields[id]['value'] ?? ''"
+                  [type]="'text'"
+                  [disabled]="false"
+                  [defaultValue]="''"
+                  [placeholder]="'Value'"
+                  [borderColor]="'#1f1f1f'"
+                  [bgColor]="'#1F1F1F'"
+                  (changed)="newFields[id]['value'] = $event"
+                >
+                </verticalai-text-field>
+              </div>
+            </div>
+
+            <div class="ps-3 d-flex justify-content-end align-items-end">
+              <mat-icon
+                class="rounded-circle text-orange mb-field"
+                style="aspect-ratio: 1 !important"
+                role="button"
+                (click)="
+                  newDetail(id, newFields[id]['name'], newFields[id]['value'])
+                "
+                >add</mat-icon
+              >
+            </div>
+          </div>
+
+          <div
+            class="w-100 d-flex justify-content-between align-content-center mb-3"
+            *ngFor="let detail of api![id] | dictToArr; index as i"
+          >
+            <div
+              class="w-100 d-flex justify-content-between align-content-center"
+            >
+              <div class="w-100 pe-1">
+                <verticalai-text-field
+                  [simplify]="true"
+                  [value]="detail.name"
+                  [type]="'text'"
+                  [defaultValue]="''"
+                  [placeholder]="'Key'"
+                  [borderColor]="'#1f1f1f'"
+                  [bgColor]="'#1F1F1F'"
+                  (changed)="editDetail(id, i, $event); logAPI()"
+                >
+                </verticalai-text-field>
+              </div>
+              <div class="w-100 ps-1">
+                <verticalai-text-field
+                  [simplify]="true"
+                  [value]="detail.value"
+                  [type]="'text'"
+                  [defaultValue]="''"
+                  [placeholder]="'Value'"
+                  [borderColor]="'#1f1f1f'"
+                  [bgColor]="'#1F1F1F'"
+                  (changed)="editDetail(id, i, undefined, $event); logAPI()"
+                >
+                </verticalai-text-field>
+              </div>
+            </div>
+
+            <div class="ps-3 d-flex justify-content-end align-content-center">
+              <mat-icon
+                class="rounded-circle my-auto secondary-text"
+                style="aspect-ratio: 1 !important"
+                role="button"
+                (click)="removeDetail(id, detail.name)"
+                >close</mat-icon
+              >
+            </div>
+            <!-- <verticalai-text-field
+                              [simplify]="true"
+              
+                                [title]="'API URL'"
+                                [value]="api.url"
+                                [type]="'text'"
+                                [disabled]="false"
+                                [defaultValue]="''"
+                                [placeholder]="'API URL'"
+                              >
+                              </verticalai-text-field> -->
+          </div>
+        </ng-container>
+      </mat-expansion-panel>
+    </ng-container>
+  </mat-accordion>
+</ng-template>
