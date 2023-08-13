@@ -194,3 +194,10 @@
   background-color: var(--primarySectionHoverColor);
 }
 
+.example-custom-placeholder {
+  background: var(--secondarySectionHoverColor);
+  border: dotted 3px var(--primaryColor);
+  opacity: 0.75;
+  overflow: hidden;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

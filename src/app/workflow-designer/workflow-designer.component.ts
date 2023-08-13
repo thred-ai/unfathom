@@ -71,8 +71,10 @@ export class WorkflowDesignerComponent
     'Long nineteenth century',
   ];
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.timePeriods, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<Scene[]>) {
+    if (this.workflow?.scenes){
+      moveItemInArray(this.workflow?.scenes, event.previousIndex, event.currentIndex);
+    }
   }
 
   @ViewChild('gridModeSwitch', { read: ElementRef }) element:

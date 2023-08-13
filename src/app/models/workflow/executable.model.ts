@@ -61,7 +61,14 @@ export class Executable {
     this.installWebhook = installWebhook ?? '';
     this.whitelist = whitelist ?? [];
     this.tracking = tracking ?? false;
-    this.scenes = scenes ?? [];
+    this.scenes = scenes ?? [
+      new Scene('123', 'My New Scene', 'This is my new scene for my game', [
+        'https://firebasestorage.googleapis.com/v0/b/verticalai.appspot.com/o/models%2Fclaude.png?alt=media&token=bef53270-3bef-4d8a-9132-dc989f93d41c',
+      ]),
+      new Scene('123', 'My New Scene 2', 'This is my second new scene for my game', [
+        'https://firebasestorage.googleapis.com/v0/b/verticalai.appspot.com/o/models%2Frepl.png?alt=media&token=4ab67882-a48a-4be8-b427-b9531441f34a',
+      ])
+    ];
     this.url = url ?? id;
     this.apiKey = apiKey ?? `V-${uuid.v4()}`;
     this.plan = plan ?? new Subscription('', '', '', 0, 0);
