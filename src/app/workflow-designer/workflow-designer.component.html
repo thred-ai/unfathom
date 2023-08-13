@@ -21,7 +21,21 @@
         [style.width.px]="frame.clientWidth / 3"
         cdkDrag
         *ngFor="let scene of workflow?.scenes ?? []"
+        #sceneDiv
+        role="button"
       >
+        <div
+          class="p-3"
+          [style.width.px]="sceneDiv.clientWidth"
+          [style.height.px]="sceneDiv.clientHeight"
+          *cdkDragPlaceholder
+        >
+          <div class="example-custom-placeholder w-100 h-100 rounded"><app-scene [scene]="scene"> </app-scene></div>
+          
+          
+
+        </div>
+
         <app-scene [scene]="scene"> </app-scene>
       </div>
     </div>
