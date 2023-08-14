@@ -649,7 +649,7 @@ placement="right"
           role="button"
           style="height: 40px"
           #elem
-          (click)="newFrame.emit()"
+          (click)="newFrame.emit(); folderToggle.click()"
         >
           <div
             class="w-100 h-100 d-flex justify-content-start align-items-center py-2"

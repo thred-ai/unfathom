@@ -195,6 +195,9 @@ export class WorkflowComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    // setTimeout(function(){debugger;}, 5000)
+
+
     await Promise.all(
       verticalkit.controllers.map(async (controller) => {
         let path = controller.path;

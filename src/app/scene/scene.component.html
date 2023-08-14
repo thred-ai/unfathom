@@ -1,17 +1,18 @@
 <div
-  class="w-100 h-100 primary-background border-table rounded d-flex justify-content-between align-items-center flex-column shadow-hover"
+  class="w-100 primary-background d-flex justify-content-between align-items-center flex-column"
   style="overflow: hidden"
   *ngIf="scene"
 >
   <div
     class="w-100 secondary-background"
     style="aspect-ratio: 1; flex-grow: 1; flex-shrink: 0"
+    (click)="sceneImg.click()"
   >
     <img
       *ngIf="scene!.images[0]; else noImage"
       class="w-100 h-100"
       style="object-fit: cover"
-      [src]="scene!.images[0]"
+      [src]="scene!.images[0] | safeImgUrl"
     />
 
     <ng-template #noImage>
@@ -28,25 +29,41 @@
   <!-- <img > -->
 
   <div
-    class="w-100 h-100 p-3 d-flex justify-content-start align-items-start flex-column border-table-top"
+    class="w-100 p-3 d-flex justify-content-start align-items-start flex-column border-table-top"
     style="flex-shrink: 1"
   >
-    <span *ngIf="placeholder" class="h4 primary-text w-100 text-truncate">{{scene?.name}}</span>
     <ion-input
-    *ngIf="!placeholder"
       class="text-truncate w-100 primary-text h4 px-0"
+      style="height: 50px !important"
       fill="solid"
       [ngModel]="scene.name"
       [placeholder]="'Name'"
       (ngModelChange)="scene.name = $event; changed.emit(scene)"
     ></ion-input>
 
-    <p class="secondary-text w-100 text-truncate mt-2">
+    <!-- <p class="secondary-text w-100 text-truncate mt-2">
       {{
         scene.description && scene.description != ""
-          ? scene?.description
+          ? scene.description
           : "No Description"
       }}
-    </p>
+    </p> -->
+
+    <ion-textarea
+      class="secondary-text mt-2 w-100"
+      style="overflow-y: scroll; max-height: 100px"
+      [autoGrow]="true"
+      fill="solid"
+      [ngModel]="scene.description"
+      [placeholder]="'No Description'"
+      (ngModelChange)="scene.description = $event; changed.emit(scene)"
+    ></ion-textarea>
   </div>
+
+  <input
+    #sceneImg
+    type="file"
+    (change)="fileChangeEvent($event, scene)"
+    style="display: none"
+  />
 </div>

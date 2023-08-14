@@ -17,23 +17,24 @@
     <!-- ... -->
 
     <div
-      class="d-flex w-100 justify-content-between align-items-center flex-column"
+      class="d-flex w-100 justify-content-between align-items-center flex-column h-100"
     >
       <div
-        class="w-100 mx-0 d-flex justify-content-start align-items-center"
+        class="w-100 mx-0 d-flex justify-content-start align-items-center h-100"
         style="overflow-x: auto"
         cdkScrollable
       >
         <div
-          class="d-inline-flex p-3"
+          class="d-inline-flex justify-content-start align-items-start p-3 h-100"
           cdkDropList
           cdkDropListOrientation="horizontal"
           (cdkDropListDropped)="drop($event)"
         >
           <div
             class="p-3"
-            style="aspect-ratio: 0.8; width: 400px"
+            style="width: 400px; height: auto; flex-grow: 0;"
             cdkDrag
+            [cdkDragPreviewContainer]="'parent'"
             *ngFor="let scene of workflow?.scenes ?? []"
             #sceneDiv
             role="button"
@@ -44,7 +45,9 @@
               [style.height.px]="sceneDiv.clientHeight"
               *cdkDragPlaceholder
             >
-              <div class="example-custom-placeholder w-100 h-100 rounded">
+              <div class="example-custom-placeholder w-100 h-100 rounded" style="overflow: hidden;">
+                <div class="w-100 primary-background border-table-bottom" style="height: 10px" ></div>
+
                 <app-scene [scene]="scene" [placeholder]="true"> </app-scene>
               </div>
             </div>
@@ -61,12 +64,15 @@
             </div> -->
 
             <div
-              class="w-100 h-100 rounded"
+              class="w-100 h-100 rounded border-table shadow-hover"
+              style="overflow: hidden"
               role="button"
               (click)="
                 $event.stopPropagation(); selectedFileChanged.emit(scene.id)
               "
             >
+            <div class="w-100 primary-background border-table-bottom" style="height: 10px" cdkDragHandle></div>
+
               <app-scene [scene]="scene" (changed)="setScene($event, scene.id)">
               </app-scene>
             </div>

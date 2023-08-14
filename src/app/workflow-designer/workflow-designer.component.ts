@@ -93,6 +93,8 @@ export class WorkflowDesignerComponent
 
       if (same != undefined && same > -1) {
         this.workflow.scenes[same] = scene;
+        console.log("SAME")
+        console.log(this.workflow.scenes[same])
         this.saveLayout();
       }
     }
@@ -419,6 +421,8 @@ export class WorkflowDesignerComponent
     context.notifyNameChanged();
   }
 
+  
+
   onInput(ev: any) {
     var value = ev.target!.value;
 
@@ -431,25 +435,6 @@ export class WorkflowDesignerComponent
 
   @ViewChild('frame') frame?: ElementRef<HTMLElement>;
 
-  async fileChangeEvent(event: any, type = 1): Promise<void> {
-    let file = event.target.files[0];
-
-    let buffer = await file.arrayBuffer();
-
-    var blob = new Blob([buffer]);
-
-    var reader = new FileReader();
-    reader.onload = (event: any) => {
-      var base64 = event.target.result;
-
-      let imgIcon = document.getElementById('imgIcon') as HTMLImageElement;
-      imgIcon!.src = base64;
-
-      this.iconChanged.emit(file);
-    };
-
-    reader.readAsDataURL(blob);
-  }
 
   setAPISVG() {
     // setTimeout(() => {

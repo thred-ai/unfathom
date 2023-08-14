@@ -355,6 +355,33 @@ export class LoadService {
     this.loading.next(true);
 
     if (uid) {
+      let scenes = data.scenes;
+
+      await Promise.all(
+        scenes.map(async (scene) => {
+          await Promise.all(
+            scene.images.map(async (image, index) => {
+              let ref = this.storage.ref(`workflows/${id}/img-${id}.png`);
+              console.log('CHECKING');
+              console.log(image);
+              let im = image.replace(
+                'data:application/octet-stream;base64,',
+                ''
+              );
+              if (this.isBase64(im)) {
+                console.log(im);
+                await ref.putString(im, 'base64', {
+                  cacheControl: 'no-cache',
+                });
+                let displayUrl = await ref.getDownloadURL().toPromise();
+
+                scene.images[index] = displayUrl;
+              }
+            })
+          );
+        })
+      );
+
       let uploadData = JSON.parse(JSON.stringify(data));
       uploadData.search_name = uploadData.name?.toLowerCase();
 
