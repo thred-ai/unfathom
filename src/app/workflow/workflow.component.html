@@ -16,18 +16,18 @@
     style="overflow-y: hidden"
     *ngIf="workflow.value && items.value; else noWorkflow"
   >
-      <app-file-sidebar
-        [hidden]="mode != 'sidebar'"
-        [models]="models"
-        [selectedIcon]="selectedIcon"
-        [triggers]="triggers"
-        [workflow]="workflow.value"
-        [executable]="workflow.value"
-        [items]="items.value"
-        (detailsChanged)="edited = true; workflow.next($event); save(1, true)"
-        (selectedFileChanged)="selectFile($event, selectedIcon)"
-      >
-      </app-file-sidebar>
+    <app-file-sidebar
+      [hidden]="mode != 'sidebar'"
+      [models]="models"
+      [selectedIcon]="selectedIcon"
+      [triggers]="triggers"
+      [workflow]="workflow.value"
+      [executable]="workflow.value"
+      [items]="items.value"
+      (detailsChanged)="save(1, false, $event)"
+      (selectedFileChanged)="selectFile($event, selectedIcon)"
+    >
+    </app-file-sidebar>
     <div class="w-100 h-100">
       <ng-container *ngIf="selectedIcon == 'design'">
         <verticalai-workflow-designer
@@ -35,9 +35,7 @@
           [models]="models"
           [workflow]="workflow.value"
           [theme]="theme"
-          (detailsChanged)="
-            edited = true; workflow.next($event); save(1, true)
-          "
+          (detailsChanged)="save(1, false, $event)"
           (iconChanged)="edited = true; workflowIcon = $event; save(0)"
           (selectedFileChanged)="selectFile($event, selectedIcon)"
         >

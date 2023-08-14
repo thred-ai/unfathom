@@ -409,6 +409,8 @@ export class WorkflowDesignerComponent
     // this.definition = definition;
 
     // if (this.)
+    console.log("SAVE NOW")
+
     this.detailsChanged.emit(this.workflow);
   }
 

@@ -263,6 +263,8 @@ export class WorkflowComponent implements OnInit {
             });
 
             this.workflow.subscribe(async (w) => {
+              console.log("SAVE NOW")
+
               if (w) {
                 this.initExecutable(w);
               }
@@ -330,8 +332,8 @@ export class WorkflowComponent implements OnInit {
     return false;
   }
 
-  async save(mode = 1, update = false) {
-    let workflow = this.workflow.value;
+  async save(mode = 1, update = false, workflow = this.workflow.value) {
+    console.log("SAVING")
 
     if (workflow && this.isValid) {
       try {
@@ -339,6 +341,7 @@ export class WorkflowComponent implements OnInit {
           let exec = await this.fillExecutable(workflow);
 
           let result = await this.loadService.saveSmartUtil(exec);
+          console.log("SAVED")
 
           if (result) {
             this.edited = false;
