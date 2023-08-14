@@ -50,7 +50,7 @@ export class WorkflowComponent implements OnInit {
 
   workflow = new BehaviorSubject<Executable | undefined>(undefined);
 
-  models: SceneDefinition[] = []
+  models: SceneDefinition[] = [];
 
   theme: 'light' | 'dark' = 'light';
 
@@ -258,9 +258,9 @@ export class WorkflowComponent implements OnInit {
               this.loading = l;
             });
 
-            this.designerService.toolboxConfiguration.subscribe(s => {
-              this.models = s ?? []
-            })
+            this.designerService.toolboxConfiguration.subscribe((s) => {
+              this.models = s ?? [];
+            });
 
             this.workflow.subscribe(async (w) => {
               if (w) {
@@ -448,12 +448,7 @@ export class WorkflowComponent implements OnInit {
       panelClass: 'app-full-bleed-dialog',
 
       data: {
-        step:
-          controllerId != 'main'
-            ? this.workflow.value?.scenes.find(
-                (scene) => scene.id == controllerId
-              )
-            : undefined,
+        step: controllerId != 'main' ? this.findScene(controllerId) : undefined,
         workflow: this.workflow.value,
       },
     });
@@ -478,12 +473,14 @@ export class WorkflowComponent implements OnInit {
 
         if (val.file) {
           let file = val.file as Scene;
-          const step = this.findScene(file.id);
+          let w = this.setScene(file, workflow);
 
-          if (step) {
-            step.name = file.name;
+          if (w) {
+            workflow = w;
           }
         }
+
+        console.log(workflow);
 
         this.workflow.next(workflow);
 
@@ -581,6 +578,17 @@ export class WorkflowComponent implements OnInit {
         this.changes.push(data.time);
       }
     }
+  }
+
+  setScene(scene: Scene, workflow = this.workflow.value) {
+    if (workflow) {
+      let same = workflow.scenes.findIndex((f) => f.id == scene.id);
+
+      if (same != undefined && same > -1) {
+        workflow.scenes[same] = scene;
+      }
+    }
+    return workflow;
   }
 
   analyzeTasks(tasks: Scene[]) {

@@ -9,13 +9,13 @@
     >
       <div class="w-100 h-100" *ngIf="mode == 1 && selectedFile">
         <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 20px;">Component Settings</div>
+          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Settings</div>
         </div>
         <div class="w-100 pb-3">
           <verticalai-text-field
             [title]="'Name'"
             [value]="selectedFile.name"
-            [placeholder]="'Controller Name'"
+            [placeholder]="'Name'"
             (changed)="selectedFile.name = $event"
           >
           </verticalai-text-field>
@@ -55,7 +55,7 @@
 
       <div class="w-100 h-100" *ngIf="mode == 2">
         <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 20px;">Project Settings</div>
+          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Project Settings</div>
 
           <div class="wrap-input1 w-100 py-3 px-0">
             <p class="w-100 mb-3 primary-text fw-bold">Project Icon</p>
@@ -112,7 +112,7 @@
 
       <div class="w-100 h-100" *ngIf="mode == 4 && dev">
         <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 20px;">Settings</div>
+          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Settings</div>
 
           <div class="wrap-input1 w-100 py-3 px-0">
             <p class="w-100 mb-3 primary-text fw-bold">Profile Image</p>
@@ -184,7 +184,7 @@
         *ngIf="mode == 3 && newBranch['title'] && selectedFile"
       >
         <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 20px;">Path Settings</div>
+          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Path Settings</div>
 
           <div class="wrap-input1 w-100 pb-3">
             <verticalai-text-field

@@ -5,6 +5,7 @@ import { Key } from '../models/workflow/key.model';
 import { Step } from 'verticalai-workflow-designer';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Developer } from '../models/user/developer.model';
+import { Scene } from '../models/workflow/scene.model';
 
 @Component({
   selector: 'app-settings',
@@ -18,8 +19,6 @@ export class SettingsComponent implements OnInit {
   //
   // flowModels: Dict<AIModelType> = {};
 
-  apiKey?: Key;
-  newAPIKey?: Key;
   newBranch: Dict<any> = {};
 
   mode: number = 1;
@@ -36,7 +35,7 @@ export class SettingsComponent implements OnInit {
   // @Output() iconChanged = new EventEmitter<File>();
   // @Output() apiKeyChanged = new EventEmitter<Key>();
 
-  selectedFile?: Step;
+  selectedFile?: Scene;
   dev?: Developer;
   newImg?: File;
 
@@ -49,7 +48,6 @@ export class SettingsComponent implements OnInit {
     private loadService: LoadService
   ) {
     // dialogRef.disableClose = true;
-    this.apiKey = data.apiKey;
     this.selectedFile = data.step
       ? JSON.parse(JSON.stringify(data.step))
       : undefined;
@@ -59,21 +57,19 @@ export class SettingsComponent implements OnInit {
     this.dev = data.dev ? JSON.parse(JSON.stringify(data.dev)) : undefined;
     this.newBranch['title'] = data.branch;
 
-    if (
-      this.selectedFile &&
-      this.selectedFile.properties['branches'] &&
-      this.newBranch['title']
-    ) {
-      this.newBranch['description'] =
-        (this.selectedFile.properties['branches'] as Dict<any>)[
-          this.newBranch['title']
-        ]?.description ?? '';
-    }
+    // if (
+    //   this.selectedFile &&
+    //   this.selectedFile.properties['branches'] &&
+    //   this.newBranch['title']
+    // ) {
+    //   this.newBranch['description'] =
+    //     (this.selectedFile.properties['branches'] as Dict<any>)[
+    //       this.newBranch['title']
+    //     ]?.description ?? '';
+    // }
 
     this.mode = this.selectedFile
-      ? this.newBranch['title']
-        ? 3
-        : 1
+      ? 1
       : this.dev
       ? 4
       : 2;
@@ -81,31 +77,20 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  saveAPIKey(id: string, data: string = '') {
-    this.newAPIKey = new Key(id, data);
-    // this.apiKeyChanged.emit(apiKey);
-  }
 
   async save(action = 'save') {
     this.loading = true;
-    if (this.newAPIKey && this.workflow) {
-      await this.loadService.saveAPIKeys(
-        this.workflow.id,
-        this.workflow.creatorId,
-        this.newAPIKey
-      );
-    }
     if (
       this.selectedFile &&
       (this.selectedFile['name'] ?? '').split(' ').join('') == ''
     ) {
-      this.selectedFile['name'] =
-        (this.selectedFile.properties['defaultName'] as string) ?? 'Controller';
+      this.selectedFile.name = "Scene"
+      // this.selectedFile['name'] =
+      //   (this.selectedFile.properties['defaultName'] as string) ?? 'Controller';
     }
     this.loading = false;
     this.dialogRef.close({
       file: this.selectedFile,
-      apiKey: this.newAPIKey,
       workflow: this.workflow,
       img: this.newImg,
       action,
