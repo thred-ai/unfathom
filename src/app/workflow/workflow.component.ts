@@ -485,11 +485,9 @@ export class WorkflowComponent implements OnInit {
 
         console.log(workflow);
 
-        this.workflow.next(workflow);
+        await this.save(1, false, workflow);
 
-        await this.save();
-
-        this.setWorkflow(this.workflow.value!.id, controllerId);
+        // this.setWorkflow(this.workflow.value!.id, controllerId);
       }
     });
   }
