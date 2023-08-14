@@ -361,7 +361,7 @@ export class LoadService {
         scenes.map(async (scene) => {
           await Promise.all(
             scene.images.map(async (image, index) => {
-              let ref = this.storage.ref(`workflows/${id}/img-${id}.png`);
+              let ref = this.storage.ref(`workflows/${id}/scenes/${scene.id}/img-${index}.png`);
               console.log('CHECKING');
               console.log(image);
               let im = image.replace(
