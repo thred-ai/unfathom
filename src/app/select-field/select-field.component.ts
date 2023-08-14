@@ -14,6 +14,8 @@ export class SelectFieldComponent implements OnInit {
   @Input() textColor: string = 'var(--primaryTextColor)';
   @Input() bgColor: string = 'var(--secondaryBackgroundColor)';
   @Input() placeholder: string = '';
+  @Input() simplify: boolean = false;
+
   @Output() changed = new EventEmitter<any>();
   @Output() refresh = new EventEmitter<any>();
 

@@ -19,6 +19,7 @@ import { WorkflowComponent } from '../workflow/workflow.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Executable } from '../models/workflow/executable.model';
 import { Developer } from '../models/user/developer.model';
+import { SceneDefinition } from '../models/workflow/scene-definition.model';
 
 @Component({
   selector: 'app-file-sidebar',
@@ -31,7 +32,16 @@ export class FileSidebarComponent implements OnInit {
   editingTask?: TaskTree;
 
   //
-  @Input() models: Dict<AIModelType> = {};
+  frames: Dict<SceneDefinition> = {};
+
+  @Input() set models(val: SceneDefinition[]){
+    console.log(val)
+    val.forEach(v => {
+      this.frames[v.type] = v
+    })
+
+  }
+
   // flowModels: Dict<AIModelType> = {};
 
   @Input() triggers: Dict<Trigger> = {};
@@ -77,6 +87,7 @@ export class FileSidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.items)
     this.workflowComponent.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;

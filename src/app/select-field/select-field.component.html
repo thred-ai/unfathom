@@ -1,5 +1,5 @@
 <div class="wrap-input1 w-100 pt-3">
-  <p class="w-100 mb-3 fw-bold" [style.color]="textColor">{{ title }}</p>
+  <p *ngIf="!simplify" class="w-100 mb-3 fw-bold" [style.color]="textColor">{{ title }}</p>
   <div class="px-0 w-100">
     <div
       class="rounded-10 w-100 pe-3"

@@ -23,8 +23,6 @@
         class="w-100 mx-0 d-flex justify-content-start align-items-center"
         style="overflow-x: auto"
         cdkScrollable
-        #frame
-        
       >
         <div
           class="d-inline-flex p-3"
@@ -34,8 +32,7 @@
         >
           <div
             class="p-3"
-            style="aspect-ratio: 0.8; max-width: 400px"
-            [style.width.px]="frame.clientWidth / 3"
+            style="aspect-ratio: 0.8; width: 400px"
             cdkDrag
             *ngFor="let scene of workflow?.scenes ?? []"
             #sceneDiv
@@ -48,11 +45,30 @@
               *cdkDragPlaceholder
             >
               <div class="example-custom-placeholder w-100 h-100 rounded">
-                <app-scene [scene]="scene"> </app-scene>
+                <app-scene [scene]="scene" [placeholder]="true"> </app-scene>
               </div>
             </div>
-            <div class="w-100 h-100 rounded" role="button" (click)="$event.stopPropagation(); selectedFileChanged.emit(scene.id)">
-              <app-scene [scene]="scene"> </app-scene>
+
+            <!-- <div
+              class="p-3"
+              [style.width.px]="sceneDiv.clientWidth"
+              [style.height.px]="sceneDiv.clientHeight"
+              *cdkDragPreview
+            >
+              <div class="w-100 h-100 rounded">
+                <app-scene [scene]="scene" [placeholder]="true"> </app-scene>
+              </div>
+            </div> -->
+
+            <div
+              class="w-100 h-100 rounded"
+              role="button"
+              (click)="
+                $event.stopPropagation(); selectedFileChanged.emit(scene.id)
+              "
+            >
+              <app-scene [scene]="scene" (changed)="setScene($event, scene.id)">
+              </app-scene>
             </div>
           </div>
         </div>

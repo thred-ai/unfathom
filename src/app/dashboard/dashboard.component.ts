@@ -10,6 +10,7 @@ import { WorkflowComponent } from '../workflow/workflow.component';
 import { WorkflowInfoComponent } from '../workflow-info/workflow-info.component';
 import { PlanSelectComponent } from '../plan-select/plan-select.component';
 import { Subscription } from '../models/workflow/subscription.model';
+import { DesignerService } from '../designer.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -73,7 +74,7 @@ export class DashboardComponent implements OnInit {
       if (uid) {
         this.loadService.getUserInfo(uid, true, true, (dev) => {
           this.dev = dev;
-          console.log(dev)
+          console.log(dev);
         });
       } else {
       }
@@ -82,6 +83,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private loadService: LoadService,
+    private designerService: DesignerService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
   ) {
@@ -166,12 +168,11 @@ export class DashboardComponent implements OnInit {
   @Input() dev?: Developer = undefined;
 
   async ngOnInit() {
-    this.loadService.getModels(async (models) => {
+    this.designerService.loadGroups((models) => {
       this.getProfile();
       // this.loadStats((await this.loadService.currentUser)?.uid);
 
       this.loadService.loadedUser.subscribe((dev) => {
-
         if (dev) {
           if (dev?.theme == 'auto') {
             if (

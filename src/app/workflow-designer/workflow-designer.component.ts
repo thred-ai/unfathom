@@ -39,7 +39,7 @@ import { DesignerService } from '../designer.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Scene } from '../models/workflow/scene.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
-import * as $ from 'jquery'
+import * as $ from 'jquery';
 
 @Component({
   selector: 'verticalai-workflow-designer',
@@ -58,10 +58,18 @@ export class WorkflowDesignerComponent
   BranchedStep!: BranchedStep;
   any!: any;
 
+  window: Window = window
+
   drop(event: CdkDragDrop<Scene[]>) {
-    if (this.workflow?.scenes){
-      moveItemInArray(this.workflow?.scenes, event.previousIndex, event.currentIndex);
+    if (this.workflow?.scenes) {
+      moveItemInArray(
+        this.workflow?.scenes,
+        event.previousIndex,
+        event.currentIndex
+      );
+      this.saveLayout()
     }
+
   }
 
   @ViewChild('gridModeSwitch', { read: ElementRef }) element:
@@ -71,7 +79,24 @@ export class WorkflowDesignerComponent
   shouldRefresh = false;
 
   //
-  @Input() models: Dict<AIModelType> = {};
+  frames: Dict<SceneDefinition> = {};
+
+  @Input() set models(val: SceneDefinition[]) {
+    val.forEach((v) => {
+      this.frames[v.type] = v;
+    });
+  }
+
+  setScene(scene: Scene, id: string) {
+    if (this.workflow) {
+      let same = this.workflow.scenes.findIndex((f) => f.id == id);
+
+      if (same != undefined && same > -1) {
+        this.workflow.scenes[same] = scene;
+        this.saveLayout();
+      }
+    }
+  }
 
   trainingTypes = [
     {
@@ -170,7 +195,7 @@ export class WorkflowDesignerComponent
 
   @ViewChild('sqdDesigner') public sqdDesigner?: DesignerComponent;
 
-  public toolboxConfiguration: SceneDefinition[] = []
+  public toolboxConfiguration: SceneDefinition[] = [];
 
   resize() {
     window.dispatchEvent(new Event('resize'));
@@ -234,9 +259,6 @@ export class WorkflowDesignerComponent
 
   public ngOnInit() {
     this.shouldRefresh = true;
-
-    this.designerService.loadGroups();
-
 
     this.workflowComponent.workflow.subscribe((w) => {
       if (w && this.shouldRefresh) {
@@ -404,7 +426,6 @@ export class WorkflowDesignerComponent
 
     return value;
   }
-
 
   @ViewChild('frame') frame?: ElementRef<HTMLElement>;
 

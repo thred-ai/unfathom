@@ -1,5 +1,6 @@
-export class Scene {
-  name!: string;
+import { SceneDefinition } from './scene-definition.model';
+
+export class Scene extends SceneDefinition {
   description!: string;
   id!: string;
   images!: string[];
@@ -9,16 +10,19 @@ export class Scene {
   constructor(
     id: string,
     name: string = 'My New Scene',
-    description: string = "",
+    description: string = '',
     images: string[] = [],
     characters: any[] = [],
-    notes: string = ""
+    notes: string = '',
+    type: string = 'scene'
   ) {
-    this.name = name
-    this.description = description
-    this.images = images
-    this.characters = characters
+    super(name, images[0], type);
+
+    this.name = name;
+    this.description = description;
+    this.images = images;
+    this.characters = characters;
     this.id = id;
-    this.notes = notes
+    this.notes = notes;
   }
 }

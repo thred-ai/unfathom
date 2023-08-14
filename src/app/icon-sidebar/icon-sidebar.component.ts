@@ -35,9 +35,7 @@ export class IconSidebarComponent implements OnInit {
 
   loading: Boolean = false;
 
-  get config() {
-    return (window as any).designerConfig;
-  }
+ 
 
   @Input() selectedIcon: string = 'settings';
 
@@ -50,6 +48,7 @@ export class IconSidebarComponent implements OnInit {
   @Output() openDatabase = new EventEmitter<any>();
 
   @Output() openProj = new EventEmitter<string | undefined>();
+  @Output() newFrame = new EventEmitter<any>();
 
   @Output() publish = new EventEmitter<Executable>();
 
@@ -57,18 +56,6 @@ export class IconSidebarComponent implements OnInit {
 
 
   expandedProjects = true;
-
-  zoomIn() {
-    this.config.controlBar.zoomIn();
-  }
-
-  zoomOut() {
-    this.config.controlBar.zoomOut();
-  }
-
-  reset() {
-    this.config.controlBar.resetViewport();
-  }
 
   showingGrid = false;
 

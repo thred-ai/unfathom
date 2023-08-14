@@ -649,12 +649,13 @@ placement="right"
           role="button"
           style="height: 40px"
           #elem
+          (click)="newFrame.emit()"
         >
           <div
             class="w-100 h-100 d-flex justify-content-start align-items-center py-2"
           >
             <img
-              [src]="images[tool.type]"
+              [src]="tool.image"
               class="h-100 rounded border-table-dark"
               style="aspect-ratio: 1"
             />

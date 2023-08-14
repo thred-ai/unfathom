@@ -28,6 +28,8 @@ import { WorkflowDesignerComponent } from '../workflow-designer/workflow-designe
 import { ApiTesterComponent } from '../api-tester/api-tester.component';
 import { DatabaseComponent } from '../database/database.component';
 import { Scene } from '../models/workflow/scene.model';
+import { DesignerService } from '../designer.service';
+import { SceneDefinition } from '../models/workflow/scene-definition.model';
 
 @Component({
   selector: 'app-workflow',
@@ -40,17 +42,15 @@ export class WorkflowComponent implements OnInit {
   newWorkflow = true;
 
   dev?: Developer;
-  models: Dict<AIModelType> = {};
   triggers: Dict<Trigger> = {};
-  trainingData: Dict<TrainingData> = {};
-  apiKeys: Dict<Key> = {};
-  apiRequests: Dict<APIRequest> = {};
 
   workflowIcon?: File;
   newTrainingData?: TrainingData;
   newAPIRequest?: APIRequest;
 
   workflow = new BehaviorSubject<Executable | undefined>(undefined);
+
+  models: SceneDefinition[] = []
 
   theme: 'light' | 'dark' = 'light';
 
@@ -185,6 +185,7 @@ export class WorkflowComponent implements OnInit {
 
   constructor(
     private loadService: LoadService,
+    private designerService: DesignerService,
     @Inject(PLATFORM_ID) private platformID: Object,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -249,25 +250,17 @@ export class WorkflowComponent implements OnInit {
               );
             }
 
-            this.loadService.loadedModels.subscribe((models) => {
-              this.models = models;
-            });
-
             this.loadService.theme.subscribe((theme) => {
               this.theme = theme;
-            });
-
-            this.loadService.loadedTriggers.subscribe((triggers) => {
-              this.triggers = triggers;
-            });
-
-            this.loadService.loadedKeys.subscribe((data) => {
-              this.apiKeys = data;
             });
 
             this.loadService.loading.subscribe((l) => {
               this.loading = l;
             });
+
+            this.designerService.toolboxConfiguration.subscribe(s => {
+              this.models = s ?? []
+            })
 
             this.workflow.subscribe(async (w) => {
               if (w) {
@@ -290,12 +283,20 @@ export class WorkflowComponent implements OnInit {
           this.analyzeTasks(w.scenes),
           new TaskTree('Storyboard', 'main', 'model', [], undefined, {
             img: 'assets/main.png',
-            type: 'main'
+            type: 'main',
           }),
           { type: 'folder', img: w.displayUrl }
         ),
       ]);
     }
+  }
+
+  newFrame() {
+    let frame = new Scene(this.loadService.newUtilID);
+
+    this.workflow.value?.scenes.push(frame);
+
+    this.save(1);
   }
 
   async checkSave() {
@@ -447,7 +448,6 @@ export class WorkflowComponent implements OnInit {
       panelClass: 'app-full-bleed-dialog',
 
       data: {
-        apiKey: controllerId != 'main' ? this.apiKeys[controllerId] : undefined,
         step:
           controllerId != 'main'
             ? this.workflow.value?.scenes.find(
@@ -670,7 +670,7 @@ export class WorkflowComponent implements OnInit {
           [],
           undefined,
           {
-            type: 'model',
+            type: task.type,
             img: task.images[0],
           }
         )
@@ -687,11 +687,11 @@ export class WorkflowComponent implements OnInit {
     await this.save(1, true);
   }
 
-  findScene(fileId: string, workflow = this.workflow.value){
-    if (fileId == 'main'){
-      return new Scene('main')
+  findScene(fileId: string, workflow = this.workflow.value) {
+    if (fileId == 'main') {
+      return new Scene('main');
     }
-    return workflow?.scenes.find((scene) => scene.id == fileId)
+    return workflow?.scenes.find((scene) => scene.id == fileId);
   }
 
   async selectFile(

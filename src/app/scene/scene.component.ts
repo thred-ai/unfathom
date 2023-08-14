@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Scene } from '../models/workflow/scene.model';
 
 @Component({
@@ -9,5 +9,9 @@ import { Scene } from '../models/workflow/scene.model';
 export class SceneComponent {
 
   @Input() scene?: Scene
+  @Input() placeholder?: boolean = false
+
+  @Output() changed = new EventEmitter<Scene>();
+
 
 }

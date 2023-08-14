@@ -8,6 +8,7 @@
     (openPrototype)="openPrototype($event)"
     (openDatabase)="openDatabase()"
     (openProj)="setWorkflow($event)"
+    (newFrame)="newFrame()"
     (publish)="publish()"
   ></app-icon-sidebar>
   <div
@@ -20,8 +21,6 @@
         [models]="models"
         [selectedIcon]="selectedIcon"
         [triggers]="triggers"
-        [apiKeys]="apiKeys"
-        [apiRequests]="apiRequests"
         [workflow]="workflow.value"
         [executable]="workflow.value"
         [items]="items.value"
