@@ -38,6 +38,8 @@ import { SettingsComponent } from '../settings/settings.component';
 import { DesignerService } from '../designer.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Scene } from '../models/workflow/scene.model';
+import { SceneDefinition } from '../models/workflow/scene-definition.model';
+import * as $ from 'jquery'
 
 @Component({
   selector: 'verticalai-workflow-designer',
@@ -55,21 +57,6 @@ export class WorkflowDesignerComponent
 
   BranchedStep!: BranchedStep;
   any!: any;
-
-  timePeriods = [
-    'Bronze age',
-    'Iron age',
-    'Middle ages',
-    'Early modern period',
-    'Long nineteenth century',
-    'Middle ages',
-    'Early modern period',
-    'Long nineteenth century',  'Middle ages',
-    'Early modern period',
-    'Long nineteenth century',  'Middle ages',
-    'Early modern period',
-    'Long nineteenth century',
-  ];
 
   drop(event: CdkDragDrop<Scene[]>) {
     if (this.workflow?.scenes){
@@ -183,9 +170,7 @@ export class WorkflowDesignerComponent
 
   @ViewChild('sqdDesigner') public sqdDesigner?: DesignerComponent;
 
-  public toolboxConfiguration: ToolboxConfiguration = {
-    groups: [],
-  };
+  public toolboxConfiguration: SceneDefinition[] = []
 
   resize() {
     window.dispatchEvent(new Event('resize'));
@@ -250,7 +235,8 @@ export class WorkflowDesignerComponent
   public ngOnInit() {
     this.shouldRefresh = true;
 
-    this.designerService.loadGroups(this.models);
+    this.designerService.loadGroups();
+
 
     this.workflowComponent.workflow.subscribe((w) => {
       if (w && this.shouldRefresh) {
@@ -420,7 +406,7 @@ export class WorkflowDesignerComponent
   }
 
 
-  // @ViewChild('imgIcon') imgIcon?: ElementRef<HTMLImageElement>;
+  @ViewChild('frame') frame?: ElementRef<HTMLElement>;
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
     let file = event.target.files[0];

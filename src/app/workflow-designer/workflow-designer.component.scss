@@ -120,8 +120,6 @@
   flex: 1 1 100%;
 }
 
-
-
 .text-light-purple {
   color: rgb(229, 150, 255);
 }
@@ -155,42 +153,71 @@
   color: rgba(0, 0, 0, 0.87);
 }
 
-.rightBarExtend{
+.rightBarExtend {
   animation: extendbar 0.1s forwards !important;
 }
 
-.rightBarNoExtend{
+.rightBarNoExtend {
   animation: noextendbar 0.1s forwards !important;
 }
 
+ng-scrollbar {
+  --scrollbar-padding: 0px;
+  --scrollbar-size: 40px;
+  --scrollbar-hover-size: 40px;
+  --scrollbar-track-color: transparent;
+  // --scrollbar-thumb-color:var(--color-scrollbar-example-x);
+  // --scrollbar-thumb-hover-color:var(--color-scrollbar-example-x);
+  --scrollbar-border-radius: 0px;
+  --scrollbar-overscroll-behavior: initial;
+  --scrollbar-transition-duration: 400ms;
+  --scrollbar-transition-delay: 800ms;
+  border: 1px solid var(--secondaryTextColor);
 
+  // --scrollbar-track-color: transparent;
+  // --scrollbar-wrapper-color: transparent;
+  // --scrollbar-thumb-color: transparent;
+  // --scrollbar-thumb-hover-color: var(--scrollbar-thumb-color);
+}
+
+::ng-deep {
+  // .scrollbar {
+  //   background-color: rgba(0, 0, 0, 0.4);
+  //   border-radius: 4px;
+  // }
+  .scrollbar-thumb {
+    // background-color: rgba(39, 39, 39, 0.26) !important;
+    background: color-mix(in srgb, var(--primaryColor) 30%, transparent) !important;
+
+    border: 2px solid var(--primaryColor);
+  }
+}
 
 @keyframes extendbar {
   0% {
-    width: 250px
+    width: 250px;
   }
   100% {
-    width: 350px
+    width: 350px;
     //transform: translateX(100%);
   }
 }
 
 @keyframes noextendbar {
   0% {
-    width: 350px
+    width: 350px;
   }
   100% {
-    width: 250px
+    width: 250px;
     //transform: translateX(100%);
   }
 }
 
-
-.proj:hover{
+.proj:hover {
   background-color: var(--secondarySectionHoverColor);
 }
 
-.proj-select{
+.proj-select {
   background-color: var(--primarySectionHoverColor);
 }
 

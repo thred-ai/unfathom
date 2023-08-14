@@ -103,6 +103,7 @@
     "ngx-file-drop": "^13.0.0",
     "ngx-filepond": "^6.0.1",
     "ngx-image-cropper": "^4.0.1",
+    "ngx-scrollbar": "^13.0.3",
     "ngx-stripe": "^15.6.0",
     "ngx-summernote": "^0.8.9",
     "ngx-wig": "^13.2.6",

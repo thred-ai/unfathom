@@ -1,47 +1,65 @@
 <div
-  class="w-100 h-100 d-flex justify-content-between align-items-center section-background"
+  class="w-100 h-100 d-flex justify-content-between align-items-center flex-column"
   #parent
+  (click)="selectedFileChanged.emit('main')"
 >
   <div
-    class="mx-0"
-    style="overflow-x: auto"
+    class="h-100 d-flex justify-content-between align-items-center section-background"
     [style.width.px]="parent.clientWidth"
-    cdkScrollable
-    #frame
   >
+    <!-- <div class="w-100 d-flex justify-content-center align-items-center">
+
+</div>
+<div class="w-100 shadow" style="max-width: 800px; aspect-ratio: 1.5;">
+
+</div> -->
+
+    <!-- ... -->
+
     <div
-      class="d-inline-flex p-3"
-      cdkDropList
-      cdkDropListOrientation="horizontal"
-      (cdkDropListDropped)="drop($event)"
+      class="d-flex w-100 justify-content-between align-items-center flex-column"
     >
       <div
-        class="p-3"
-        style="aspect-ratio: 0.8; max-width: 400px"
-        [style.width.px]="frame.clientWidth / 3"
-        cdkDrag
-        *ngFor="let scene of workflow?.scenes ?? []"
-        #sceneDiv
-        role="button"
+        class="w-100 mx-0 d-flex justify-content-start align-items-center"
+        style="overflow-x: auto"
+        cdkScrollable
+        #frame
+        
       >
         <div
-          class="p-3"
-          [style.width.px]="sceneDiv.clientWidth"
-          [style.height.px]="sceneDiv.clientHeight"
-          *cdkDragPlaceholder
+          class="d-inline-flex p-3"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event)"
         >
-          <div class="example-custom-placeholder w-100 h-100 rounded"><app-scene [scene]="scene"> </app-scene></div>
-          
-          
-
+          <div
+            class="p-3"
+            style="aspect-ratio: 0.8; max-width: 400px"
+            [style.width.px]="frame.clientWidth / 3"
+            cdkDrag
+            *ngFor="let scene of workflow?.scenes ?? []"
+            #sceneDiv
+            role="button"
+          >
+            <div
+              class="p-3"
+              [style.width.px]="sceneDiv.clientWidth"
+              [style.height.px]="sceneDiv.clientHeight"
+              *cdkDragPlaceholder
+            >
+              <div class="example-custom-placeholder w-100 h-100 rounded">
+                <app-scene [scene]="scene"> </app-scene>
+              </div>
+            </div>
+            <div class="w-100 h-100 rounded" role="button" (click)="$event.stopPropagation(); selectedFileChanged.emit(scene.id)">
+              <app-scene [scene]="scene"> </app-scene>
+            </div>
+          </div>
         </div>
-
-        <app-scene [scene]="scene"> </app-scene>
       </div>
     </div>
-  </div>
 
-  <!-- <ng-container *ngIf="workflow && toolboxConfiguration.groups.length > 0">
+    <!-- <ng-container *ngIf="workflow && toolboxConfiguration.groups.length > 0">
         <sqd-designer
           [theme]="theme"
           [undoStackSize]="0"
@@ -227,41 +245,41 @@
         </ng-template>
       </ng-container> -->
 
-  <div
-    *ngIf="selectedFile && selectedFile.id != 'main'"
-    class="h-100 border-table-left"
-    style="width: 300px"
-  >
     <div
-      class="primary-background h-100 w-100"
-      [hidden]="selectedFile && selectedFile.id != 'main'"
+      *ngIf="selectedFile && selectedFile.id != 'main'"
+      class="h-100 border-table-left"
+      style="width: 300px"
     >
-      <!-- [class.rightBarNoExtend]="selectedFile && selectedFile.id == 'main'" -->
+      <div
+        class="primary-background h-100 w-100"
+        [hidden]="selectedFile && selectedFile.id != 'main'"
+      >
+        <!-- [class.rightBarNoExtend]="selectedFile && selectedFile.id == 'main'" -->
+
+        <div
+          class="h-100 d-flex justify-content-center align-items-center flex-column"
+        >
+          <div
+            class="w-100 p-3 pb-0 pt-4 d-flex justify-content-start align-items-center"
+          >
+            <span class="fw-bold primary-text"> Details</span>
+          </div>
+
+          <div
+            id="toolbar-nav"
+            class="w-100 h-100 p-3"
+            style="overflow-y: scroll"
+          ></div>
+        </div>
+      </div>
 
       <div
-        class="h-100 d-flex justify-content-center align-items-center flex-column"
+        class="primary-background h-100 w-100"
+        [hidden]="selectedFile && selectedFile.id == 'main'"
       >
-        <div
-          class="w-100 p-3 pb-0 pt-4 d-flex justify-content-start align-items-center"
-        >
-          <span class="fw-bold primary-text"> Details</span>
-        </div>
+        <!-- [class.rightBarExtend]="selectedFile && selectedFile.id != 'main'" -->
 
-        <div
-          id="toolbar-nav"
-          class="w-100 h-100 p-3"
-          style="overflow-y: scroll"
-        ></div>
-      </div>
-    </div>
-
-    <div
-      class="primary-background h-100 w-100"
-      [hidden]="selectedFile && selectedFile.id == 'main'"
-    >
-      <!-- [class.rightBarExtend]="selectedFile && selectedFile.id != 'main'" -->
-
-      <!-- <mat-tab-group
+        <!-- <mat-tab-group
         #menu
         class="w-100 h-100"
         dynamicHeight
@@ -486,8 +504,45 @@
           </ng-template>
         </mat-tab>
       </mat-tab-group> -->
+      </div>
     </div>
   </div>
+  <!-- <div class="px-0 mx-0" [style.width.px]="parent.clientWidth">
+    <ng-scrollbar
+      class="scroller"
+      [thumbClass]="'scrollbar-thumb'"
+      [autoWidthDisabled]="false"
+      [visibility]="'always'"
+      [appearance]="'compact'"
+      [track]="'horizontal'"
+      style="height: 40px"
+    >
+      <div
+        class="secondary-background d-flex justify-content-start align-items-center"
+        style="height: 40px"
+      >
+        <div
+          class="bg-transparent"
+          style="height: 40px"
+          [style.width.px]="frame.clientWidth / 5"
+          *ngFor="let item of workflow?.scenes ?? []"
+          [style.background-image]="'url(' + item.images[0] + ')'"
+          [style.background-repeat]="'repeat-x'"
+          [style.background-size]="'contain'"
+        ></div>
+      </div>
+    </ng-scrollbar>
+
+    <div class="w-100 d-flex justify-content-between align-items-center px-3 primary-text">
+    <div class="h-100" style="aspect-ratio: 1">
+      <mat-icon> chevron_left </mat-icon>
+    </div>
+    <div class="w-100 h-100" style="flex-grow: 1"></div>
+    <div class="h-100" style="aspect-ratio: 1">
+      <mat-icon> chevron_right </mat-icon>
+    </div>
+  </div>
+  </div> -->
 </div>
 
 <div

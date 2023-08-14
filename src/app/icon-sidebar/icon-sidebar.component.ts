@@ -13,6 +13,7 @@ import {
 import { DesignerService } from '../designer.service';
 import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
+import { SceneDefinition } from '../models/workflow/scene-definition.model';
 
 @Component({
   selector: 'app-icon-sidebar',
@@ -40,7 +41,7 @@ export class IconSidebarComponent implements OnInit {
 
   @Input() selectedIcon: string = 'settings';
 
-  items: StepDefinition[] = [];
+  items: SceneDefinition[] = [];
 
   @Output() selectedIconChanged = new EventEmitter<string>();
   @Input() theme: 'light' | 'dark' = 'light';
@@ -107,18 +108,8 @@ export class IconSidebarComponent implements OnInit {
     });
 
     this.designerService.toolboxConfiguration.subscribe((tool) => {
-      console.log(tool);
-      var items: StepDefinition[] = [];
-      tool.groups.forEach((group) => {
-        group.steps.forEach((step) => {
-          items.push(step);
-          this.images[step.type] = this.loadService.iconUrlForController(
-            step.componentType,
-            step.type
-          );
-        });
-      });
-      this.items = items;
+      console.log(tool);      
+      this.items = tool;
     });
   }
 
@@ -130,27 +121,6 @@ export class IconSidebarComponent implements OnInit {
 
   delete(step: string){
     (window as any).designerConfig.controlBar.tryDelete(step)
-  }
-
-
-  sets: Dict<any> = {};
-
-  setToolbarLoc(
-    parent?: HTMLElement,
-    template?: HTMLElement,
-    step?: StepDefinition,
-    setting = true
-  ) {
-    if (parent && template && step) {
-      this.sets[step.type] = true;
-      setTimeout(() => {
-        ToolboxItem.create(parent, template, step, this.config.toolbox);
-      }, 0);
-
-      return this.sets[step.type];
-    }
-
-    return undefined;
   }
 
   public saveLayout() {

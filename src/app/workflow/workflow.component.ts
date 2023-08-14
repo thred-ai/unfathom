@@ -131,7 +131,6 @@ export class WorkflowComponent implements OnInit {
       );
     }
 
-
     this.workflow.next(workflow);
 
     const loadData = () => {
@@ -272,10 +271,7 @@ export class WorkflowComponent implements OnInit {
 
             this.workflow.subscribe(async (w) => {
               if (w) {
-
                 this.initExecutable(w);
-
-
               }
             });
           }
@@ -292,7 +288,10 @@ export class WorkflowComponent implements OnInit {
           'app',
           'category',
           this.analyzeTasks(w.scenes),
-          undefined,
+          new TaskTree('Storyboard', 'main', 'model', [], undefined, {
+            img: 'assets/main.png',
+            type: 'main'
+          }),
           { type: 'folder', img: w.displayUrl }
         ),
       ]);
@@ -355,32 +354,30 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
-
   openDatabase() {
-      let ref = this.dialog.open(DatabaseComponent, {
-        panelClass: 'app-full-bleed-dialog',
-        width: 'calc(var(--vh, 1vh) * 70)',
-        maxWidth: '750px',
-        height: "calc(var(--vh, 1vh) * 70)",
-        maxHeight: '750px',
-        data: {
-          workflow: this.workflow.value,
-          theme: this.theme
-        },
-      });
+    let ref = this.dialog.open(DatabaseComponent, {
+      panelClass: 'app-full-bleed-dialog',
+      width: 'calc(var(--vh, 1vh) * 70)',
+      maxWidth: '750px',
+      height: 'calc(var(--vh, 1vh) * 70)',
+      maxHeight: '750px',
+      data: {
+        workflow: this.workflow.value,
+        theme: this.theme,
+      },
+    });
 
-      ref.afterClosed().subscribe(async (val) => {
-        if (val && val != '' && val != '0' && val.dev) {
-          // let img = val.img as File;
-          // await this.loadService.saveUserInfo(
-          //   val.dev,
-          //   img,
-          //   img != undefined,
-          //   (result) => {}
-          // );
-        }
-      });
-
+    ref.afterClosed().subscribe(async (val) => {
+      if (val && val != '' && val != '0' && val.dev) {
+        // let img = val.img as File;
+        // await this.loadService.saveUserInfo(
+        //   val.dev,
+        //   img,
+        //   img != undefined,
+        //   (result) => {}
+        // );
+      }
+    });
   }
 
   openPrototype(mode: string = 'window') {
@@ -411,8 +408,6 @@ export class WorkflowComponent implements OnInit {
 
   async fillExecutable(executable: Executable) {
     const exec = executable;
-
-    
 
     return exec;
   }
@@ -455,7 +450,9 @@ export class WorkflowComponent implements OnInit {
         apiKey: controllerId != 'main' ? this.apiKeys[controllerId] : undefined,
         step:
           controllerId != 'main'
-            ? this.workflow.value?.scenes.find(scene => scene.id == controllerId)
+            ? this.workflow.value?.scenes.find(
+                (scene) => scene.id == controllerId
+              )
             : undefined,
         workflow: this.workflow.value,
       },
@@ -481,7 +478,7 @@ export class WorkflowComponent implements OnInit {
 
         if (val.file) {
           let file = val.file as Scene;
-          const step = workflow.scenes.find(scene => scene.id == file.id);
+          const step = this.findScene(file.id);
 
           if (step) {
             step.name = file.name;
@@ -543,8 +540,6 @@ export class WorkflowComponent implements OnInit {
 
   loadingMode = 0;
   loadingChangeMode = 0;
-
-
 
   updateWorkflows(workflow = this.workflow.value) {
     let dev = JSON.parse(
@@ -666,20 +661,20 @@ export class WorkflowComponent implements OnInit {
       //     )
       //   );
       // } else {
-        objects.push(
-          new TaskTree(
-            (task.name as string) ??
-              this.jsFormattedName(stepName, sameNames[task.name]),
-            id,
-            'model',
-            [],
-            undefined,
-            {
-              type: 'model',
-              img: task.images[0],
-            }
-          )
-        );
+      objects.push(
+        new TaskTree(
+          (task.name as string) ??
+            this.jsFormattedName(stepName, sameNames[task.name]),
+          id,
+          'model',
+          [],
+          undefined,
+          {
+            type: 'model',
+            img: task.images[0],
+          }
+        )
+      );
       // }
     });
 
@@ -692,6 +687,13 @@ export class WorkflowComponent implements OnInit {
     await this.save(1, true);
   }
 
+  findScene(fileId: string, workflow = this.workflow.value){
+    if (fileId == 'main'){
+      return new Scene('main')
+    }
+    return workflow?.scenes.find((scene) => scene.id == fileId)
+  }
+
   async selectFile(
     fileId: string | undefined,
     selectedModule: string | undefined,
@@ -700,7 +702,7 @@ export class WorkflowComponent implements OnInit {
   ) {
     if (workflow && fileId && selectedModule) {
       if (this.openStep.value?.id != fileId) {
-        this.openStep.next(workflow.scenes.find(scene => scene.id == fileId));
+        this.openStep.next(this.findScene(fileId));
       }
       this.selectedIcon = selectedModule;
 
@@ -720,8 +722,6 @@ export class WorkflowComponent implements OnInit {
       }
     }
   }
-
-
 
   jsFormattedName(name: string, same: number) {
     return name + (same > 1 ? `(${same})` : '');

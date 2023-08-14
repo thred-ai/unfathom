@@ -137,6 +137,7 @@ import { TextAreaRenderPipe } from './text-area-render.pipe';
 import { MatDividerModule } from '@angular/material/divider';
 import { ResizableModule } from 'angular-resizable-element';
 import { SceneComponent } from './scene/scene.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @NgModule({
   declarations: [
@@ -220,6 +221,7 @@ import { SceneComponent } from './scene/scene.component';
     MatSlideToggleModule,
     MatButtonToggleModule,
     MatSliderModule,
+    NgScrollbarModule,
     MatAutocompleteModule,
     MatChipsModule,
     AngularFireFunctionsModule,

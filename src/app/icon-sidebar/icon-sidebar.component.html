@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <div
+    <!-- <div
       class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
       style="aspect-ratio: 1"
       role="button"
@@ -77,8 +77,7 @@
       >
         <mat-icon>center_focus_strong</mat-icon>
       </div>
-    </div>
-
+    </div> 
     <div
       class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
       style="aspect-ratio: 1"
@@ -94,13 +93,12 @@
       >
         <mat-icon>{{ showingGrid ? "grid_on" : "grid_off" }}</mat-icon>
       </div>
-    </div>
+    </div> -->
 
     <div
       class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
-      [matTooltip]="'Components'"
+      [matTooltip]="'Frames'"
       [matTooltipPosition]="'below'"
-      (click)="sets = {}"
     >
       <div
         class="w-100 d-flex justify-content-center align-items-center"
@@ -290,9 +288,6 @@ placement="right"
 </div>
 </div> -->
 
-
-
-
     <div class="h-100" style="aspect-ratio: 1">
       <div
         class="w-100 proj p-3 d-flex justify-content-center align-items-center"
@@ -394,7 +389,6 @@ placement="right"
       </div>
     </div>
 
-
     <div
       class="h-100 proj{{
         selectedIcon == 'prototype' ? '-select' : ''
@@ -415,7 +409,7 @@ placement="right"
       </div>
     </div>
 
-    <div
+    <!-- <div
     class="h-100 proj{{
       selectedIcon == 'prototype' ? '-select' : ''
     }} mt-0 d-flex justify-content-center align-items-center"
@@ -433,7 +427,7 @@ placement="right"
         <mat-icon class="fw-bold">storage</mat-icon>
       </div>
     </div>
-  </div>
+  </div> -->
 
     <!-- <div
     class="h-100 proj{{
@@ -634,7 +628,7 @@ placement="right"
     (clickOutside)="folderToggle.click()"
   >
     <div class="big-design-header p-3 pb-3">
-      <b class="fw-bold primary-text-dark">Components</b>
+      <b class="fw-bold primary-text-dark">Frames</b>
       <!-- <p
           class="rounded-circle fw-bold primary-text d-flex justify-content-center align-content-center"
           style="aspect-ratio: 1"
@@ -656,24 +650,16 @@ placement="right"
           style="height: 40px"
           #elem
         >
-          <ng-container
-            *ngIf="
-              !sets[tool.type]
-                ? setToolbarLoc(toolboxGroup, elem, tool, true)
-                : true
-            "
+          <div
+            class="w-100 h-100 d-flex justify-content-start align-items-center py-2"
           >
-            <div
-              class="w-100 h-100 d-flex justify-content-start align-items-center py-2"
-            >
-              <img
-                [src]="images[tool.type]"
-                class="h-100 rounded border-table-dark"
-                style="aspect-ratio: 1"
-              />
-              <span class="ms-3 w-100 primary-text-dark">{{ tool.name }}</span>
-            </div>
-          </ng-container>
+            <img
+              [src]="images[tool.type]"
+              class="h-100 rounded border-table-dark"
+              style="aspect-ratio: 1"
+            />
+            <span class="ms-3 w-100 primary-text-dark">{{ tool.name }}</span>
+          </div>
         </div>
       </ng-container>
     </div>
