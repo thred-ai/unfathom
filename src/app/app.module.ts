@@ -286,8 +286,8 @@ export class AppModule {
   ) {
     // functions.useEmulator('localhost', 5001)
     this.matIconRegistry.addSvgIcon(
-      `vertical_ai_icon`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/verticalai_icon.svg")
+      `unfathom_icon`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/unfathom_icon.svg")
     );
   }
 }
