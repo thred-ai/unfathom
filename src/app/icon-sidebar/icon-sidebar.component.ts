@@ -35,8 +35,6 @@ export class IconSidebarComponent implements OnInit {
 
   loading: Boolean = false;
 
- 
-
   @Input() selectedIcon: string = 'settings';
 
   items: SceneDefinition[] = [];
@@ -52,8 +50,7 @@ export class IconSidebarComponent implements OnInit {
 
   @Output() publish = new EventEmitter<Executable>();
 
-  selectedStep?: Scene
-
+  selectedStep?: Scene;
 
   expandedProjects = true;
 
@@ -79,9 +76,9 @@ export class IconSidebarComponent implements OnInit {
       }
     });
 
-    this.workflowComponent.openStep.subscribe(s => {
-      this.selectedStep = s
-    })
+    this.workflowComponent.openStep.subscribe((s) => {
+      this.selectedStep = s;
+    });
 
     this.loadService.loading.subscribe((l) => {
       this.loading = l;
@@ -95,7 +92,7 @@ export class IconSidebarComponent implements OnInit {
     });
 
     this.designerService.toolboxConfiguration.subscribe((tool) => {
-      console.log(tool);      
+      console.log(tool);
       this.items = tool;
     });
   }
@@ -106,11 +103,24 @@ export class IconSidebarComponent implements OnInit {
     this.workflowComponent.openControllerSettings('main');
   }
 
-  delete(step: string){
-    (window as any).designerConfig.controlBar.tryDelete(step)
+  delete(id: string) {
+    let file = this.executable?.scenes;
+
+    if (this.loadService.confirmDelete()) {
+      if (file && this.executable && this.selectedIcon) {
+        let index = file.findIndex((f) => f.id == id);
+        if (index > -1) {
+          file.splice(index, 1);
+          this.publish.emit(this.executable);
+          if (this.selectedIcon == 'controllers') {
+            this.workflowComponent.setWorkflow(this.executable!.id, 'main');
+          }
+        }
+      }
+    }
   }
 
-  public saveLayout() {
+  public saveLayout() { 
     // this.definition = definition;
 
     this.loading = true;

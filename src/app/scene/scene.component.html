@@ -6,7 +6,6 @@
   <div
     class="w-100 secondary-background"
     style="aspect-ratio: 1; flex-grow: 1; flex-shrink: 0"
-    (click)="sceneImg.click()"
   >
     <img
       *ngIf="scene!.images[0]; else noImage"
@@ -21,7 +20,7 @@
       >
         <ion-icon class="primary-text h1" name="image-outline"></ion-icon>
         <span class="mt-2 h5 primary-text w-100 text-truncate text-center"
-          >Upload Image</span
+          >No Image</span
         >
       </div>
     </ng-template>
@@ -32,14 +31,20 @@
     class="w-100 p-3 d-flex justify-content-start align-items-start flex-column border-table-top"
     style="flex-shrink: 1"
   >
-    <ion-input
-      class="text-truncate w-100 primary-text h4 px-0"
-      style="height: 50px !important"
-      fill="solid"
-      [ngModel]="scene.name"
-      [placeholder]="'Name'"
-      (ngModelChange)="scene.name = $event; changed.emit(scene)"
-    ></ion-input>
+    <div class="w-100 d-inline-flex justify-content-between align-items-center p-0" style="height: 35px !important">
+      <ion-input
+        class="text-truncate w-100 h-100 primary-text h4 px-0 m-0"
+        
+        fill="solid"
+        [ngModel]="scene.name"
+        [placeholder]="'Name'"
+        (ngModelChange)="scene.name = $event; changed.emit(scene)"
+      ></ion-input>
+
+      <!-- <mat-icon class="primary-text">
+        edit
+      </mat-icon> -->
+    </div>
 
     <!-- <p class="secondary-text w-100 text-truncate mt-2">
       {{

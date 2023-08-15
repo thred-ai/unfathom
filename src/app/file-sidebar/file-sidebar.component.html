@@ -7,13 +7,53 @@
 
   <ng-container *ngIf="executable">
     <div class="w-100 h-100 pb-3" style="overflow-y: scroll">
-      <ng-container
+      <!-- <ng-container
         *ngTemplateOutlet="recursiveList; context: { $implicit: items }"
-      ></ng-container>
+      ></ng-container> -->
+
+      <!-- <ng-container
+        *ngTemplateOutlet="recursiveList; context: { $implicit: items }"
+      ></ng-container> -->
+
+      <ion-item
+        *ngFor="let item of items"
+        slot="header"
+        class="primary-text w-100 border-0 file-item {{
+          selectedFile == item.id ? 'selected' : ''
+        }}"
+        role="button"
+        (click)="selectedFile = item.id; selectedFileChanged.emit(item.id)"
+      >
+        <ng-container>
+          <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
+            <img
+              class="border-table p-0"
+              [src]="item.images[0] ?? frames[item.type].image"
+            />
+          </ion-thumbnail>
+          <ion-label
+            style="font-size: small"
+            (contextmenu)="
+              item.id != 'main' ? onRightClick($event, item) : undefined
+            "
+            >{{ item.name }}</ion-label
+          >
+          <ion-icon
+            *ngIf="item.id != 'main'"
+            class="secondary-text my-auto"
+            style="font-size: 15px; cursor: pointer"
+            [name]="'ellipsis-vertical'"
+            slot="end"
+            role="button"
+            [matTooltip]="'Actions'"
+            (click)="onRightClick($event, item)"
+          ></ion-icon>
+        </ng-container>
+      </ion-item>
     </div>
   </ng-container>
 
-  <ng-template #recursiveList let-list>
+  <!-- <ng-template #recursiveList let-list>
     <div class="w-100" *ngFor="let item of list">
       <ng-container *ngIf="item.type == 'category'; else modelTab">
         <ion-accordion-group
@@ -70,14 +110,6 @@
       (click)="selectedFile = item.id; selectedFileChanged.emit(item.id)"
     >
       <ng-container>
-        <!-- <ion-icon
-            *ngIf="item.id == 'main'"
-            class="text-orange me-3"
-            [name]="'cube'"
-            slot="start"
-          ></ion-icon> -->
-        <!-- --border-radius: 50%; -->
-
         <ion-thumbnail slot="start" [style.--border-radius]="'50%'">
           <img
             class="border-table p-0"
@@ -104,18 +136,8 @@
           (click)="onRightClick($event, item)"
         ></ion-icon>
       </ng-container>
-      <!-- <ng-container *ngIf="editingTask?.id == item.id">
-        <ion-input #selectedName type="text" [value]="editingTask?.name">
-        </ion-input>
-        <ion-icon
-          class="text-orange"
-          name="checkmark-circle"
-          slot="end"
-          (click)="saveFieldName(editingTask!, selectedName.value)"
-        ></ion-icon>
-      </ng-container> -->
     </ion-item>
-  </ng-template>
+  </ng-template> -->
 </div>
 
 <!-- an hidden div is created to set the position of appearance of the menu-->

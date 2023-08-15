@@ -310,6 +310,7 @@ export class WorkflowDesignerComponent
     // );
 
     this.workflowComponent.openStep.subscribe((step) => {
+      console.log(step)
       if (step) {
         this.selectedFile = step;
       }
@@ -318,7 +319,7 @@ export class WorkflowDesignerComponent
   }
 
   rerenderDesigner() {
-    window.dispatchEvent(new Event('resize'));
+    // window.dispatchEvent(new Event('resize'));
     this.cdr.detectChanges();
   }
 

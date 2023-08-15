@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
- 
+
 import { Dict, LoadService } from '../load.service';
 import { AIModelType } from '../models/workflow/ai-model-type.model';
 import { APIRequest } from '../models/workflow/api-request.model';
@@ -20,6 +20,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { Executable } from '../models/workflow/executable.model';
 import { Developer } from '../models/user/developer.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
+import { Scene } from '../models/workflow/scene.model';
 
 @Component({
   selector: 'app-file-sidebar',
@@ -34,12 +35,11 @@ export class FileSidebarComponent implements OnInit {
   //
   frames: Dict<SceneDefinition> = {};
 
-  @Input() set models(val: SceneDefinition[]){
-    console.log(val)
-    val.forEach(v => {
-      this.frames[v.type] = v
-    })
-
+  @Input() set models(val: SceneDefinition[]) {
+    console.log(val);
+    val.forEach((v) => {
+      this.frames[v.type] = v;
+    });
   }
 
   // flowModels: Dict<AIModelType> = {};
@@ -56,7 +56,7 @@ export class FileSidebarComponent implements OnInit {
 
   loadedUser?: Developer;
 
-  @Input() items: TaskTree[] = [];
+  items: Scene[] = [];
 
   selectedFile?: string;
 
@@ -66,10 +66,8 @@ export class FileSidebarComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-
-
   removeFile(id: string) {
-    let file = this.workflow?.scenes
+    let file = this.workflow?.scenes;
 
     if (this.loadService.confirmDelete()) {
       if (file && this.workflow && this.selectedIcon) {
@@ -87,10 +85,13 @@ export class FileSidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.items)
+    console.log(this.items);
     this.workflowComponent.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;
+        this.items = [
+          new Scene('main', 'Storyboard', undefined, ['assets/main.png']),
+        ].concat(w.scenes);
       }
     });
     this.workflowComponent.openStep.subscribe((step) => {
@@ -112,16 +113,14 @@ export class FileSidebarComponent implements OnInit {
     //         : this.items[0]?.categoryTask?.id;
     //   }
     // });
-
   }
-
 
   checkName() {}
 
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger?: MatMenuTrigger;
   menuTopLeftPosition = { x: '0', y: '0' };
 
-  onRightClick(event: MouseEvent, task: TaskTree) {
+  onRightClick(event: MouseEvent, task: Scene) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
     event.stopPropagation();

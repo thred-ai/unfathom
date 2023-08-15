@@ -1,5 +1,5 @@
 <div
-  class="w-100 h-100 d-flex justify-content-between align-items-center flex-column"
+  class="w-100 h-100 d-flex justify-content-center align-items-start"
   #parent
   (click)="selectedFileChanged.emit('main')"
 >
@@ -7,18 +7,8 @@
     class="h-100 d-flex justify-content-between align-items-center section-background"
     [style.width.px]="parent.clientWidth"
   >
-    <!-- <div class="w-100 d-flex justify-content-center align-items-center">
 
-</div>
-<div class="w-100 shadow" style="max-width: 800px; aspect-ratio: 1.5;">
-
-</div> -->
-
-    <!-- ... -->
-
-    <div
-      class="d-flex w-100 justify-content-between align-items-center flex-column h-100"
-    >
+   
       <div
         class="w-100 mx-0 d-flex justify-content-start align-items-center h-100"
         style="overflow-x: auto"
@@ -32,7 +22,7 @@
         >
           <div
             class="p-3"
-            style="width: 400px; height: auto; flex-grow: 0;"
+            style="width: 400px; height: auto; flex-grow: 0"
             cdkDrag
             [cdkDragPreviewContainer]="'parent'"
             *ngFor="let scene of workflow?.scenes ?? []"
@@ -45,24 +35,20 @@
               [style.height.px]="sceneDiv.clientHeight"
               *cdkDragPlaceholder
             >
-              <div class="example-custom-placeholder w-100 h-100 rounded" style="overflow: hidden;">
-                <div class="w-100 primary-background border-table-bottom" style="height: 10px" ></div>
+              <div
+                class="example-custom-placeholder w-100 h-100 rounded"
+                style="overflow: hidden"
+              >
+                <div
+                  class="w-100 primary-background secondary-text border-table-bottom d-flex justify-content-center align-items-center"
+                  style="cursor: move"
+                >
+                  <mat-icon>drag_handle</mat-icon>
+                </div>
 
                 <app-scene [scene]="scene" [placeholder]="true"> </app-scene>
               </div>
             </div>
-
-            <!-- <div
-              class="p-3"
-              [style.width.px]="sceneDiv.clientWidth"
-              [style.height.px]="sceneDiv.clientHeight"
-              *cdkDragPreview
-            >
-              <div class="w-100 h-100 rounded">
-                <app-scene [scene]="scene" [placeholder]="true"> </app-scene>
-              </div>
-            </div> -->
-
             <div
               class="w-100 h-100 rounded border-table shadow-hover"
               style="overflow: hidden"
@@ -71,7 +57,13 @@
                 $event.stopPropagation(); selectedFileChanged.emit(scene.id)
               "
             >
-            <div class="w-100 primary-background border-table-bottom" style="height: 10px" cdkDragHandle></div>
+              <div
+                class="w-100 primary-background secondary-text border-table-bottom d-flex justify-content-center align-items-center"
+                cdkDragHandle
+                style="cursor: move"
+              >
+                <mat-icon>drag_handle</mat-icon>
+              </div>
 
               <app-scene [scene]="scene" (changed)="setScene($event, scene.id)">
               </app-scene>
@@ -79,458 +71,251 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- <ng-container *ngIf="workflow && toolboxConfiguration.groups.length > 0">
-        <sqd-designer
-          [theme]="theme"
-          [undoStackSize]="0"
-          [definition]="workflow.layout"
-          [toolboxConfiguration]="toolboxConfiguration"
-          [stepsConfiguration]="stepsConfiguration"
-          [areEditorsHidden]="true"
-          [controlBar]="true"
-          [stepEditor]="stepEditor"
-          [globalEditor]="globalEditor"
-          (onReady)="onDesignerReady($event)"
-          (onDefinitionChanged)="definitionChanged($event)"
-        >
-        </sqd-designer>
-
-        <ng-template #globalEditor let-editor> </ng-template>
-
-        <ng-template #stepEditor stepEditor let-editor>
-          <div
-            class="w-100"
-            style="overflow-y: scroll"
-            [style.height.px]="parent.clientHeight"
-          >
-            <ion-accordion-group
-              class="example-headers-align bg-transparent animate__animated animate__fadeIn"
-              [multiple]="true"
-              [value]="openLayouts"
-              *ngIf="workflow"
-              (ionChange)="setOpenLayouts($event)"
-              id="accordion"
-            >
-              <ion-accordion class="bg-transparent" value="general">
-                <ion-item slot="header" class="primary-text   " [color]="theme">
-                  <ion-label>General</ion-label>
-                </ion-item>
-                <div class="ion-padding" slot="content">
-                  <div class="w-100 mb-3">
-                    <verticalai-text-field
-                      [title]="'Label'"
-                      [value]="editor.step.name"
-                      [bgColor]="'#1F1F1F'"
-                      [defaultValue]="editor.step.properties.defaultName"
-                      [placeholder]="'Task Label'"
-                      (changed)="
-                        editor.step.name = $event;
-                        editor.context.notifyNameChanged()
-                      "
-                    >
-                    </verticalai-text-field>
-                  </div>
-                </div>
-              </ion-accordion>
-    
-              <ng-container *ngIf="editor.step.type != 'break'">
-                <ion-accordion
-                  value="config"
-                  class="bg-transparent"
-                  *ngIf="editor.step.properties.type != 'model'"
-                >
-                  <ion-item slot="header" class="primary-text   " [color]="theme">
-                    <ion-label>Configuration</ion-label>
-                  </ion-item>
-                  <div class="ion-padding" slot="content">
-                    <ng-container *ngIf="editor.step.componentType == 'switch'">
-                      <div
-                        class="w-100 d-flex justify-content-between align-content-center mb-3 mt-4 text-white"
-                      >
-                        <p class="w-100">Branches</p>
-                        <mat-icon
-                          class="m-auto text-orange"
-                          role="button"
-                          (click)="newBranch(editor.step, editor.context, editor)"
-                        >
-                          add
-                        </mat-icon>
-                      </div>
-    
-                      <div
-                        *ngFor="
-                          let branch of (editor.step.branches | dictToArr) ?? [];
-                          index as i
-                        "
-                      >
-                        <div class="w-100 mb-3">
-                          <verticalai-text-field
-                            [value]="branch.name"
-                            [defaultValue]="'Option ' + (i + 1)"
-                            [placeholder]="'Branch Name'"
-                            [btn]="true"
-                            [simplify]="true"
-                            [btnIcon]="'close'"
-                            [bgColor]="'#1F1F1F'"
-                            (btnClicked)="
-                              deleteBranch(editor.step, editor.context, branch.name)
-                            "
-                            (changed)="
-                              isNameTaken($event, editor.step)
-                                ? null
-                                : changeBranchName(
-                                    $event,
-                                    editor.step,
-                                    i,
-                                    editor.context
-                                  )
-                            "
-                          >
-                          </verticalai-text-field>
-                        </div>
-                      </div>
-                    </ng-container>
-    
-                    <ng-container *ngIf="editor.step.componentType == 'container'">
-                      <div class="w-100 mb-3">
-                        <verticalai-text-field
-                          [title]="'Frequency'"
-                          [value]="editor.step.properties['frequency'] ?? 1"
-                          [type]="'number'"
-                          [defaultValue]="1"
-                          [placeholder]="'ex. 2'"
-                          [bgColor]="'#1F1F1F'"
-                          [range]="{ min: 1, max: 5 }"
-                          (changed)="
-                            editor.step.properties['frequency'] = $event;
-                            editor.context.notifyPropertiesChanged();
-                            saveLayout(); 
-                          "
-                          (refresh)="refreshStepEditor(editor.step)"
-                        >
-                        </verticalai-text-field>
-                      </div>
-                    </ng-container>
-                  </div>
-                </ion-accordion>
-    
-                <ion-accordion value="advanced" class="bg-transparent">
-                  <ion-item slot="header" class="primary-text   " [color]="theme">
-                    <ion-label>Advanced</ion-label>
-                  </ion-item>
-                  <div class="ion-padding" slot="content">
-                    <ng-container
-                      *ngIf="
-                        editor.step.properties.type == 'model' ||
-                        editor.step.properties.type == 'web'
-                      "
-                    >
-                      <ng-container
-                        *ngIf="
-                          apiKeys[editor.step.id] ??
-                          { id: editor.step.id, key: '' } as apiKey
-                        "
-                      >
-                        <div
-                          class="w-100 mb-3"
-                          *ngIf="
-                            editor.step.properties.type == 'model'
-                              ? 'Model'
-                              : 'SerpApi' as prefix
-                          "
-                        >
-                          <verticalai-text-field
-                            [title]="prefix + ' API Key'"
-                            [value]="apiKey.key"
-                            [bgColor]="'#1F1F1F'"
-                            [type]="'text'"
-                            [defaultValue]="''"
-                            [placeholder]="'API Key'"
-                            (refresh)="refreshStepEditor(editor.step)"
-                            (changed)="saveAPIKey(editor.step.id, $event)"
-                          >
-                          </verticalai-text-field>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-    
-                  </div>
-                </ion-accordion>
-              </ng-container>
-          </ion-accordion-group>
-          </div>
-        
-        
-        
-        </ng-template>
-      </ng-container> -->
-
+    <!-- <div
+    *ngIf="selectedFile && selectedFile.id != 'main'"
+    class="h-100 border-table-left"
+    style="width: 300px !important; flex-grow: 1"
+  >
+  
     <div
-      *ngIf="selectedFile && selectedFile.id != 'main'"
-      class="h-100 border-table-left d-none"
-      style="width: 300px"
+      class="primary-background h-100 w-100"
+      [hidden]="selectedFile && selectedFile.id == 'main'"
     >
-      <div
-        class="primary-background h-100 w-100"
-        [hidden]="selectedFile && selectedFile.id != 'main'"
-      >
-        <!-- [class.rightBarNoExtend]="selectedFile && selectedFile.id == 'main'" -->
-
-        <div
-          class="h-100 d-flex justify-content-center align-items-center flex-column"
-        >
+  
+      <mat-tab-group
+      #menu
+      class="w-100 h-100"
+      dynamicHeight
+      animationDuration="0ms"
+    >
+      <mat-tab class="tab">
+        <ng-template mat-tab-label>
+          <span class="primary-text"> Design </span>
+        </ng-template>
+        <ng-template matTabContent>
           <div
-            class="w-100 p-3 pb-0 pt-4 d-flex justify-content-start align-items-center"
+            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
           >
-            <span class="fw-bold primary-text"> Details</span>
-          </div>
-
-          <div
-            id="toolbar-nav"
-            class="w-100 h-100 p-3"
-            style="overflow-y: scroll"
-          ></div>
-        </div>
-      </div>
-
-      <div
-        class="primary-background h-100 w-100"
-        [hidden]="selectedFile && selectedFile.id == 'main'"
-      >
-        <!-- [class.rightBarExtend]="selectedFile && selectedFile.id != 'main'" -->
-
-        <!-- <mat-tab-group
-        #menu
-        class="w-100 h-100"
-        dynamicHeight
-        animationDuration="0ms"
-      >
-        <mat-tab class="tab">
-          <ng-template mat-tab-label>
-            <span class="primary-text"> Design </span>
-          </ng-template>
-          <ng-template matTabContent>
-            <div
-              class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-            >
-              <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-                <ng-container
-                  *ngIf="
-                    selectedFile.type == 'gpt-LLM' ||
-                    selectedFile.type == 'switch' ||
-                    selectedFile.type == 'dalle-TIM'
-                  "
-                >
-                  <div class="w-100 pb-3">
-                    <verticalai-textbox
-                      [title]="'Guidance'"
-                      [value]="selectedFile.properties['systemPrompt']"
-                      [placeholder]="placeholders[selectedFile.type]"
-                      (changed)="
-                        selectedFile.properties['systemPrompt'] = $event;
-                        saveLayout()
-                      "
-                    >
-                    </verticalai-textbox>
-                  </div>
-
-                  <div
-                    class="w-100 pb-3"
-                    *ngIf="
-                      selectedFile.type == 'gpt-LLM' ||
-                      selectedFile.type == 'dalle-TIM'
-                    "
-                  >
-                    <verticalai-layout-slider
-                      [value]="selectedFile.properties['temp'] ?? 0.5"
-                      [title]="'Creativity Level'"
-                      [lineFillColor]="'#0A99FF'"
-                      (valueChange)="
-                        selectedFile.properties['temp'] = $event; saveLayout()
-                      "
-                    >
-                    </verticalai-layout-slider>
-                  </div>
-
-                  <ng-container *ngIf="selectedFile.type == 'switch'">
-                    <ng-container
-                      *ngIf="selectedFile | cast : BranchedStep as branchStep"
-                    >
-                      <div
-                        class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
-                      >
-                        <p class="w-100 fw-bold">Decision Paths</p>
-                        <mat-icon
-                          class="m-auto primary-text"
-                          role="button"
-                          (click)="newBranch(branchStep)"
-                        >
-                          add
-                        </mat-icon>
-                      </div>
-
-                      <div class="w-100">
-                        <div
-                          *ngFor="
-                            let branch of (branchStep.branches | dictToArr) ??
-                              [];
-                            index as i
-                          "
-                          class="pb-4 d-flex justify-content-between align-items-center"
-                        >
-                          <div class="primary-text">
-                            {{ branch.name }}
-                          </div>
-
-                          <div
-                            class="btn bg-orange shadow-0 text-white fw-bold rounded d-flex p-1 justify-content-center align-items-center"
-                            (click)="
-                              onRightClick($event, branch.name, branchStep)
-                            "
-                          >
-                            <ion-icon
-                              class="m-auto"
-                              [name]="'settings-outline'"
-                              slot="end"
-                              role="button"
-                              [matTooltip]="'Actions'"
-                            ></ion-icon>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                  </ng-container>
-
-                  <ng-container *ngIf="selectedFile.type == 'gpt-LLM'">
-                    <ng-container
-                      *ngIf="
-                        selectedFile.properties['training'] ??
-                        'none' as training
-                      "
-                    >
-                      <div class="w-100 pb-3">
-                        <verticalai-select-field
-                          [title]="'Training'"
-                          [value]="training ?? trainingTypes[0].id"
-                          [data]="trainingTypes"
-                          [valueField]="'id'"
-                          [displayField]="'name'"
-                          (changed)="
-                            selectedFile.properties['training'] = $event;
-                            saveLayout()
-                          "
-                        >
-                        </verticalai-select-field>
-                      </div>
-
-                      <div class="w-100 pb-3" *ngIf="training != 'none'">
-                        <verticalai-select-field
-                          *ngIf="
-                            loadedDocs && loadedDocs.length > 0;
-                            else empty
-                          "
-                          [title]="'Training Data'"
-                          [value]="
-                            selectedFile.properties['autoId'] ?? loadedDocs[0]
-                          "
-                          [data]="loadedDocs"
-                          (changed)="
-                            selectedFile.properties['autoId'] = $event;
-                            saveLayout()
-                          "
-                        >
-                        </verticalai-select-field>
-
-                        <ng-template #empty>
-                          <verticalai-select-field
-                            [title]="'Training Data'"
-                            [value]="'No Data'"
-                            [data]="['No Data']"
-                          >
-                          </verticalai-select-field>
-                        </ng-template>
-                      </div>
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-
-                <ng-container *ngIf="selectedFile.type == 'container'">
-                  <div
-                    class="w-100 d-flex justify-content-center align-items-center"
-                    style="height: 400px"
-                  >
-                    <div class="secondary-text">
-                      No settings for this controller
-                    </div>
-                  </div>
-                </ng-container>
-
-                <ng-container
-                  *ngIf="
-                    (
-                      models[(selectedFile.type | split : '-')[1]] ??
-                      { models: {} }
-                    ).models[selectedFile.type]?.variations as variations
-                  "
-                >
-                  <div class="w-100 pb-3" *ngIf="variations.length > 0">
-                    <verticalai-select-field
-                      [title]="'Type'"
-                      [value]="
-                        selectedFile.properties['engine'] ??
-                        variations[0]?.id ??
-                        ''
-                      "
-                      [data]="variations"
-                      [valueField]="'id'"
-                      [displayField]="'name'"
-                      (changed)="
-                        selectedFile.properties['engine'] = $event; saveLayout()
-                      "
-                    >
-                    </verticalai-select-field>
-                  </div>
-                </ng-container>
-              </div>
-            </div>
-          </ng-template>
-        </mat-tab>
-
-        <mat-tab class="tab">
-          <ng-template mat-tab-label>
-            <span class="primary-text"> Notes </span>
-          </ng-template>
-          <ng-template matTabContent>
-            <div
-              class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-            >
-              <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-
+            <div class="w-100 h-100 p-3" style="overflow-y: scroll">
+              <ng-container
+                *ngIf="
+                  selectedFile.type == 'gpt-LLM' ||
+                  selectedFile.type == 'switch' ||
+                  selectedFile.type == 'dalle-TIM'
+                "
+              >
                 <div class="w-100 pb-3">
                   <verticalai-textbox
-                    [title]="'Controller Notes'"
-                    [value]="selectedFile['notes']"
-                    [placeholder]="'Type something...'"
-                    [minHeight]="200"
-                    [maxHeight]="800"
+                    [title]="'Guidance'"
+                    [value]="selectedFile.properties['systemPrompt']"
+                    [placeholder]="placeholders[selectedFile.type]"
                     (changed)="
-                      selectedFile['notes'] = $event; saveLayout()
+                      selectedFile.properties['systemPrompt'] = $event;
+                      saveLayout()
                     "
                   >
                   </verticalai-textbox>
                 </div>
+  
+                <div
+                  class="w-100 pb-3"
+                  *ngIf="
+                    selectedFile.type == 'gpt-LLM' ||
+                    selectedFile.type == 'dalle-TIM'
+                  "
+                >
+                  <verticalai-layout-slider
+                    [value]="selectedFile.properties['temp'] ?? 0.5"
+                    [title]="'Creativity Level'"
+                    [lineFillColor]="'#0A99FF'"
+                    (valueChange)="
+                      selectedFile.properties['temp'] = $event; saveLayout()
+                    "
+                  >
+                  </verticalai-layout-slider>
+                </div>
+  
+                <ng-container *ngIf="selectedFile.type == 'switch'">
+                  <ng-container
+                    *ngIf="selectedFile | cast : BranchedStep as branchStep"
+                  >
+                    <div
+                      class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+                    >
+                      <p class="w-100 fw-bold">Decision Paths</p>
+                      <mat-icon
+                        class="m-auto primary-text"
+                        role="button"
+                        (click)="newBranch(branchStep)"
+                      >
+                        add
+                      </mat-icon>
+                    </div>
+  
+                    <div class="w-100">
+                      <div
+                        *ngFor="
+                          let branch of (branchStep.branches | dictToArr) ??
+                            [];
+                          index as i
+                        "
+                        class="pb-4 d-flex justify-content-between align-items-center"
+                      >
+                        <div class="primary-text">
+                          {{ branch.name }}
+                        </div>
+  
+                        <div
+                          class="btn bg-orange shadow-0 text-white fw-bold rounded d-flex p-1 justify-content-center align-items-center"
+                          (click)="
+                            onRightClick($event, branch.name, branchStep)
+                          "
+                        >
+                          <ion-icon
+                            class="m-auto"
+                            [name]="'settings-outline'"
+                            slot="end"
+                            role="button"
+                            [matTooltip]="'Actions'"
+                          ></ion-icon>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+  
+                <ng-container *ngIf="selectedFile.type == 'gpt-LLM'">
+                  <ng-container
+                    *ngIf="
+                      selectedFile.properties['training'] ??
+                      'none' as training
+                    "
+                  >
+                    <div class="w-100 pb-3">
+                      <verticalai-select-field
+                        [title]="'Training'"
+                        [value]="training ?? trainingTypes[0].id"
+                        [data]="trainingTypes"
+                        [valueField]="'id'"
+                        [displayField]="'name'"
+                        (changed)="
+                          selectedFile.properties['training'] = $event;
+                          saveLayout()
+                        "
+                      >
+                      </verticalai-select-field>
+                    </div>
+  
+                    <div class="w-100 pb-3" *ngIf="training != 'none'">
+                      <verticalai-select-field
+                        *ngIf="
+                          loadedDocs && loadedDocs.length > 0;
+                          else empty
+                        "
+                        [title]="'Training Data'"
+                        [value]="
+                          selectedFile.properties['autoId'] ?? loadedDocs[0]
+                        "
+                        [data]="loadedDocs"
+                        (changed)="
+                          selectedFile.properties['autoId'] = $event;
+                          saveLayout()
+                        "
+                      >
+                      </verticalai-select-field>
+  
+                      <ng-template #empty>
+                        <verticalai-select-field
+                          [title]="'Training Data'"
+                          [value]="'No Data'"
+                          [data]="['No Data']"
+                        >
+                        </verticalai-select-field>
+                      </ng-template>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+  
+              <ng-container *ngIf="selectedFile.type == 'container'">
+                <div
+                  class="w-100 d-flex justify-content-center align-items-center"
+                  style="height: 400px"
+                >
+                  <div class="secondary-text">
+                    No settings for this controller
+                  </div>
+                </div>
+              </ng-container>
+  
+              <ng-container
+                *ngIf="
+                  (
+                    models[(selectedFile.type | split : '-')[1]] ??
+                    { models: {} }
+                  ).models[selectedFile.type]?.variations as variations
+                "
+              >
+                <div class="w-100 pb-3" *ngIf="variations.length > 0">
+                  <verticalai-select-field
+                    [title]="'Type'"
+                    [value]="
+                      selectedFile.properties['engine'] ??
+                      variations[0]?.id ??
+                      ''
+                    "
+                    [data]="variations"
+                    [valueField]="'id'"
+                    [displayField]="'name'"
+                    (changed)="
+                      selectedFile.properties['engine'] = $event; saveLayout()
+                    "
+                  >
+                  </verticalai-select-field>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+  
+      <mat-tab class="tab">
+        <ng-template mat-tab-label>
+          <span class="primary-text"> Notes </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <div
+            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+          >
+            <div class="w-100 h-100 p-3" style="overflow-y: scroll">
+  
+              <div class="w-100 pb-3">
+                <verticalai-textbox
+                  [title]="'Controller Notes'"
+                  [value]="selectedFile['notes']"
+                  [placeholder]="'Type something...'"
+                  [minHeight]="200"
+                  [maxHeight]="800"
+                  (changed)="
+                    selectedFile['notes'] = $event; saveLayout()
+                  "
+                >
+                </verticalai-textbox>
               </div>
             </div>
-          </ng-template>
-        </mat-tab>
-      </mat-tab-group> -->
-      </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
     </div>
-
-    
+  
+  
+  </div> -->
+   
   </div>
+
+ 
   <!-- <div class="px-0 mx-0" [style.width.px]="parent.clientWidth">
     <ng-scrollbar
       class="scroller"

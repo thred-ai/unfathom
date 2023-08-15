@@ -44,11 +44,11 @@ ion-accordion.accordion-expanded > ion-item[slot="header"] {
 }
 
 .file-item.selected {
-  --background:  var(--secondarySectionHoverColor) !important;
+  --background:  var(--primarySectionHoverColor) !important;
 }
 
 .file-item:not(.selected):hover {
-  --background:  var(--secondarySectionHoverColor) !important;
+  --background:  var(--primarySectionHoverColor) !important;
   
 }
 

@@ -1429,6 +1429,7 @@ export class LoadService {
       workflow.installWebhook,
       workflow.whitelist,
       workflow.scenes,
+      workflow.characters,
       workflow.tracking,
       workflow.url,
       workflow.apiKey,
