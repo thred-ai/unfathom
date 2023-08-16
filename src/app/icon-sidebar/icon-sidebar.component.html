@@ -161,14 +161,24 @@
 
     <ng-template #buttonTitles>
       <div
-        class="text-center mx-auto secondary-text d-flex justify-content-between align-items-center"
+        class="text-center mx-auto secondary-text d-flex justify-content-center align-items-center"
         role="button"
-        (click)="openSettings()"
+        (click)="selectedFileChanged.emit('main')"
         *ngIf="executable"
       >
         <!-- <span class="secondary-text">Project</span>
 
         <mat-icon> arrow_right_alt </mat-icon> -->
+        <img
+          class="border-table me-2"
+          style="
+            height: 22.5px;
+            border-radius: 6px;
+            width: 22.5px !important;
+            object-fit: cover;
+          "
+          [src]="executable.displayUrl"
+        />
         <span class="primary-text-dark">{{ executable.name }}</span>
       </div>
     </ng-template>

@@ -49,6 +49,7 @@ export class IconSidebarComponent implements OnInit {
   @Output() newFrame = new EventEmitter<any>();
 
   @Output() publish = new EventEmitter<Executable>();
+  @Output() selectedFileChanged = new EventEmitter<string>();
 
   selectedStep?: Scene;
 

@@ -56,6 +56,7 @@ export class FileSidebarComponent implements OnInit {
 
   loadedUser?: Developer;
 
+  storyboards: Scene[] = [];
   items: Scene[] = [];
 
   selectedFile?: string;
@@ -89,9 +90,10 @@ export class FileSidebarComponent implements OnInit {
     this.workflowComponent.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;
-        this.items = [
-          new Scene('main', 'Storyboard', undefined, ['assets/main.png']),
-        ].concat(w.scenes);
+        this.storyboards = [
+          new Scene('main', w.name, undefined, [w.displayUrl]),
+        ];
+        this.items = w.scenes;
       }
     });
     this.workflowComponent.openStep.subscribe((step) => {

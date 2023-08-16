@@ -10,46 +10,20 @@
       <!-- <ng-container
         *ngTemplateOutlet="recursiveList; context: { $implicit: items }"
       ></ng-container> -->
-
       <!-- <ng-container
-        *ngTemplateOutlet="recursiveList; context: { $implicit: items }"
+        *ngTemplateOutlet="
+          sceneList;
+          context: {
+            $implicit: { items: storyboards, title: '', underline: true }
+          }
+        "
       ></ng-container> -->
-
-      <ion-item
-        *ngFor="let item of items"
-        slot="header"
-        class="primary-text w-100 border-0 file-item {{
-          selectedFile == item.id ? 'selected' : ''
-        }}"
-        role="button"
-        (click)="selectedFile = item.id; selectedFileChanged.emit(item.id)"
-      >
-        <ng-container>
-          <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
-            <img
-              class="border-table p-0"
-              [src]="item.images[0] ?? frames[item.type].image"
-            />
-          </ion-thumbnail>
-          <ion-label
-            style="font-size: small"
-            (contextmenu)="
-              item.id != 'main' ? onRightClick($event, item) : undefined
-            "
-            >{{ item.name }}</ion-label
-          >
-          <ion-icon
-            *ngIf="item.id != 'main'"
-            class="secondary-text my-auto"
-            style="font-size: 15px; cursor: pointer"
-            [name]="'ellipsis-vertical'"
-            slot="end"
-            role="button"
-            [matTooltip]="'Actions'"
-            (click)="onRightClick($event, item)"
-          ></ion-icon>
-        </ng-container>
-      </ion-item>
+      <ng-container
+        *ngTemplateOutlet="
+          sceneList;
+          context: { $implicit: { items, title: 'Scenes', underline: false } }
+        "
+      ></ng-container>
     </div>
   </ng-container>
 
@@ -138,6 +112,51 @@
       </ng-container>
     </ion-item>
   </ng-template> -->
+
+  <ng-template #sceneList let-data>
+    <!-- <div class="w-100 p-2 px-3 pb-1" *ngIf="data.title && data.title != ''">
+      <span class="primary-text w-100" >
+        {{data.title}}
+      </span>
+    </div> -->
+    <div class="w-100 {{ data.underline ? 'border-table-bottom' : '' }}">
+      <ion-item
+        *ngFor="let item of data.items"
+        slot="header"
+        class="primary-text w-100 border-0 file-item {{
+          selectedFile == item.id ? 'selected' : ''
+        }}"
+        role="button"
+        (click)="selectedFile = item.id; selectedFileChanged.emit(item.id)"
+      >
+        <ng-container>
+          <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
+            <img
+              class="border-table p-0"
+              [src]="item.images[0] ?? frames[item.type].image"
+            />
+          </ion-thumbnail>
+          <ion-label
+            style="font-size: small"
+            (contextmenu)="
+              item.id != 'main' ? onRightClick($event, item) : undefined
+            "
+            >{{ item.name }}</ion-label
+          >
+          <ion-icon
+            *ngIf="item.id != 'main'"
+            class="secondary-text my-auto"
+            style="font-size: 15px; cursor: pointer"
+            [name]="'ellipsis-vertical'"
+            slot="end"
+            role="button"
+            [matTooltip]="'Actions'"
+            (click)="onRightClick($event, item)"
+          ></ion-icon>
+        </ng-container>
+      </ion-item>
+    </div>
+  </ng-template>
 </div>
 
 <!-- an hidden div is created to set the position of appearance of the menu-->
