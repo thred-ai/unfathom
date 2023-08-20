@@ -30,6 +30,7 @@ import { Agent } from './models/workflow/agent.model';
 import { RequestService } from './requests.service';
 import { Document } from './models/workflow/document.model';
 import { Collection } from './models/workflow/collection.model';
+import { Scene } from './models/workflow/scene.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -355,30 +356,33 @@ export class LoadService {
     this.loading.next(true);
 
     if (uid) {
-      let scenes = data.scenes;
+      let scenes = data.sceneLayout.cells;
 
       await Promise.all(
         scenes.map(async (scene) => {
-          await Promise.all(
-            scene.images.map(async (image, index) => {
-              let ref = this.storage.ref(`workflows/${id}/scenes/${scene.id}/img-${index}.png`);
-              console.log('CHECKING');
-              console.log(image);
-              let im = image.replace(
-                'data:application/octet-stream;base64,',
-                ''
-              );
-              if (this.isBase64(im)) {
-                console.log(im);
-                await ref.putString(im, 'base64', {
-                  cacheControl: 'no-cache',
-                });
-                let displayUrl = await ref.getDownloadURL().toPromise();
+          if (scene.shape == 'scene-node') {
+            await Promise.all(
+              (scene.data.ngArguments.scene as Scene).images.map(
+                async (image, index) => {
+                  let ref = this.storage.ref(
+                    `workflows/${id}/scenes/${scene.id}/img-${index}.png`
+                  );
+                  let im = image.replace(
+                    'data:application/octet-stream;base64,',
+                    ''
+                  );
+                  if (this.isBase64(im)) {
+                    await ref.putString(im, 'base64', {
+                      cacheControl: 'no-cache',
+                    });
+                    let displayUrl = await ref.getDownloadURL().toPromise();
 
-                scene.images[index] = displayUrl;
-              }
-            })
-          );
+                    scene.data.ngArguments.scene.images[index] = displayUrl;
+                  }
+                }
+              )
+            );
+          }
         })
       );
 
@@ -1036,7 +1040,6 @@ export class LoadService {
             }
         }
       default:
-        console.log(type);
         return `assets/${type}.png`;
     }
   }
@@ -1147,7 +1150,6 @@ export class LoadService {
       .pipe(first())
       .subscribe(
         async (resp) => {
-          console.log(resp);
           callback(resp);
         },
         (err) => {
@@ -1428,7 +1430,7 @@ export class LoadService {
       workflow.status,
       workflow.installWebhook,
       workflow.whitelist,
-      workflow.scenes,
+      workflow.sceneLayout,
       workflow.characters,
       workflow.tracking,
       workflow.url,
