@@ -21,6 +21,7 @@ import { Executable } from '../models/workflow/executable.model';
 import { Developer } from '../models/user/developer.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Scene } from '../models/workflow/scene.model';
+import { Cell } from '@antv/x6';
 
 @Component({
   selector: 'app-file-sidebar',
@@ -36,7 +37,6 @@ export class FileSidebarComponent implements OnInit {
   frames: Dict<SceneDefinition> = {};
 
   @Input() set models(val: SceneDefinition[]) {
-    console.log(val);
     val.forEach((v) => {
       this.frames[v.type] = v;
     });
@@ -56,8 +56,7 @@ export class FileSidebarComponent implements OnInit {
 
   loadedUser?: Developer;
 
-  storyboards: Scene[] = [];
-  items: Scene[] = [];
+  items: Cell.Properties[] = [];
 
   selectedFile?: string;
 
@@ -68,32 +67,34 @@ export class FileSidebarComponent implements OnInit {
   ) {}
 
   removeFile(id: string) {
-    let file = this.workflow?.scenes;
+    // let file = this.workflow?.scenes;
 
-    if (this.loadService.confirmDelete()) {
-      if (file && this.workflow && this.selectedIcon) {
-        let index = file.findIndex((f) => f.id == id);
-        if (index > -1) {
-          file.splice(index, 1);
-          this.detailsChanged.emit(this.workflow);
+    // if (this.loadService.confirmDelete()) {
+    //   if (file && this.workflow && this.selectedIcon) {
+    //     let index = file.findIndex((f) => f.id == id);
+    //     if (index > -1) {
+    //       file.splice(index, 1);
+    //       this.detailsChanged.emit(this.workflow);
 
-          if (this.selectedIcon == 'controllers') {
-            this.workflowComponent.setWorkflow(this.workflow!.id, 'main');
-          }
-        }
-      }
-    }
+    //       if (this.selectedIcon == 'controllers') {
+    //         this.workflowComponent.setWorkflow(this.workflow!.id, 'main');
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   ngOnInit(): void {
-    console.log(this.items);
     this.workflowComponent.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;
-        this.storyboards = [
-          new Scene('main', w.name, undefined, [w.displayUrl]),
-        ];
-        this.items = w.scenes;
+        // this.items = [
+        //   new Cell.Properties(new Scene('main', 'Storyboard', undefined, ['assets/main.png']), {}),
+        // ].concat(w.sceneLayout.cells);
+
+        this.items = w.sceneLayout.cells.filter(t => t.shape != 'edge')
+
+        // w.sceneLayout.cells
       }
     });
     this.workflowComponent.openStep.subscribe((step) => {
@@ -122,7 +123,7 @@ export class FileSidebarComponent implements OnInit {
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger?: MatMenuTrigger;
   menuTopLeftPosition = { x: '0', y: '0' };
 
-  onRightClick(event: MouseEvent, task: Scene) {
+  onRightClick(event: MouseEvent, task: Cell.Properties) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
     event.stopPropagation();

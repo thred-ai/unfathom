@@ -10,7 +10,7 @@ export class SceneComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(this.scene)
+    
   }
 
   @Input() scene?: Scene

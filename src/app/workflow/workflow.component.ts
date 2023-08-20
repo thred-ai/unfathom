@@ -30,6 +30,7 @@ import { DatabaseComponent } from '../database/database.component';
 import { Scene } from '../models/workflow/scene.model';
 import { DesignerService } from '../designer.service';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
+import { Cell } from '@antv/x6';
 
 @Component({
   selector: 'app-workflow',
@@ -179,7 +180,7 @@ export class WorkflowComponent implements OnInit {
 
   items = new BehaviorSubject<TaskTree[] | undefined>(undefined);
 
-  openStep = new BehaviorSubject<Scene | undefined>(undefined);
+  openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
 
   classes: Dict<any> = {};
 
@@ -196,7 +197,6 @@ export class WorkflowComponent implements OnInit {
 
   async ngOnInit() {
     // setTimeout(function(){debugger;}, 5000)
-
 
     await Promise.all(
       verticalkit.controllers.map(async (controller) => {
@@ -233,8 +233,6 @@ export class WorkflowComponent implements OnInit {
             if (!this.workflow.value || this.workflow.value.id != proj) {
               this.activeWorkflow =
                 this.dev.utils.find((f) => f.id == proj) ?? this.dev.utils[0];
-
-              console.log(this.workflow.value);
             }
 
             await this.selectFile(
@@ -266,8 +264,6 @@ export class WorkflowComponent implements OnInit {
             });
 
             this.workflow.subscribe(async (w) => {
-              console.log("SAVE NOW")
-
               if (w) {
                 this.initExecutable(w);
               }
@@ -285,7 +281,7 @@ export class WorkflowComponent implements OnInit {
           w.name,
           'app',
           'category',
-          this.analyzeTasks(w.scenes),
+          this.analyzeTasks(w.sceneLayout.cells),
           new TaskTree('Storyboard', 'main', 'model', [], undefined, {
             img: 'assets/main.png',
             type: 'main',
@@ -294,14 +290,6 @@ export class WorkflowComponent implements OnInit {
         ),
       ]);
     }
-  }
-
-  newFrame() {
-    let frame = new Scene(this.loadService.newUtilID);
-
-    this.workflow.value?.scenes.push(frame);
-
-    this.save(1);
   }
 
   async checkSave() {
@@ -336,15 +324,12 @@ export class WorkflowComponent implements OnInit {
   }
 
   async save(mode = 1, update = false, workflow = this.workflow.value) {
-    console.log("SAVING")
-
     if (workflow && this.isValid) {
       try {
-        if (mode == 1 && this.openStep.value && this.items.value) {
+        if (mode == 1 && this.items.value) {
           let exec = await this.fillExecutable(workflow);
 
           let result = await this.loadService.saveSmartUtil(exec);
-          console.log("SAVED")
 
           if (result) {
             this.edited = false;
@@ -486,8 +471,6 @@ export class WorkflowComponent implements OnInit {
           }
         }
 
-        console.log(workflow);
-
         await this.save(1, false, workflow);
 
         // this.setWorkflow(this.workflow.value!.id, controllerId);
@@ -586,25 +569,24 @@ export class WorkflowComponent implements OnInit {
 
   setScene(scene: Scene, workflow = this.workflow.value) {
     if (workflow) {
-      let same = workflow.scenes.findIndex((f) => f.id == scene.id);
-
-      if (same != undefined && same > -1) {
-        workflow.scenes[same] = scene;
-      }
+      // let same = workflow.sceneLayout.cells.map(cell => cell.data.ngArguments.scene.scenes).findIndex((f) => f.id == scene.id);
+      // if (same != undefined && same > -1) {
+      //   workflow.scenes[same] = scene;
+      // }
     }
     return workflow;
   }
 
-  analyzeTasks(tasks: Scene[]) {
+  analyzeTasks(tasks: Cell.Properties[]) {
     var objects: TaskTree[] = [];
 
     var sameNames: Dict<number> = {};
 
-    tasks.forEach((task) => {
-      let id = task.id;
-      let stepName = task.name;
+    tasks.filter(t => t.shape != 'edge').forEach((task) => {
+      let id = task.id!;
+      let stepName = task.data?.ngArguments?.scene?.name;
 
-      sameNames[stepName] = (sameNames[stepName] ?? 0) + 1;
+      if (stepName) sameNames[stepName] = (sameNames[stepName] ?? 0) + 1;
 
       // if (task.componentType == 'switch') {
       //   let switchTask = task as BranchedStep;
@@ -675,15 +657,18 @@ export class WorkflowComponent implements OnInit {
       // } else {
       objects.push(
         new TaskTree(
-          (task.name as string) ??
-            this.jsFormattedName(stepName, sameNames[task.name]),
+          (task.data.ngArguments.scene?.name as string) ??
+            this.jsFormattedName(
+              stepName ?? 'Scene',
+              sameNames[task.data?.ngArguments?.scene?.name ?? 'Scene']
+            ),
           id,
           'model',
           [],
           undefined,
           {
-            type: task.type,
-            img: task.images[0],
+            type: task.data?.ngArguments?.scene?.type,
+            img: task.data?.ngArguments?.scene?.images[0],
           }
         )
       );
@@ -701,9 +686,9 @@ export class WorkflowComponent implements OnInit {
 
   findScene(fileId: string, workflow = this.workflow.value) {
     if (fileId == 'main') {
-      return new Scene('main');
+      return undefined; //new Cell.Properties(new Scene('main'), {});
     }
-    return workflow?.scenes.find((scene) => scene.id == fileId);
+    return workflow?.sceneLayout.cells.find((cell) => cell.id == fileId);
   }
 
   async selectFile(

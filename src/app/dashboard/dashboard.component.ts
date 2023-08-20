@@ -75,7 +75,6 @@ export class DashboardComponent implements OnInit {
         this.loadService.getUserInfo(uid, true, true, (dev) => {
         });
         this.loadService.loadedUser.subscribe((l) => {
-          console.log(l);
           if (l) {
             this.dev = l;
           }

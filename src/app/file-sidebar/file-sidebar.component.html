@@ -18,12 +18,42 @@
           }
         "
       ></ng-container> -->
-      <ng-container
-        *ngTemplateOutlet="
-          sceneList;
-          context: { $implicit: { items, title: 'Scenes', underline: false } }
-        "
-      ></ng-container>
+
+      <ion-item
+        *ngFor="let item of items"
+        slot="header"
+        class="primary-text w-100 border-0 file-item {{
+          selectedFile == item.id ? 'selected' : ''
+        }}"
+        role="button"
+        (click)="selectedFile = item.id; selectedFileChanged.emit(item.id!)"
+      >
+        <ng-container>
+          <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
+            <img
+              class="border-table p-0"
+              [src]="item.data.ngArguments.scene?.images[0] ?? frames[item.data.ngArguments.scene?.type].image"
+            />
+          </ion-thumbnail>
+          <ion-label
+            style="font-size: small"
+            (contextmenu)="
+              item.id != 'main' ? onRightClick($event, item) : undefined
+            "
+            >{{ item.data.ngArguments.scene?.name }}</ion-label
+          >
+          <ion-icon
+            *ngIf="item.id != 'main'"
+            class="secondary-text my-auto"
+            style="font-size: 15px; cursor: pointer"
+            [name]="'ellipsis-vertical'"
+            slot="end"
+            role="button"
+            [matTooltip]="'Actions'"
+            (click)="onRightClick($event, item)"
+          ></ion-icon>
+        </ng-container>
+      </ion-item>
     </div>
   </ng-container>
 
@@ -171,17 +201,17 @@
 <mat-menu #rightMenu="matMenu" class="primary-background">
   <ng-template matMenuContent let-item="item">
     <ng-container
-      *ngIf="item.id != 'app' && item.id != 'main'; else appSettings"
+      *ngIf="item.scene.id != 'app' && item.scene.id != 'main'; else appSettings"
     >
       <button
         mat-menu-item
         class="primary-text"
-        (click)="openControllerSettings(item.id)"
+        (click)="openControllerSettings(item.scene.id)"
       >
         Configure
       </button>
 
-      <button mat-menu-item class="primary-text" (click)="removeFile(item.id)">
+      <button mat-menu-item class="primary-text" (click)="removeFile(item.scene.id)">
         Delete
       </button>
     </ng-container>

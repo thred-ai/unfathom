@@ -131,7 +131,7 @@
       role="button"
       [matTooltip]="'Delete Selected'"
       [matTooltipPosition]="'below'"
-      (click)="delete(selectedStep.id)"
+      (click)="delete(selectedStep.id!)"
       *ngIf="selectedStep && selectedStep.id != 'main'"
     >
       <div
@@ -659,7 +659,7 @@ placement="right"
           role="button"
           style="height: 40px"
           #elem
-          (click)="newFrame.emit(); folderToggle.click()"
+          (pointerdown)="startDrag($event)"
         >
           <div
             class="w-100 h-100 d-flex justify-content-start align-items-center py-2"

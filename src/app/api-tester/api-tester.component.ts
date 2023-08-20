@@ -51,8 +51,8 @@ export class ApiTesterComponent implements OnInit {
   ngOnInit(): void {
     this.workflowComponent?.workflow.subscribe((w) => {
       this.model = w;
-      if (this.model && this.model.scenes[0]) {
-        this.currentStep = this.model.scenes[0].id;
+      if (this.model && this.model.sceneLayout.cells[0]) {
+        this.currentStep = this.model.sceneLayout.cells[0].id;
       }
     });
 
@@ -109,7 +109,6 @@ export class ApiTesterComponent implements OnInit {
           this.sessionId,
           async (result) => {
             if (this.loadingMode == 2) {
-              console.log(result);
               this.image = undefined;
               if (result.result && result.nextId) {
                 this.currentStep =

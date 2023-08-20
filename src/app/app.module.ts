@@ -138,6 +138,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ResizableModule } from 'angular-resizable-element';
 import { SceneComponent } from './scene/scene.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { NodeComponent } from './node/node.component';
 
 @NgModule({
   declarations: [
@@ -196,6 +197,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     CollectionInfoComponent,
     TextAreaRenderPipe,
     SceneComponent,
+    NodeComponent,
   ],
   imports: [
     CommonModule,

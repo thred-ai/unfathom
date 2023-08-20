@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Injector,
   Input,
   OnInit,
   Output,
@@ -39,7 +40,14 @@ import { DesignerService } from '../designer.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Scene } from '../models/workflow/scene.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
-import * as $ from 'jquery';
+import { register } from '@antv/x6-angular-shape';
+import { NodeComponent } from '../node/node.component';
+import { Graph, Cell, Edge } from '@antv/x6';
+import { Snapline } from '@antv/x6-plugin-snapline';
+import { Dnd } from '@antv/x6-plugin-dnd';
+import { Selection } from '@antv/x6-plugin-selection';
+import { Transform } from '@antv/x6-plugin-transform';
+import { SceneNode } from '../models/workflow/scene-node.model';
 
 @Component({
   selector: 'verticalai-workflow-designer',
@@ -58,19 +66,7 @@ export class WorkflowDesignerComponent
   BranchedStep!: BranchedStep;
   any!: any;
 
-  window: Window = window
-
-  drop(event: CdkDragDrop<Scene[]>) {
-    if (this.workflow?.scenes) {
-      moveItemInArray(
-        this.workflow?.scenes,
-        event.previousIndex,
-        event.currentIndex
-      );
-      this.saveLayout()
-    }
-
-  }
+  window: Window = window;
 
   @ViewChild('gridModeSwitch', { read: ElementRef }) element:
     | ElementRef
@@ -88,16 +84,15 @@ export class WorkflowDesignerComponent
   }
 
   setScene(scene: Scene, id: string) {
-    if (this.workflow) {
-      let same = this.workflow.scenes.findIndex((f) => f.id == id);
-
-      if (same != undefined && same > -1) {
-        this.workflow.scenes[same] = scene;
-        console.log("SAME")
-        console.log(this.workflow.scenes[same])
-        this.saveLayout();
-      }
-    }
+    // if (this.workflow) {
+    //   let same = this.workflow.scenes.findIndex((f) => f.id == id);
+    //   if (same != undefined && same > -1) {
+    //     this.workflow.scenes[same] = scene;
+    //     console.log('SAME');
+    //     console.log(this.workflow.scenes[same]);
+    //     this.saveLayout();
+    //   }
+    // }
   }
 
   trainingTypes = [
@@ -121,7 +116,7 @@ export class WorkflowDesignerComponent
   // @Output() apiRequestChanged = new EventEmitter<APIRequest>();
   @Output() selectedFileChanged = new EventEmitter<string>();
 
-  selectedFile?: Scene;
+  selectedFile?: Cell.Properties;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -131,7 +126,8 @@ export class WorkflowDesignerComponent
     private loadService: LoadService,
     private workflowComponent: WorkflowComponent,
     private _snackBar: MatSnackBar,
-    private designerService: DesignerService
+    private designerService: DesignerService,
+    private injector: Injector
   ) {}
 
   @ViewChildren('geditor') divs?: QueryList<ElementRef>;
@@ -168,16 +164,222 @@ export class WorkflowDesignerComponent
     this.apiKeyChanged.emit(apiKey);
   }
 
-  ngAfterViewInit(): void {
-    let title = document.getElementsByClassName('sqd-toolbox-header-title')[0];
+  graph?: Graph;
 
-    if (title) {
-      title.innerHTML = 'Controllers';
-    }
+  ngAfterViewInit(): void {}
 
-    // this.setAPISVG();
-    this.setIcon();
+  initialized = false;
+
+  // count = 0;
+  // repeat() {
+  //   setTimeout(() => {
+  //     this.count += 1;
+  //     this.ata.cells[0].position.x = this.ata.cells[0].position.x + 5;
+  //     this.ata.cells[0].position.y = this.ata.cells[0].position.y + 2;
+
+  //     this.checkAlgo(JSON.parse(JSON.stringify(this.ata)));
+  //     if (this.count < 200) {
+
+  //       this.repeat();
+  //     } else {
+  //       this.ata.cells.pop();
+  //       this.checkAlgo(JSON.parse(JSON.stringify(this.ata)));
+  //     }
+  //   }, 10);
+  // }
+
+  checkAlgo(json: Cell.Properties) {
+    //check incoming add/modify
+    //check incoming add/modify
+    json['cells'].forEach((cellObj: any) => {
+      let cell = this.graph?.getCellById(cellObj.id);
+      if (cell) {
+        Object.keys(cellObj).forEach((key) => {
+          cell?.prop(key, cellObj[key]);
+        });
+      } else {
+        var newCell: Cell | undefined;
+        if (cellObj.shape == 'scene-node') {
+          newCell = this.graph?.createNode(cellObj);
+        } else {
+          newCell = this.graph?.createEdge(cellObj);
+        }
+        if (newCell) {
+          this.graph?.addCell(newCell);
+        }
+      }
+    });
+
+    //check deleted/missing
+    this.graph?.getCells().forEach((cell) => {
+      let same = (json['cells'] as any[]).findIndex((c) => c.id == cell.id);
+      if (same == -1) {
+        this.graph?.removeCell(cell.id);
+      }
+    });
   }
+
+  ata = {
+    cells: [
+      {
+        position: {
+          x: 100,
+          y: 100,
+        },
+        size: {
+          width: 350,
+          height: 450,
+        },
+        view: 'angular-shape-view',
+        shape: 'scene-node',
+        id: '1',
+        data: {
+          ngArguments: {
+            value: 'oi',
+          },
+        },
+        tools: {
+          items: ['button-remove'],
+        },
+        ports: {
+          groups: {
+            out: {
+              position: 'right',
+              attrs: {
+                circle: {
+                  magnet: true,
+                  stroke: '#fff',
+                  r: 5,
+                },
+              },
+            },
+          },
+          items: [
+            {
+              id: 'port2',
+              group: 'out',
+            },
+          ],
+        },
+        zIndex: 1,
+      },
+      {
+        position: {
+          x: 580,
+          y: 580,
+        },
+        size: {
+          width: 350,
+          height: 450,
+        },
+        view: 'angular-shape-view',
+        shape: 'scene-node',
+        id: '2',
+        data: {
+          ngArguments: {
+            value: 'Oops Oh my god',
+          },
+        },
+        tools: {
+          items: ['button-remove'],
+        },
+        ports: {
+          groups: {
+            out: {
+              position: 'right',
+              attrs: {
+                circle: {
+                  magnet: true,
+                  stroke: '#fff',
+                  r: 5,
+                },
+              },
+            },
+          },
+          items: [
+            {
+              id: 'port2',
+              group: 'out',
+            },
+          ],
+        },
+        zIndex: 2,
+      },
+      {
+        position: {
+          x: 580,
+          y: -70,
+        },
+        size: {
+          width: 350,
+          height: 450,
+        },
+        view: 'angular-shape-view',
+        shape: 'scene-node',
+        id: '3',
+        data: {
+          ngArguments: {
+            value: 'Oops Oh my god again',
+          },
+        },
+        tools: {
+          items: ['button-remove'],
+        },
+        ports: {
+          groups: {
+            out: {
+              position: 'right',
+              attrs: {
+                circle: {
+                  magnet: true,
+                  stroke: '#fff',
+                  r: 5,
+                },
+              },
+            },
+          },
+          items: [
+            {
+              id: 'port2',
+              group: 'out',
+            },
+          ],
+        },
+        zIndex: 3,
+      },
+      {
+        shape: 'edge',
+        id: '2ac8da8c-e5c1-4ddf-bfde-501b25142ac8',
+        source: {
+          cell: '1',
+          port: 'port2',
+        },
+
+        target: {
+          cell: '2',
+        },
+        tools: {
+          items: ['button-remove'],
+        },
+        zIndex: 4,
+      },
+      {
+        shape: 'edge',
+        id: '63c0e419-c795-46be-8743-356552ac8d34',
+        source: {
+          cell: '1',
+          port: 'port2',
+        },
+        tools: {
+          items: ['button-remove'],
+        },
+        target: {
+          cell: '3',
+        },
+        zIndex: 5,
+      },
+    ],
+  };
 
   off =
     'M464.75 400.25 434.75 370.25V322.75H387.25L357.25 292.75H434.75V198.25H344.25V279.75L314.25 249.75V198.25H262.75L232.75 168.25H314.25V77.75H219.25V154.75L189.25 124.75V77.75H142.25L112.25 47.75H434.75Q446.25 47.75 455.5 57T464.75 77.75V400.25ZM344.25 168.25H434.75V77.75H344.25V168.25ZM475.75 496.25 426.75 447.75H94.75Q83.25 447.75 74 438.5T64.75 417.75V85.25L15.25 36.25 36.75 15.75 496.75 475.25 475.75 496.25ZM344.25 417.75H396.75L344.25 365.25V417.75ZM219.25 292.75H272.75L219.25 240.25V292.75ZM219.25 417.75H314.25V334.75L301.75 322.75H219.25V417.75ZM94.75 168.25H147.25L94.75 114.75V168.25ZM94.75 292.75H189.25V210.25L177.25 198.25H94.75V292.75ZM189.25 417.75V322.75H94.75V417.75H189.25Z';
@@ -262,23 +464,29 @@ export class WorkflowDesignerComponent
   public ngOnInit() {
     this.shouldRefresh = true;
 
+    this.designerService.initGraph(this.injector);
+
     this.workflowComponent.workflow.subscribe((w) => {
-      if (w && this.shouldRefresh) {
-        this.workflow = undefined;
-        this.designer = undefined;
-
+      if (w) {
         this.cdr.detectChanges();
-
         this.workflow = w;
-
-        this.rerenderDesigner();
-
-        this.shouldRefresh = false;
+        if (!this.initialized) {
+          this.initialized = true;
+          this.designerService.pubJSON.subscribe((json) => {
+            if (json) {
+              this.workflow!.sceneLayout = json;
+              console.log(json);
+              this.saveLayout();
+            }
+          });
+          this.designerService.importJSON(this.workflow.sceneLayout);
+        } else {
+          this.checkAlgo(w.sceneLayout);
+        }
       }
     });
 
     this.designerService.toolboxConfiguration.subscribe((tool) => {
-      console.log(tool);
       this.toolboxConfiguration = tool;
     });
 
@@ -310,7 +518,6 @@ export class WorkflowDesignerComponent
     // );
 
     this.workflowComponent.openStep.subscribe((step) => {
-      console.log(step)
       if (step) {
         this.selectedFile = step;
       }
@@ -360,7 +567,7 @@ export class WorkflowDesignerComponent
       this.workflowComponent.openStep.subscribe((step) => {
         this.stepContext = undefined;
         if (step) {
-          if (step.id != 'main') {
+          if (step.id && step.id != 'main') {
             this.designer?.selectStepById(step.id);
             this.downloadDB();
           } else {
@@ -403,16 +610,10 @@ export class WorkflowDesignerComponent
 
   stepContext?: StepEditorContext;
 
-  logEvent(event: any) {
-    console.log('hey');
-    console.log(event);
-  }
-
   public saveLayout() {
     // this.definition = definition;
 
     // if (this.)
-    console.log("SAVE NOW")
 
     this.detailsChanged.emit(this.workflow);
   }
@@ -421,8 +622,6 @@ export class WorkflowDesignerComponent
     step.name = (event.target as HTMLInputElement).value;
     context.notifyNameChanged();
   }
-
-  
 
   onInput(ev: any) {
     var value = ev.target!.value;
@@ -435,7 +634,6 @@ export class WorkflowDesignerComponent
   }
 
   @ViewChild('frame') frame?: ElementRef<HTMLElement>;
-
 
   setAPISVG() {
     // setTimeout(() => {

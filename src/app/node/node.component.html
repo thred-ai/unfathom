@@ -1,0 +1,9 @@
+<div
+  class="w-100 h-100 rounded border-table shadow-hover bg-info"
+  role="button"
+  (click)="$event.stopPropagation()"
+  style="overflow: hidden;"
+>
+  <app-scene [scene]="scene" (changed)="setScene($event, scene?.id)">
+  </app-scene>
+</div>

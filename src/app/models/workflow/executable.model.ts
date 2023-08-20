@@ -4,6 +4,7 @@ import { Plan } from './plan.model';
 import { Subscription } from './subscription.model';
 import { Scene } from './scene.model';
 import { Character } from './character.model';
+import { SceneLayout } from './scene-layout.model';
 
 export class Executable {
   name!: string;
@@ -17,7 +18,7 @@ export class Executable {
   status!: number;
   installWebhook!: string;
   whitelist?: string[];
-  scenes!: Scene[];
+  sceneLayout!: SceneLayout;
   characters!: Character[];
 
   tracking!: boolean;
@@ -44,7 +45,7 @@ export class Executable {
     status?: number,
     installWebhook?: string,
     whitelist?: string[],
-    scenes?: Scene[],
+    sceneLayout?: SceneLayout,
     characters?: Character[],
     tracking?: boolean,
     url?: string,
@@ -65,8 +66,8 @@ export class Executable {
     this.installWebhook = installWebhook ?? '';
     this.whitelist = whitelist ?? [];
     this.tracking = tracking ?? false;
-    this.scenes = scenes ?? [];
-    this.characters = characters ?? []
+    this.sceneLayout = sceneLayout ?? { cells: [] };
+    this.characters = characters ?? [];
     this.url = url ?? id;
     this.apiKey = apiKey ?? `V-${uuid.v4()}`;
     this.plan = plan ?? new Subscription('', '', '', 0, 0);

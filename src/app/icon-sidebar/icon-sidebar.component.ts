@@ -14,6 +14,9 @@ import { DesignerService } from '../designer.service';
 import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
+import { Graph, Cell, Edge } from '@antv/x6';
+import { Dnd } from '@antv/x6-plugin-dnd';
+import { SceneNode } from '../models/workflow/scene-node.model';
 
 @Component({
   selector: 'app-icon-sidebar',
@@ -51,11 +54,14 @@ export class IconSidebarComponent implements OnInit {
   @Output() publish = new EventEmitter<Executable>();
   @Output() selectedFileChanged = new EventEmitter<string>();
 
-  selectedStep?: Scene;
+  selectedStep?: Cell.Properties;
 
   expandedProjects = true;
 
   showingGrid = false;
+
+  dnd!: Dnd;
+  graph?: Graph;
 
   set showGrid(value: boolean) {
     this.showingGrid = value;
@@ -69,11 +75,29 @@ export class IconSidebarComponent implements OnInit {
     }
   }
 
+  startDrag(e: MouseEvent) {
+    // The node is a dragged node, which is also a node placed on the canvas by default, and any attribute can be customized
+    const node = this.newScene();
+
+    console.log(node)
+
+    if (node) this.dnd?.start(node, e);
+  }
+
   ngOnInit(): void {
     this.showGrid = false;
     this.loadService.loadedUser.subscribe((l) => {
       if (l) {
         this.loadedUser = l;
+      }
+    });
+
+    this.designerService.pubGraph.subscribe((graph) => {
+      if (graph) {
+        this.graph = graph;
+        this.dnd = new Dnd({
+          target: graph,
+        });
       }
     });
 
@@ -93,7 +117,6 @@ export class IconSidebarComponent implements OnInit {
     });
 
     this.designerService.toolboxConfiguration.subscribe((tool) => {
-      console.log(tool);
       this.items = tool;
     });
   }
@@ -104,24 +127,77 @@ export class IconSidebarComponent implements OnInit {
     this.workflowComponent.openControllerSettings('main');
   }
 
-  delete(id: string) {
-    let file = this.executable?.scenes;
+  // setDndContainer(container: HTMLElement) {
+  //   if (this.openContainer == false){
+  //     this.openContainer = true
+  //     if (this.dnd) {
+  //       this.dnd = undefined;
+  //     } else {
+  //       console.log("set dnd")
+  //       this.dnd = new Dnd({
+  //         target: this.graph!,
+  //         dndContainer: container,
+  //       });
+  //     }
+  //   }
 
-    if (this.loadService.confirmDelete()) {
-      if (file && this.executable && this.selectedIcon) {
-        let index = file.findIndex((f) => f.id == id);
-        if (index > -1) {
-          file.splice(index, 1);
-          this.publish.emit(this.executable);
-          if (this.selectedIcon == 'controllers') {
-            this.workflowComponent.setWorkflow(this.executable!.id, 'main');
-          }
-        }
-      }
-    }
+  //   return true
+  // }
+
+  newScene() {
+    let id = this.loadService.newUtilID;
+    return this.graph?.createNode({
+      id: id,
+      shape: 'scene-node',
+      x: 300,
+      y: 500,
+      data: {
+        ngArguments: {
+          scene: new Scene(id, 'My New Scene'),
+        },
+      },
+      tools: ['button-remove'],
+      ports: {
+        groups: {
+
+          out: {
+            position: 'right',
+            attrs: {
+              circle: {
+                magnet: true,
+                stroke: '#fff',
+                r: 5,
+              },
+            },
+          },
+        },
+        items: [
+          {
+            id: 'port2',
+            group: 'out',
+          },
+        ],
+      },
+    });
   }
 
-  public saveLayout() { 
+  delete(id: string) {
+    // let file = this.executable?.scenes;
+    // if (this.loadService.confirmDelete()) {
+    //   if (file && this.executable && this.selectedIcon) {
+    //     let index = file.findIndex((f) => f.id == id);
+    //     if (index > -1) {
+    //       file.splice(index, 1);
+    //       this.publish.emit(this.executable);
+    //       if (this.selectedIcon == 'controllers') {
+    //         this.workflowComponent.setWorkflow(this.executable!.id, 'main');
+    //       }
+    //     }
+    //   }
+    // }
+  }
+
+  public saveLayout() {
     // this.definition = definition;
 
     this.loading = true;
