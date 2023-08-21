@@ -134,9 +134,9 @@ export class WorkflowComponent implements OnInit {
 
     this.workflow.next(workflow);
 
-    const loadData = () => {
-      this.loadService.getAPIKeys(workflow.id, workflow.creatorId);
-    };
+    // const loadData = () => {
+    //   this.loadService.getAPIKeys(workflow.id, workflow.creatorId);
+    // };
 
     if (this.newWorkflow) {
       this.loadService.currentUser.then((user) => {
@@ -144,11 +144,8 @@ export class WorkflowComponent implements OnInit {
           workflow.creatorId = user.uid;
           this.workflow.next(workflow);
           this.checkSave();
-          loadData();
         }
       });
-    } else {
-      loadData();
     }
   }
 
@@ -193,10 +190,14 @@ export class WorkflowComponent implements OnInit {
     private route: ActivatedRoute,
     private httpClient: HttpClient,
     private dialog: MatDialog
-  ) {}
+  ) {
+  }
+
+  clientId!: string
 
   async ngOnInit() {
     // setTimeout(function(){debugger;}, 5000)
+    this.clientId = this.loadService.newUtilID
 
     await Promise.all(
       verticalkit.controllers.map(async (controller) => {
@@ -220,6 +221,22 @@ export class WorkflowComponent implements OnInit {
       })
     );
 
+    this.loadService.theme.subscribe((theme) => {
+      this.theme = theme;
+    });
+
+    this.loadService.loading.subscribe((l) => {
+      this.loading = l;
+    });
+
+    this.designerService.toolboxConfiguration.subscribe((s) => {
+      this.models = s ?? [];
+    });
+
+    this.workflow.subscribe(async (w) => {
+      
+    });
+
     this.loadService.loadedUser.subscribe((user) => {
       if (user) {
         this.dev = user;
@@ -230,42 +247,34 @@ export class WorkflowComponent implements OnInit {
           let selectedModule = params['module'] ?? 'design';
 
           if (this.dev && this.dev.utils) {
-            if (!this.workflow.value || this.workflow.value.id != proj) {
-              this.activeWorkflow =
-                this.dev.utils.find((f) => f.id == proj) ?? this.dev.utils[0];
-            }
+            this.loadService.getLayout(proj, this.clientId, async (layout) => {
+              let workflow =
+                this.workflow.value ?? this.dev?.utils.find((f) => f.id == proj) ?? this.dev?.utils[0];
+                console.log(workflow)
+              if (workflow) {
+                if (layout){
+                  workflow.sceneLayout = layout;
+                }
 
-            await this.selectFile(
-              file ?? 'main',
-              selectedModule,
-              this.activeWorkflow,
-              false
-            );
+                this.activeWorkflow = workflow
 
-            if (!this.openStep.value) {
-              await this.selectFile(
-                'main',
-                selectedModule,
-                this.activeWorkflow,
-                true
-              );
-            }
+                await this.selectFile(
+                  file ?? 'main',
+                  selectedModule,
+                  workflow,
+                  false
+                );
 
-            this.loadService.theme.subscribe((theme) => {
-              this.theme = theme;
-            });
+                if (!this.openStep.value) {
+                  await this.selectFile(
+                    'main',
+                    selectedModule,
+                    workflow,
+                    true
+                  );
+                }
 
-            this.loadService.loading.subscribe((l) => {
-              this.loading = l;
-            });
-
-            this.designerService.toolboxConfiguration.subscribe((s) => {
-              this.models = s ?? [];
-            });
-
-            this.workflow.subscribe(async (w) => {
-              if (w) {
-                this.initExecutable(w);
+                this.initExecutable(workflow);
               }
             });
           }
@@ -326,7 +335,7 @@ export class WorkflowComponent implements OnInit {
   async save(mode = 1, update = false, workflow = this.workflow.value) {
     if (workflow && this.isValid) {
       try {
-        if (mode == 1 && this.items.value) {
+        if (mode == 1) {
           let exec = await this.fillExecutable(workflow);
 
           let result = await this.loadService.saveSmartUtil(exec);
@@ -337,6 +346,10 @@ export class WorkflowComponent implements OnInit {
               this.updateWorkflows(result);
             }
           }
+          return;
+        } else if (mode == 2) {
+          await this.loadService.saveLayout(workflow, this.clientId);
+
           return;
         }
       } catch (error) {
@@ -582,98 +595,100 @@ export class WorkflowComponent implements OnInit {
 
     var sameNames: Dict<number> = {};
 
-    tasks.filter(t => t.shape != 'edge').forEach((task) => {
-      let id = task.id!;
-      let stepName = task.data?.ngArguments?.scene?.name;
+    tasks
+      .filter((t) => t.shape != 'edge')
+      .forEach((task) => {
+        let id = task.id!;
+        let stepName = task.data?.ngArguments?.scene?.name;
 
-      if (stepName) sameNames[stepName] = (sameNames[stepName] ?? 0) + 1;
+        if (stepName) sameNames[stepName] = (sameNames[stepName] ?? 0) + 1;
 
-      // if (task.componentType == 'switch') {
-      //   let switchTask = task as BranchedStep;
-      //   const branches: TaskTree[] = [];
-      //   Object.keys(switchTask.branches).forEach((name) => {
-      //     let sequence = switchTask.branches[name];
-      //     branches.push(
-      //       new TaskTree(
-      //         name,
-      //         id,
-      //         'category',
-      //         this.analyzeTasks(sequence),
-      //         undefined,
-      //         { type: 'folder', img: 'assets/branch.png' }
-      //       )
-      //     );
-      //   });
+        // if (task.componentType == 'switch') {
+        //   let switchTask = task as BranchedStep;
+        //   const branches: TaskTree[] = [];
+        //   Object.keys(switchTask.branches).forEach((name) => {
+        //     let sequence = switchTask.branches[name];
+        //     branches.push(
+        //       new TaskTree(
+        //         name,
+        //         id,
+        //         'category',
+        //         this.analyzeTasks(sequence),
+        //         undefined,
+        //         { type: 'folder', img: 'assets/branch.png' }
+        //       )
+        //     );
+        //   });
 
-      //   objects.push(
-      //     new TaskTree(
-      //       stepName,
-      //       id,
-      //       'category',
-      //       branches,
-      //       new TaskTree(
-      //         (switchTask.properties['fileName'] as string) ??
-      //           this.jsFormattedName(
-      //             switchTask.name,
-      //             sameNames[switchTask.name]
-      //           ),
-      //         switchTask.id + '',
-      //         'model',
-      //         [],
-      //         undefined,
-      //         {
-      //           type: 'model',
-      //           metaType: switchTask.type,
-      //           img: 'assets/switch2.png',
-      //         }
-      //       ),
-      //       { type: 'switch', img: 'assets/switch.png' }
-      //     )
-      //   );
-      // } else if (task.componentType == 'container') {
-      //   let loopTask = task as SequentialStep;
-      //   objects.push(
-      //     new TaskTree(
-      //       stepName,
-      //       id,
-      //       'category',
-      //       this.analyzeTasks(loopTask.sequence),
-      //       new TaskTree(
-      //         (loopTask.properties['fileName'] as string) ??
-      //           this.jsFormattedName(loopTask.name, sameNames[loopTask.name]),
-      //         loopTask.id,
-      //         'model',
-      //         [],
-      //         undefined,
-      //         {
-      //           type: 'container',
-      //           metaType: loopTask.type,
-      //           img: 'assets/container2.png',
-      //         }
-      //       ),
-      //       { type: 'folder', img: 'assets/container.png' }
-      //     )
-      //   );
-      // } else {
-      objects.push(
-        new TaskTree(
-          (task.data.ngArguments.scene?.name as string) ??
-            this.jsFormattedName(
-              stepName ?? 'Scene',
-              sameNames[task.data?.ngArguments?.scene?.name ?? 'Scene']
-            ),
-          id,
-          'model',
-          [],
-          undefined,
-          {
-            type: task.data?.ngArguments?.scene?.type,
-            img: task.data?.ngArguments?.scene?.images[0],
-          }
-        )
-      );
-      // }
-    });
+        //   objects.push(
+        //     new TaskTree(
+        //       stepName,
+        //       id,
+        //       'category',
+        //       branches,
+        //       new TaskTree(
+        //         (switchTask.properties['fileName'] as string) ??
+        //           this.jsFormattedName(
+        //             switchTask.name,
+        //             sameNames[switchTask.name]
+        //           ),
+        //         switchTask.id + '',
+        //         'model',
+        //         [],
+        //         undefined,
+        //         {
+        //           type: 'model',
+        //           metaType: switchTask.type,
+        //           img: 'assets/switch2.png',
+        //         }
+        //       ),
+        //       { type: 'switch', img: 'assets/switch.png' }
+        //     )
+        //   );
+        // } else if (task.componentType == 'container') {
+        //   let loopTask = task as SequentialStep;
+        //   objects.push(
+        //     new TaskTree(
+        //       stepName,
+        //       id,
+        //       'category',
+        //       this.analyzeTasks(loopTask.sequence),
+        //       new TaskTree(
+        //         (loopTask.properties['fileName'] as string) ??
+        //           this.jsFormattedName(loopTask.name, sameNames[loopTask.name]),
+        //         loopTask.id,
+        //         'model',
+        //         [],
+        //         undefined,
+        //         {
+        //           type: 'container',
+        //           metaType: loopTask.type,
+        //           img: 'assets/container2.png',
+        //         }
+        //       ),
+        //       { type: 'folder', img: 'assets/container.png' }
+        //     )
+        //   );
+        // } else {
+        objects.push(
+          new TaskTree(
+            (task.data.ngArguments.scene?.name as string) ??
+              this.jsFormattedName(
+                stepName ?? 'Scene',
+                sameNames[task.data?.ngArguments?.scene?.name ?? 'Scene']
+              ),
+            id,
+            'model',
+            [],
+            undefined,
+            {
+              type: task.data?.ngArguments?.scene?.type,
+              img: task.data?.ngArguments?.scene?.images[0],
+            }
+          )
+        );
+        // }
+      });
 
     return objects;
   }

@@ -35,7 +35,7 @@
           [models]="models"
           [workflow]="workflow.value"
           [theme]="theme"
-          (detailsChanged)="save(1, false, $event)"
+          (detailsChanged)="save(2, false, $event)"
           (iconChanged)="edited = true; workflowIcon = $event; save(0)"
           (selectedFileChanged)="selectFile($event, selectedIcon)"
         >

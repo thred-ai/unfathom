@@ -188,36 +188,7 @@ export class WorkflowDesignerComponent
   //   }, 10);
   // }
 
-  checkAlgo(json: Cell.Properties) {
-    //check incoming add/modify
-    //check incoming add/modify
-    json['cells'].forEach((cellObj: any) => {
-      let cell = this.graph?.getCellById(cellObj.id);
-      if (cell) {
-        Object.keys(cellObj).forEach((key) => {
-          cell?.prop(key, cellObj[key]);
-        });
-      } else {
-        var newCell: Cell | undefined;
-        if (cellObj.shape == 'scene-node') {
-          newCell = this.graph?.createNode(cellObj);
-        } else {
-          newCell = this.graph?.createEdge(cellObj);
-        }
-        if (newCell) {
-          this.graph?.addCell(newCell);
-        }
-      }
-    });
-
-    //check deleted/missing
-    this.graph?.getCells().forEach((cell) => {
-      let same = (json['cells'] as any[]).findIndex((c) => c.id == cell.id);
-      if (same == -1) {
-        this.graph?.removeCell(cell.id);
-      }
-    });
-  }
+  
 
   ata = {
     cells: [
@@ -481,7 +452,8 @@ export class WorkflowDesignerComponent
           });
           this.designerService.importJSON(this.workflow.sceneLayout);
         } else {
-          this.checkAlgo(w.sceneLayout);
+          console.log("CHECKING ALGO")
+          this.designerService.checkAlgo(w.sceneLayout);
         }
       }
     });

@@ -7,7 +7,7 @@ import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { first } from 'rxjs/operators';
 import firebase from 'firebase/compat/app';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Meta, Title } from '@angular/platform-browser';
 import { Developer } from './models/user/developer.model';
@@ -31,6 +31,7 @@ import { RequestService } from './requests.service';
 import { Document } from './models/workflow/document.model';
 import { Collection } from './models/workflow/collection.model';
 import { Scene } from './models/workflow/scene.model';
+import { SceneLayout } from './models/workflow/scene-layout.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -415,6 +416,80 @@ export class LoadService {
     }
   }
 
+  lastSync: number = 0;
+
+  async saveLayout(data: Executable, clientId: string) {
+    let id = data.id;
+
+    let date = new Date().getTime();
+
+    if (date - this.lastSync > 0) {
+      this.lastSync = date;
+      let uid = (await this.currentUser)?.uid;
+      this.loading.next(true);
+
+      if (uid) {
+        let scenes = data.sceneLayout.cells;
+
+        await Promise.all(
+          scenes.map(async (scene) => {
+            if (scene.shape == 'scene-node') {
+              await Promise.all(
+                (scene.data.ngArguments.scene as Scene).images.map(
+                  async (image, index) => {
+                    let ref = this.storage.ref(
+                      `workflows/${id}/scenes/${scene.id}/img-${index}.png`
+                    );
+                    let im = image.replace(
+                      'data:application/octet-stream;base64,',
+                      ''
+                    );
+                    if (this.isBase64(im)) {
+                      await ref.putString(im, 'base64', {
+                        cacheControl: 'no-cache',
+                      });
+                      let displayUrl = await ref.getDownloadURL().toPromise();
+
+                      scene.data.ngArguments.scene.images[index] = displayUrl;
+                    }
+                  }
+                )
+              );
+            }
+          })
+        );
+
+        let uploadData = JSON.parse(
+          JSON.stringify({
+            modified: date,
+            layout: data.sceneLayout,
+            uid: uid,
+            clientId,
+          })
+        );
+
+        try {
+          await this.db
+            .collection(`Workflows/${id}/Layouts`)
+            .doc()
+            .set(uploadData, { merge: true });
+
+          this.loading.next(false);
+
+          return data.sceneLayout;
+        } catch (error) {
+          console.log(error);
+          this.loading.next(false);
+
+          return undefined;
+        }
+      } else {
+        this.loading.next(false);
+      }
+    }
+    return undefined;
+  }
+
   async saveUserInfo(
     data: Developer,
     imgFile: File,
@@ -792,7 +867,7 @@ export class LoadService {
             );
           }
 
-          q.valueChanges().subscribe((docs2) => {
+          let s = q.valueChanges().subscribe((docs2) => {
             if (this.loadedUser.value) {
               developer = this.loadedUser.value;
             }
@@ -806,6 +881,7 @@ export class LoadService {
             this.checkLoadedUser(developer);
 
             callback(developer);
+            s.unsubscribe();
           });
         } else {
           callback(developer);
@@ -813,6 +889,36 @@ export class LoadService {
       } else {
         this.checkLoadedUser(null);
         callback(undefined);
+      }
+    });
+  }
+
+  projectSub?: Subscription;
+
+  getLayout(
+    id: string,
+    clientId: string,
+    callback: (layout: SceneLayout) => any
+  ) {
+    console.log(clientId);
+    this.projectSub?.unsubscribe();
+    let q = this.db.collection(`Workflows/${id}/Layouts`, (ref) =>
+      ref.orderBy('modified', 'desc').limit(1)
+    );
+    this.projectSub = q.valueChanges().subscribe((docs2) => {
+      console.log('poi');
+      let docs_2 = (
+        docs2 as {
+          modified: number;
+          layout: SceneLayout;
+          uid: string;
+          clientId: string;
+        }[]
+      )[0];
+      console.log(docs2);
+
+      if (docs_2.clientId != clientId) {
+        callback(docs_2?.layout);
       }
     });
   }

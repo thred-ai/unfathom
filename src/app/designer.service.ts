@@ -12,6 +12,7 @@ import { Transform } from '@antv/x6-plugin-transform';
 import { SceneNode } from './models/workflow/scene-node.model';
 import { Scene } from './models/workflow/scene.model';
 import { LoadService } from './load.service';
+import { MiniMap } from '@antv/x6-plugin-minimap'
 
 @Injectable({
   providedIn: 'root',
@@ -182,6 +183,17 @@ export class DesignerService {
         })
       );
 
+      let minimap = document.getElementById('minimap')
+
+      if (minimap){
+        this.graph.use(
+          new MiniMap({
+            container: minimap,
+          }),
+        )
+      }
+      
+
       this.graph.on('node:selected', ({ node }) => {
         // console.log(node);
         // node.updateData({ ngArguments: { selected: true } });
@@ -277,4 +289,38 @@ export class DesignerService {
     this.graph?.fromJSON(json.cells);
     this.pubGraph.next(this.graph);
   }
+
+  checkAlgo(json: Cell.Properties) {
+    //check incoming add/modify
+    //check incoming add/modify
+    json['cells']?.forEach((cellObj: any) => {
+      let cell = this.graph?.getCellById(cellObj.id);
+      if (cell) {
+        Object.keys(cellObj).forEach((key) => {
+          cell?.prop(key, cellObj[key]);
+        });
+      } else {
+        var newCell: Cell | undefined;
+        if (cellObj.shape == 'scene-node') {
+          newCell = this.graph?.createNode(cellObj);
+        } else {
+          newCell = this.graph?.createEdge(cellObj);
+        }
+        if (newCell) {
+          this.graph?.addCell(newCell);
+        }
+      }
+    });
+
+    //check deleted/missing
+    this.graph?.getCells().forEach((cell) => {
+      let same = (json['cells'] as any[]).findIndex((c) => c.id == cell.id);
+      if (same == -1) {
+        this.graph?.removeCell(cell.id);
+      }
+    });
+
+    this.pubGraph.next(this.graph)
+  }
+
 }
