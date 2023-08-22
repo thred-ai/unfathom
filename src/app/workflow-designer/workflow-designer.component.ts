@@ -489,10 +489,9 @@ export class WorkflowDesignerComponent
     //   }
     // );
 
-    this.workflowComponent.openStep.subscribe((step) => {
-      if (step) {
+    this.designerService.openStep.subscribe((step) => {
         this.selectedFile = step;
-      }
+      
       this.rerenderDesigner();
     });
   }
@@ -536,7 +535,7 @@ export class WorkflowDesignerComponent
         this.rerenderDesigner();
       });
 
-      this.workflowComponent.openStep.subscribe((step) => {
+      this.designerService.openStep.subscribe((step) => {
         this.stepContext = undefined;
         if (step) {
           if (step.id && step.id != 'main') {

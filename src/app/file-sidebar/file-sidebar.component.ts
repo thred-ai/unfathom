@@ -22,6 +22,7 @@ import { Developer } from '../models/user/developer.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Scene } from '../models/workflow/scene.model';
 import { Cell } from '@antv/x6';
+import { DesignerService } from '../designer.service';
 
 @Component({
   selector: 'app-file-sidebar',
@@ -63,6 +64,7 @@ export class FileSidebarComponent implements OnInit {
   constructor(
     private workflowComponent: WorkflowComponent,
     private loadService: LoadService,
+    private designerService: DesignerService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -98,11 +100,10 @@ export class FileSidebarComponent implements OnInit {
         // w.sceneLayout.cells
       }
     });
-    this.workflowComponent.openStep.subscribe((step) => {
-      if (step) {
-        this.selectedFile = step.id;
+    this.designerService.openStep.subscribe((step) => {
+        this.selectedFile = step?.id;
         this.cdr.detectChanges();
-      }
+      
     });
     this.loadService.loadedUser.subscribe((l) => {
       if (l) {

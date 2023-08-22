@@ -139,6 +139,7 @@ import { ResizableModule } from 'angular-resizable-element';
 import { SceneComponent } from './scene/scene.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { NodeComponent } from './node/node.component';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @NgModule({
   declarations: [
@@ -283,10 +284,12 @@ export class AppModule {
   constructor(
     router: Router,
     functions: AngularFireFunctions,
+    private firestore: AngularFirestore,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
   ) {
     // functions.useEmulator('localhost', 5001)
+    // firestore.firestore.useEmulator('localhost', 9000)
     this.matIconRegistry.addSvgIcon(
       `unfathom_icon`,
       this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/unfathom_icon.svg")

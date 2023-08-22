@@ -12,7 +12,9 @@ import { Transform } from '@antv/x6-plugin-transform';
 import { SceneNode } from './models/workflow/scene-node.model';
 import { Scene } from './models/workflow/scene.model';
 import { LoadService } from './load.service';
-import { MiniMap } from '@antv/x6-plugin-minimap'
+import { MiniMap } from '@antv/x6-plugin-minimap';
+import { Executable } from './models/workflow/executable.model';
+import { TaskTree } from './models/workflow/task-tree.model';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +30,7 @@ export class DesignerService {
   pubJSON = new BehaviorSubject<{ cells: Cell.Properties[] } | undefined>(
     undefined
   );
+  openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
 
   // this.toolboxConfiguration.next([new SceneDefinition("Scene", "", "scene")])
 
@@ -183,20 +186,26 @@ export class DesignerService {
         })
       );
 
-      let minimap = document.getElementById('minimap')
+      let minimap = document.getElementById('minimap');
 
-      if (minimap){
+      if (minimap) {
         this.graph.use(
           new MiniMap({
             container: minimap,
-          }),
-        )
+          })
+        );
       }
-      
 
-      this.graph.on('node:selected', ({ node }) => {
+      this.graph.on('node:click', ({ node }) => {
         // console.log(node);
         // node.updateData({ ngArguments: { selected: true } });
+        let id = node.id;
+        let step = this.graph?.getCellById(id);
+
+        if (step) {
+          let json = step.toJSON();
+          this.openStep.next(json);
+        }
       });
 
       this.graph.on('edge:selected', ({ edge }) => {
@@ -204,9 +213,13 @@ export class DesignerService {
         // node.updateData({ ngArguments: { selected: true } });
       });
 
-      this.graph.on('node:unselected', ({ node }) => {
+
+
+      this.graph.on('blank:click', () => {
+        console.log("OIII")
         // console.log(node);
         // node.updateData({ ngArguments: { selected: true } });
+        this.openStep.next(undefined);
       });
 
       this.graph.on('cell:changed', ({ cell, options }) => {
@@ -320,7 +333,6 @@ export class DesignerService {
       }
     });
 
-    this.pubGraph.next(this.graph)
+    this.pubGraph.next(this.graph);
   }
-
 }

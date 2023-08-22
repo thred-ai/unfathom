@@ -4,7 +4,7 @@
   <app-icon-sidebar
     [selectedIcon]="selectedIcon"
     [theme]="theme"
-    (selectedIconChanged)="selectFile(openStep.value!.id, $event)"
+    (selectedIconChanged)="selectFile(openStep!.id, $event)"
     (openPrototype)="openPrototype($event)"
     (openDatabase)="openDatabase()"
     (openProj)="setWorkflow($event)"

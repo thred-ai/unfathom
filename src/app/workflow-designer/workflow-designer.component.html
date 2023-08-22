@@ -1,13 +1,12 @@
 <div
   class="w-100 h-100 d-flex justify-content-center align-items-start"
   #parent
-  (click)="selectedFileChanged.emit('main')"
 >
   <div
     class="h-100 d-flex justify-content-between align-items-center section-background"
     [style.width.px]="parent.clientWidth"
   >
-    <div id="container"></div>
+    <div class="w-100 h-100" id="container"></div>
 
 
 
@@ -74,15 +73,15 @@
         </div>
       </div> -->
 
-    <!-- <div
-    *ngIf="selectedFile && selectedFile.id != 'main'"
+    <div
+    *ngIf="selectedFile"
     class="h-100 border-table-left"
-    style="width: 300px !important; flex-grow: 1"
+    style="width: 300px !important;"
   >
   
     <div
       class="primary-background h-100 w-100"
-      [hidden]="selectedFile && selectedFile.id == 'main'"
+      [hidden]="!selectedFile"
     >
   
       <mat-tab-group
@@ -100,7 +99,7 @@
             class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
           >
             <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-              <ng-container
+              <!-- <ng-container
                 *ngIf="
                   selectedFile.type == 'gpt-LLM' ||
                   selectedFile.type == 'switch' ||
@@ -276,7 +275,7 @@
                   >
                   </verticalai-select-field>
                 </div>
-              </ng-container>
+              </ng-container> -->
             </div>
           </div>
         </ng-template>
@@ -313,7 +312,7 @@
     </div>
   
   
-  </div> -->
+  </div>
   </div>
 
   
@@ -352,7 +351,7 @@
       <mat-icon> chevron_right </mat-icon>
     </div>
   </div>
-  </div> -->
+  </div>
 </div>
 
 <div class="position-fixed bg-info" style="width: 100px; height: 100px; z-index: 1;">
@@ -369,7 +368,7 @@
 <!-- standard material menu -->
 <mat-menu #rightMenu="matMenu" class="primary-background">
   <ng-template matMenuContent let-item="item" let-step="step">
-    <ng-container *ngIf="item.id != 'app' && item.id != 'main'">
+    <ng-container *ngIf="item.id != 'app'">
       <button
         mat-menu-item
         class="primary-text proj"

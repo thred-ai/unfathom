@@ -917,7 +917,7 @@ export class LoadService {
       )[0];
       console.log(docs2);
 
-      if (docs_2.clientId != clientId) {
+      if (docs_2 && docs_2.clientId != clientId) {
         callback(docs_2?.layout);
       }
     });

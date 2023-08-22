@@ -50,6 +50,9 @@ export class WorkflowComponent implements OnInit {
   newAPIRequest?: APIRequest;
 
   workflow = new BehaviorSubject<Executable | undefined>(undefined);
+  items = new BehaviorSubject<TaskTree[] | undefined>(undefined);
+
+  openStep: Cell.Properties = {};
 
   models: SceneDefinition[] = [];
 
@@ -57,7 +60,7 @@ export class WorkflowComponent implements OnInit {
 
   mode = 'sidebar';
 
-  selectedIcon: string = 'schema';
+  selectedIcon: string = 'design';
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -175,10 +178,6 @@ export class WorkflowComponent implements OnInit {
     // }
   }
 
-  items = new BehaviorSubject<TaskTree[] | undefined>(undefined);
-
-  openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
-
   classes: Dict<any> = {};
 
   constructor(
@@ -190,14 +189,13 @@ export class WorkflowComponent implements OnInit {
     private route: ActivatedRoute,
     private httpClient: HttpClient,
     private dialog: MatDialog
-  ) {
-  }
+  ) {}
 
-  clientId!: string
+  clientId!: string;
 
   async ngOnInit() {
     // setTimeout(function(){debugger;}, 5000)
-    this.clientId = this.loadService.newUtilID
+    this.clientId = this.loadService.newUtilID;
 
     await Promise.all(
       verticalkit.controllers.map(async (controller) => {
@@ -233,9 +231,16 @@ export class WorkflowComponent implements OnInit {
       this.models = s ?? [];
     });
 
-    this.workflow.subscribe(async (w) => {
-      
+    this.designerService.openStep.subscribe((step) => {
+      if (step) {
+        console.log(step)
+        this.openStep = step
+        this.selectFile(step.id, this.selectedIcon)
+        this.cdr.detectChanges();
+      }
     });
+
+    this.workflow.subscribe(async (w) => {});
 
     this.loadService.loadedUser.subscribe((user) => {
       if (user) {
@@ -249,14 +254,16 @@ export class WorkflowComponent implements OnInit {
           if (this.dev && this.dev.utils) {
             this.loadService.getLayout(proj, this.clientId, async (layout) => {
               let workflow =
-                this.workflow.value ?? this.dev?.utils.find((f) => f.id == proj) ?? this.dev?.utils[0];
-                console.log(workflow)
+                this.workflow.value ??
+                this.dev?.utils.find((f) => f.id == proj) ??
+                this.dev?.utils[0];
+              console.log(workflow);
               if (workflow) {
-                if (layout){
+                if (layout) {
                   workflow.sceneLayout = layout;
                 }
 
-                this.activeWorkflow = workflow
+                this.activeWorkflow = workflow;
 
                 await this.selectFile(
                   file ?? 'main',
@@ -265,13 +272,8 @@ export class WorkflowComponent implements OnInit {
                   false
                 );
 
-                if (!this.openStep.value) {
-                  await this.selectFile(
-                    'main',
-                    selectedModule,
-                    workflow,
-                    true
-                  );
+                if (!this.openStep) {
+                  await this.selectFile('main', selectedModule, workflow, true);
                 }
 
                 this.initExecutable(workflow);
@@ -713,8 +715,8 @@ export class WorkflowComponent implements OnInit {
     update = true
   ) {
     if (workflow && fileId && selectedModule) {
-      if (this.openStep.value?.id != fileId) {
-        this.openStep.next(this.findScene(fileId));
+      if (this.openStep?.id != fileId) {
+        this.designerService.openStep.next(this.findScene(fileId));
       }
       this.selectedIcon = selectedModule;
 

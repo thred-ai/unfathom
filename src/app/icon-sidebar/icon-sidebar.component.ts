@@ -101,7 +101,7 @@ export class IconSidebarComponent implements OnInit {
       }
     });
 
-    this.workflowComponent.openStep.subscribe((s) => {
+    this.designerService.openStep.subscribe((s) => {
       this.selectedStep = s;
     });
 
