@@ -75,6 +75,22 @@ export class IconSidebarComponent implements OnInit {
     }
   }
 
+  get canUndo(){
+    return this.designerService.canUndo
+  }
+
+  get canRedo(){
+    return this.designerService.canRedo
+  }
+
+  undo(){
+    this.designerService.undo()
+  }
+
+  redo(){
+    this.designerService.redo()
+  }
+
   startDrag(e: MouseEvent) {
     // The node is a dragged node, which is also a node placed on the canvas by default, and any attribute can be customized
     const node = this.newScene();
@@ -182,20 +198,11 @@ export class IconSidebarComponent implements OnInit {
   }
 
   delete(id: string) {
-    // let file = this.executable?.scenes;
-    // if (this.loadService.confirmDelete()) {
-    //   if (file && this.executable && this.selectedIcon) {
-    //     let index = file.findIndex((f) => f.id == id);
-    //     if (index > -1) {
-    //       file.splice(index, 1);
-    //       this.publish.emit(this.executable);
-    //       if (this.selectedIcon == 'controllers') {
-    //         this.workflowComponent.setWorkflow(this.executable!.id, 'main');
-    //       }
-    //     }
-    //   }
-    // }
+
+    this.graph?.removeCell(id)
+
   }
+
 
   public saveLayout() {
     // this.definition = definition;

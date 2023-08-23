@@ -32,6 +32,7 @@
     "@antv/x6": "^2.13.1",
     "@antv/x6-angular-shape": "^2.0.1",
     "@antv/x6-plugin-dnd": "^2.0.6",
+    "@antv/x6-plugin-history": "^2.2.3",
     "@antv/x6-plugin-minimap": "^2.0.5",
     "@antv/x6-plugin-selection": "^2.1.7",
     "@antv/x6-plugin-snapline": "^2.1.7",

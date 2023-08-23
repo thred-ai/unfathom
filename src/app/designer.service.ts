@@ -6,15 +6,12 @@ import { register } from '@antv/x6-angular-shape';
 import { NodeComponent } from './node/node.component';
 import { Graph, Cell, Edge } from '@antv/x6';
 import { Snapline } from '@antv/x6-plugin-snapline';
-import { Dnd } from '@antv/x6-plugin-dnd';
 import { Selection } from '@antv/x6-plugin-selection';
 import { Transform } from '@antv/x6-plugin-transform';
-import { SceneNode } from './models/workflow/scene-node.model';
 import { Scene } from './models/workflow/scene.model';
 import { LoadService } from './load.service';
 import { MiniMap } from '@antv/x6-plugin-minimap';
-import { Executable } from './models/workflow/executable.model';
-import { TaskTree } from './models/workflow/task-tree.model';
+import { History } from '@antv/x6-plugin-history';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +27,10 @@ export class DesignerService {
   pubJSON = new BehaviorSubject<{ cells: Cell.Properties[] } | undefined>(
     undefined
   );
+
+  canRedo = false;
+  canUndo = false;
+
   openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
 
   // this.toolboxConfiguration.next([new SceneDefinition("Scene", "", "scene")])
@@ -153,6 +154,25 @@ export class DesignerService {
       });
 
       this.graph.use(
+        new History({
+          enabled: true,
+          stackSize: 30,
+          beforeAddCommand: (event, args) => {
+            console.log(args);
+            let a = args as any;
+            if (a && a['cell'] && a['cell']['shape'] == 'edge') {
+              let edge = this.graph?.getCellById(a['cell'].id);
+
+              edge?.removeProp('sourceMagnet');
+              edge?.removeProp('sourceView');
+              edge?.removeProp('targetMagnet');
+              edge?.removeProp('targetView');
+            }
+          },
+        })
+      );
+
+      this.graph.use(
         new Snapline({
           enabled: true,
         })
@@ -202,6 +222,15 @@ export class DesignerService {
         }
       });
 
+      this.graph.on('history:change', () => {
+        // this.setState({
+        //   canRedo : graph . canRedo ( ) ,
+        //   canUndo: graph.canUndo(),
+        // })
+        this.canRedo = this.graph?.canRedo() ?? true;
+        this.canUndo = this.graph?.canUndo() ?? false;
+      });
+
       this.graph.on('edge:selected', ({ edge }) => {
         // console.log(edge);
         // node.updateData({ ngArguments: { selected: true } });
@@ -214,7 +243,7 @@ export class DesignerService {
       });
 
       this.graph.on('cell:changed', ({ cell, options }) => {
-        console.log("CHANGED")
+        console.log('CHANGED');
         this.processGraph(cell, options);
       });
 
@@ -224,9 +253,16 @@ export class DesignerService {
       });
 
       this.graph.on('cell:added', ({ cell, options }) => {
-        console.log("ADDED")
+        console.log('ADDED');
         this.processGraph(cell, options);
       });
+
+      // this.graph.on('edge:selected', ({ edge, options }) => {
+      //   edge.removeProp('sourceMagnet');
+      //   edge.removeProp('sourceView');
+      //   edge.removeProp('targetMagnet');
+      //   edge.removeProp('targetView');
+      // })
 
       register({
         shape: 'scene-node',
@@ -254,7 +290,7 @@ export class DesignerService {
   }
 
   processGraph(cell: Cell<Cell.Properties>, options: Cell.SetOptions) {
-    if (!options['static']) {
+    if (!options['static'] || !options) {
       if (cell.shape == 'edge') {
         cell.removeProp('sourceMagnet');
         cell.removeProp('sourceView');
@@ -262,8 +298,10 @@ export class DesignerService {
         cell.removeProp('targetView');
       }
 
+      console.log('oi');
+
       let json = this.graph?.toJSON();
-      console.log(json)
+      console.log(json);
 
       if (json) {
         this.pubGraph.next(this.graph);
@@ -308,5 +346,13 @@ export class DesignerService {
     });
 
     this.pubGraph.next(this.graph);
+  }
+
+  undo() {
+    this.graph?.undo();
+  }
+
+  redo() {
+    this.graph?.redo();
   }
 }

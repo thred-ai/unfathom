@@ -21,7 +21,7 @@ import { Executable } from '../models/workflow/executable.model';
 import { Developer } from '../models/user/developer.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Scene } from '../models/workflow/scene.model';
-import { Cell } from '@antv/x6';
+import { Cell, Graph } from '@antv/x6';
 import { DesignerService } from '../designer.service';
 
 @Component({
@@ -60,6 +60,7 @@ export class FileSidebarComponent implements OnInit {
   items: Cell.Properties[] = [];
 
   selectedFile?: string;
+  graph?: Graph;
 
   constructor(
     private workflowComponent: WorkflowComponent,
@@ -69,21 +70,8 @@ export class FileSidebarComponent implements OnInit {
   ) {}
 
   removeFile(id: string) {
-    // let file = this.workflow?.scenes;
 
-    // if (this.loadService.confirmDelete()) {
-    //   if (file && this.workflow && this.selectedIcon) {
-    //     let index = file.findIndex((f) => f.id == id);
-    //     if (index > -1) {
-    //       file.splice(index, 1);
-    //       this.detailsChanged.emit(this.workflow);
-
-    //       if (this.selectedIcon == 'controllers') {
-    //         this.workflowComponent.setWorkflow(this.workflow!.id, 'main');
-    //       }
-    //     }
-    //   }
-    // }
+    this.graph?.removeCell(id)
   }
 
   ngOnInit(): void {
@@ -97,9 +85,6 @@ export class FileSidebarComponent implements OnInit {
 
         this.items = w.sceneLayout.cells.filter(t => t.shape != 'edge')
 
-        console.log(w.sceneLayout.cells)
-
-        // w.sceneLayout.cells
       }
     });
     this.designerService.openStep.subscribe((step) => {
@@ -110,6 +95,12 @@ export class FileSidebarComponent implements OnInit {
     this.loadService.loadedUser.subscribe((l) => {
       if (l) {
         this.loadedUser = l;
+      }
+    });
+
+    this.designerService.pubGraph.subscribe((g) => {
+      if (g) {
+        this.graph = g;
       }
     });
     // this.workflowComponent.items.subscribe((i) => {

@@ -30,45 +30,14 @@
       </div>
     </div>
 
-    <!-- <div
-      class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
-      style="aspect-ratio: 1"
-      role="button"
-      [matTooltip]="'Zoom In'"
-      [matTooltipPosition]="'below'"
-      (click)="zoomIn()"
-    >
-      <div
-        class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
-        style="aspect-ratio: 1; font-weight: 100 !important"
-        role="button"
-      >
-        <mat-icon>zoom_in</mat-icon>
-      </div>
-    </div>
-    <div
-      class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
-      style="aspect-ratio: 1"
-      role="button"
-      [matTooltip]="'Zoom Out'"
-      [matTooltipPosition]="'below'"
-      (click)="zoomOut()"
-    >
-      <div
-        class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
-        style="aspect-ratio: 1"
-        role="button"
-      >
-        <mat-icon>zoom_out</mat-icon>
-      </div>
-    </div>
+
     <div
       class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
       style="aspect-ratio: 1"
       role="button"
       [matTooltip]="'Center Align'"
       [matTooltipPosition]="'below'"
-      (click)="reset()"
+      (click)="null"
     >
       <div
         class="mx-2 primary-text-dark fw-bold d-flex justify-content-center align-items-center"
@@ -93,7 +62,7 @@
       >
         <mat-icon>{{ showingGrid ? "grid_on" : "grid_off" }}</mat-icon>
       </div>
-    </div> -->
+    </div>
 
     <div
       class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
@@ -124,6 +93,39 @@
         </div>
       </div>
     </div>
+
+    <div
+    class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
+    style="aspect-ratio: 1"
+    role="button"
+    [matTooltip]="'Undo'"
+    [matTooltipPosition]="'below'"
+    (click)="undo()"
+  >
+    <div
+      class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
+      style="aspect-ratio: 1; font-weight: 100 !important"
+      role="button"
+    >
+      <mat-icon>undo</mat-icon>
+    </div>
+  </div>
+  <div
+    class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
+    style="aspect-ratio: 1"
+    role="button"
+    [matTooltip]="'Redo'"
+    [matTooltipPosition]="'below'"
+    (click)="redo()"
+  >
+    <div
+      class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
+      style="aspect-ratio: 1"
+      role="button"
+    >
+      <mat-icon>redo</mat-icon>
+    </div>
+  </div>
 
     <div
       class="h-100 proj mt-0 d-flex justify-content-center align-items-center"

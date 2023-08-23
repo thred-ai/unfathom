@@ -201,17 +201,17 @@
 <mat-menu #rightMenu="matMenu" class="primary-background">
   <ng-template matMenuContent let-item="item">
     <ng-container
-      *ngIf="item.scene.id != 'app' && item.scene.id != 'main'; else appSettings"
+      *ngIf="item.data.ngArguments.scene.id != 'app' && item.data.ngArguments.scene.id != 'main'; else appSettings"
     >
-      <button
+      <!-- <button
         mat-menu-item
         class="primary-text"
-        (click)="openControllerSettings(item.scene.id)"
+        (click)="openControllerSettings(item.data.scene.id)"
       >
         Configure
-      </button>
+      </button> -->
 
-      <button mat-menu-item class="primary-text" (click)="removeFile(item.scene.id)">
+      <button mat-menu-item class="primary-text" (click)="removeFile(item.id)">
         Delete
       </button>
     </ng-container>
