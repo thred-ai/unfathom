@@ -89,7 +89,6 @@ export class FileSidebarComponent implements OnInit {
   ngOnInit(): void {
     this.workflowComponent.workflow.subscribe((w) => {
       if (w) {
-        console.log(w)
         this.workflow = w;
         // this.items = [
         //   new Cell.Properties(new Scene('main', 'Storyboard', undefined, ['assets/main.png']), {}),

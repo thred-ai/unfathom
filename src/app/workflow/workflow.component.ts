@@ -233,9 +233,8 @@ export class WorkflowComponent implements OnInit {
 
     this.designerService.openStep.subscribe((step) => {
       if (step) {
-        console.log(step)
-        this.openStep = step
-        this.selectFile(step.id, this.selectedIcon)
+        this.openStep = step;
+        this.selectFile(step.id, this.selectedIcon);
         this.cdr.detectChanges();
       }
     });
@@ -257,26 +256,37 @@ export class WorkflowComponent implements OnInit {
                 this.workflow.value ??
                 this.dev?.utils.find((f) => f.id == proj) ??
                 this.dev?.utils[0];
+                console.log(proj);
               console.log(workflow);
+              console.log(layout);
+
               if (workflow) {
                 if (layout) {
                   workflow.sceneLayout = layout;
                 }
+                else{
+                  console.log("nol")
+                }
 
                 this.activeWorkflow = workflow;
 
-                await this.selectFile(
-                  file ?? 'main',
-                  selectedModule,
-                  workflow,
-                  false
-                );
+                // if (!this.openStep) {
+                //   await this.selectFile(
+                //     file ?? 'main',
+                //     selectedModule,
+                //     workflow,
+                //     true
+                //   );
+                // }
 
                 if (!this.openStep) {
                   await this.selectFile('main', selectedModule, workflow, true);
                 }
 
                 this.initExecutable(workflow);
+              }
+              else{
+                console.log("nil")
               }
             });
           }

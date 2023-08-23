@@ -54,18 +54,12 @@ export class DesignerService {
       ?.getCells()
       .find((cell) => (cell.data.ngArguments.scene as Scene).id == id);
 
-    console.log(node);
-    console.log(scene);
-
     node?.updateData({
       ngArguments: {
         scene: scene,
       },
     });
-
     let json = this.graph?.toJSON();
-
-    console.log(json);
     if (json) {
       this.pubGraph.next(this.graph);
       this.pubJSON!.next(json as any);
@@ -213,64 +207,23 @@ export class DesignerService {
         // node.updateData({ ngArguments: { selected: true } });
       });
 
-
-
       this.graph.on('blank:click', () => {
-        console.log("OIII")
         // console.log(node);
         // node.updateData({ ngArguments: { selected: true } });
         this.openStep.next(undefined);
       });
 
       this.graph.on('cell:changed', ({ cell, options }) => {
-        console.log(cell);
-        if (cell.shape == 'edge') {
-          cell.removeProp('sourceMagnet');
-          cell.removeProp('sourceView');
-          cell.removeProp('targetMagnet');
-          cell.removeProp('targetView');
-        }
-        let json = this.graph?.toJSON();
-
-        console.log(json);
-        if (json) {
-          this.pubGraph.next(this.graph);
-          this.pubJSON!.next(json as any);
-        }
+        this.processGraph(cell, options);
       });
 
       this.graph.on('cell:removed', ({ cell, options }) => {
         // console.log(cell);
-        if (cell.shape == 'edge') {
-          cell.removeProp('sourceMagnet');
-          cell.removeProp('sourceView');
-          cell.removeProp('targetMagnet');
-          cell.removeProp('targetView');
-        }
-        let json = this.graph?.toJSON();
-
-        console.log(json);
-        if (json) {
-          this.pubJSON!.next(json as any);
-        }
+        this.processGraph(cell, options);
       });
 
       this.graph.on('cell:added', ({ cell, options }) => {
-        if (cell.shape == 'edge') {
-          cell.removeProp('sourceMagnet');
-          cell.removeProp('sourceView');
-          cell.removeProp('targetMagnet');
-          cell.removeProp('targetView');
-        }
-
-        console.log(cell);
-
-        let json = this.graph?.toJSON();
-
-        if (json) {
-          this.pubGraph.next(this.graph);
-          this.pubJSON!.next(json as any);
-        }
+        this.processGraph(cell, options);
       });
 
       register({
@@ -298,19 +251,37 @@ export class DesignerService {
     }
   }
 
+  processGraph(cell: Cell<Cell.Properties>, options: Cell.SetOptions) {
+    if (!options['static']) {
+      if (cell.shape == 'edge') {
+        cell.removeProp('sourceMagnet');
+        cell.removeProp('sourceView');
+        cell.removeProp('targetMagnet');
+        cell.removeProp('targetView');
+      }
+
+      let json = this.graph?.toJSON();
+
+      if (json) {
+        this.pubGraph.next(this.graph);
+        this.pubJSON!.next(json as any);
+      }
+    }
+  }
+
   importJSON(json: { cells: Cell.Properties[] }) {
-    this.graph?.fromJSON(json.cells);
+    this.graph?.fromJSON(json.cells, { static: true });
     this.pubGraph.next(this.graph);
   }
 
-  checkAlgo(json: Cell.Properties) {
+  checkAlgo(json: { cells: Cell.Properties[] }) {
     //check incoming add/modify
-    //check incoming add/modify
+
     json['cells']?.forEach((cellObj: any) => {
       let cell = this.graph?.getCellById(cellObj.id);
       if (cell) {
         Object.keys(cellObj).forEach((key) => {
-          cell?.prop(key, cellObj[key]);
+          cell?.setProp(key, cellObj[key], { static: true });
         });
       } else {
         var newCell: Cell | undefined;
@@ -320,7 +291,7 @@ export class DesignerService {
           newCell = this.graph?.createEdge(cellObj);
         }
         if (newCell) {
-          this.graph?.addCell(newCell);
+          this.graph?.addCell(newCell, { static: true });
         }
       }
     });

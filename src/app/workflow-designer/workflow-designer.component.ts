@@ -10,7 +10,6 @@ import {
   OnInit,
   Output,
   QueryList,
-  Renderer2,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -21,33 +20,22 @@ import {
   Step,
   StepEditorContext,
   StepsConfiguration,
-  ToolboxConfiguration,
 } from 'verticalai-workflow-designer';
 import { DesignerComponent } from 'vertical-ai-designer-angular';
 import { Dict, LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
-import { AIModelType } from '../models/workflow/ai-model-type.model';
 import { TrainingData } from '../models/workflow/training-data.model';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Key } from '../models/workflow/key.model';
 import { APIRequest } from '../models/workflow/api-request.model';
 import { MatDialog } from '@angular/material/dialog';
 import { WorkflowComponent } from '../workflow/workflow.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { SettingsComponent } from '../settings/settings.component';
 import { DesignerService } from '../designer.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Scene } from '../models/workflow/scene.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
-import { register } from '@antv/x6-angular-shape';
-import { NodeComponent } from '../node/node.component';
-import { Graph, Cell, Edge } from '@antv/x6';
-import { Snapline } from '@antv/x6-plugin-snapline';
-import { Dnd } from '@antv/x6-plugin-dnd';
-import { Selection } from '@antv/x6-plugin-selection';
-import { Transform } from '@antv/x6-plugin-transform';
-import { SceneNode } from '../models/workflow/scene-node.model';
+import { Graph, Cell } from '@antv/x6';
 
 @Component({
   selector: 'verticalai-workflow-designer',
@@ -122,10 +110,8 @@ export class WorkflowDesignerComponent
     private cdr: ChangeDetectorRef,
     private clipboard: Clipboard,
     private dialog: MatDialog,
-    private renderer: Renderer2,
     private loadService: LoadService,
     private workflowComponent: WorkflowComponent,
-    private _snackBar: MatSnackBar,
     private designerService: DesignerService,
     private injector: Injector
   ) {}
@@ -187,8 +173,6 @@ export class WorkflowDesignerComponent
   //     }
   //   }, 10);
   // }
-
-  
 
   ata = {
     cells: [
@@ -437,22 +421,22 @@ export class WorkflowDesignerComponent
 
     this.designerService.initGraph(this.injector);
 
+    this.designerService.pubJSON.subscribe((json) => {
+      if (json && this.workflow && json != this.workflow.sceneLayout) {
+        this.workflow.sceneLayout = json;
+        this.saveLayout();
+      }
+    });
+
     this.workflowComponent.workflow.subscribe((w) => {
       if (w) {
         this.cdr.detectChanges();
         this.workflow = w;
         if (!this.initialized) {
           this.initialized = true;
-          this.designerService.pubJSON.subscribe((json) => {
-            if (json) {
-              this.workflow!.sceneLayout = json;
-              console.log(json);
-              this.saveLayout();
-            }
-          });
+
           this.designerService.importJSON(this.workflow.sceneLayout);
         } else {
-          console.log("CHECKING ALGO")
           this.designerService.checkAlgo(w.sceneLayout);
         }
       }
@@ -490,8 +474,8 @@ export class WorkflowDesignerComponent
     // );
 
     this.designerService.openStep.subscribe((step) => {
-        this.selectedFile = step;
-      
+      this.selectedFile = step;
+
       this.rerenderDesigner();
     });
   }

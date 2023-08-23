@@ -898,15 +898,13 @@ export class LoadService {
   getLayout(
     id: string,
     clientId: string,
-    callback: (layout: SceneLayout) => any
+    callback: (layout?: SceneLayout) => any
   ) {
-    console.log(clientId);
     this.projectSub?.unsubscribe();
     let q = this.db.collection(`Workflows/${id}/Layouts`, (ref) =>
       ref.orderBy('modified', 'desc').limit(1)
     );
     this.projectSub = q.valueChanges().subscribe((docs2) => {
-      console.log('poi');
       let docs_2 = (
         docs2 as {
           modified: number;
@@ -915,10 +913,13 @@ export class LoadService {
           clientId: string;
         }[]
       )[0];
-      console.log(docs2);
-
-      if (docs_2 && docs_2.clientId != clientId) {
-        callback(docs_2?.layout);
+      if (docs_2) {
+        if (docs_2.clientId != clientId) {
+          callback(docs_2?.layout);
+        }
+      } 
+      else {
+        callback(undefined);
       }
     });
   }
