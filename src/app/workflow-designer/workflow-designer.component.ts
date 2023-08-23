@@ -424,6 +424,8 @@ export class WorkflowDesignerComponent
     this.designerService.pubJSON.subscribe((json) => {
       if (json && this.workflow && json != this.workflow.sceneLayout) {
         this.workflow.sceneLayout = json;
+        console.log("CHANGED JSON")
+        console.log(json)
         this.saveLayout();
       }
     });

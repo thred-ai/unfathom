@@ -214,6 +214,7 @@ export class DesignerService {
       });
 
       this.graph.on('cell:changed', ({ cell, options }) => {
+        console.log("CHANGED")
         this.processGraph(cell, options);
       });
 
@@ -223,6 +224,7 @@ export class DesignerService {
       });
 
       this.graph.on('cell:added', ({ cell, options }) => {
+        console.log("ADDED")
         this.processGraph(cell, options);
       });
 
@@ -261,6 +263,7 @@ export class DesignerService {
       }
 
       let json = this.graph?.toJSON();
+      console.log(json)
 
       if (json) {
         this.pubGraph.next(this.graph);

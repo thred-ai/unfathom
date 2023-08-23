@@ -90,11 +90,14 @@ export class FileSidebarComponent implements OnInit {
     this.workflowComponent.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;
+        console.log(w)
         // this.items = [
         //   new Cell.Properties(new Scene('main', 'Storyboard', undefined, ['assets/main.png']), {}),
         // ].concat(w.sceneLayout.cells);
 
         this.items = w.sceneLayout.cells.filter(t => t.shape != 'edge')
+
+        console.log(w.sceneLayout.cells)
 
         // w.sceneLayout.cells
       }

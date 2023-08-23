@@ -270,14 +270,14 @@ export class WorkflowComponent implements OnInit {
 
                 this.activeWorkflow = workflow;
 
-                // if (!this.openStep) {
-                //   await this.selectFile(
-                //     file ?? 'main',
-                //     selectedModule,
-                //     workflow,
-                //     true
-                //   );
-                // }
+                if (!this.openStep) {
+                  await this.selectFile(
+                    file ?? 'main',
+                    selectedModule,
+                    workflow,
+                    true
+                  );
+                }
 
                 if (!this.openStep) {
                   await this.selectFile('main', selectedModule, workflow, true);
@@ -360,6 +360,8 @@ export class WorkflowComponent implements OnInit {
           }
           return;
         } else if (mode == 2) {
+          console.log(workflow)
+          this.activeWorkflow = workflow
           await this.loadService.saveLayout(workflow, this.clientId);
 
           return;
@@ -565,30 +567,6 @@ export class WorkflowComponent implements OnInit {
       // }
       // this.loadService.loadedUser.next(dev);
       this.cdr.detectChanges();
-    }
-  }
-
-  async changeLayout(data: { time: number; layout?: any; mode: number }) {
-    if (data.time) {
-      if (data.layout) {
-        let i = this.changes.indexOf(data.time);
-        if (i > -1) {
-          this.changes.splice(i, 1);
-        }
-        if (this.workflow.value) {
-          // this.workflow..layout = data.layout;
-          this.cdr.detectChanges();
-          //toast
-          this.edited = true;
-
-          if (this.changes.length == 0) {
-            this.loadingChangeMode = 0;
-          }
-        }
-      } else {
-        // this.loadingChangeMode = data.mode;
-        this.changes.push(data.time);
-      }
     }
   }
 
