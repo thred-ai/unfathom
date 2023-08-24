@@ -235,9 +235,10 @@ export class WorkflowComponent implements OnInit {
     this.designerService.openStep.subscribe((step) => {
       if (step) {
         this.openStep = step;
-        this.selectFile(step.id, this.selectedIcon);
+        // this.selectFile(step.id, this.selectedIcon);
         this.cdr.detectChanges();
       }
+      this.updateRoute(step?.id)
     });
 
     this.workflow.subscribe(async (w) => {});
@@ -276,7 +277,8 @@ export class WorkflowComponent implements OnInit {
 
                 this.activeWorkflow = workflow;
 
-                if (!this.openStep) {
+                console.log(this.openStep.id)
+                if (!this.openStep.id) {
                   await this.selectFile(
                     file ?? 'main',
                     selectedModule,
@@ -285,7 +287,7 @@ export class WorkflowComponent implements OnInit {
                   );
                 }
 
-                if (!this.openStep) {
+                if (!this.openStep.id) {
                   await this.selectFile('main', selectedModule, workflow, true);
                 }
 
@@ -299,6 +301,23 @@ export class WorkflowComponent implements OnInit {
         });
       }
     });
+  }
+
+  async updateRoute(stepId: string = 'main'){
+    if (this.workflow.value && this.selectedIcon){
+      await this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          project: this.workflow.value.id,
+          file: stepId,
+          module: this.selectedIcon,
+        },
+        queryParamsHandling: 'merge',
+        // preserve the existing query params in the route
+        skipLocationChange: false,
+        // do not trigger navigation
+      });
+    }
   }
 
   initExecutable(w?: Executable, fetchExecutable = true) {
@@ -716,23 +735,10 @@ export class WorkflowComponent implements OnInit {
         this.designerService.openStep.next(this.findScene(fileId));
       }
       this.selectedIcon = selectedModule;
-
-      if (update) {
-        await this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: {
-            project: workflow.id,
-            file: fileId,
-            module: selectedModule,
-          },
-          queryParamsHandling: 'merge',
-          // preserve the existing query params in the route
-          skipLocationChange: false,
-          // do not trigger navigation
-        });
-      }
     }
   }
+
+
 
   jsFormattedName(name: string, same: number) {
     return name + (same > 1 ? `(${same})` : '');
