@@ -3,20 +3,12 @@ import { Developer } from '../models/user/developer.model';
 import { Dict, LoadService } from '../load.service';
 import { AppComponent } from '../app.component';
 import { WorkflowComponent } from '../workflow/workflow.component';
-import * as $ from 'jquery';
-import {
-  Step,
-  StepDefinition,
-  ToolboxConfiguration,
-  ToolboxItem,
-} from 'verticalai-workflow-designer';
 import { DesignerService } from '../designer.service';
 import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
-import { Graph, Cell, Edge } from '@antv/x6';
+import { Graph, Cell } from '@antv/x6';
 import { Dnd } from '@antv/x6-plugin-dnd';
-import { SceneNode } from '../models/workflow/scene-node.model';
 
 @Component({
   selector: 'app-icon-sidebar',

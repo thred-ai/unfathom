@@ -103,14 +103,6 @@ export class FileSidebarComponent implements OnInit {
         this.graph = g;
       }
     });
-    // this.workflowComponent.items.subscribe((i) => {
-    //   if (this.workflow) {
-    //     this.selectedFile =
-    //       this.workflowComponent.openFileId ?? this.items[0]?.type == 'model'
-    //         ? this.items[0].id
-    //         : this.items[0]?.categoryTask?.id;
-    //   }
-    // });
   }
 
   checkName() {}
