@@ -169,6 +169,7 @@ export class WorkflowComponent implements OnInit {
         }
       } else {
         this.activeWorkflow = undefined;
+        this
       }
       await this.selectFile(fileId, this.selectedIcon ?? 'design');
     }, 100);
@@ -260,6 +261,11 @@ export class WorkflowComponent implements OnInit {
               console.log(workflow);
               console.log(layout);
 
+              if (!workflow){
+                this.activeWorkflow = undefined
+                workflow = this.workflow.value
+              }
+
               if (workflow) {
                 if (layout) {
                   workflow.sceneLayout = layout;
@@ -345,7 +351,9 @@ export class WorkflowComponent implements OnInit {
   }
 
   async save(mode = 1, update = false, workflow = this.workflow.value) {
-    if (workflow && this.isValid) {
+    console.log("tooooooooooooooooooooo[")
+
+    if (workflow) {
       try {
         if (mode == 1) {
           let exec = await this.fillExecutable(workflow);
