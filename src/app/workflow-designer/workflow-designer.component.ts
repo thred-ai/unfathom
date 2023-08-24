@@ -174,167 +174,6 @@ export class WorkflowDesignerComponent
   //   }, 10);
   // }
 
-  ata = {
-    cells: [
-      {
-        position: {
-          x: 100,
-          y: 100,
-        },
-        size: {
-          width: 350,
-          height: 450,
-        },
-        view: 'angular-shape-view',
-        shape: 'scene-node',
-        id: '1',
-        data: {
-          ngArguments: {
-            value: 'oi',
-          },
-        },
-        tools: {
-          items: ['button-remove'],
-        },
-        ports: {
-          groups: {
-            out: {
-              position: 'right',
-              attrs: {
-                circle: {
-                  magnet: true,
-                  stroke: '#fff',
-                  r: 5,
-                },
-              },
-            },
-          },
-          items: [
-            {
-              id: 'port2',
-              group: 'out',
-            },
-          ],
-        },
-        zIndex: 1,
-      },
-      {
-        position: {
-          x: 580,
-          y: 580,
-        },
-        size: {
-          width: 350,
-          height: 450,
-        },
-        view: 'angular-shape-view',
-        shape: 'scene-node',
-        id: '2',
-        data: {
-          ngArguments: {
-            value: 'Oops Oh my god',
-          },
-        },
-        tools: {
-          items: ['button-remove'],
-        },
-        ports: {
-          groups: {
-            out: {
-              position: 'right',
-              attrs: {
-                circle: {
-                  magnet: true,
-                  stroke: '#fff',
-                  r: 5,
-                },
-              },
-            },
-          },
-          items: [
-            {
-              id: 'port2',
-              group: 'out',
-            },
-          ],
-        },
-        zIndex: 2,
-      },
-      {
-        position: {
-          x: 580,
-          y: -70,
-        },
-        size: {
-          width: 350,
-          height: 450,
-        },
-        view: 'angular-shape-view',
-        shape: 'scene-node',
-        id: '3',
-        data: {
-          ngArguments: {
-            value: 'Oops Oh my god again',
-          },
-        },
-        tools: {
-          items: ['button-remove'],
-        },
-        ports: {
-          groups: {
-            out: {
-              position: 'right',
-              attrs: {
-                circle: {
-                  magnet: true,
-                  stroke: '#fff',
-                  r: 5,
-                },
-              },
-            },
-          },
-          items: [
-            {
-              id: 'port2',
-              group: 'out',
-            },
-          ],
-        },
-        zIndex: 3,
-      },
-      {
-        shape: 'edge',
-        id: '2ac8da8c-e5c1-4ddf-bfde-501b25142ac8',
-        source: {
-          cell: '1',
-          port: 'port2',
-        },
-
-        target: {
-          cell: '2',
-        },
-        tools: {
-          items: ['button-remove'],
-        },
-        zIndex: 4,
-      },
-      {
-        shape: 'edge',
-        id: '63c0e419-c795-46be-8743-356552ac8d34',
-        source: {
-          cell: '1',
-          port: 'port2',
-        },
-        tools: {
-          items: ['button-remove'],
-        },
-        target: {
-          cell: '3',
-        },
-        zIndex: 5,
-      },
-    ],
-  };
 
   off =
     'M464.75 400.25 434.75 370.25V322.75H387.25L357.25 292.75H434.75V198.25H344.25V279.75L314.25 249.75V198.25H262.75L232.75 168.25H314.25V77.75H219.25V154.75L189.25 124.75V77.75H142.25L112.25 47.75H434.75Q446.25 47.75 455.5 57T464.75 77.75V400.25ZM344.25 168.25H434.75V77.75H344.25V168.25ZM475.75 496.25 426.75 447.75H94.75Q83.25 447.75 74 438.5T64.75 417.75V85.25L15.25 36.25 36.75 15.75 496.75 475.25 475.75 496.25ZM344.25 417.75H396.75L344.25 365.25V417.75ZM219.25 292.75H272.75L219.25 240.25V292.75ZM219.25 417.75H314.25V334.75L301.75 322.75H219.25V417.75ZM94.75 168.25H147.25L94.75 114.75V168.25ZM94.75 292.75H189.25V210.25L177.25 198.25H94.75V292.75ZM189.25 417.75V322.75H94.75V417.75H189.25Z';
@@ -419,9 +258,9 @@ export class WorkflowDesignerComponent
   public ngOnInit() {
     this.shouldRefresh = true;
 
-    this.designerService.initGraph(this.injector);
-
     this.designerService.pubJSON.subscribe((json) => {
+      console.log(this.workflow?.sceneLayout)
+
       if (json && this.workflow && json != this.workflow.sceneLayout) {
         this.workflow.sceneLayout = json;
         console.log("CHANGED JSON")
@@ -436,11 +275,15 @@ export class WorkflowDesignerComponent
         this.workflow = w;
         if (!this.initialized) {
           this.initialized = true;
-
+          this.designerService.initGraph(this.injector);
           this.designerService.importJSON(this.workflow.sceneLayout);
         } else {
           this.designerService.checkAlgo(w.sceneLayout);
         }
+      }
+      else{
+        this.initialized = false
+        this.workflow = undefined
       }
     });
 
@@ -571,6 +414,7 @@ export class WorkflowDesignerComponent
     // this.definition = definition;
 
     // if (this.)
+    console.log(this.workflow)
 
     this.detailsChanged.emit(this.workflow);
   }
