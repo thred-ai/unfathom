@@ -306,6 +306,11 @@ export class DesignerService {
         cell.removeProp('targetView');
       }
 
+      if (cell && cell.id == this.openStep.value?.id){
+        console.log("next")
+        this.openStep.next(cell.toJSON())
+      }
+
       console.log('oi');
 
       let json = this.graph?.toJSON();
