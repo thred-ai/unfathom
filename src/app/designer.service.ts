@@ -21,7 +21,7 @@ export class DesignerService {
 
   toolboxConfiguration = new BehaviorSubject<SceneDefinition[]>([]);
 
-  private graph?: Graph;
+  graph?: Graph;
 
   pubGraph = new BehaviorSubject<Graph | undefined>(undefined);
   pubJSON = new BehaviorSubject<{ cells: Cell.Properties[] } | undefined>(
@@ -60,6 +60,13 @@ export class DesignerService {
         scene: scene,
       },
     });
+
+    if (node && node.id == this.openStep.value?.id){
+      console.log("next")
+      this.openStep.next(node.toJSON())
+    }
+
+
     let json = this.graph?.toJSON();
     if (json) {
       this.pubGraph.next(this.graph);
@@ -290,6 +297,7 @@ export class DesignerService {
   }
 
   processGraph(cell: Cell<Cell.Properties>, options: Cell.SetOptions) {
+    console.log("tog")
     if (!options['static'] || !options) {
       if (cell.shape == 'edge') {
         cell.removeProp('sourceMagnet');
@@ -301,7 +309,8 @@ export class DesignerService {
       console.log('oi');
 
       let json = this.graph?.toJSON();
-      console.log(json);
+
+      console.log("nog")
 
       if (json) {
         this.pubGraph.next(this.graph);

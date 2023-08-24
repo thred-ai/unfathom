@@ -278,6 +278,7 @@ export class WorkflowDesignerComponent
           this.designerService.initGraph(this.injector);
           this.designerService.importJSON(this.workflow.sceneLayout);
         } else {
+          console.log("check algo")
           this.designerService.checkAlgo(w.sceneLayout);
         }
       }
@@ -387,6 +388,33 @@ export class WorkflowDesignerComponent
     // }
   }
 
+  updateCellName(id: string, value: any){
+   let cell = this.designerService.graph?.getCellById(id)
+
+   let scene = this.selectedFile?.data.ngArguments.scene as Scene
+
+   if (cell && scene){
+    scene.name = value
+    cell.setData({ngArguments: {
+      scene
+    }})
+   }
+  }
+
+  updateCellDesc(id: string, value: any){
+    let cell = this.designerService.graph?.getCellById(id)
+ 
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene
+ 
+    if (cell && scene){
+     scene.description = value
+     cell.setData({ngArguments: {
+       scene
+     }})
+    }
+   }
+
+
   loadedDocs: string[] = [];
 
   downloadDB() {
@@ -419,10 +447,6 @@ export class WorkflowDesignerComponent
     this.detailsChanged.emit(this.workflow);
   }
 
-  public updateName(step: Step, event: Event, context: StepEditorContext) {
-    step.name = (event.target as HTMLInputElement).value;
-    context.notifyNameChanged();
-  }
 
   onInput(ev: any) {
     var value = ev.target!.value;

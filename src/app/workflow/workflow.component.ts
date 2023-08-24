@@ -370,6 +370,7 @@ export class WorkflowComponent implements OnInit {
         } else if (mode == 2) {
           console.log(workflow)
           this.activeWorkflow = workflow
+          console.log("SAVE")
           await this.loadService.saveLayout(workflow, this.clientId);
 
           return;

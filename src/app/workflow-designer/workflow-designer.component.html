@@ -8,8 +8,6 @@
   >
     <div class="w-100 h-100" id="container"></div>
 
-
-
     <!-- <div
         class="w-100 mx-0 d-flex justify-content-start align-items-center h-100"
         style="overflow-x: auto"
@@ -74,32 +72,51 @@
       </div> -->
 
     <div
-    *ngIf="selectedFile"
-    class="h-100 border-table-left"
-    style="width: 300px !important;"
-  >
-  
-    <div
-      class="primary-background h-100 w-100"
-      [hidden]="!selectedFile"
+      *ngIf="selectedFile"
+      class="h-100 border-table-left"
+      style="width: 300px !important"
     >
-  
-      <mat-tab-group
-      #menu
-      class="w-100 h-100"
-      dynamicHeight
-      animationDuration="0ms"
-    >
-      <mat-tab class="tab">
-        <ng-template mat-tab-label>
-          <span class="primary-text"> Design </span>
-        </ng-template>
-        <ng-template matTabContent>
-          <div
-            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-          >
-            <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-              <!-- <ng-container
+      <div class="primary-background h-100 w-100" [hidden]="!selectedFile">
+        <mat-tab-group
+          #menu
+          class="w-100 h-100"
+          dynamicHeight
+          animationDuration="0ms"
+        >
+          <mat-tab class="tab">
+            <ng-template mat-tab-label>
+              <span class="primary-text"> Design </span>
+            </ng-template>
+            <ng-template matTabContent>
+              <div
+                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+              >
+                <div class="w-100 h-100 p-3" style="overflow-y: scroll">
+                  <div class="w-100 pb-3">
+                    <verticalai-text-field
+                      [title]="'Name'"
+                      [value]="selectedFile.data.ngArguments.scene.name"
+                      [placeholder]="'Scene Name'"
+                      (changed)="
+                        updateCellName(selectedFile.id!, $event); saveLayout()
+                      "
+                    >
+                    </verticalai-text-field>
+                  </div>
+
+                  <div class="w-100 pb-3">
+                    <verticalai-textbox
+                      [title]="'Description'"
+                      [value]="selectedFile.data.ngArguments.scene.description"
+                      [placeholder]="'Scene Description'"
+                      (changed)="
+                        updateCellDesc(selectedFile.id!, $event); saveLayout()
+                      "
+                    >
+                    </verticalai-textbox>
+                  </div>
+
+                  <!-- <ng-container
                 *ngIf="
                   selectedFile.type == 'gpt-LLM' ||
                   selectedFile.type == 'switch' ||
@@ -276,46 +293,40 @@
                   </verticalai-select-field>
                 </div>
               </ng-container> -->
-            </div>
-          </div>
-        </ng-template>
-      </mat-tab>
-  
-      <mat-tab class="tab">
-        <ng-template mat-tab-label>
-          <span class="primary-text"> Notes </span>
-        </ng-template>
-        <ng-template matTabContent>
-          <div
-            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-          >
-            <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-  
-              <div class="w-100 pb-3">
-                <verticalai-textbox
-                  [title]="'Controller Notes'"
-                  [value]="selectedFile['notes']"
-                  [placeholder]="'Type something...'"
-                  [minHeight]="200"
-                  [maxHeight]="800"
-                  (changed)="
-                    selectedFile['notes'] = $event; saveLayout()
-                  "
-                >
-                </verticalai-textbox>
+                </div>
               </div>
-            </div>
-          </div>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
+            </ng-template>
+          </mat-tab>
+
+          <mat-tab class="tab">
+            <ng-template mat-tab-label>
+              <span class="primary-text"> Characters </span>
+            </ng-template>
+            <ng-template matTabContent>
+              <div
+                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+              >
+                <div class="w-100 h-100 p-3" style="overflow-y: scroll">
+                  <div class="w-100 pb-3">
+                    <verticalai-textbox
+                      [title]="'Controller Notes'"
+                      [value]="selectedFile['notes']"
+                      [placeholder]="'Type something...'"
+                      [minHeight]="200"
+                      [maxHeight]="800"
+                      (changed)="selectedFile['notes'] = $event; saveLayout()"
+                    >
+                    </verticalai-textbox>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
     </div>
-  
-  
-  </div>
   </div>
 
-  
   <!-- <div class="px-0 mx-0" [style.width.px]="parent.clientWidth">
     <ng-scrollbar
       class="scroller"
@@ -366,43 +377,44 @@
 ></div>
 
 <!-- standard material menu -->
-<mat-menu #rightMenu="matMenu" class="primary-background">
-  <ng-template matMenuContent let-item="item" let-step="step">
-    <ng-container *ngIf="item.id != 'app'">
-      <button
-        mat-menu-item
-        class="primary-text proj"
-        (click)="openBranchSettings(step, item)"
-      >
-        Edit Path
-      </button>
+  <mat-menu #rightMenu="matMenu" class="primary-background">
+    <ng-template matMenuContent let-item="item" let-step="step">
+      <ng-container *ngIf="item.id != 'app'">
+        <button
+          mat-menu-item
+          class="primary-text proj"
+          (click)="openBranchSettings(step, item)"
+        >
+          Edit Path
+        </button>
 
-      <button
-        mat-menu-item
-        class="primary-text proj"
-        *ngIf="step.properties['default'] != item"
-        (click)="step.properties['default'] = item; saveLayout()"
-      >
-        Make Default
-      </button>
+        <button
+          mat-menu-item
+          class="primary-text proj"
+          *ngIf="step.properties['default'] != item"
+          (click)="step.properties['default'] = item; saveLayout()"
+        >
+          Make Default
+        </button>
 
-      <button
-        mat-menu-item
-        [disabled]="true"
-        class="secondary-text proj"
-        *ngIf="step.properties['default'] == item"
-        [disabled]="true"
-      >
-        Default Path
-      </button>
+        <button
+          mat-menu-item
+          [disabled]="true"
+          class="secondary-text proj"
+          *ngIf="step.properties['default'] == item"
+          [disabled]="true"
+        >
+          Default Path
+        </button>
 
-      <button
-        mat-menu-item
-        class="primary-text proj"
-        (click)="deleteBranch(step, item)"
-      >
-        Delete
-      </button>
-    </ng-container>
-  </ng-template>
-</mat-menu>
+        <button
+          mat-menu-item
+          class="primary-text proj"
+          (click)="deleteBranch(step, item)"
+        >
+          Delete
+        </button>
+      </ng-container>
+    </ng-template>
+  </mat-menu>
+</div>
