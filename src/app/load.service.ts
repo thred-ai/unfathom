@@ -388,10 +388,15 @@ export class LoadService {
       );
 
       let uploadData = JSON.parse(JSON.stringify(data));
+
       uploadData.search_name = uploadData.name?.toLowerCase();
 
       if (uploadData.downloads > 0) {
         delete uploadData.downloads;
+      }
+
+      if (uploadData.sceneLayout) {
+        delete uploadData.sceneLayout;
       }
 
       try {
@@ -917,8 +922,7 @@ export class LoadService {
         if (docs_2.clientId != clientId) {
           callback(docs_2?.layout);
         }
-      } 
-      else {
+      } else {
         callback(undefined);
       }
     });

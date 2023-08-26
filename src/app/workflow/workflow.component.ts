@@ -382,7 +382,7 @@ export class WorkflowComponent implements OnInit {
           if (result) {
             this.edited = false;
             if (update) {
-              this.updateWorkflows(result);
+              this.updateWorkflows(exec);
             }
           }
           return;

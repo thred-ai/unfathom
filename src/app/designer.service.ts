@@ -84,6 +84,7 @@ export class DesignerService {
         background: {
           color: 'var(--sectionBackgroundColor)',
         },
+        
         panning: true,
         mousewheel: true,
         connecting: {
@@ -96,6 +97,7 @@ export class DesignerService {
           allowPort: false,
           highlight: true,
           allowEdge: false,
+
 
           createEdge(args) {
             return this.createEdge({
@@ -202,7 +204,7 @@ export class DesignerService {
             maxHeight: 900,
             orthogonal: false,
             restrict: false,
-            preserveAspectRatio: true,
+            preserveAspectRatio: false,
           },
         })
       );
