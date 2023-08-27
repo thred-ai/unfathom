@@ -11,6 +11,7 @@ import { WorkflowInfoComponent } from '../workflow-info/workflow-info.component'
 import { PlanSelectComponent } from '../plan-select/plan-select.component';
 import { Subscription } from '../models/workflow/subscription.model';
 import { DesignerService } from '../designer.service';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -86,6 +87,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private loadService: LoadService,
+    private themeService: ThemeService,
     private designerService: DesignerService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
@@ -105,31 +107,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  openUtil(workflow?: Executable, mode = 0) {
-    if (mode == 0) {
-      this.dialog.open(WorkflowComponent, {
-        maxHeight: 'calc(var(--vh, 1vh) * 100)',
-        maxWidth: '100vw',
-        panelClass: 'app-full-bleed-dialog',
-
-        data: {
-          workflow: workflow ? JSON.parse(JSON.stringify(workflow)) : undefined,
-          mode,
-        },
-      });
-    } else if (mode == 1) {
-      this.dialog.open(WorkflowInfoComponent, {
-        height: 'calc(var(--vh, 1vh) * 70)',
-        width: 'calc(var(--vh, 1vh) * 70)',
-        maxWidth: '100vw',
-        panelClass: 'app-full-bleed-dialog',
-
-        data: {
-          workflow: workflow ? JSON.parse(JSON.stringify(workflow)) : undefined,
-        },
-      });
-    }
-  }
 
   openPlans(activePlan: string, index: number) {
     let ref = this.dialog.open(PlanSelectComponent, {
@@ -171,6 +148,7 @@ export class DashboardComponent implements OnInit {
   @Input() dev?: Developer = undefined;
 
   async ngOnInit() {
+    
     this.designerService.loadGroups((models) => {
       this.getProfile();
       // this.loadStats((await this.loadService.currentUser)?.uid);
@@ -183,12 +161,12 @@ export class DashboardComponent implements OnInit {
               window.matchMedia('(prefers-color-scheme: dark)').matches
             ) {
               // dark mode
-              this.loadService.activeTheme = 'dark';
+              this.themeService.activeTheme = 'dark';
             } else {
-              this.loadService.activeTheme = 'light';
+              this.themeService.activeTheme = 'light';
             }
           } else {
-            this.loadService.activeTheme = dev.theme;
+            this.themeService.activeTheme = dev.theme;
           }
 
           this.dev = dev ?? undefined;
@@ -196,19 +174,16 @@ export class DashboardComponent implements OnInit {
       });
     });
 
-    this.loadService.theme.subscribe((theme) => {
+    this.themeService.theme.subscribe((theme) => {
       this.theme = theme;
     });
-
-    this.loadService.getPlans(async (_) => {});
-    this.loadService.getTriggers(async (_) => {});
 
     window
       .matchMedia('(prefers-color-scheme: dark)')
       .addEventListener('change', (e) => {
         const newColorScheme = e.matches ? 'dark' : 'light';
         if (this.dev?.theme == 'auto') {
-          this.loadService.activeTheme = newColorScheme;
+          this.themeService.activeTheme = newColorScheme;
         }
       });
   }

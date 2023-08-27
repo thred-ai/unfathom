@@ -9,7 +9,11 @@ import { Scene } from '../models/workflow/scene.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Graph, Cell } from '@antv/x6';
 import { Dnd } from '@antv/x6-plugin-dnd';
+import { ThemeService } from '../theme.service';
+import { ProjectService } from '../project.service';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-icon-sidebar',
   templateUrl: './icon-sidebar.component.html',
@@ -18,9 +22,11 @@ import { Dnd } from '@antv/x6-plugin-dnd';
 export class IconSidebarComponent implements OnInit {
   constructor(
     private loadService: LoadService,
+    private themeService: ThemeService,
     public workflowComponent: WorkflowComponent,
     public root: AppComponent,
-    private designerService: DesignerService
+    private designerService: DesignerService,
+    private projectService: ProjectService
   ) {}
 
   loadedUser?: Developer;
@@ -60,7 +66,7 @@ export class IconSidebarComponent implements OnInit {
     if (value) {
       document.documentElement.style.setProperty(
         '--gridColor',
-        this.loadService.themes[this.theme].gridColor
+        this.themeService.themes[this.theme].gridColor
       );
     } else {
       document.documentElement.style.setProperty('--gridColor', `transparent`);
@@ -113,11 +119,11 @@ export class IconSidebarComponent implements OnInit {
       this.selectedStep = s;
     });
 
-    this.loadService.loading.subscribe((l) => {
+    this.projectService.loading.subscribe((l) => {
       this.loading = l;
     });
 
-    this.workflowComponent.workflow.subscribe((w) => {
+    this.projectService.workflow.subscribe((w) => {
       if (w) {
         this.selectedWorkflow = w.id;
         this.executable = w;

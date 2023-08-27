@@ -12,12 +12,13 @@ import { Scene } from './models/workflow/scene.model';
 import { LoadService } from './load.service';
 import { MiniMap } from '@antv/x6-plugin-minimap';
 import { History } from '@antv/x6-plugin-history';
+import { ThemeService } from './theme.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DesignerService {
-  constructor(private db: AngularFirestore, private loadService: LoadService) {}
+  constructor(private db: AngularFirestore, private themeService: ThemeService) {}
 
   toolboxConfiguration = new BehaviorSubject<SceneDefinition[]>([]);
 
@@ -30,6 +31,8 @@ export class DesignerService {
 
   canRedo = false;
   canUndo = false;
+  
+  initialized = false
 
   openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
 
@@ -153,7 +156,7 @@ export class DesignerService {
           args: [
             {
               color:
-                this.loadService.themes[this.loadService.theme.value][
+                this.themeService.themes[this.themeService.theme.value][
                   'gridColor'
                 ], // main grid line color
               thickness: 1, // main grid line width

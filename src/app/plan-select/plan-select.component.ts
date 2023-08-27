@@ -50,10 +50,10 @@ export class PlanSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadService.loadedPlans.subscribe((plan) => {
-      this.plans = plan ?? {};
-      console.log(plan);
-    });
+    // this.loadService.loadedPlans.subscribe((plan) => {
+    //   this.plans = plan ?? {};
+    //   console.log(plan);
+    // });
   }
 
   close() {

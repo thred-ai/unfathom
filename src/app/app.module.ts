@@ -51,7 +51,6 @@ import { MdbTabsModule } from 'mdb-angular-ui-kit/tabs';
 import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import { MdbValidationModule } from 'mdb-angular-ui-kit/validation';
 import { IsRoutePipe } from './is-route.pipe';
-import { CollectionTableComponent } from './collection-table/collection-table.component';
 import { MatTableModule } from '@angular/material/table';
 import { StatusComponent } from './status/status.component';
 import {
@@ -131,8 +130,6 @@ import { NgClickOutsideDirective } from 'ng-click-outside2';
 import { TooltipComponent } from './tooltip/tooltip.component';
 import { ComingSoonComponent } from './coming-soon/coming-soon.component';
 import { SettingsComponent } from './settings/settings.component';
-import { DatabaseComponent } from './database/database.component';
-import { CollectionInfoComponent } from './collection-info/collection-info.component';
 import { TextAreaRenderPipe } from './text-area-render.pipe';
 import { MatDividerModule } from '@angular/material/divider';
 import { ResizableModule } from 'angular-resizable-element';
@@ -146,7 +143,6 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
     AppComponent,
     AuthComponent,
     DashboardComponent,
-    CollectionTableComponent,
     StatusComponent,
     NotificationComponent,
     IsRoutePipe,
@@ -194,8 +190,6 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
     TooltipComponent,
     ComingSoonComponent,
     SettingsComponent,
-    DatabaseComponent,
-    CollectionInfoComponent,
     TextAreaRenderPipe,
     SceneComponent,
     NodeComponent,

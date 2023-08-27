@@ -14,6 +14,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import * as uuid from 'uuid';
 import { WorkflowComponent } from '../workflow/workflow.component';
 import * as interact from 'interactjs';
+import { ProjectService } from '../project.service';
 
 @Component({
   selector: 'app-api-tester',
@@ -41,7 +42,8 @@ export class ApiTesterComponent implements OnInit {
     private loadService: LoadService,
     public dialogRef: MatDialogRef<ApiTesterComponent>,
     private clipboard: Clipboard,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private projectService: ProjectService
   ) {
     this.sessionId = uuid.v4();
     this.workflowComponent = data.workflowComponent;
@@ -49,7 +51,7 @@ export class ApiTesterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.workflowComponent?.workflow.subscribe((w) => {
+    this.projectService.workflow.subscribe((w) => {
       this.model = w;
       if (this.model && this.model.sceneLayout.cells[0]) {
         this.currentStep = this.model.sceneLayout.cells[0].id;

@@ -15,7 +15,7 @@ import { Trigger } from '../models/workflow/trigger.model';
 import { TrainingData } from '../models/workflow/training-data.model';
 import { Key } from '../models/workflow/key.model';
 import { APIRequest } from '../models/workflow/api-request.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Executable } from '../models/workflow/executable.model';
 import { TaskTree } from '../models/workflow/task-tree.model';
 
@@ -26,12 +26,15 @@ import { HttpClient } from '@angular/common/http';
 import { SettingsComponent } from '../settings/settings.component';
 import { WorkflowDesignerComponent } from '../workflow-designer/workflow-designer.component';
 import { ApiTesterComponent } from '../api-tester/api-tester.component';
-import { DatabaseComponent } from '../database/database.component';
 import { Scene } from '../models/workflow/scene.model';
 import { DesignerService } from '../designer.service';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Cell } from '@antv/x6';
+import { ThemeService } from '../theme.service';
+import { ProjectService } from '../project.service';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
@@ -49,8 +52,7 @@ export class WorkflowComponent implements OnInit {
   newTrainingData?: TrainingData;
   newAPIRequest?: APIRequest;
 
-  workflow = new BehaviorSubject<Executable | undefined>(undefined);
-  items = new BehaviorSubject<TaskTree[] | undefined>(undefined);
+  workflow?: Executable
 
   openStep: Cell.Properties = {};
 
@@ -135,7 +137,7 @@ export class WorkflowComponent implements OnInit {
       );
     }
 
-    this.workflow.next(workflow);
+    this.projectService.workflow.next(workflow);
 
     // const loadData = () => {
     //   this.loadService.getAPIKeys(workflow.id, workflow.creatorId);
@@ -145,7 +147,7 @@ export class WorkflowComponent implements OnInit {
       this.loadService.currentUser.then((user) => {
         if (user?.uid && this.workflow) {
           workflow.creatorId = user.uid;
-          this.workflow.next(workflow);
+          this.projectService.workflow.next(workflow);
           this.checkSave();
         }
       });
@@ -153,7 +155,7 @@ export class WorkflowComponent implements OnInit {
   }
 
   setWorkflow(id?: string, fileId = 'main') {
-    this.workflow.next(undefined);
+    this.projectService.workflow.next(undefined);
 
     this.cdr.detectChanges();
 
@@ -189,42 +191,23 @@ export class WorkflowComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private httpClient: HttpClient,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private themeService: ThemeService,
+    private projectService: ProjectService
   ) {}
 
   clientId!: string;
+  sub?: Subscription
 
   async ngOnInit() {
     // setTimeout(function(){debugger;}, 5000)
     this.clientId = this.loadService.newUtilID;
 
-    await Promise.all(
-      verticalkit.controllers.map(async (controller) => {
-        let path = controller.path;
-        let name = controller.name;
-        let id = controller.id;
-
-        let text = await new Promise((resolve, reject) => {
-          try {
-            this.httpClient
-              .get(`src/assets/verticalkit/src/${path}.ts`, {
-                responseType: 'text',
-              })
-              .subscribe((data) => resolve(data));
-          } catch (error) {
-            reject(error);
-          }
-        });
-
-        this.classes[id] = { name, path, id, text };
-      })
-    );
-
-    this.loadService.theme.subscribe((theme) => {
+    this.themeService.theme.subscribe((theme) => {
       this.theme = theme;
     });
 
-    this.loadService.loading.subscribe((l) => {
+    this.projectService.loading.subscribe((l) => {
       this.loading = l;
     });
 
@@ -241,11 +224,15 @@ export class WorkflowComponent implements OnInit {
       this.updateRoute(step?.id)
     });
 
-    this.workflow.subscribe(async (w) => {});
+    this.projectService.workflow.subscribe(async (w) => {
+      this.workflow = w
+    });
+
 
     this.loadService.loadedUser.subscribe((user) => {
+      this.dev = user;
+
       if (user) {
-        this.dev = user;
 
         this.route.queryParams.subscribe(async (params) => {
           let proj = params['project'];
@@ -255,16 +242,14 @@ export class WorkflowComponent implements OnInit {
           if (this.dev && this.dev.utils) {
             this.loadService.getLayout(proj, this.clientId, async (layout) => {
               let workflow =
-                this.workflow.value ??
+                this.workflow ??
                 this.dev?.utils.find((f) => f.id == proj) ??
                 this.dev?.utils[0];
-                console.log(proj);
-              console.log(workflow);
-              console.log(layout);
+                
 
               if (!workflow){
                 this.activeWorkflow = undefined
-                workflow = this.workflow.value
+                workflow = this.workflow
               }
 
               if (workflow) {
@@ -277,7 +262,6 @@ export class WorkflowComponent implements OnInit {
 
                 this.activeWorkflow = workflow;
 
-                console.log(this.openStep.id)
                 if (!this.openStep.id) {
                   await this.selectFile(
                     file ?? 'main',
@@ -300,15 +284,17 @@ export class WorkflowComponent implements OnInit {
           }
         });
       }
+
+      
     });
   }
 
   async updateRoute(stepId: string = 'main'){
-    if (this.workflow.value && this.selectedIcon){
+    if (this.workflow && this.selectedIcon){
       await this.router.navigate([], {
         relativeTo: this.route,
         queryParams: {
-          project: this.workflow.value.id,
+          project: this.workflow.id,
           file: stepId,
           module: this.selectedIcon,
         },
@@ -321,25 +307,25 @@ export class WorkflowComponent implements OnInit {
   }
 
   initExecutable(w?: Executable, fetchExecutable = true) {
-    if (w) {
-      this.items.next([
-        new TaskTree(
-          w.name,
-          'app',
-          'category',
-          this.analyzeTasks(w.sceneLayout.cells),
-          new TaskTree('Storyboard', 'main', 'model', [], undefined, {
-            img: 'assets/main.png',
-            type: 'main',
-          }),
-          { type: 'folder', img: w.displayUrl }
-        ),
-      ]);
-    }
+    // if (w) {
+    //   this.items.next([
+    //     new TaskTree(
+    //       w.name,
+    //       'app',
+    //       'category',
+    //       this.analyzeTasks(w.sceneLayout.cells),
+    //       new TaskTree('Storyboard', 'main', 'model', [], undefined, {
+    //         img: 'assets/main.png',
+    //         type: 'main',
+    //       }),
+    //       { type: 'folder', img: w.displayUrl }
+    //     ),
+    //   ]);
+    // }
   }
 
   async checkSave() {
-    if (this.workflow && this.workflow.value?.creatorId != '') {
+    if (this.workflow && this.workflow?.creatorId != '') {
       await this.save(1, true);
     }
   }
@@ -347,7 +333,7 @@ export class WorkflowComponent implements OnInit {
   close() {}
 
   get isValid(): boolean {
-    if (this.workflow.value) {
+    if (this.workflow) {
       let textFields = ['name'] as 'name'[];
 
       // let validArray =
@@ -359,9 +345,9 @@ export class WorkflowComponent implements OnInit {
       return (
         textFields.filter(
           (field) =>
-            this.workflow.value![field] == undefined ||
-            this.workflow.value![field] == null ||
-            this.workflow.value![field]?.trim() == ''
+            this.workflow![field] == undefined ||
+            this.workflow![field] == null ||
+            this.workflow![field]?.trim() == ''
         ).length == 0
       ); //&& validArray;
     }
@@ -369,7 +355,7 @@ export class WorkflowComponent implements OnInit {
     return false;
   }
 
-  async save(mode = 1, update = false, workflow = this.workflow.value) {
+  async save(mode = 1, update = false, workflow = this.workflow) {
     console.log("tooooooooooooooooooooo[")
 
     if (workflow) {
@@ -401,32 +387,7 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
-  openDatabase() {
-    let ref = this.dialog.open(DatabaseComponent, {
-      panelClass: 'app-full-bleed-dialog',
-      width: 'calc(var(--vh, 1vh) * 70)',
-      maxWidth: '750px',
-      height: 'calc(var(--vh, 1vh) * 70)',
-      maxHeight: '750px',
-      data: {
-        workflow: this.workflow.value,
-        theme: this.theme,
-      },
-    });
-
-    ref.afterClosed().subscribe(async (val) => {
-      if (val && val != '' && val != '0' && val.dev) {
-        // let img = val.img as File;
-        // await this.loadService.saveUserInfo(
-        //   val.dev,
-        //   img,
-        //   img != undefined,
-        //   (result) => {}
-        // );
-      }
-    });
-  }
-
+ 
   openPrototype(mode: string = 'window') {
     if (mode == 'window') {
       let ref = this.dialog.open(ApiTesterComponent, {
@@ -468,7 +429,7 @@ export class WorkflowComponent implements OnInit {
 
       data: {
         dev,
-        workflow: this.workflow.value,
+        workflow: this.workflow,
       },
     });
 
@@ -495,7 +456,7 @@ export class WorkflowComponent implements OnInit {
 
       data: {
         step: controllerId != 'main' ? this.findScene(controllerId) : undefined,
-        workflow: this.workflow.value,
+        workflow: this.workflow,
       },
     });
 
@@ -505,7 +466,7 @@ export class WorkflowComponent implements OnInit {
 
         let workflow = val.workflow as Executable;
 
-        if (img && this.workflow.value) {
+        if (img && this.workflow) {
           let url = await this.loadService.uploadImg(img, workflow.id);
 
           if (url) {
@@ -547,7 +508,7 @@ export class WorkflowComponent implements OnInit {
   openTestEditor() {}
 
   async publish(
-    workflow = this.workflow.value,
+    workflow = this.workflow,
     close = false,
     callback?: (result?: Executable) => any
   ) {
@@ -580,7 +541,7 @@ export class WorkflowComponent implements OnInit {
   loadingMode = 0;
   loadingChangeMode = 0;
 
-  updateWorkflows(workflow = this.workflow.value) {
+  updateWorkflows(workflow = this.workflow) {
     let dev = JSON.parse(
       JSON.stringify(this.loadService.loadedUser.value)
     ) as Developer;
@@ -598,7 +559,7 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
-  setScene(scene: Scene, workflow = this.workflow.value) {
+  setScene(scene: Scene, workflow = this.workflow) {
     if (workflow) {
       // let same = workflow.sceneLayout.cells.map(cell => cell.data.ngArguments.scene.scenes).findIndex((f) => f.id == scene.id);
       // if (same != undefined && same > -1) {
@@ -717,7 +678,7 @@ export class WorkflowComponent implements OnInit {
     await this.save(1, true);
   }
 
-  findScene(fileId: string, workflow = this.workflow.value) {
+  findScene(fileId: string, workflow = this.workflow) {
     if (fileId == 'main') {
       return undefined; //new Cell.Properties(new Scene('main'), {});
     }
@@ -727,7 +688,7 @@ export class WorkflowComponent implements OnInit {
   async selectFile(
     fileId: string | undefined,
     selectedModule: string | undefined,
-    workflow = this.workflow.value,
+    workflow = this.workflow,
     update = true
   ) {
     if (workflow && fileId && selectedModule) {

@@ -25,13 +25,13 @@ import { Key } from './models/workflow/key.model';
 import { APIRequest } from './models/workflow/api-request.model';
 import { Plan } from './models/workflow/plan.model';
 import { Executable } from './models/workflow/executable.model';
-import axios from 'axios';
-import { Agent } from './models/workflow/agent.model';
-import { RequestService } from './requests.service';
 import { Document } from './models/workflow/document.model';
 import { Collection } from './models/workflow/collection.model';
 import { Scene } from './models/workflow/scene.model';
 import { SceneLayout } from './models/workflow/scene-layout.model';
+import { DesignerService } from './designer.service';
+import { ThemeService } from './theme.service';
+import { ProjectService } from './project.service';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -60,54 +60,19 @@ export class LoadService {
     private router: Router,
     private auth: AngularFireAuth,
     private db: AngularFirestore,
+    private themeService: ThemeService,
     private functions: AngularFireFunctions,
     private storage: AngularFireStorage,
     private http: HttpClient,
     private metaService: Meta,
-    private titleService: Title
+    private titleService: Title,
+    private designerService: DesignerService,
+    private projectService: ProjectService
   ) {
-    this.activeTheme = 'light';
-
-    Object.keys(this.themes).forEach((theme) => {
-      Object.keys(this.themes[theme]).forEach((colorKey) => {
-        document.documentElement.style.setProperty(
-          `--${theme}--${colorKey}`,
-          `${this.themes[theme][colorKey]}`
-        );
-      });
-    });
+    
   }
 
-  themes: Dict<any> = {
-    dark: {
-      primaryColor: '#0C8CE9',
-      secondaryColor: '#0A99FF',
-      primaryTextColor: '#ffffff',
-      secondaryTextColor: '#6c757d',
-      primaryHoverColor: '#34aafe',
-      sectionBackgroundColor: '#151515',
-      primarySectionHoverColor: '#000000',
-      secondarySectionHoverColor: '#2e2e2e5f',
-      gridColor: '#242424',
-      primaryBackgroundColor: '#2c2c2c',
-      secondaryBackgroundColor: '#1e1e1e',
-      borderColor: '#444444',
-    },
-    light: {
-      primaryColor: '#0C8CE9',
-      secondaryColor: '#F8F9FA',
-      primaryTextColor: '#4f5a63',
-      secondaryTextColor: '#bbbfc4',
-      primaryHoverColor: '#34aafe',
-      sectionBackgroundColor: '#e9eff4',
-      primarySectionHoverColor: '#dee6ed',
-      secondarySectionHoverColor: '#f2f2f2',
-      gridColor: '#e6e6e6',
-      primaryBackgroundColor: '#f8f9fa',
-      secondaryBackgroundColor: '#f1f1f1',
-      borderColor: '#e6e6e6',
-    },
-  };
+ 
 
   // .bg-theme{
   //   background-color: #1F1F1F;
@@ -121,82 +86,7 @@ export class LoadService {
     return confirm('Are you sure you want to delete this component?');
   }
 
-  set activeTheme(value: 'light' | 'dark') {
-    // document.documentElement.style.setProperty(
-    //   '--primaryColor',
-    //   `${this.themes[value].primaryColor}`,
-    // );
 
-    // document.documentElement.style.setProperty(
-    //   '--secondaryColor',
-    //   `${this.themes[value].secondaryColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--primaryTextColor',
-    //   `${this.themes[value].primaryTextColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--secondaryTextColor',
-    //   `${this.themes[value].secondaryTextColor}`,
-    // );
-    // document.documentElement.style.setProperty(
-    //   '--primaryHoverColor',
-    //   `${this.themes[value].primaryHoverColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--sectionBackgroundColor',
-    //   `${this.themes[value].sectionBackgroundColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--primarySectionHoverColor',
-    //   `${this.themes[value].primarySectionHoverColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--secondarySectionHoverColor',
-    //   `${this.themes[value].secondarySectionHoverColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--borderColor',
-    //   `${this.themes[value].borderColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--primaryBackgroundColor',
-    //   `${this.themes[value].primaryBackgroundColor}`,
-    // );
-
-    // document.documentElement.style.setProperty(
-    //   '--secondaryBackgroundColor',
-    //   `${this.themes[value].secondaryBackgroundColor}`,
-    // );
-
-    Object.keys(this.themes[value]).forEach((colorKey) => {
-      if (colorKey != 'gridColor') {
-        document.documentElement.style.setProperty(
-          `--${colorKey}`,
-          `${this.themes[value][colorKey]}`
-        );
-      }
-    });
-
-    if (
-      document.documentElement.style.getPropertyValue('--gridColor') !=
-      'transparent'
-    ) {
-      document.documentElement.style.setProperty(
-        '--gridColor',
-        `${this.themes[value].gridColor}`
-      );
-    }
-    //fix
-    this.theme.next(value);
-  }
 
   finishSignUp(
     email: string,
@@ -232,17 +122,7 @@ export class LoadService {
       });
   }
 
-  loadedUser = new BehaviorSubject<Developer | null>(null);
-  loadedModels = new BehaviorSubject<Dict<AIModelType>>({});
-  loadedTriggers = new BehaviorSubject<Dict<Trigger>>({});
-  loadedTrainingData = new BehaviorSubject<Dict<TrainingData>>({});
-  loadedKeys = new BehaviorSubject<Dict<Key>>({});
-  loadedRequests = new BehaviorSubject<Dict<APIRequest>>({});
-  loadedPlans = new BehaviorSubject<Dict<Plan>>({});
-  loading = new BehaviorSubject<boolean>(false);
-  loadedSources = new BehaviorSubject<Dict<Key>>({});
-  theme = new BehaviorSubject<'light' | 'dark'>('light');
-  database = new BehaviorSubject<Dict<Collection>>({});
+  loadedUser = new BehaviorSubject<Developer | undefined>(undefined);
 
   finishPassReset(
     email: string,
@@ -283,6 +163,12 @@ export class LoadService {
       localStorage.removeItem('url');
       localStorage.removeItem('name');
       localStorage.removeItem('email');
+      this.loadedUser.next(undefined)
+      this.projectService.loadedModels.next({})
+      this.projectService.loading.next(false)
+      this.themeService.theme.next('light')
+      this.projectService.workflow.next(undefined)
+      this.designerService.initialized = false
       await this.openAuth('0');
       callback(true);
     } catch (error) {
@@ -308,7 +194,7 @@ export class LoadService {
   }
 
   async publishSmartUtil(data: Executable) {
-    this.loading.next(true);
+    this.projectService.loading.next(true);
 
     try {
       let id = data.id;
@@ -322,31 +208,31 @@ export class LoadService {
       uploadData.needsSync = true;
 
       await this.db.collection(`Workflows`).doc(id).set(uploadData);
-      this.loading.next(false);
+      this.projectService.loading.next(false);
 
       return data;
     } catch (error) {
       console.log(error);
-      this.loading.next(false);
+      this.projectService.loading.next(false);
       return undefined;
     }
   }
 
   async uploadImg(file: File, id: string) {
-    this.loading.next(true);
+    this.projectService.loading.next(true);
 
     try {
       let ref = this.storage.ref(`workflows/${id}/icon-${id}.png`);
       await ref.put(file, { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
 
-      this.loading.next(false);
+      this.projectService.loading.next(false);
 
       return displayUrl;
     } catch (error) {
       console.log(error);
     }
-    this.loading.next(false);
+    this.projectService.loading.next(false);
     return undefined;
   }
 
@@ -354,7 +240,7 @@ export class LoadService {
     let id = data.id;
 
     let uid = (await this.currentUser)?.uid;
-    this.loading.next(true);
+    this.projectService.loading.next(true);
 
     if (uid) {
       let scenes = data.sceneLayout.cells;
@@ -405,17 +291,17 @@ export class LoadService {
           .doc(id)
           .set(uploadData, { merge: true });
 
-        this.loading.next(false);
+        this.projectService.loading.next(false);
 
         return uploadData;
       } catch (error) {
         console.log(error);
-        this.loading.next(false);
+        this.projectService.loading.next(false);
 
         return undefined;
       }
     } else {
-      this.loading.next(false);
+      this.projectService.loading.next(false);
 
       return undefined;
     }
@@ -431,7 +317,7 @@ export class LoadService {
     if (date - this.lastSync > 0) {
       this.lastSync = date;
       let uid = (await this.currentUser)?.uid;
-      this.loading.next(true);
+      this.projectService.loading.next(true);
 
       if (uid) {
         let scenes = data.sceneLayout.cells;
@@ -479,17 +365,17 @@ export class LoadService {
             .doc()
             .set(uploadData, { merge: true });
 
-          this.loading.next(false);
+          this.projectService.loading.next(false);
 
           return data.sceneLayout;
         } catch (error) {
           console.log(error);
-          this.loading.next(false);
+          this.projectService.loading.next(false);
 
           return undefined;
         }
       } else {
-        this.loading.next(false);
+        this.projectService.loading.next(false);
       }
     }
     return undefined;
@@ -708,73 +594,46 @@ export class LoadService {
                   d.variations
                 );
               });
-              this.loadedModels.next(models);
+              this.projectService.loadedModels.next(models);
               callback(models);
             });
         });
     } catch (error) {
-      this.loadedModels.next({});
+      this.projectService.loadedModels.next({});
       callback({});
     }
   }
 
-  getTriggers(callback: (result: Dict<Trigger>) => any) {
-    try {
-      let models: Dict<Trigger> = {};
 
-      this.db
-        .collection('Triggers', (ref) => ref.where('status', '==', 0))
-        .valueChanges()
-        .subscribe((docs) => {
-          let docs_2 = (docs as any[]) ?? [];
+  // getPlans(callback: (result: Dict<Plan>) => any) {
+  //   try {
+  //     let models: Dict<Plan> = {};
 
-          docs_2.forEach((d) => {
-            models[d.id] = new Trigger(
-              d.name,
-              d.id,
-              d.imgUrl,
-              d.status,
-              d.execution
-            );
-          });
-          this.loadedTriggers.next(models);
-          callback(models);
-        });
-    } catch (error) {
-      this.loadedModels.next({});
-      callback({});
-    }
-  }
+  //     this.db
+  //       .collection('Plans')
+  //       .valueChanges()
+  //       .subscribe((docs) => {
+  //         let docs_2 = (docs as any[]) ?? [];
 
-  getPlans(callback: (result: Dict<Plan>) => any) {
-    try {
-      let models: Dict<Plan> = {};
-
-      this.db
-        .collection('Plans')
-        .valueChanges()
-        .subscribe((docs) => {
-          let docs_2 = (docs as any[]) ?? [];
-
-          docs_2.forEach((d) => {
-            models[d.id] = new Plan(
-              d.name,
-              d.id,
-              d.requests,
-              d.overageUnit,
-              d.overagePriceCents,
-              d.flatPriceCents,
-              d.backgroundColor
-            );
-          });
-          this.loadedPlans.next(models);
-          callback(models);
-        });
-    } catch (error) {
-      this.loadedPlans.next({});
-      callback({});
-    }
-  }
+  //         docs_2.forEach((d) => {
+  //           models[d.id] = new Plan(
+  //             d.name,
+  //             d.id,
+  //             d.requests,
+  //             d.overageUnit,
+  //             d.overagePriceCents,
+  //             d.flatPriceCents,
+  //             d.backgroundColor
+  //           );
+  //         });
+  //         this.loadedPlans.next(models);
+  //         callback(models);
+  //       });
+  //   } catch (error) {
+  //     this.loadedPlans.next({});
+  //     callback({});
+  //   }
+  // }
 
   getNewWorkflows(callback: (result: Executable[]) => any) {
     this.db
@@ -951,172 +810,10 @@ export class LoadService {
       }
     }
   }
-
-  async saveAPI(workflowId: string, uid: string, data: APIRequest) {
-    this.loading.next(true);
-
-    var uploadData = JSON.parse(JSON.stringify(data));
-    // if (uploadData.data == 'None') {
-    //   uploadData.data = '';
-    // }
-    await this.db
-      .collection(`Workflows/${workflowId}/APIs`)
-      .doc(data.id)
-      .set(uploadData, { merge: true });
-    this.loading.next(false);
-  }
-
-  getAPIKeys(workflowId: string, uid: string) {
-    this.db
-      .collection(`Workflows/${workflowId}/keys`)
-      .valueChanges()
-      .subscribe((docs2) => {
-        let data = docs2 as Key[];
-
-        var returnData: Dict<Key> = {};
-
-        data.forEach((d) => {
-          returnData[d.id] = d;
-        });
-
-        this.loadedKeys.next(returnData);
-      });
-  }
-
-  getDatabaseCollection(
-    workflowId: string,
-    collectionId: string,
-    callback: (docs: Dict<Document>) => any
-  ) {
-    this.db
-      .collection(
-        `Workflows/${workflowId}/database/${collectionId}/docs`,
-        (ref) => ref.where('status', '==', 0)
-      )
-      .valueChanges()
-      .subscribe((docs2) => {
-        let data = docs2 as Document[];
-
-        var returnData: Dict<Document> = {};
-
-        data.forEach((d) => {
-          returnData[d.id] = d;
-        });
-
-        callback(returnData);
-      });
-  }
-
-  async deleteDatabaseCollection(workflowId: string, collectionId: string) {
-    await this.db
-      .doc(`Workflows/${workflowId}/database/${collectionId}`)
-      .update({ status: 1 });
-  }
-
-  async createDatabaseCollection(workflowId: string, collection: Collection) {
-    await this.db
-      .doc(`Workflows/${workflowId}/database/${collection.id}`)
-      .set(JSON.parse(JSON.stringify(collection)));
-  }
-
-  async deleteDatabaseCollectionDoc(
-    workflowId: string,
-    collectionId: string,
-    docId: string
-  ) {
-    await this.db
-      .doc(`Workflows/${workflowId}/database/${collectionId}/docs/${docId}`)
-      .delete();
-  }
-
-  async checkCollectionName(
-    workflowId: string,
-    collectionId: string
-  ): Promise<Boolean> {
-    return new Promise((resolve, reject) => {
-      let d = this.db
-        .doc(`Workflows/${workflowId}/database/${collectionId}`)
-        .valueChanges()
-        .subscribe((doc) => {
-          let d = doc as any;
-          if (d && d.id == collectionId && d.status == 0) {
-            resolve(false);
-          } else {
-            resolve(true);
-          }
-        });
-    });
-  }
-
-  async updateDatabaseCollectionDoc(
-    workflowId: string,
-    collectionId: string,
-    docId: string,
-    doc: Document
-  ) {
-    await this.db
-      .doc(`Workflows/${workflowId}/database/${collectionId}/docs/${docId}`)
-      .set(JSON.parse(JSON.stringify(doc)), { merge: true });
-  }
-
-  getDatabaseInfo(
-    workflowId: string,
-    callback: (docs: Dict<Collection>) => any
-  ) {
-    this.db
-      .collection(`Workflows/${workflowId}/database`, (ref) =>
-        ref.where('status', '==', 0)
-      )
-      .valueChanges()
-      .subscribe((docs2) => {
-        let data = docs2 as Collection[];
-
-        var returnData: Dict<Collection> = {};
-
-        data.forEach((d) => {
-          returnData[d['id'] as string] = d;
-        });
-
-        this.database.next(returnData);
-
-        callback(returnData);
-      });
-  }
-
-  getAPIs(workflowId: string, uid: string) {
-    this.db
-      .collection(`Workflows/${workflowId}/APIs`)
-      .valueChanges()
-      .subscribe((docs2) => {
-        let data = docs2 as APIRequest[];
-
-        var returnData: Dict<APIRequest> = {};
-
-        data.forEach((d) => {
-          returnData[d.id] = d;
-        });
-
-        this.loadedRequests.next(returnData);
-      });
-  }
-
-  async saveAPIKeys(workflowId: string, uid: string, data: Key) {
-    this.loading.next(true);
-
-    var uploadData = JSON.parse(JSON.stringify(data));
-    if (uploadData.key == 'None') {
-      uploadData.key = '';
-    }
-    await this.db
-      .collection(`Workflows/${workflowId}/keys`)
-      .doc(data.id)
-      .set(uploadData);
-
-    this.loading.next(false);
-  }
+  
 
   async updateAppImage(id: string, imgId: string, file?: File) {
-    this.loading.next(true);
+    this.projectService.loading.next(true);
 
     if (file) {
       try {
@@ -1124,14 +821,14 @@ export class LoadService {
 
         await ref.put(file, { cacheControl: 'no-cache' });
         let displayUrl = await ref.getDownloadURL().toPromise();
-        this.loading.next(false);
+        this.projectService.loading.next(false);
 
         return displayUrl as string;
       } catch (error) {
         console.log(error);
       }
     }
-    this.loading.next(false);
+    this.projectService.loading.next(false);
 
     return undefined;
   }
@@ -1144,7 +841,7 @@ export class LoadService {
           default:
             let id2 = type.split('-')[1];
             if (id2) {
-              let same = this.loadedModels.value[id2].models[type];
+              let same = this.projectService.loadedModels.value[id2].models[type];
               if (same) {
                 return same.imgUrl;
               }
@@ -1174,14 +871,14 @@ export class LoadService {
   }
 
   async saveCode(id: string, uid: string, codeId: string, file: Executable) {
-    this.loading.next(true);
+    this.projectService.loading.next(true);
 
     // await this.db
     //   .collection(`Users/${uid}/workflows/${id}/source`)
     //   .doc(codeId)
     //   .set(file.agents[codeId]);
 
-    this.loading.next(false);
+    this.projectService.loading.next(false);
   }
 
   async getCode(
@@ -1189,7 +886,7 @@ export class LoadService {
     uid: string,
     callback: (file: Executable) => any
   ) {
-    this.loading.next(true);
+    this.projectService.loading.next(true);
 
     // this.db
     //   .collection(`Users/${uid}/workflows/${app.id}/source`)
@@ -1206,11 +903,11 @@ export class LoadService {
     //     callback(exec)
     //   });
 
-    this.loading.next(false);
+    this.projectService.loading.next(false);
   }
 
   async uploadExecutable(id: string, file: Executable) {
-    this.loading.next(true);
+    this.projectService.loading.next(true);
 
     var uploadData = JSON.parse(JSON.stringify(file));
 
@@ -1229,7 +926,7 @@ export class LoadService {
         );
     });
 
-    this.loading.next(false);
+    this.projectService.loading.next(false);
 
     return url;
   }
@@ -1274,7 +971,7 @@ export class LoadService {
     let uid = (await this.currentUser)?.uid;
 
     if (uid && (!user || uid == user.id)) {
-      this.loadedUser.next(user);
+      this.loadedUser.next(user ?? undefined);
     }
   }
 

@@ -4,6 +4,7 @@ import { LoadService } from '../load.service';
 import { TaskTree } from '../models/workflow/task-tree.model';
 import { Executable } from '../models/workflow/executable.model';
 import { WorkflowComponent } from '../workflow/workflow.component';
+import { ProjectService } from '../project.service';
 
 @Component({
   selector: 'app-storage',
@@ -19,8 +20,8 @@ export class StorageComponent implements OnInit {
   loading: Boolean = false;
 
   constructor(
-    private workflowComponent: WorkflowComponent,
-    private loadService: LoadService
+    private loadService: LoadService,
+    private projectService: ProjectService
   ) {}
 
   public saveLayout() {
@@ -32,7 +33,7 @@ export class StorageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.workflowComponent.workflow.subscribe((w) => {
+    this.projectService.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;
       }
@@ -47,7 +48,7 @@ export class StorageComponent implements OnInit {
     //   }
     // });
 
-    this.loadService.loading.subscribe((l) => {
+    this.projectService.loading.subscribe((l) => {
       this.loading = l;
     });
   }

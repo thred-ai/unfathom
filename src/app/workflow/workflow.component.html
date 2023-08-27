@@ -6,7 +6,6 @@
     [theme]="theme"
     (selectedIconChanged)="selectFile(openStep!.id, $event)"
     (openPrototype)="openPrototype($event)"
-    (openDatabase)="openDatabase()"
     (openProj)="setWorkflow($event)"
     (publish)="publish()"
     (selectedFileChanged)="selectFile($event, selectedIcon)"
@@ -14,16 +13,15 @@
   <div
     class="w-100 h-100 d-flex justify-content-between align-content-start"
     style="overflow-y: hidden"
-    *ngIf="workflow.value && items.value; else noWorkflow"
+    *ngIf="workflow; else noWorkflow"
   >
     <app-file-sidebar
       [hidden]="mode != 'sidebar'"
       [models]="models"
       [selectedIcon]="selectedIcon"
       [triggers]="triggers"
-      [workflow]="workflow.value"
-      [executable]="workflow.value"
-      [items]="items.value"
+      [workflow]="workflow"
+      [executable]="workflow"
       (detailsChanged)="save(1, false, $event)"
       (selectedFileChanged)="selectFile($event, selectedIcon)"
     >
@@ -33,7 +31,7 @@
         <verticalai-workflow-designer
           #designer
           [models]="models"
-          [workflow]="workflow.value"
+          [workflow]="workflow"
           [theme]="theme"
           (detailsChanged)="save(2, false, $event)"
           (iconChanged)="edited = true; workflowIcon = $event; save(0)"

@@ -23,7 +23,10 @@ import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Scene } from '../models/workflow/scene.model';
 import { Cell, Graph } from '@antv/x6';
 import { DesignerService } from '../designer.service';
+import { ProjectService } from '../project.service';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-file-sidebar',
   templateUrl: './file-sidebar.component.html',
@@ -66,7 +69,8 @@ export class FileSidebarComponent implements OnInit {
     private workflowComponent: WorkflowComponent,
     private loadService: LoadService,
     private designerService: DesignerService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private projectService: ProjectService
   ) {}
 
   removeFile(id: string) {
@@ -75,10 +79,9 @@ export class FileSidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.workflowComponent.workflow.subscribe((w) => {
+    this.projectService.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;
-        console.log(w)
         // this.items = [
         //   new Cell.Properties(new Scene('main', 'Storyboard', undefined, ['assets/main.png']), {}),
         // ].concat(w.sceneLayout.cells);

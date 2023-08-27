@@ -36,7 +36,10 @@ import { DesignerService } from '../designer.service';
 import { Scene } from '../models/workflow/scene.model';
 import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Graph, Cell } from '@antv/x6';
+import { ProjectService } from '../project.service';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'verticalai-workflow-designer',
   templateUrl: './workflow-designer.component.html',
@@ -113,7 +116,8 @@ export class WorkflowDesignerComponent
     private loadService: LoadService,
     private workflowComponent: WorkflowComponent,
     private designerService: DesignerService,
-    private injector: Injector
+    private injector: Injector,
+    private projectService: ProjectService
   ) {}
 
   @ViewChildren('geditor') divs?: QueryList<ElementRef>;
@@ -269,12 +273,13 @@ export class WorkflowDesignerComponent
       }
     });
 
-    this.workflowComponent.workflow.subscribe((w) => {
+    this.projectService.workflow.subscribe((w) => {
+      console.log(w)
       if (w) {
         this.cdr.detectChanges();
         this.workflow = w;
-        if (!this.initialized) {
-          this.initialized = true;
+        if (!this.designerService.initialized) {
+          this.designerService.initialized = true;
           this.designerService.initGraph(this.injector);
           this.designerService.importJSON(this.workflow.sceneLayout);
         } else {
@@ -283,19 +288,13 @@ export class WorkflowDesignerComponent
         }
       }
       else{
-        this.initialized = false
+        this.designerService.initialized = false
         this.workflow = undefined
       }
     });
 
     this.designerService.toolboxConfiguration.subscribe((tool) => {
       this.toolboxConfiguration = tool;
-    });
-
-    this.loadService.database.subscribe((d) => {
-      if (d) {
-        this.loadedDocs = Object.keys(d);
-      }
     });
 
     this.done = true;
