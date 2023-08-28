@@ -91,9 +91,7 @@ export class FileSidebarComponent implements OnInit {
       }
     });
     this.designerService.openStep.subscribe((step) => {
-        this.selectedFile = step?.id;
-        this.cdr.detectChanges();
-      
+        this.selectedFile = step?.id;      
     });
     this.loadService.loadedUser.subscribe((l) => {
       if (l) {

@@ -219,7 +219,6 @@ export class WorkflowComponent implements OnInit {
       if (step) {
         this.openStep = step;
         // this.selectFile(step.id, this.selectedIcon);
-        this.cdr.detectChanges();
       }
       this.updateRoute(step?.id)
     });
@@ -555,7 +554,6 @@ export class WorkflowComponent implements OnInit {
       //   dev.utils.push(workflow);
       // }
       // this.loadService.loadedUser.next(dev);
-      this.cdr.detectChanges();
     }
   }
 

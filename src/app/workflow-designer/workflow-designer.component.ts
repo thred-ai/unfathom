@@ -276,7 +276,6 @@ export class WorkflowDesignerComponent
     this.projectService.workflow.subscribe((w) => {
       console.log(w)
       if (w) {
-        this.cdr.detectChanges();
         this.workflow = w;
         if (!this.designerService.initialized) {
           this.designerService.initialized = true;
@@ -327,7 +326,6 @@ export class WorkflowDesignerComponent
 
   rerenderDesigner() {
     // window.dispatchEvent(new Event('resize'));
-    this.cdr.detectChanges();
   }
 
   public onDesignerReady(designer: Designer) {
