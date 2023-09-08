@@ -1,6 +1,7 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": true,
+
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
@@ -21,21 +22,16 @@
     "importHelpers": true,
     "target": "es2020",
     "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+
+    "lib": ["es2020", "dom"],
+    "types": ["babylonjs", "babylonjs-materials"],
     "paths": {
-      "crypto":["node_modules/crypto-js"],
-      "stream":["node_modules/stream-browserify"],
-      "http":["node_modules/stream-http"],
-      "https":["node_modules/https-browserify"],
-      "os": [
-        "node_modules/os-browserify/browser"
-      ],
-      "verticl-ai-designer": [
-        "dist/verticl-ai-designer"
-      ]
+      "crypto": ["node_modules/crypto-js"],
+      "stream": ["node_modules/stream-browserify"],
+      "http": ["node_modules/stream-http"],
+      "https": ["node_modules/https-browserify"],
+      "os": ["node_modules/os-browserify/browser"],
+      "verticl-ai-designer": ["dist/verticl-ai-designer"]
     }
   },
   "angularCompilerOptions": {

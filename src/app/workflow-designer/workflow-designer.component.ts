@@ -38,6 +38,8 @@ import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Graph, Cell } from '@antv/x6';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
+import * as BABYLON from 'babylonjs';
+import * as MATERIALS from 'babylonjs-materials';
 
 @AutoUnsubscribe
 @Component({
@@ -72,6 +74,245 @@ export class WorkflowDesignerComponent
     val.forEach((v) => {
       this.frames[v.type] = v;
     });
+  }
+
+  initWorld() {
+    var canvas = document.getElementById('canvas') as HTMLCanvasElement;
+
+    // Check support
+    if (!BABYLON.Engine.isSupported()) {
+      window.alert('Browser not supported');
+    } else if (canvas) {
+      // Babylon
+      var engine = new BABYLON.Engine(canvas, true);
+
+      //Creating scene
+      var scene = this.createScene2(engine);
+
+      scene.activeCamera!.attachControl(canvas);
+
+      // Once the scene is loaded, we register a render loop to render it
+      engine.runRenderLoop(function () {
+        scene.render();
+      });
+
+      // Resize
+      window.addEventListener('resize', function () {
+        engine.resize();
+      });
+    }
+  }
+
+  // createScene(engine: BABYLON.Engine) {
+  //   //Creation of the scene
+  //   // var canvas  = document.getElementById("renderCanvas");
+  //   var scene = new BABYLON.Scene(engine);
+  //   var camera = new BABYLON.ArcRotateCamera(
+  //     'camera',
+  //     0,
+  //     Math.PI / 2,
+  //     10,
+  //     BABYLON.Vector3.Zero(),
+  //     scene
+  //   );
+  //   // console.log(camera.setTarget)
+  //   // camera.setTarget(BABYLON.Vector3.Zero());
+  //   // camera.attachControl(canvas, true);
+
+  //   camera.lowerRadiusLimit = 10.2;
+  //   camera.upperRadiusLimit = 490;
+
+  //   const texture = new BABYLON.Texture(
+  //     'https://raw.githubusercontent.com/eldinor/ForBJS/master/digital_painting_hollow_hillls_of_sand.jpg',
+  //     scene
+  //   );
+
+  //   // const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", "textures/heightMap.png", {width:5, height :5, subdivisions: 10, maxHeight: 1});
+
+  //   const sphere = BABYLON.MeshBuilder.CreateSphere(
+  //     'world',
+  //     { diameter: 1000 },
+  //     scene
+  //   );
+  //   const material = new BABYLON.StandardMaterial('world', scene);
+  //   sphere.scaling = new BABYLON.Vector3(-1, -1, -1);
+  //   material.emissiveTexture = texture;
+  //   material.backFaceCulling = false;
+  //   sphere.material = material;
+
+  //   return scene;
+  // }
+
+  createScene2(engine: BABYLON.Engine) {
+
+    var scene = new BABYLON.Scene(engine);
+
+    //Creation of the scene
+
+      //   //Creation of the scene
+  //   // var canvas  = document.getElementById("renderCanvas");
+  //   var scene = new BABYLON.Scene(engine);
+  //   var camera = new BABYLON.ArcRotateCamera(
+  //     'camera',
+  //     0,
+  //     Math.PI / 2,
+  //     10,
+  //     BABYLON.Vector3.Zero(),
+  //     scene
+  //   );
+  //   // console.log(camera.setTarget)
+  //   // camera.setTarget(BABYLON.Vector3.Zero());
+  //   // camera.attachControl(canvas, true);
+
+  //   camera.lowerRadiusLimit = 10.2;
+  //   camera.upperRadiusLimit = 490;
+
+  //   const texture = new BABYLON.Texture(
+  //     'https://raw.githubusercontent.com/eldinor/ForBJS/master/digital_painting_hollow_hillls_of_sand.jpg',
+  //     scene
+  //   );
+
+  //   // const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", "textures/heightMap.png", {width:5, height :5, subdivisions: 10, maxHeight: 1});
+
+  //   const sphere = BABYLON.MeshBuilder.CreateSphere(
+  //     'world',
+  //     { diameter: 1000 },
+  //     scene
+  //   );
+  //   const material = new BABYLON.StandardMaterial('world', scene);
+  //   sphere.scaling = new BABYLON.Vector3(-1, -1, -1);
+  //   material.emissiveTexture = texture;
+  //   material.backFaceCulling = false;
+  //   sphere.material = material;
+
+
+    var light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -45, -45), scene);
+    light.intensity = 0.15
+    
+    var camera = new BABYLON.FreeCamera(
+      'FreeCamera',
+      new BABYLON.Vector3(0, 30, 0),
+      scene
+    );
+
+    // Define Skybox
+    // var skybox = BABYLON.MeshBuilder.CreateBox(
+    //   'skyBox',
+    //   { size: 1000.0 },
+    //   scene
+    // );
+
+    const skybox = BABYLON.MeshBuilder.CreateSphere(
+      'world',
+      { diameter: 1000 },
+      scene
+    );
+    const material = new BABYLON.StandardMaterial('world', scene);
+    skybox.scaling = new BABYLON.Vector3(-1, -1, -1);
+    const gl = new BABYLON.GlowLayer("glow", scene);
+
+    const texture = new BABYLON.Texture('assets/images/sky.png', scene)
+
+    texture.uScale = 1
+    texture.vScale = 1
+
+    material.emissiveTexture = texture;
+    material.backFaceCulling = false;
+    skybox.material = material;
+
+
+    // var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
+    // skyboxMaterial.backFaceCulling = false;
+    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(
+    //   'assets/images/skybox/skybox',
+    //   scene
+    // );
+    // skyboxMaterial.reflectionTexture.coordinatesMode =
+    //   BABYLON.Texture.SKYBOX_MODE;
+    // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    // skybox.material = skyboxMaterial;
+
+    // // Define main ground - with height map
+    var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("ground", "assets/images/heightMap.png", {width: 1000, height: 1000, subdivisions: 100, minHeight: 0, maxHeight: 100}, scene);
+    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    let groundTexture = new BABYLON.Texture("assets/images/ground.jpg", scene);
+    groundTexture.uScale = 6;
+    groundTexture.vScale = 6;
+    groundMaterial.diffuseTexture = groundTexture
+
+    groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    ground.position.y = -2.0;
+    ground.material = groundMaterial;
+
+    // Define extra ground to cover entire viewport
+    // Similar to above, but no height map, and much larger
+    var extraGround = BABYLON.Mesh.CreateGround("extraGround", 1000, 1000, 1, scene, false);
+    var extraGroundMaterial = new BABYLON.StandardMaterial("extraGround", scene);
+    extraGroundMaterial.diffuseTexture = new BABYLON.Texture("assets/images/ground.jpg", scene);
+    // extraGroundMaterial.diffuseTexture.uScale = 60;
+    // extraGroundMaterial.diffuseTexture.vScale = 60;
+    extraGround.position.y = -2.05;
+    extraGround.material = extraGroundMaterial;
+
+    // Water - covers entire viewport
+    // WaterMaterial object defined in waterMaterial.js
+    BABYLON.Engine.ShadersRepository = '';
+    var water = BABYLON.MeshBuilder.CreateGround(
+      'water',
+      { width: 1000, height: 1000, subdivisions: 32 },
+      scene
+    );
+
+    // var waterMaterial = new MATERIALS.WaterMaterial('water_material', scene);
+    // waterMaterial.bumpTexture = new BABYLON.Texture('bump.png', scene); // Set the bump texture
+
+    // waterMaterial.refractionTexture?.renderList?.push(extraGround);
+    // waterMaterial.refractionTexture?.renderList?.push(ground);
+    // waterMaterial.reflectionTexture?.renderList?.push(skybox);
+
+    // waterMaterial.windForce = -15;
+    // waterMaterial.waveHeight = 1.3;
+    // waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
+    // waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
+    // waterMaterial.colorBlendFactor = 0.3;
+    // waterMaterial.bumpHeight = 0.01;
+    // waterMaterial.waveLength = 0.1;
+
+    // water.material = waterMaterial;
+
+    var lavaMaterial = new MATERIALS.LavaMaterial("water_material", scene);	
+	lavaMaterial.noiseTexture = new BABYLON.Texture("assets/images/lava_cloud.png", scene); // Set the bump texture
+	lavaMaterial.diffuseTexture = new BABYLON.Texture("assets/images/lava_lavatile.jpg", scene); // Set the diffuse texture
+	lavaMaterial.speed = 1;
+	lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
+  lavaMaterial.unlit = true
+
+      water.position.y = 20
+  water.material = lavaMaterial
+
+    scene.collisionsEnabled = true;
+    camera.checkCollisions = true;
+    camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+
+    ground.checkCollisions = true;
+    extraGround.checkCollisions = true;
+
+    // Add first person shooter controls
+    camera.keysUp.push(87);
+    camera.keysLeft.push(65);
+    camera.keysRight.push(68);
+    camera.keysDown.push(83);
+
+    // Toggle spacebar to toggle gravity
+    scene.gravity = new BABYLON.Vector3(0, -0.1, 0);
+    window.addEventListener('keydown', function (event) {
+      if (event.keyCode == 32) {
+        camera.applyGravity = !camera.applyGravity;
+      }
+    });
+
+    return scene;
   }
 
   setScene(scene: Scene, id: string) {
@@ -178,7 +419,6 @@ export class WorkflowDesignerComponent
   //   }, 10);
   // }
 
-
   off =
     'M464.75 400.25 434.75 370.25V322.75H387.25L357.25 292.75H434.75V198.25H344.25V279.75L314.25 249.75V198.25H262.75L232.75 168.25H314.25V77.75H219.25V154.75L189.25 124.75V77.75H142.25L112.25 47.75H434.75Q446.25 47.75 455.5 57T464.75 77.75V400.25ZM344.25 168.25H434.75V77.75H344.25V168.25ZM475.75 496.25 426.75 447.75H94.75Q83.25 447.75 74 438.5T64.75 417.75V85.25L15.25 36.25 36.75 15.75 496.75 475.25 475.75 496.25ZM344.25 417.75H396.75L344.25 365.25V417.75ZM219.25 292.75H272.75L219.25 240.25V292.75ZM219.25 417.75H314.25V334.75L301.75 322.75H219.25V417.75ZM94.75 168.25H147.25L94.75 114.75V168.25ZM94.75 292.75H189.25V210.25L177.25 198.25H94.75V292.75ZM189.25 417.75V322.75H94.75V417.75H189.25Z';
   on =
@@ -263,18 +503,18 @@ export class WorkflowDesignerComponent
     this.shouldRefresh = true;
 
     this.designerService.pubJSON.subscribe((json) => {
-      console.log(this.workflow?.sceneLayout)
+      console.log(this.workflow?.sceneLayout);
 
       if (json && this.workflow && json != this.workflow.sceneLayout) {
         this.workflow.sceneLayout = json;
-        console.log("CHANGED JSON")
-        console.log(json)
+        console.log('CHANGED JSON');
+        console.log(json);
         this.saveLayout();
       }
     });
 
     this.projectService.workflow.subscribe((w) => {
-      console.log(w)
+      console.log(w);
       if (w) {
         this.workflow = w;
         if (!this.designerService.initialized) {
@@ -282,13 +522,12 @@ export class WorkflowDesignerComponent
           this.designerService.initGraph(this.injector);
           this.designerService.importJSON(this.workflow.sceneLayout);
         } else {
-          console.log("check algo")
+          console.log('check algo');
           this.designerService.checkAlgo(w.sceneLayout);
         }
-      }
-      else{
-        this.designerService.initialized = false
-        this.workflow = undefined
+      } else {
+        this.designerService.initialized = false;
+        this.workflow = undefined;
       }
     });
 
@@ -301,6 +540,8 @@ export class WorkflowDesignerComponent
     var elementResizeDetectorMaker = require('element-resize-detector');
 
     var erd = elementResizeDetectorMaker();
+
+    this.initWorld();
 
     // // With the ultra fast scroll-based approach.
     // // This is the recommended strategy.
@@ -385,32 +626,35 @@ export class WorkflowDesignerComponent
     // }
   }
 
-  updateCellName(id: string, value: any){
-   let cell = this.designerService.graph?.getCellById(id)
+  updateCellName(id: string, value: any) {
+    let cell = this.designerService.graph?.getCellById(id);
 
-   let scene = this.selectedFile?.data.ngArguments.scene as Scene
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-   if (cell && scene){
-    scene.name = value
-    cell.setData({ngArguments: {
-      scene
-    }})
-   }
+    if (cell && scene) {
+      scene.name = value;
+      cell.setData({
+        ngArguments: {
+          scene,
+        },
+      });
+    }
   }
 
-  updateCellDesc(id: string, value: any){
-    let cell = this.designerService.graph?.getCellById(id)
- 
-    let scene = this.selectedFile?.data.ngArguments.scene as Scene
- 
-    if (cell && scene){
-     scene.description = value
-     cell.setData({ngArguments: {
-       scene
-     }})
-    }
-   }
+  updateCellDesc(id: string, value: any) {
+    let cell = this.designerService.graph?.getCellById(id);
 
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    if (cell && scene) {
+      scene.description = value;
+      cell.setData({
+        ngArguments: {
+          scene,
+        },
+      });
+    }
+  }
 
   loadedDocs: string[] = [];
 
@@ -439,11 +683,10 @@ export class WorkflowDesignerComponent
     // this.definition = definition;
 
     // if (this.)
-    console.log(this.workflow)
+    console.log(this.workflow);
 
     this.detailsChanged.emit(this.workflow);
   }
-
 
   onInput(ev: any) {
     var value = ev.target!.value;

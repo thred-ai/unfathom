@@ -5,13 +5,13 @@
 >
   <div
     class="w-100 secondary-background img-hover"
-    style="aspect-ratio: 1 !important; flex-grow: 1; flex-shrink: 0"
+    style="flex-grow: 1; flex-shrink: 0"
     (click)="sceneImg.click()"
   >
     <img
       *ngIf="scene!.images[0]; else noImage"
       class="w-100 h-100"
-      style="object-fit: cover; aspect-ratio: 1 !important"
+      style="object-fit: cover;"
       [src]="scene!.images[0] | safeImgUrl"
     />
 
