@@ -144,51 +144,53 @@ export class WorkflowDesignerComponent
   // }
 
   createScene2(engine: BABYLON.Engine) {
-
     var scene = new BABYLON.Scene(engine);
 
     //Creation of the scene
 
-      //   //Creation of the scene
-  //   // var canvas  = document.getElementById("renderCanvas");
-  //   var scene = new BABYLON.Scene(engine);
-  //   var camera = new BABYLON.ArcRotateCamera(
-  //     'camera',
-  //     0,
-  //     Math.PI / 2,
-  //     10,
-  //     BABYLON.Vector3.Zero(),
-  //     scene
-  //   );
-  //   // console.log(camera.setTarget)
-  //   // camera.setTarget(BABYLON.Vector3.Zero());
-  //   // camera.attachControl(canvas, true);
+    //   //Creation of the scene
+    //   // var canvas  = document.getElementById("renderCanvas");
+    //   var scene = new BABYLON.Scene(engine);
+    //   var camera = new BABYLON.ArcRotateCamera(
+    //     'camera',
+    //     0,
+    //     Math.PI / 2,
+    //     10,
+    //     BABYLON.Vector3.Zero(),
+    //     scene
+    //   );
+    //   // console.log(camera.setTarget)
+    //   // camera.setTarget(BABYLON.Vector3.Zero());
+    //   // camera.attachControl(canvas, true);
 
-  //   camera.lowerRadiusLimit = 10.2;
-  //   camera.upperRadiusLimit = 490;
+    //   camera.lowerRadiusLimit = 10.2;
+    //   camera.upperRadiusLimit = 490;
 
-  //   const texture = new BABYLON.Texture(
-  //     'https://raw.githubusercontent.com/eldinor/ForBJS/master/digital_painting_hollow_hillls_of_sand.jpg',
-  //     scene
-  //   );
+    //   const texture = new BABYLON.Texture(
+    //     'https://raw.githubusercontent.com/eldinor/ForBJS/master/digital_painting_hollow_hillls_of_sand.jpg',
+    //     scene
+    //   );
 
-  //   // const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", "textures/heightMap.png", {width:5, height :5, subdivisions: 10, maxHeight: 1});
+    //   // const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", "textures/heightMap.png", {width:5, height :5, subdivisions: 10, maxHeight: 1});
 
-  //   const sphere = BABYLON.MeshBuilder.CreateSphere(
-  //     'world',
-  //     { diameter: 1000 },
-  //     scene
-  //   );
-  //   const material = new BABYLON.StandardMaterial('world', scene);
-  //   sphere.scaling = new BABYLON.Vector3(-1, -1, -1);
-  //   material.emissiveTexture = texture;
-  //   material.backFaceCulling = false;
-  //   sphere.material = material;
+    //   const sphere = BABYLON.MeshBuilder.CreateSphere(
+    //     'world',
+    //     { diameter: 1000 },
+    //     scene
+    //   );
+    //   const material = new BABYLON.StandardMaterial('world', scene);
+    //   sphere.scaling = new BABYLON.Vector3(-1, -1, -1);
+    //   material.emissiveTexture = texture;
+    //   material.backFaceCulling = false;
+    //   sphere.material = material;
 
+    var light = new BABYLON.DirectionalLight(
+      'DirectionalLight',
+      new BABYLON.Vector3(0, -45, -45),
+      scene
+    );
+    light.intensity = 0.15;
 
-    var light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -45, -45), scene);
-    light.intensity = 0.15
-    
     var camera = new BABYLON.FreeCamera(
       'FreeCamera',
       new BABYLON.Vector3(0, 30, 0),
@@ -209,17 +211,16 @@ export class WorkflowDesignerComponent
     );
     const material = new BABYLON.StandardMaterial('world', scene);
     skybox.scaling = new BABYLON.Vector3(-1, -1, -1);
-    const gl = new BABYLON.GlowLayer("glow", scene);
+    const gl = new BABYLON.GlowLayer('glow', scene);
 
-    const texture = new BABYLON.Texture('assets/images/sky.png', scene)
+    const texture = new BABYLON.Texture('assets/images/sky.png', scene);
 
-    texture.uScale = 1
-    texture.vScale = 1
+    texture.uScale = 1;
+    texture.vScale = 1;
 
     material.emissiveTexture = texture;
     material.backFaceCulling = false;
     skybox.material = material;
-
 
     // var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
     // skyboxMaterial.backFaceCulling = false;
@@ -234,12 +235,23 @@ export class WorkflowDesignerComponent
     // skybox.material = skyboxMaterial;
 
     // // Define main ground - with height map
-    var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("ground", "assets/images/heightMap.png", {width: 1000, height: 1000, subdivisions: 100, minHeight: 0, maxHeight: 100}, scene);
-    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-    let groundTexture = new BABYLON.Texture("assets/images/ground.jpg", scene);
+    var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
+      'ground',
+      'assets/images/heightMap.png',
+      {
+        width: 1000,
+        height: 1000,
+        subdivisions: 100,
+        minHeight: 0,
+        maxHeight: 100,
+      },
+      scene
+    );
+    var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
+    let groundTexture = new BABYLON.Texture('assets/images/ground.jpg', scene);
     groundTexture.uScale = 6;
     groundTexture.vScale = 6;
-    groundMaterial.diffuseTexture = groundTexture
+    groundMaterial.diffuseTexture = groundTexture;
 
     groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     ground.position.y = -2.0;
@@ -247,9 +259,22 @@ export class WorkflowDesignerComponent
 
     // Define extra ground to cover entire viewport
     // Similar to above, but no height map, and much larger
-    var extraGround = BABYLON.Mesh.CreateGround("extraGround", 1000, 1000, 1, scene, false);
-    var extraGroundMaterial = new BABYLON.StandardMaterial("extraGround", scene);
-    extraGroundMaterial.diffuseTexture = new BABYLON.Texture("assets/images/ground.jpg", scene);
+    var extraGround = BABYLON.Mesh.CreateGround(
+      'extraGround',
+      1000,
+      1000,
+      1,
+      scene,
+      false
+    );
+    var extraGroundMaterial = new BABYLON.StandardMaterial(
+      'extraGround',
+      scene
+    );
+    extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
+      'assets/images/ground.jpg',
+      scene
+    );
     // extraGroundMaterial.diffuseTexture.uScale = 60;
     // extraGroundMaterial.diffuseTexture.vScale = 60;
     extraGround.position.y = -2.05;
@@ -281,15 +306,21 @@ export class WorkflowDesignerComponent
 
     // water.material = waterMaterial;
 
-    var lavaMaterial = new MATERIALS.LavaMaterial("water_material", scene);	
-	lavaMaterial.noiseTexture = new BABYLON.Texture("assets/images/lava_cloud.png", scene); // Set the bump texture
-	lavaMaterial.diffuseTexture = new BABYLON.Texture("assets/images/lava_lavatile.jpg", scene); // Set the diffuse texture
-	lavaMaterial.speed = 1;
-	lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
-  lavaMaterial.unlit = true
+    var lavaMaterial = new MATERIALS.LavaMaterial('water_material', scene);
+    lavaMaterial.noiseTexture = new BABYLON.Texture(
+      'assets/images/lava_cloud.png',
+      scene
+    ); // Set the bump texture
+    lavaMaterial.diffuseTexture = new BABYLON.Texture(
+      'assets/images/lava_lavatile.jpg',
+      scene
+    ); // Set the diffuse texture
+    lavaMaterial.speed = 1;
+    lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
+    lavaMaterial.unlit = true;
 
-      water.position.y = 20
-  water.material = lavaMaterial
+    water.position.y = 20;
+    water.material = lavaMaterial;
 
     scene.collisionsEnabled = true;
     camera.checkCollisions = true;
@@ -304,8 +335,16 @@ export class WorkflowDesignerComponent
     camera.keysRight.push(68);
     camera.keysDown.push(83);
 
-    // Toggle spacebar to toggle gravity
-    scene.gravity = new BABYLON.Vector3(0, -0.1, 0);
+    // // Toggle spacebar to toggle gravity
+
+
+    // var physicsPlugin = new BABYLON.HavokPlugin();
+
+    camera.needMoveForGravity = true
+
+    scene.enablePhysics();
+
+
     window.addEventListener('keydown', function (event) {
       if (event.keyCode == 32) {
         camera.applyGravity = !camera.applyGravity;
