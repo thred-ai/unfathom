@@ -24,7 +24,7 @@
     "module": "es2020",
 
     "lib": ["es2020", "dom"],
-    "types": ["babylonjs", "babylonjs-materials"],
+    "types": ["babylonjs", "babylonjs-materials", "babylonjs-loaders"],
     "paths": {
       "crypto": ["node_modules/crypto-js"],
       "stream": ["node_modules/stream-browserify"],

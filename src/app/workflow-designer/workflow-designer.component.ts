@@ -40,6 +40,12 @@ import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import * as BABYLON from 'babylonjs';
 import * as MATERIALS from 'babylonjs-materials';
+import { CharacterController } from 'babylonjs-charactercontroller';
+import 'babylonjs-loaders';
+import {
+  GLTFFileLoader,
+  GLTFLoaderAnimationStartMode,
+} from 'babylonjs-loaders';
 
 @AutoUnsubscribe
 @Component({
@@ -76,7 +82,7 @@ export class WorkflowDesignerComponent
     });
   }
 
-  initWorld() {
+  async initWorld() {
     var canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
     // Check support
@@ -87,14 +93,36 @@ export class WorkflowDesignerComponent
       var engine = new BABYLON.Engine(canvas, true);
 
       //Creating scene
-      var scene = this.createScene2(engine);
+      var { scene, actor } = await this.createScene2(engine);
 
       scene.activeCamera!.attachControl(canvas);
 
       // Once the scene is loaded, we register a render loop to render it
       engine.runRenderLoop(function () {
+        let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
+        const angle = BABYLON.Vector3.GetAngleBetweenVectorsOnPlane(
+          cam.getForwardRay().direction,
+          BABYLON.Vector3.Backward(),
+          BABYLON.Vector3.Up()
+        );
+        
+
+        // actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
+        //   new BABYLON.Vector3(1, 0, 0),
+        //   100
+        // );
+
+        actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
+          BABYLON.Vector3.Up(),
+          -angle
+        );
+
         scene.render();
       });
+
+      setTimeout(() => {
+        engine.resize();
+      }, 100);
 
       // Resize
       window.addEventListener('resize', function () {
@@ -143,7 +171,7 @@ export class WorkflowDesignerComponent
   //   return scene;
   // }
 
-  createScene2(engine: BABYLON.Engine) {
+  async createScene2(engine: BABYLON.Engine) {
     var scene = new BABYLON.Scene(engine);
 
     //Creation of the scene
@@ -189,13 +217,177 @@ export class WorkflowDesignerComponent
       new BABYLON.Vector3(0, -45, -45),
       scene
     );
-    light.intensity = 0.15;
 
-    var camera = new BABYLON.FreeCamera(
-      'FreeCamera',
-      new BABYLON.Vector3(0, 30, 0),
+    light.intensity = 1; //0.2;
+
+    //   const result = await BABYLON.SceneLoader.ImportMeshAsync(
+    //     "avatar",
+    //     "/assets/",
+    //     'avatar2.glb',
+    //     scene,
+    //     undefined,
+    //     ".glb"
+    // );
+
+    const result = await BABYLON.SceneLoader.ImportMeshAsync(
+      '',
+      '',
+      'https://models.readyplayer.me/64fad33c902030ca061803ad.glb',
+      scene,
+      undefined,
+      '.glb'
+    );
+
+    var actor = result.meshes[0] as BABYLON.Mesh;
+
+    // actor.name = 'main';
+
+    actor.scaling.scaleInPlace(1.5);
+
+    // const actor = BABYLON.MeshBuilder.CreateBox(
+    //   'actor',
+    //   { size: 5, width: 5, height: 5 },
+    //   scene
+    // );
+
+    actor.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0)
+    let mat = new BABYLON.StandardMaterial('material', scene);
+    mat.diffuseColor = new BABYLON.Color3(1, 0, 1);
+    actor.material = mat;
+
+    actor.position.y = 35;
+    actor.position.z = 200;
+
+    var alpha = -(Math.PI / 2 + actor.rotation.y);
+    var beta = Math.PI / 2.5;
+    var target = new BABYLON.Vector3(
+      actor.position.x,
+      actor.position.y + 1.5,
+      actor.position.z
+    );
+
+    var camera = new BABYLON.ArcRotateCamera(
+      'ArcRotateCamera',
+      alpha,
+      beta,
+      10,
+      target,
       scene
     );
+
+    BABYLON.SceneLoader.OnPluginActivatedObservable.add(function (loader) {
+      if (loader.name === 'gltf') {
+        (loader as GLTFFileLoader).animationStartMode =
+          GLTFLoaderAnimationStartMode.NONE;
+      }
+    });
+
+    const walkanim = await BABYLON.SceneLoader.ImportAnimationsAsync(
+      '/assets/animations/',
+      'walking2.glb',
+      scene,
+      false,
+      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
+    );
+
+    // Get Animation Group
+    const walk = walkanim.getAnimationGroupByName('M_Walk_001')!;
+
+    console.log(walkanim.animationGroups);
+
+    const runanim = await BABYLON.SceneLoader.ImportAnimationsAsync(
+      '/assets/animations/',
+      'running.glb',
+      scene,
+      false,
+      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
+    );
+
+    // Get Animation Group
+    const run = runanim.getAnimationGroupByName('M_Run_001')!;
+
+    const idleanim = await BABYLON.SceneLoader.ImportAnimationsAsync(
+      '/assets/animations/',
+      'Idle.glb',
+      scene,
+      false,
+      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
+    );
+
+    // Get Animation Group
+    const idle = idleanim.getAnimationGroupByName('M_Standing_Idle_Variations_001')!;
+
+    console.log(idle);
+
+    const jumpanim = await BABYLON.SceneLoader.ImportAnimationsAsync(
+      '/assets/animations/',
+      'Jumping2.glb',
+      scene,
+      false,
+      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
+    );
+
+    console.log(jumpanim.animationGroups)
+
+    // Get Animation Group
+    const idleJump = walkanim.getAnimationGroupByName('M_Walk_Jump_003')!;
+
+    // const idle = hiphop.getAnimationGroupByName("BreathingIdle");
+
+   
+    const agMap = { walk, idle, run, idleJump, runJump: idleJump };
+
+    let cc = new CharacterController(actor, camera, scene, agMap);
+
+    cc.setMode(0);
+
+    cc.setFaceForward(true);
+
+    //below makes the controller point the camera at the player head which is approx
+    //1.5m above the player origin
+    cc.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
+
+    //if the camera comes close to the player we want to enter first person mode.
+    cc.setNoFirstPerson(false);
+    //the height of steps which the player can climb
+    cc.setStepOffset(0.4);
+    //the minimum and maximum slope the player can go up
+    //between the two the player will start sliding down if it stops
+    cc.setSlopeLimit(30, 60);
+    cc.setWalkSpeed(7.5);
+    cc.setTurnSpeed(20);
+    cc.setJumpSpeed(20);
+    cc.setRunSpeed(30);
+    cc.setGravity(50);
+
+    // BABYLON.SceneLoader.OnPluginActivatedObservable.addOnce(loader => {
+    //     loader.animationStartMode = BABYLON.GLTFLoaderAnimationStartMode.NONE;
+    // });
+
+    // Mixamo animation
+
+    // cc.setAnimationGroups(agMap)
+
+    // cc.setWalkAnim(walk!, 1, true)
+    // cc.setIdleAnim(idle!, 1, true)
+
+    // cc.setWalkAnim("idle", 1, true)
+
+    // cc.setJumpKey("32")
+
+    //tell controller
+    // - which animation range should be used for which player animation
+    // - rate at which to play that animation range
+    // - wether the animation range should be looped
+    //use this if name, rate or looping is different from default
+    // cc.setIdleAnim('idle', 1, true);
+    // cc.setTurnLeftAnim('turnLeft', 0.5, true);
+    // cc.setTurnRightAnim('turnRight', 0.5, true);
+    // cc.setWalkBackAnim('walkBack', 0.5, true);
+    // cc.setIdleJumpAnim('idleJump', 0.5, false);
+    // cc.setRunJumpAnim('runJump', 0.6, false);
+    // cc.setFallAnim('fall', 2, false);
+    // cc.setSlideBackAnim('slideBack', 1, false);
 
     // Define Skybox
     // var skybox = BABYLON.MeshBuilder.CreateBox(
@@ -247,6 +439,7 @@ export class WorkflowDesignerComponent
       },
       scene
     );
+
     var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
     let groundTexture = new BABYLON.Texture('assets/images/ground.jpg', scene);
     groundTexture.uScale = 6;
@@ -280,6 +473,7 @@ export class WorkflowDesignerComponent
     extraGround.position.y = -2.05;
     extraGround.material = extraGroundMaterial;
 
+    // actor.
     // Water - covers entire viewport
     // WaterMaterial object defined in waterMaterial.js
     BABYLON.Engine.ShadersRepository = '';
@@ -315,7 +509,7 @@ export class WorkflowDesignerComponent
       'assets/images/lava_lavatile.jpg',
       scene
     ); // Set the diffuse texture
-    lavaMaterial.speed = 1;
+    lavaMaterial.speed = 0.5;
     lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
     lavaMaterial.unlit = true;
 
@@ -323,35 +517,47 @@ export class WorkflowDesignerComponent
     water.material = lavaMaterial;
 
     scene.collisionsEnabled = true;
-    camera.checkCollisions = true;
-    camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+    // camera.checkCollisions = true;
+    // camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
 
     ground.checkCollisions = true;
     extraGround.checkCollisions = true;
 
     // Add first person shooter controls
-    camera.keysUp.push(87);
-    camera.keysLeft.push(65);
-    camera.keysRight.push(68);
-    camera.keysDown.push(83);
+    // camera.keysUp.push(87);
+    // camera.keysLeft.push(65);
+    // camera.keysRight.push(68);
+    // camera.keysDown.push(83);
 
     // // Toggle spacebar to toggle gravity
 
-
     // var physicsPlugin = new BABYLON.HavokPlugin();
 
-    camera.needMoveForGravity = true
+    // camera.needMoveForGravity = true
 
-    scene.enablePhysics();
+    // window.addEventListener('keydown', function (event) {
+    //   if (event.keyCode == 32) {
+    //     camera.applyGravity = !camera.applyGravity;
+    //   }
+    // });
+    
 
+    cc.enableBlending(0.05);
 
-    window.addEventListener('keydown', function (event) {
-      if (event.keyCode == 32) {
-        camera.applyGravity = !camera.applyGravity;
-      }
-    });
+    //if somehting comes between camera and avatar move camera in front of the obstruction?
+    cc.setCameraElasticity(false);
+    
 
-    return scene;
+    //if somehting comes between camera and avatar make the obstruction invisible?
+    cc.makeObstructionInvisible(false);
+
+    cc.start();
+
+    // engine.runRenderLoop(function () {
+    //   scene.render();
+    // });
+
+    return { scene, actor };
   }
 
   setScene(scene: Scene, id: string) {
@@ -436,7 +642,9 @@ export class WorkflowDesignerComponent
 
   graph?: Graph;
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.initWorld();
+  }
 
   initialized = false;
 
@@ -579,8 +787,6 @@ export class WorkflowDesignerComponent
     var elementResizeDetectorMaker = require('element-resize-detector');
 
     var erd = elementResizeDetectorMaker();
-
-    this.initWorld();
 
     // // With the ultra fast scroll-based approach.
     // // This is the recommended strategy.

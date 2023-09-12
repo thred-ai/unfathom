@@ -104,9 +104,9 @@ import { PrettifyJsonPipe } from './prettify-json.pipe';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { ApiUrlPipe } from './api-url.pipe';
 import { ApiEditorComponent } from './api-editor/api-editor.component';
-import { CodeEditorModule } from '@ngstack/code-editor';
+// import { CodeEditorModule } from '@ngstack/code-editor';
 import { RawEditFilterPipe } from './raw-edit-filter.pipe';
-import { CodeEditorComponent } from './code-editor/code-editor.component';
+// import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { WorkflowInfoComponent } from './workflow-info/workflow-info.component';
 import { PlanSelectComponent } from './plan-select/plan-select.component';
 import { NgxStripeModule } from 'ngx-stripe';
@@ -172,7 +172,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
     ApiUrlPipe,
     ApiEditorComponent,
     RawEditFilterPipe,
-    CodeEditorComponent,
+    // CodeEditorComponent,
     WorkflowInfoComponent,
     PlanSelectComponent,
     BillingComponent,
@@ -255,7 +255,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
     AngularSplitModule,
     CodemirrorModule,
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
-    CodeEditorModule.forRoot(),
+    // CodeEditorModule.forRoot(),
     IonicModule.forRoot(),
     NgClickOutsideDirective,
   ],
