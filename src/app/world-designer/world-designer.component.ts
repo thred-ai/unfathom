@@ -569,6 +569,8 @@ export class WorldDesignerComponent implements OnInit {
           scene
         );
 
+        water.position.y = world.ground.liquid.level
+
         if (world.ground.liquid.liquid == LiquidType.water) {
           var waterMaterial = new MATERIALS.WaterMaterial(
             'water_material',
@@ -630,7 +632,7 @@ export class WorldDesignerComponent implements OnInit {
             'assets/images/lava_cloud.png',
             scene
           );
-          
+
           lavaMaterial.diffuseTexture = new BABYLON.Texture(
             world.ground.liquid.texture,
             scene
@@ -640,7 +642,6 @@ export class WorldDesignerComponent implements OnInit {
           lavaMaterial.unlit = true;
           water.material = lavaMaterial;
         }
-        water.position.y = world.size / 50;
       }
     }
 

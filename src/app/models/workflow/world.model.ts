@@ -35,40 +35,13 @@ export class World {
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
       scale: number;
-    }[] = [
-      // {
-      //   data: new Character(
-      //     'main',
-      //     'John',
-      //     'assets/mustafarav.glb',
-      //     'A shining knight',
-      //     undefined,
-      //     'Gloomy',
-      //     'hero'
-      //   ),
-      //   spawn: { x: 0, y: 0, z: 0 },
-      //   direction: { x: 0, y: 0, z: 0 },
-      //   scale: 1.5,
-      // },
-    ],
+    }[] = [],
     assets: {
       data: ModelAsset;
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
       scale: number;
-    }[] = [
-      // {
-      //   data: new ModelAsset(
-      //     'castle',
-      //     'assets/mustafarav.glb',
-      //     "Darth Vader's Castle",
-      //     'static'
-      //   ),
-      //   spawn: { x: 0, y: 0, z: 0 },
-      //   direction: { x: 0, y: 0, z: 0 },
-      //   scale: 1.5,
-      // },
-    ]
+    }[] = []
   ) {
     this.size = size;
     this.sky = sky;
