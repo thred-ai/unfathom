@@ -592,17 +592,17 @@ export class WorldDesignerComponent implements OnInit {
           waterMaterial.waveLength = 0.1;
           water.material = waterMaterial;
 
-          const sound = new BABYLON.Sound(
-            'sound',
-            'assets/sounds/water.wav',
-            scene,
-            null,
-            {
-              loop: true,
-              autoplay: true,
-              spatialSound: true,
-            }
-          );
+          // const sound = new BABYLON.Sound(
+          //   'sound',
+          //   'assets/sounds/water.wav',
+          //   scene,
+          //   null,
+          //   {
+          //     loop: true,
+          //     autoplay: true,
+          //     spatialSound: true,
+          //   }
+          // );
 
           // const music = new BABYLON.Sound(
           //   'music',
