@@ -5,6 +5,7 @@ import { Subscription } from './subscription.model';
 import { Scene } from './scene.model';
 import { Character } from './character.model';
 import { SceneLayout } from './scene-layout.model';
+import { Dict } from 'src/app/load.service';
 
 export class Executable {
   name!: string;
@@ -19,7 +20,7 @@ export class Executable {
   installWebhook!: string;
   whitelist?: string[];
   sceneLayout!: SceneLayout;
-  characters!: Character[];
+  characters!: Dict<Character>;
 
   tracking!: boolean;
   displayUrl!: string;
@@ -27,6 +28,7 @@ export class Executable {
   apiKey!: string;
   plan?: Subscription;
   executableUrl?: string;
+
 
   resetUrl() {
     return `https://storage.cloud.google.com/verticalai.appspot.com/workflows/${this.id}/icon-${this.id}.png`;
@@ -46,7 +48,17 @@ export class Executable {
     installWebhook?: string,
     whitelist?: string[],
     sceneLayout?: SceneLayout,
-    characters?: Character[],
+    characters: Dict<Character> = {
+      main: new Character(
+        'main',
+        'John',
+        'https://storage.googleapis.com/verticalai.appspot.com/workflows/N0ZkJm5xI861jotsjuHy/assets/mustafarav.glb',
+        'A shining knight',
+        undefined,
+        'Gloomy',
+        'hero'
+      ),
+    },
     tracking?: boolean,
     url?: string,
     apiKey?: string,

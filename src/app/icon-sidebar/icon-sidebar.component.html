@@ -7,18 +7,30 @@
     <div
       class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center"
       role="button"
-      [matTooltip]="'Main Menu'"
+      [matTooltip]="world ? 'Back to Storyboard' : 'Main Menu'"
       [matTooltipPosition]="'below'"
     >
       <div
         class="primary-text-dark d-flex justify-content-center align-items-center"
         role="button"
         mat-button
-        [matMenuTriggerFor]="mainMenu"
+        [matMenuTriggerFor]="world ? null : mainMenu"
+        (click)="world ? deselectWorld() : null"
         #menuToggle
       >
+      <mat-icon
+          *ngIf="world"
+          class="my-auto"
+          style="
+            height: 14px;
+            font-size: 14px !important;
+            width: 14px !important;
+          "
+          >navigate_before</mat-icon
+        >
         <mat-icon [svgIcon]="'unfathom_icon'"></mat-icon>
         <mat-icon
+          *ngIf="!world"
           class="my-auto"
           style="
             height: 14px;
@@ -30,7 +42,7 @@
       </div>
     </div>
 
-    <div
+    <!-- <div
       class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
       style="aspect-ratio: 1"
       role="button"
@@ -45,8 +57,8 @@
       >
         <mat-icon>center_focus_strong</mat-icon>
       </div>
-    </div>
-    <div
+    </div> -->
+    <!-- <div
       class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
       style="aspect-ratio: 1"
       role="button"
@@ -61,88 +73,141 @@
       >
         <mat-icon>{{ showingGrid ? "grid_on" : "grid_off" }}</mat-icon>
       </div>
-    </div>
+    </div> -->
 
-    <div
-      class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
-      [matTooltip]="'Tools'"
-      [matTooltipPosition]="'below'"
-    >
+    <ng-container *ngIf="!world">
       <div
-        class="w-100 d-flex justify-content-center align-items-center"
-        [mdbPopover]="template2"
-        placement="bottom"
-        [trigger]="'click'"
-        #folderToggle
+        class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
+        [matTooltip]="'Tools'"
+        [matTooltipPosition]="'below'"
       >
         <div
-          class="primary-text-dark d-flex justify-content-center align-items-center"
-          role="button"
+          class="w-100 d-flex justify-content-center align-items-center"
+          [mdbPopover]="template2"
+          placement="bottom"
+          [trigger]="'click'"
+          #folderToggle
         >
-          <mat-icon>check_box_outline_blank</mat-icon>
-          <mat-icon
-            class="my-auto"
-            style="
-              height: 14px;
-              font-size: 14px !important;
-              width: 14px !important;
-            "
-            >expand_more</mat-icon
+          <div
+            class="primary-text-dark d-flex justify-content-center align-items-center"
+            role="button"
           >
+            <mat-icon>check_box_outline_blank</mat-icon>
+            <mat-icon
+              class="my-auto"
+              style="
+                height: 14px;
+                font-size: 14px !important;
+                width: 14px !important;
+              "
+              >expand_more</mat-icon
+            >
+          </div>
         </div>
       </div>
-    </div>
 
-    <div
-      class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
-      style="aspect-ratio: 1"
-      role="button"
-      [matTooltip]="'Undo'"
-      [matTooltipPosition]="'below'"
-      (click)="undo()"
-    >
       <div
-        class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
-        style="aspect-ratio: 1; font-weight: 100 !important"
-        role="button"
-      >
-        <mat-icon>undo</mat-icon>
-      </div>
-    </div>
-    <div
-      class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
-      style="aspect-ratio: 1"
-      role="button"
-      [matTooltip]="'Redo'"
-      [matTooltipPosition]="'below'"
-      (click)="redo()"
-    >
-      <div
-        class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
+        class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
         style="aspect-ratio: 1"
         role="button"
+        [matTooltip]="'Undo'"
+        [matTooltipPosition]="'below'"
+        (click)="undo()"
       >
-        <mat-icon>redo</mat-icon>
+        <div
+          class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
+          style="aspect-ratio: 1; font-weight: 100 !important"
+          role="button"
+        >
+          <mat-icon>undo</mat-icon>
+        </div>
       </div>
-    </div>
-
-    <div
-      class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
-      style="aspect-ratio: 1"
-      role="button"
-      [matTooltip]="'Delete Selected'"
-      [matTooltipPosition]="'below'"
-      (click)="delete(selectedStep.id!)"
-      *ngIf="selectedStep && selectedStep.id != 'main'"
-    >
       <div
-        class="mx-2 primary-text-dark fw-bold d-flex justify-content-center align-items-center"
+        class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
         style="aspect-ratio: 1"
         role="button"
+        [matTooltip]="'Redo'"
+        [matTooltipPosition]="'below'"
+        (click)="redo()"
       >
-        <mat-icon>delete_outline</mat-icon>
+        <div
+          class="mx-2 primary-text-dark d-flex justify-content-center align-items-center"
+          style="aspect-ratio: 1"
+          role="button"
+        >
+          <mat-icon>redo</mat-icon>
+        </div>
       </div>
-    </div>
+
+      <div
+        class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
+        style="aspect-ratio: 1"
+        role="button"
+        [matTooltip]="'Delete Selected'"
+        [matTooltipPosition]="'below'"
+        (click)="delete(selectedStep.id!)"
+        *ngIf="selectedStep && selectedStep.id != 'main'"
+      >
+        <div
+          class="mx-2 primary-text-dark fw-bold d-flex justify-content-center align-items-center"
+          style="aspect-ratio: 1"
+          role="button"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </div>
+      </div>
+
+      <ng-template #template2>
+        <div
+          class="secondary-background-dark text-start rounded-panel d-flex justify-content-center align-items-center flex-column"
+          id="profile-menu"
+          style="min-width: 300px; max-height: 700px"
+          (clickOutside)="folderToggle.click()"
+        >
+          <div class="big-design-header p-3 pb-3">
+            <b class="fw-bold primary-text-dark">Tools</b>
+            <!-- <p
+          class="rounded-circle fw-bold primary-text d-flex justify-content-center align-content-center"
+          style="aspect-ratio: 1"
+          role="button"
+        >
+          <mat-icon style="aspect-ratio: 1"> add </mat-icon>
+        </p> -->
+          </div>
+
+          <div
+            class="w-100 h-100 d-flex justify-content-start align-items-center flex-column"
+            style="overflow-y: scroll"
+            #toolboxGroup
+          >
+            <ng-container *ngFor="let tool of items">
+              <div
+                class="w-100 my-2 px-3 proj"
+                role="button"
+                style="height: 40px"
+                #elem
+                (pointerdown)="startDrag($event)"
+              >
+                <div
+                  class="w-100 h-100 d-flex justify-content-start align-items-center py-2"
+                >
+                  <img
+                    [src]="tool.image"
+                    class="h-100 rounded border-table-dark"
+                    style="aspect-ratio: 1"
+                  />
+                  <span class="ms-3 w-100 primary-text-dark">{{
+                    tool.name
+                  }}</span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="world"> </ng-container>
   </div>
 
   <a
@@ -170,7 +235,7 @@
         <!-- <span class="secondary-text">Project</span>
 
         <mat-icon> arrow_right_alt </mat-icon> -->
-        <img
+        <!-- <img
           class="border-table me-2"
           style="
             height: 22.5px;
@@ -179,8 +244,18 @@
             object-fit: cover;
           "
           [src]="executable.displayUrl"
-        />
-        <span class="primary-text-dark">{{ executable.name }}</span>
+        /> -->
+        <div
+          class="primary-text-dark d-flex justify-content-center align-items-center"
+        >
+          {{ executable.name }}
+          <ng-container *ngIf="world && selectedStep">
+            <span class="secondary-text-dark mx-2" style="font-size: 20px"
+              >/</span
+            >
+            {{ selectedStep.data.ngArguments.scene.name }}
+          </ng-container>
+        </div>
       </div>
     </ng-template>
   </a>
@@ -400,7 +475,7 @@ placement="right"
       </div>
     </div>
 
-    <div
+    <!-- <div
       class="h-100 proj{{
         selectedIcon == 'prototype' ? '-select' : ''
       }} mt-0 d-flex justify-content-center align-items-center"
@@ -418,7 +493,7 @@ placement="right"
           <mat-icon class="fw-bold">play_arrow</mat-icon>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- <div
     class="h-100 proj{{
@@ -630,50 +705,3 @@ placement="right"
     </div>
   </ng-container>
 </mat-menu>
-
-<ng-template #template2>
-  <div
-    class="secondary-background-dark text-start rounded-panel d-flex justify-content-center align-items-center flex-column"
-    id="profile-menu"
-    style="min-width: 300px; max-height: 700px"
-    (clickOutside)="folderToggle.click()"
-  >
-    <div class="big-design-header p-3 pb-3">
-      <b class="fw-bold primary-text-dark">Tools</b>
-      <!-- <p
-          class="rounded-circle fw-bold primary-text d-flex justify-content-center align-content-center"
-          style="aspect-ratio: 1"
-          role="button"
-        >
-          <mat-icon style="aspect-ratio: 1"> add </mat-icon>
-        </p> -->
-    </div>
-
-    <div
-      class="w-100 h-100 d-flex justify-content-start align-items-center flex-column"
-      style="overflow-y: scroll"
-      #toolboxGroup
-    >
-      <ng-container *ngFor="let tool of items">
-        <div
-          class="w-100 my-2 px-3 proj"
-          role="button"
-          style="height: 40px"
-          #elem
-          (pointerdown)="startDrag($event)"
-        >
-          <div
-            class="w-100 h-100 d-flex justify-content-start align-items-center py-2"
-          >
-            <img
-              [src]="tool.image"
-              class="h-100 rounded border-table-dark"
-              style="aspect-ratio: 1"
-            />
-            <span class="ms-3 w-100 primary-text-dark">{{ tool.name }}</span>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-  </div>
-</ng-template>

@@ -33,6 +33,7 @@ import { Cell } from '@antv/x6';
 import { ThemeService } from '../theme.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
+import { World } from '../models/workflow/world.model';
 
 @AutoUnsubscribe
 @Component({
@@ -63,6 +64,8 @@ export class WorkflowComponent implements OnInit {
   mode = 'sidebar';
 
   selectedIcon: string = 'design';
+  openWorldScene?: World
+
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -210,6 +213,10 @@ export class WorkflowComponent implements OnInit {
     this.projectService.loading.subscribe((l) => {
       this.loading = l;
     });
+
+    this.designerService?.openWorld.subscribe(world => {
+      this.openWorldScene = world
+    })
 
     this.designerService.toolboxConfiguration.subscribe((s) => {
       this.models = s ?? [];
@@ -362,7 +369,9 @@ export class WorkflowComponent implements OnInit {
         if (mode == 1) {
           let exec = await this.fillExecutable(workflow);
 
-          let result = await this.loadService.saveSmartUtil(exec);
+          console.log("SAVING")
+
+          let result = await this.loadService.saveSmartUtil(exec, this.clientId);
 
           if (result) {
             this.edited = false;

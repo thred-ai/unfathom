@@ -5,10 +5,12 @@ export class Character {
   img!: string;
   personality!: string;
   type!: 'hero' | 'villain' | 'side' | 'other';
+  assetUrl?: string
 
   constructor(
     id: string,
     name: string,
+    assetUrl?: string,
     background?: string,
     img?: string,
     personality?: string,
@@ -16,6 +18,7 @@ export class Character {
   ) {
     this.id = id;
     this.name = name;
+    this.assetUrl = assetUrl
     this.background = background ?? '';
     this.img = img ?? '';
     this.personality = personality ?? '';

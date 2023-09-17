@@ -13,6 +13,7 @@ import { LoadService } from './load.service';
 import { MiniMap } from '@antv/x6-plugin-minimap';
 import { History } from '@antv/x6-plugin-history';
 import { ThemeService } from './theme.service';
+import { World } from './models/workflow/world.model';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,7 @@ export class DesignerService {
   initialized = false
 
   openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
+  openWorld = new BehaviorSubject<World | undefined>(undefined);
 
   // this.toolboxConfiguration.next([new SceneDefinition("Scene", "", "scene")])
 

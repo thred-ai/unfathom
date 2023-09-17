@@ -76,6 +76,7 @@ export class FileSidebarComponent implements OnInit {
   removeFile(id: string) {
 
     this.graph?.removeCell(id)
+
   }
 
   ngOnInit(): void {

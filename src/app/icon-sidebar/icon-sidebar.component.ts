@@ -12,6 +12,7 @@ import { Dnd } from '@antv/x6-plugin-dnd';
 import { ThemeService } from '../theme.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
+import { World } from '../models/workflow/world.model';
 
 @AutoUnsubscribe
 @Component({
@@ -39,6 +40,7 @@ export class IconSidebarComponent implements OnInit {
   @Input() selectedIcon: string = 'settings';
 
   items: SceneDefinition[] = [];
+  world?: World
 
   @Output() selectedIconChanged = new EventEmitter<string>();
   @Input() theme: 'light' | 'dark' = 'light';
@@ -71,6 +73,10 @@ export class IconSidebarComponent implements OnInit {
     } else {
       document.documentElement.style.setProperty('--gridColor', `transparent`);
     }
+  }
+
+  deselectWorld(){
+    this.designerService.openWorld.next(undefined)
   }
 
   get canUndo(){
@@ -114,6 +120,10 @@ export class IconSidebarComponent implements OnInit {
         });
       }
     });
+
+    this.designerService?.openWorld.subscribe(world => {
+      this.world = world
+    })
 
     this.designerService.openStep.subscribe((s) => {
       this.selectedStep = s;

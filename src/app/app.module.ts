@@ -137,6 +137,7 @@ import { SceneComponent } from './scene/scene.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { NodeComponent } from './node/node.component';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { WorldDesignerComponent } from './world-designer/world-designer.component';
 
 @NgModule({
   declarations: [
@@ -193,6 +194,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
     TextAreaRenderPipe,
     SceneComponent,
     NodeComponent,
+    WorldDesignerComponent,
   ],
   imports: [
     CommonModule,

@@ -46,6 +46,12 @@ import {
   GLTFFileLoader,
   GLTFLoaderAnimationStartMode,
 } from 'babylonjs-loaders';
+import { World } from '../models/workflow/world.model';
+import { Ground } from '../models/workflow/ground.model';
+import { Liquid } from '../models/workflow/liquid.model';
+import { LiquidType } from '../models/workflow/liquid-type.enum';
+import { ModelAsset } from '../models/workflow/model-asset.model';
+import { Character } from '../models/workflow/character.model';
 
 @AutoUnsubscribe
 @Component({
@@ -80,54 +86,6 @@ export class WorkflowDesignerComponent
     val.forEach((v) => {
       this.frames[v.type] = v;
     });
-  }
-
-  async initWorld() {
-    var canvas = document.getElementById('canvas') as HTMLCanvasElement;
-
-    // Check support
-    if (!BABYLON.Engine.isSupported()) {
-      window.alert('Browser not supported');
-    } else if (canvas) {
-      // Babylon
-      var engine = new BABYLON.Engine(canvas, true);
-
-      //Creating scene
-      var { scene, actor } = await this.createScene2(engine);
-
-      scene.activeCamera!.attachControl(canvas);
-
-      // Once the scene is loaded, we register a render loop to render it
-      engine.runRenderLoop(function () {
-        let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
-        const angle = BABYLON.Vector3.GetAngleBetweenVectorsOnPlane(
-          cam.getForwardRay().direction,
-          BABYLON.Vector3.Backward(),
-          BABYLON.Vector3.Up()
-        );
-
-        // actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
-        //   new BABYLON.Vector3(1, 0, 0),
-        //   100
-        // );
-
-        actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
-          BABYLON.Vector3.Up(),
-          -angle
-        );
-
-        scene.render();
-      });
-
-      setTimeout(() => {
-        engine.resize();
-      }, 100);
-
-      // Resize
-      window.addEventListener('resize', function () {
-        engine.resize();
-      });
-    }
   }
 
   // createScene(engine: BABYLON.Engine) {
@@ -170,248 +128,6 @@ export class WorkflowDesignerComponent
   //   return scene;
   // }
 
-  async createScene2(engine: BABYLON.Engine) {
-    var scene = new BABYLON.Scene(engine);
-
-  
-    var light = new BABYLON.DirectionalLight(
-      'DirectionalLight',
-      new BABYLON.Vector3(0, -45, -45),
-      scene
-    );
-
-    light.intensity = 1; //0.2;
-
-
-    const result = await BABYLON.SceneLoader.ImportMeshAsync(
-      '',
-      '',
-      'https://models.readyplayer.me/64fad33c902030ca061803ad.glb',
-      scene,
-      undefined,
-      '.glb'
-    );
-
-    var actor = result.meshes[0] as BABYLON.Mesh;
-
-    actor.scaling.scaleInPlace(1.5);
-
-    actor.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
-    let mat = new BABYLON.StandardMaterial('material', scene);
-    mat.diffuseColor = new BABYLON.Color3(1, 0, 1);
-    actor.material = mat;
-
-    actor.position.y = 35;
-    actor.position.z = 200;
-
-    var alpha = -(Math.PI / 2 + actor.rotation.y);
-    var beta = Math.PI / 2.5;
-    var target = new BABYLON.Vector3(
-      actor.position.x,
-      actor.position.y + 1.5,
-      actor.position.z
-    );
-
-    var camera = new BABYLON.ArcRotateCamera(
-      'ArcRotateCamera',
-      alpha,
-      beta,
-      10,
-      target,
-      scene
-    );
-
-    BABYLON.SceneLoader.OnPluginActivatedObservable.add(function (loader) {
-      if (loader.name === 'gltf') {
-        (loader as GLTFFileLoader).animationStartMode =
-          GLTFLoaderAnimationStartMode.NONE;
-      }
-    });
-
-    await BABYLON.SceneLoader.ImportAnimationsAsync(
-      '/assets/animations/',
-      'walking2.glb',
-      scene,
-      false,
-      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
-    );
-    await BABYLON.SceneLoader.ImportAnimationsAsync(
-      '/assets/animations/',
-      'Idle.glb',
-      scene,
-      false,
-      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
-    );
-    await BABYLON.SceneLoader.ImportAnimationsAsync(
-      '/assets/animations/',
-      'Jumping2.glb',
-      scene,
-      false,
-      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
-    );
-    await BABYLON.SceneLoader.ImportAnimationsAsync(
-      '/assets/animations/',
-      'running.glb',
-      scene,
-      false,
-      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
-    );
-    await BABYLON.SceneLoader.ImportAnimationsAsync(
-      '/assets/animations/',
-      'Falling.glb',
-      scene,
-      false,
-      BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
-    );
-
-    const walk = scene.getAnimationGroupByName('M_Walk_001')!;
-    const run = scene.getAnimationGroupByName('M_Run_001')!;
-    const idle = scene.getAnimationGroupByName(
-      'M_Standing_Idle_Variations_001'
-    )!;
-    const runJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
-    const idleJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
-    const fall = scene.getAnimationGroupByName('F_Falling_Idle_001')!;
-
-    const agMap = {
-      walk,
-      idle,
-      run,
-      idleJump,
-      runJump,
-      fall,
-    };
-
-    let cc = new CharacterController(actor, camera, scene, agMap);
-
-    cc.setMode(0);
-
-    cc.setFaceForward(true);
-
-    cc.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
-
-    cc.setNoFirstPerson(false);
-    cc.setStepOffset(0.4);
-    cc.setSlopeLimit(30, 60);
-    cc.setWalkSpeed(7.5);
-    cc.setTurnSpeed(20);
-    cc.setJumpSpeed(20);
-    cc.setRunSpeed(30);
-    cc.setGravity(50);
-
-    const skybox = BABYLON.MeshBuilder.CreateSphere(
-      'world',
-      { diameter: 1000 },
-      scene
-    );
-    const material = new BABYLON.StandardMaterial('world', scene);
-    skybox.scaling = new BABYLON.Vector3(-1, -1, -1);
-    const gl = new BABYLON.GlowLayer('glow', scene);
-
-    const texture = new BABYLON.Texture('assets/images/sky.png', scene);
-
-    texture.uScale = 1;
-    texture.vScale = 1;
-
-    material.emissiveTexture = texture;
-    material.backFaceCulling = false;
-    skybox.material = material;
-
-    var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
-      'ground',
-      'assets/images/heightMap.png',
-      {
-        width: 1000,
-        height: 1000,
-        subdivisions: 100,
-        minHeight: 0,
-        maxHeight: 100,
-      },
-      scene
-    );
-
-    var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
-    let groundTexture = new BABYLON.Texture('assets/images/ground.jpg', scene);
-    groundTexture.uScale = 6;
-    groundTexture.vScale = 6;
-    groundMaterial.diffuseTexture = groundTexture;
-
-    groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    ground.position.y = -2.0;
-    ground.material = groundMaterial;
-
-    var extraGround = BABYLON.Mesh.CreateGround(
-      'extraGround',
-      1000,
-      1000,
-      1,
-      scene,
-      false
-    );
-    var extraGroundMaterial = new BABYLON.StandardMaterial(
-      'extraGround',
-      scene
-    );
-    extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
-      'assets/images/ground.jpg',
-      scene
-    );
-
-    extraGround.position.y = -2.05;
-    extraGround.material = extraGroundMaterial;
-
-    BABYLON.Engine.ShadersRepository = '';
-    var water = BABYLON.MeshBuilder.CreateGround(
-      'water',
-      { width: 1000, height: 1000, subdivisions: 32 },
-      scene
-    );
-
-    // var waterMaterial = new MATERIALS.WaterMaterial('water_material', scene);
-    // waterMaterial.bumpTexture = new BABYLON.Texture('bump.png', scene); // Set the bump texture
-
-    // waterMaterial.refractionTexture?.renderList?.push(extraGround);
-    // waterMaterial.refractionTexture?.renderList?.push(ground);
-    // waterMaterial.reflectionTexture?.renderList?.push(skybox);
-
-    // waterMaterial.windForce = -15;
-    // waterMaterial.waveHeight = 1.3;
-    // waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
-    // waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
-    // waterMaterial.colorBlendFactor = 0.3;
-    // waterMaterial.bumpHeight = 0.01;
-    // waterMaterial.waveLength = 0.1;
-
-    // water.material = waterMaterial;
-
-    var lavaMaterial = new MATERIALS.LavaMaterial('water_material', scene);
-    lavaMaterial.noiseTexture = new BABYLON.Texture(
-      'assets/images/lava_cloud.png',
-      scene
-    );
-    lavaMaterial.diffuseTexture = new BABYLON.Texture(
-      'assets/images/lava_lavatile.jpg',
-      scene
-    );
-    lavaMaterial.speed = 0.5;
-    lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
-    lavaMaterial.unlit = true;
-
-    water.position.y = 20;
-    water.material = lavaMaterial;
-    scene.collisionsEnabled = true;
-
-    ground.checkCollisions = true;
-    extraGround.checkCollisions = true;
-
-    cc.enableBlending(0.05);
-    cc.setCameraElasticity(false);
-    cc.makeObstructionInvisible(false);
-    cc.start();
-
-    return { scene, actor };
-  }
-
   setScene(scene: Scene, id: string) {
     // if (this.workflow) {
     //   let same = this.workflow.scenes.findIndex((f) => f.id == id);
@@ -444,6 +160,7 @@ export class WorkflowDesignerComponent
   @Output() apiKeyChanged = new EventEmitter<Key>();
   // @Output() apiRequestChanged = new EventEmitter<APIRequest>();
   @Output() selectedFileChanged = new EventEmitter<string>();
+  @Output() openWorldSceneChanged = new EventEmitter<World>();
 
   selectedFile?: Cell.Properties;
 
@@ -457,6 +174,86 @@ export class WorkflowDesignerComponent
     private injector: Injector,
     private projectService: ProjectService
   ) {}
+
+  async selectWorld(scene: Scene) {
+    // let world = new World(
+    //   scene.id,
+    //   5000,
+    //   0.4,
+    //   'assets/images/sky.png',
+    //   new Ground(
+    //     'assets/images/heightMap.png',
+    //     'assets/images/ground.jpg',
+    //     new Liquid('assets/images/lava_lavatile.jpg', LiquidType.lava)
+    //   )
+    // );
+
+    // let world = new World(
+    //   scene.id,
+    //   1000,
+    //   1,
+    //   'assets/images/sky2.png',
+    //   new Ground(
+    //     'assets/images/heightMap2.png',
+    //     'assets/images/sand.png',
+    //     new Liquid('bump.png', LiquidType.water)
+    //   )
+    // );
+
+    this.loadService.getWorld(this.workflow!.id, scene.id, (world) => {
+      console.log(world);
+
+      // if (!world?.assets || world.assets.length == 0) {
+      //   world?.assets.push(
+      //     {
+      //       data: new ModelAsset(
+      //         'Starship',
+      //         'ship',
+      //         'assets/ship.glb',
+      //         '',
+      //         'movable'
+      //       ),
+      //       spawn: { x: 0, y: 0, z: 0 },
+      //       direction: { x: 0, y: 0, z: 0 },
+      //       scale: 1.5,
+      //     },
+      //     {
+      //       data: new ModelAsset(
+      //         "Darth Vader's Castle",
+      //         'castle',
+      //         'assets/mustafarav.glb',
+      //         "",
+      //         'static'
+      //       ),
+      //       spawn: { x: 0, y: 0, z: 0 },
+      //       direction: { x: 0, y: 0, z: 0 },
+      //       scale: 1.5,
+      //     }
+      //   );
+      //   this.loadService.saveWorld(world!, this.workflow!.id);
+      // }
+
+      // if (!world?.characters || world.characters.length == 0) {
+      //   world?.characters.push({
+      //     data: new Character(
+      //       'main',
+      //       'John',
+      //       'assets/mustafarav.glb',
+      //       'A shining knight',
+      //       undefined,
+      //       'Gloomy',
+      //       'hero'
+      //     ),
+      //     spawn: { x: 0, y: 0, z: 0 },
+      //     direction: { x: 0, y: 0, z: 0 },
+      //     scale: 1.5,
+      //   });
+      //   this.loadService.saveWorld(world!, this.workflow!.id);
+      // }
+
+      this.designerService.openWorld.next(world);
+    });
+  }
 
   @ViewChildren('geditor') divs?: QueryList<ElementRef>;
 
@@ -495,7 +292,7 @@ export class WorkflowDesignerComponent
   graph?: Graph;
 
   ngAfterViewInit(): void {
-    this.initWorld();
+    // this.initWorld();
   }
 
   initialized = false;
@@ -600,6 +397,7 @@ export class WorkflowDesignerComponent
 
   public ngOnInit() {
     this.shouldRefresh = true;
+    this.designerService.initialized = false;
 
     this.designerService.pubJSON.subscribe((json) => {
       console.log(this.workflow?.sceneLayout);
@@ -660,6 +458,10 @@ export class WorkflowDesignerComponent
 
       this.rerenderDesigner();
     });
+
+    // this.designerService.openWorld.subscribe((step) => {
+    //   this.openWorld = step;
+    // });
   }
 
   rerenderDesigner() {

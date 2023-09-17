@@ -32,6 +32,7 @@ import { SceneLayout } from './models/workflow/scene-layout.model';
 import { DesignerService } from './designer.service';
 import { ThemeService } from './theme.service';
 import { ProjectService } from './project.service';
+import { World } from './models/workflow/world.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -68,11 +69,7 @@ export class LoadService {
     private titleService: Title,
     private designerService: DesignerService,
     private projectService: ProjectService
-  ) {
-    
-  }
-
- 
+  ) {}
 
   // .bg-theme{
   //   background-color: #1F1F1F;
@@ -86,7 +83,36 @@ export class LoadService {
     return confirm('Are you sure you want to delete this component?');
   }
 
+  async saveWorld(world: World, id: string) {
+    console.log(world);
+    try {
+      await this.db
+        .doc(`Workflows/${id}/Worlds/${world.id}`)
+        .set(JSON.parse(JSON.stringify(world)), { merge: true });
 
+      // this.projectService.loading.next(false);
+
+      return world;
+    } catch (error) {
+      console.log(error);
+      // this.projectService.loading.next(false);
+
+      return undefined;
+    }
+  }
+
+  getWorld(id: string, worldId: string, callback: (world?: World) => any) {
+    this.projectSub?.unsubscribe();
+    let q = this.db.doc(`Workflows/${id}/Worlds/${worldId}`);
+    q.valueChanges().subscribe((docs2) => {
+      let docs_2 = this.syncWorld(docs2 as World);
+      if (docs_2) {
+        callback(docs_2);
+      } else {
+        callback(undefined);
+      }
+    });
+  }
 
   finishSignUp(
     email: string,
@@ -163,12 +189,12 @@ export class LoadService {
       localStorage.removeItem('url');
       localStorage.removeItem('name');
       localStorage.removeItem('email');
-      this.loadedUser.next(undefined)
-      this.projectService.loadedModels.next({})
-      this.projectService.loading.next(false)
-      this.themeService.theme.next('light')
-      this.projectService.workflow.next(undefined)
-      this.designerService.initialized = false
+      this.loadedUser.next(undefined);
+      this.projectService.loadedModels.next({});
+      this.projectService.loading.next(false);
+      this.themeService.theme.next('light');
+      this.projectService.workflow.next(undefined);
+      this.designerService.initialized = false;
       await this.openAuth('0');
       callback(true);
     } catch (error) {
@@ -236,7 +262,7 @@ export class LoadService {
     return undefined;
   }
 
-  async saveSmartUtil(data: Executable) {
+  async saveSmartUtil(data: Executable, clientId: string) {
     let id = data.id;
 
     let uid = (await this.currentUser)?.uid;
@@ -272,6 +298,8 @@ export class LoadService {
           }
         })
       );
+
+      await this.saveLayout(data, clientId);
 
       let uploadData = JSON.parse(JSON.stringify(data));
 
@@ -604,7 +632,6 @@ export class LoadService {
     }
   }
 
-
   // getPlans(callback: (result: Dict<Plan>) => any) {
   //   try {
   //     let models: Dict<Plan> = {};
@@ -777,9 +804,16 @@ export class LoadService {
           clientId: string;
         }[]
       )[0];
-      if (docs_2) {
+      if (docs_2 && docs_2.layout) {
         if (docs_2.clientId != clientId) {
-          callback(docs_2?.layout);
+          docs_2.layout.cells.forEach((cell) => {
+            if (cell.data?.ngArguments?.scene) {
+              cell.data.ngArguments.scene = this.syncScene(
+                cell.data.ngArguments.scene
+              );
+            }
+          });
+          callback(docs_2.layout);
         }
       } else {
         callback(undefined);
@@ -810,7 +844,6 @@ export class LoadService {
       }
     }
   }
-  
 
   async updateAppImage(id: string, imgId: string, file?: File) {
     this.projectService.loading.next(true);
@@ -841,7 +874,8 @@ export class LoadService {
           default:
             let id2 = type.split('-')[1];
             if (id2) {
-              let same = this.projectService.loadedModels.value[id2].models[type];
+              let same =
+                this.projectService.loadedModels.value[id2].models[type];
               if (same) {
                 return same.imgUrl;
               }
@@ -1245,6 +1279,29 @@ export class LoadService {
       workflow.apiKey,
       workflow.plan,
       workflow.executableUrl
+    );
+  }
+
+  syncScene(scene: any) {
+    return new Scene(
+      scene.id,
+      scene.name,
+      scene.description,
+      scene.images,
+      scene.notes,
+      scene.type,
+    );
+  }
+
+  syncWorld(world: any) {
+    return new World(
+      world.id,
+      world.size,
+      world.lightingIntensity,
+      world.sky,
+      world.ground,
+      world.characters,
+      world.assets
     );
   }
 
