@@ -615,11 +615,11 @@ export class WorldDesignerComponent implements OnInit {
           //   }
           // );
 
-          let center = ground.getBoundingInfo().boundingBox.center;
+          // let center = ground.getBoundingInfo().boundingBox.center;
 
-          sound.setPosition(
-            new BABYLON.Vector3(center.x, world.size / 50, center.y)
-          );
+          // sound.setPosition(
+          //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
+          // );
         } else if (world.ground.liquid.liquid == LiquidType.lava) {
           var lavaMaterial = new MATERIALS.LavaMaterial(
             'water_material',
