@@ -630,6 +630,7 @@ export class WorldDesignerComponent implements OnInit {
             'assets/images/lava_cloud.png',
             scene
           );
+          
           lavaMaterial.diffuseTexture = new BABYLON.Texture(
             world.ground.liquid.texture,
             scene
