@@ -175,84 +175,9 @@ export class WorkflowDesignerComponent
     private projectService: ProjectService
   ) {}
 
-  async selectWorld(scene: Scene) {
-    // let world = new World(
-    //   scene.id,
-    //   5000,
-    //   0.4,
-    //   'assets/images/sky.png',
-    //   new Ground(
-    //     'assets/images/heightMap.png',
-    //     'assets/images/ground.jpg',
-    //     new Liquid('assets/images/lava_lavatile.jpg', LiquidType.lava)
-    //   )
-    // );
 
-    // let world = new World(
-    //   scene.id,
-    //   1000,
-    //   1,
-    //   'assets/images/sky2.png',
-    //   new Ground(
-    //     'assets/images/heightMap2.png',
-    //     'assets/images/sand.png',
-    //     new Liquid('bump.png', LiquidType.water)
-    //   )
-    // );
-
-    this.loadService.getWorld(this.workflow!.id, scene.id, (world) => {
-      console.log(world);
-
-      // if (!world?.assets || world.assets.length == 0) {
-      //   world?.assets.push(
-      //     {
-      //       data: new ModelAsset(
-      //         'Starship',
-      //         'ship',
-      //         'assets/ship.glb',
-      //         '',
-      //         'movable'
-      //       ),
-      //       spawn: { x: 0, y: 0, z: 0 },
-      //       direction: { x: 0, y: 0, z: 0 },
-      //       scale: 1.5,
-      //     },
-      //     {
-      //       data: new ModelAsset(
-      //         "Darth Vader's Castle",
-      //         'castle',
-      //         'assets/mustafarav.glb',
-      //         "",
-      //         'static'
-      //       ),
-      //       spawn: { x: 0, y: 0, z: 0 },
-      //       direction: { x: 0, y: 0, z: 0 },
-      //       scale: 1.5,
-      //     }
-      //   );
-      //   this.loadService.saveWorld(world!, this.workflow!.id);
-      // }
-
-      // if (!world?.characters || world.characters.length == 0) {
-      //   world?.characters.push({
-      //     data: new Character(
-      //       'main',
-      //       'John',
-      //       'assets/mustafarav.glb',
-      //       'A shining knight',
-      //       undefined,
-      //       'Gloomy',
-      //       'hero'
-      //     ),
-      //     spawn: { x: 0, y: 0, z: 0 },
-      //     direction: { x: 0, y: 0, z: 0 },
-      //     scale: 1.5,
-      //   });
-      //   this.loadService.saveWorld(world!, this.workflow!.id);
-      // }
-
-      this.designerService.openWorld.next(world);
-    });
+  selectWorld(scene: Scene){
+    this.loadService.selectWorld(scene)
   }
 
   @ViewChildren('geditor') divs?: QueryList<ElementRef>;

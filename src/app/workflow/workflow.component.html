@@ -43,9 +43,13 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="openWorldScene">
+    <ng-container *ngIf="openWorldScene && openStep && workflow">
       <div class="w-100 h-100">
-        <app-world-designer [world]="openWorldScene" [project]="workflow"></app-world-designer>
+        <app-world-designer
+          [world]="openWorldScene"
+          [scene]="openStep.data.ngArguments?.scene"
+          [project]="workflow"
+        ></app-world-designer>
       </div>
     </ng-container>
 

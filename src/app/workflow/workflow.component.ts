@@ -215,6 +215,7 @@ export class WorkflowComponent implements OnInit {
     });
 
     this.designerService?.openWorld.subscribe(world => {
+      console.log(world)
       this.openWorldScene = world
     })
 

@@ -56,6 +56,92 @@ export class LoadService {
     },
   };
 
+  async selectWorld(scene: Scene) {
+    // let world = new World(
+    //   scene.id,
+    //   5000,
+    //   0.4,
+    //   'assets/images/sky.png',
+    //   new Ground(
+    //     'assets/images/heightMap.png',
+    //     'assets/images/ground.jpg',
+    //     new Liquid('assets/images/lava_lavatile.jpg', LiquidType.lava)
+    //   )
+    // );
+
+    // let world = new World(
+    //   scene.id,
+    //   1000,
+    //   1,
+    //   'assets/images/sky2.png',
+    //   new Ground(
+    //     'assets/images/heightMap2.png',
+    //     'assets/images/sand.png',
+    //     new Liquid('bump.png', LiquidType.water)
+    //   )
+    // );
+
+    if (this.projectService.workflow.value) {
+      this.getWorld(
+        this.projectService.workflow.value.id,
+        scene.id,
+        (world) => {
+          console.log(world);
+
+          // if (!world?.assets || world.assets.length == 0) {
+          //   world?.assets.push(
+          //     {
+          //       data: new ModelAsset(
+          //         'Starship',
+          //         'ship',
+          //         'assets/ship.glb',
+          //         '',
+          //         'movable'
+          //       ),
+          //       spawn: { x: 0, y: 0, z: 0 },
+          //       direction: { x: 0, y: 0, z: 0 },
+          //       scale: 1.5,
+          //     },
+          //     {
+          //       data: new ModelAsset(
+          //         "Darth Vader's Castle",
+          //         'castle',
+          //         'assets/mustafarav.glb',
+          //         "",
+          //         'static'
+          //       ),
+          //       spawn: { x: 0, y: 0, z: 0 },
+          //       direction: { x: 0, y: 0, z: 0 },
+          //       scale: 1.5,
+          //     }
+          //   );
+          //   this.loadService.saveWorld(world!, this.workflow!.id);
+          // }
+
+          // if (!scene?.characters || scene.characters.length == 0) {
+          //   scene?.characters.push({
+          //     data: new Character(
+          //       'main',
+          //       'John',
+          //       'assets/mustafarav.glb',
+          //       'A shining knight',
+          //       undefined,
+          //       'Gloomy',
+          //       'hero'
+          //     ),
+          //     spawn: { x: 0, y: 0, z: 0 },
+          //     direction: { x: 0, y: 0, z: 0 },
+          //     scale: 1.5,
+          //   });
+          //   this.loadService.saveWorld(world!, this.workflow!.id);
+          // }
+
+          this.designerService.openWorld.next(world);
+        }
+      );
+    }
+  }
+
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
     private router: Router,
@@ -1290,6 +1376,8 @@ export class LoadService {
       scene.images,
       scene.notes,
       scene.type,
+      scene.characters,
+      scene.assets
     );
   }
 
@@ -1299,9 +1387,7 @@ export class LoadService {
       world.size,
       world.lightingIntensity,
       world.sky,
-      world.ground,
-      world.characters,
-      world.assets
+      world.ground
     );
   }
 

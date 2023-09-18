@@ -10,19 +10,6 @@ export class World {
   ground?: Ground;
   id!: string;
 
-  characters!: {
-    id: string;
-    spawn: { x: number; y: number; z: number };
-    direction: { x: number; y: number; z: number };
-    scale: number;
-  }[];
-
-  assets!: {
-    data: ModelAsset;
-    spawn: { x: number; y: number; z: number };
-    direction: { x: number; y: number; z: number };
-    scale: number;
-  }[];
 
   constructor(
     id: string,
@@ -30,25 +17,13 @@ export class World {
     lightingIntensity: number = 0.8,
     sky?: Sky,
     ground?: Ground,
-    characters: {
-      id: string;
-      spawn: { x: number; y: number; z: number };
-      direction: { x: number; y: number; z: number };
-      scale: number;
-    }[] = [],
-    assets: {
-      data: ModelAsset;
-      spawn: { x: number; y: number; z: number };
-      direction: { x: number; y: number; z: number };
-      scale: number;
-    }[] = []
   ) {
     this.size = size;
     this.sky = sky;
     this.lightingIntensity = lightingIntensity;
     this.ground = ground;
     this.id = id;
-    this.characters = characters;
-    this.assets = assets;
+
+    
   }
 }

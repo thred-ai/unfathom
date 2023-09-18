@@ -14,6 +14,7 @@ import { MiniMap } from '@antv/x6-plugin-minimap';
 import { History } from '@antv/x6-plugin-history';
 import { ThemeService } from './theme.service';
 import { World } from './models/workflow/world.model';
+import { Executable } from './models/workflow/executable.model';
 
 @Injectable({
   providedIn: 'root',

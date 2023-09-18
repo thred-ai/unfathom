@@ -13,6 +13,8 @@ export class DictToArrPipe implements PipeTransform {
         map1.set(key, value[key]);
       });
 
+      console.log(value)
+
       return Array.from(map1, ([name, value]) => ({ name, value }));
     } else if (fn == 'values') {
       return Object.values(value);

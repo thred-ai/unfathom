@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { World } from '../models/workflow/world.model';
 import * as BABYLON from 'babylonjs';
 import * as MATERIALS from 'babylonjs-materials';
@@ -13,17 +13,18 @@ import { DesignerService } from '../designer.service';
 import { LiquidType } from '../models/workflow/liquid-type.enum';
 import { Character } from '../models/workflow/character.model';
 import { Executable } from '../models/workflow/executable.model';
+import { ProjectService } from '../project.service';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
 @Component({
   selector: 'app-world-designer',
   templateUrl: './world-designer.component.html',
   styleUrls: ['./world-designer.component.scss'],
 })
-export class WorldDesignerComponent implements OnInit {
-
-  world?: World;
-  scene?: Scene;
-  @Input() project?: Executable
+export class WorldDesignerComponent implements OnInit, OnDestroy {
+  @Input() world?: World;
+  @Input() scene?: Scene;
+  @Input() project?: Executable;
 
   selectedCharacter?: {
     spawn: { x: number; y: number; z: number };
@@ -33,27 +34,40 @@ export class WorldDesignerComponent implements OnInit {
     direction: { x: number; y: number; z: number };
   };
 
-  constructor(private designerService?: DesignerService) {}
+  constructor(
+    private designerService?: DesignerService,
+    private projectService?: ProjectService
+  ) {}
 
   ngOnInit(): void {
-    this.designerService?.openWorld.subscribe((world) => {
-      this.world = world;
-      if (this.world && this.world.characters[0]) {
-        this.selectedCharacter = {
-          currentPos: this.world.characters[0].spawn,
-          ...this.world?.characters[0],
-        };
+    // this.designerService?.openWorld.subscribe((world) => {
+    //   this.world = world;
+    //   console.log(world)
+    // });
+
+    // this.projectService?.workflow.subscribe((project) => {
+    //   this.project = project;
+    // });
+
+    if (this.scene && this.scene.characters[0]) {
+      this.selectedCharacter = {
+        currentPos: this.scene.characters[0].spawn,
+        ...this.scene?.characters[0],
+      };
+      if (this.world && this.project) {
+        this.initWorld();
+      } else {
+        console.log('oi');
       }
-    });
-
-    this.designerService?.openStep.subscribe((scene) => {
-      this.scene = scene?.data?.ngArguments?.scene as Scene;
-    });
-
-    if (this.world && this.scene && this.project) {
-      this.initWorld();
     }
+
+    // this.designerService?.openStep.subscribe((scene) => {
+    //   this.scene = scene?.data?.ngArguments?.scene as Scene;
+
+    // });
   }
+
+  engine?: BABYLON.Engine;
 
   async initWorld() {
     var canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -63,11 +77,11 @@ export class WorldDesignerComponent implements OnInit {
       window.alert('Browser not supported');
     } else if (canvas && this.world && this.scene && this.selectedCharacter) {
       // Babylon
-      var engine = new BABYLON.Engine(canvas, true);
+      this.engine = new BABYLON.Engine(canvas, true);
 
       //Creating scene
       var { scene, actor } = await this.createScene2(
-        engine,
+        this.engine,
         this.world,
         this.scene,
         this.selectedCharacter
@@ -75,8 +89,10 @@ export class WorldDesignerComponent implements OnInit {
 
       scene.activeCamera!.attachControl(canvas);
 
+      this.engine.enableOfflineSupport = false;
+
       // Once the scene is loaded, we register a render loop to render it
-      engine.runRenderLoop(function () {
+      this.engine.runRenderLoop(function () {
         let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
         const angle = BABYLON.Vector3.GetAngleBetweenVectorsOnPlane(
           cam.getForwardRay().direction,
@@ -98,12 +114,12 @@ export class WorldDesignerComponent implements OnInit {
       });
 
       setTimeout(() => {
-        engine.resize();
+        this.engine?.resize();
       }, 100);
 
       // Resize
-      window.addEventListener('resize', function () {
-        engine.resize();
+      window.addEventListener('resize', () => {
+        this.engine?.resize();
       });
     }
   }
@@ -121,6 +137,167 @@ export class WorldDesignerComponent implements OnInit {
     }
   ) {
     var scene = new BABYLON.Scene(engine);
+
+    // const gl = new BABYLON.GlowLayer('glow', scene);
+
+    if (world.sky) {
+      const skybox = BABYLON.MeshBuilder.CreateSphere(
+        'world',
+        {
+          diameterX: world.size,
+          diameterZ: world.size,
+          diameterY: world.sky.height,
+        },
+        scene
+      );
+
+      skybox.scaling = new BABYLON.Vector3(-1, -1, -1);
+
+      const material = new BABYLON.StandardMaterial('world', scene);
+
+      const texture = new BABYLON.Texture(world.sky.texture, scene);
+
+      texture.uScale = 1;
+      texture.vScale = 1;
+
+      material.emissiveTexture = texture;
+      material.backFaceCulling = false;
+      skybox.material = material;
+    }
+
+    if (world.ground) {
+      var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
+        'ground',
+        world.ground.heightMap,
+        {
+          width: world.size,
+          height: world.size,
+          subdivisions: world.ground.maxHeight / 20,
+          minHeight: world.ground.minHeight,
+          maxHeight: world.ground.maxHeight,
+        },
+        scene
+      );
+
+      var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
+      let groundTexture = new BABYLON.Texture(world.ground.texture, scene);
+      groundTexture.uScale = world.size / 166;
+      groundTexture.vScale = world.size / 166;
+      groundMaterial.diffuseTexture = groundTexture;
+
+      groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+      ground.position.y = -2.0;
+      ground.material = groundMaterial;
+      ground.receiveShadows = true;
+
+      var extraGround = BABYLON.Mesh.CreateGround(
+        'extraGround',
+        world.size,
+        world.size,
+        1,
+        scene,
+        false
+      );
+
+      var extraGroundMaterial = new BABYLON.StandardMaterial(
+        'extraGround',
+        scene
+      );
+      extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
+        world.ground.texture,
+        scene
+      );
+
+      extraGround.position.y = -2.05;
+
+      extraGround.material = extraGroundMaterial;
+
+      ground.checkCollisions = true;
+      extraGround.checkCollisions = true;
+
+      if (world.ground.liquid) {
+        BABYLON.Engine.ShadersRepository = '';
+        var water = BABYLON.MeshBuilder.CreateGround(
+          'water',
+          { width: world.size, height: world.size, subdivisions: 32 },
+          scene
+        );
+
+        water.position.y = world.ground.liquid.level;
+
+        if (world.ground.liquid.liquid == LiquidType.water) {
+          var waterMaterial = new MATERIALS.WaterMaterial(
+            'water_material',
+            scene
+          );
+          waterMaterial.bumpTexture = new BABYLON.Texture(
+            world.ground.liquid.texture,
+            scene
+          ); // Set the bump texture
+
+          waterMaterial.refractionTexture?.renderList?.push(extraGround);
+          waterMaterial.refractionTexture?.renderList?.push(ground);
+          // waterMaterial.reflectionTexture?.renderList?.push(skybox);
+
+          waterMaterial.windForce = -15;
+          waterMaterial.waveHeight = 1.3;
+          waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
+          waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
+          waterMaterial.colorBlendFactor = 0.3;
+          waterMaterial.bumpHeight = 0.01;
+          waterMaterial.waveLength = 0.1;
+          water.material = waterMaterial;
+
+          // const sound = new BABYLON.Sound(
+          //   'sound',
+          //   'assets/sounds/water.wav',
+          //   scene,
+          //   null,
+          //   {
+          //     loop: true,
+          //     autoplay: true,
+          //     spatialSound: true,
+          //   }
+          // );
+
+          // const music = new BABYLON.Sound(
+          //   'music',
+          //   'assets/sounds/music2.wav',
+          //   scene,
+          //   null,
+          //   {
+          //     loop: true,
+          //     autoplay: true,
+          //   }
+          // );
+
+          // let center = ground.getBoundingInfo().boundingBox.center;
+
+          // sound.setPosition(
+          //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
+          // );
+        } else if (world.ground.liquid.liquid == LiquidType.lava) {
+          var lavaMaterial = new MATERIALS.LavaMaterial(
+            'water_material',
+            scene
+          );
+
+          lavaMaterial.noiseTexture = new BABYLON.Texture(
+            'assets/images/lava_cloud.png',
+            scene
+          );
+
+          lavaMaterial.diffuseTexture = new BABYLON.Texture(
+            world.ground.liquid.texture,
+            scene
+          );
+          lavaMaterial.speed = 0.5;
+          lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
+          lavaMaterial.unlit = true;
+          water.material = lavaMaterial;
+        }
+      }
+    }
 
     var avatar = this.project?.characters[character.id].assetUrl;
 
@@ -179,7 +356,7 @@ export class WorldDesignerComponent implements OnInit {
     const fall = scene.getAnimationGroupByName('F_Falling_Idle_001')!;
 
     await Promise.all(
-      world.assets.map(async (asset) => {
+      worldScene.assets.map(async (asset) => {
         const result = await BABYLON.SceneLoader.ImportMeshAsync(
           '',
           '',
@@ -484,167 +661,6 @@ export class WorldDesignerComponent implements OnInit {
     cc.setRunSpeed(30);
     cc.setGravity(50);
 
-    const gl = new BABYLON.GlowLayer('glow', scene);
-
-    if (world.sky) {
-      const skybox = BABYLON.MeshBuilder.CreateSphere(
-        'world',
-        {
-          diameterX: world.size,
-          diameterZ: world.size,
-          diameterY: world.sky.height,
-        },
-        scene
-      );
-
-      skybox.scaling = new BABYLON.Vector3(-1, -1, -1);
-
-      const material = new BABYLON.StandardMaterial('world', scene);
-
-      const texture = new BABYLON.Texture(world.sky.texture, scene);
-
-      texture.uScale = 1;
-      texture.vScale = 1;
-
-      material.emissiveTexture = texture;
-      material.backFaceCulling = false;
-      skybox.material = material;
-    }
-
-    if (world.ground) {
-      var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
-        'ground',
-        world.ground.heightMap,
-        {
-          width: world.size,
-          height: world.size,
-          subdivisions: world.ground.maxHeight / 20,
-          minHeight: world.ground.minHeight,
-          maxHeight: world.ground.maxHeight,
-        },
-        scene
-      );
-
-      var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
-      let groundTexture = new BABYLON.Texture(world.ground.texture, scene);
-      groundTexture.uScale = world.size / 166;
-      groundTexture.vScale = world.size / 166;
-      groundMaterial.diffuseTexture = groundTexture;
-
-      groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-      ground.position.y = -2.0;
-      ground.material = groundMaterial;
-      ground.receiveShadows = true;
-
-      var extraGround = BABYLON.Mesh.CreateGround(
-        'extraGround',
-        world.size,
-        world.size,
-        1,
-        scene,
-        false
-      );
-
-      var extraGroundMaterial = new BABYLON.StandardMaterial(
-        'extraGround',
-        scene
-      );
-      extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
-        world.ground.texture,
-        scene
-      );
-
-      extraGround.position.y = -2.05;
-
-      extraGround.material = extraGroundMaterial;
-
-      ground.checkCollisions = true;
-      extraGround.checkCollisions = true;
-
-      if (world.ground.liquid) {
-        BABYLON.Engine.ShadersRepository = '';
-        var water = BABYLON.MeshBuilder.CreateGround(
-          'water',
-          { width: world.size, height: world.size, subdivisions: 32 },
-          scene
-        );
-
-        water.position.y = world.ground.liquid.level
-
-        if (world.ground.liquid.liquid == LiquidType.water) {
-          var waterMaterial = new MATERIALS.WaterMaterial(
-            'water_material',
-            scene
-          );
-          waterMaterial.bumpTexture = new BABYLON.Texture(
-            world.ground.liquid.texture,
-            scene
-          ); // Set the bump texture
-
-          waterMaterial.refractionTexture?.renderList?.push(extraGround);
-          waterMaterial.refractionTexture?.renderList?.push(ground);
-          // waterMaterial.reflectionTexture?.renderList?.push(skybox);
-
-          waterMaterial.windForce = -15;
-          waterMaterial.waveHeight = 1.3;
-          waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
-          waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
-          waterMaterial.colorBlendFactor = 0.3;
-          waterMaterial.bumpHeight = 0.01;
-          waterMaterial.waveLength = 0.1;
-          water.material = waterMaterial;
-
-          // const sound = new BABYLON.Sound(
-          //   'sound',
-          //   'assets/sounds/water.wav',
-          //   scene,
-          //   null,
-          //   {
-          //     loop: true,
-          //     autoplay: true,
-          //     spatialSound: true,
-          //   }
-          // );
-
-          // const music = new BABYLON.Sound(
-          //   'music',
-          //   'assets/sounds/music2.wav',
-          //   scene,
-          //   null,
-          //   {
-          //     loop: true,
-          //     autoplay: true,
-          //   }
-          // );
-
-          // let center = ground.getBoundingInfo().boundingBox.center;
-
-          // sound.setPosition(
-          //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
-          // );
-        } else if (world.ground.liquid.liquid == LiquidType.lava) {
-          var lavaMaterial = new MATERIALS.LavaMaterial(
-            'water_material',
-            scene
-          );
-
-          lavaMaterial.noiseTexture = new BABYLON.Texture(
-            'assets/images/lava_cloud.png',
-            scene
-          );
-
-          lavaMaterial.diffuseTexture = new BABYLON.Texture(
-            world.ground.liquid.texture,
-            scene
-          );
-          lavaMaterial.speed = 0.5;
-          lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
-          lavaMaterial.unlit = true;
-          water.material = lavaMaterial;
-        }
-      }
-    }
-
     cc.enableBlending(0.05);
     cc.setCameraElasticity(false);
     cc.makeObstructionInvisible(false);
@@ -717,7 +733,7 @@ export class WorldDesignerComponent implements OnInit {
     //   }
     // });
 
-    const gl2 = new BABYLON.GlowLayer('bolt', scene);
+    // const gl2 = new BABYLON.GlowLayer('bolt', scene);
 
     return { scene, actor };
   }
@@ -730,5 +746,15 @@ export class WorldDesignerComponent implements OnInit {
       false,
       BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
     );
+  }
+
+  ngOnDestroy(): void {
+    this.engine?.scenes.forEach((scene) => {
+      scene.clearCachedVertexData();
+      scene.cleanCachedTextureBuffer();
+    });
+
+    this.engine?.dispose();
+    this.engine = undefined;
   }
 }
