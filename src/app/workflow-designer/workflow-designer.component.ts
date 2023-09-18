@@ -634,6 +634,32 @@ export class WorkflowDesignerComponent
     // }, 1);
   }
 
+  async fileChangeEvent(event: any): Promise<void> {
+    let file = event.target.files[0];
+
+    let buffer = await file.arrayBuffer();
+
+    var blob = new Blob([buffer]);
+
+    var reader = new FileReader();
+    reader.onload = (event: any) => {
+      var base64 = event.target.result;
+
+      // let imgIcon = document.getElementById('imgIcon') as HTMLImageElement;
+      // imgIcon!.src = base64;
+
+      let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+      if (scene) {
+        scene.images[0] = base64;
+
+        // this.iconChanged.emit(file);
+        this.saveLayout();
+      }
+    };
+
+    reader.readAsDataURL(blob);
+  }
+
   newBranch(step: BranchedStep) {
     const map1 = new Map();
     const map2 = new Map();

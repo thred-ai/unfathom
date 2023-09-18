@@ -100,6 +100,14 @@
                 class="w-100 rounded"
                 [src]="selectedFile.data.ngArguments.scene.images[0]"
                 style="aspect-ratio: 1"
+                role="button"
+                (click)="sceneImg.click()"
+              />
+              <input
+                #sceneImg
+                type="file"
+                (change)="fileChangeEvent($event)"
+                style="display: none"
               />
             </div>
 

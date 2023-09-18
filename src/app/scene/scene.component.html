@@ -1,17 +1,15 @@
 <div
-  class="w-100 h-100 primary-background d-flex justify-content-between align-items-center flex-column"
+  class="h-100 primary-background d-flex justify-content-between align-items-center img-hover {{
+    selected == scene.id ? 'selected' : ''
+  }}"
   *ngIf="scene"
-  style="overflow: hidden;"
+  style="overflow: hidden; pointer-events: none"
 >
-  <div
-    class="w-100 secondary-background img-hover"
-    style="flex-grow: 1; flex-shrink: 0"
-    (click)="sceneImg.click()"
-  >
+  <div class="h-100 secondary-background" style="aspect-ratio: 1">
     <img
       *ngIf="scene!.images[0]; else noImage"
       class="w-100 h-100"
-      style="object-fit: cover;"
+      style="object-fit: cover"
       [src]="scene!.images[0] | safeImgUrl"
     />
 
@@ -25,55 +23,40 @@
         >
       </div>
     </ng-template>
-
-   
   </div>
   <!-- <img > -->
 
   <div
-    class="w-100 p-3 d-inline-flex justify-content-start align-items-start flex-column border-table-top"
-    style="flex-shrink: 1;"
+    class="h-100 w-100 p-3 d-inline-flex justify-content-start align-items-start flex-column border-table-top"
   >
     <div
       class="w-100 d-inline-flex justify-content-between align-items-center p-0"
       style="height: 35px !important"
     >
-      <ion-input
+      <p class="text-truncate w-100 h-100 primary-text h4 px-0 m-0">
+        {{ scene.name && scene.name != "" ? scene.name : "No Title" }}
+      </p>
+
+      <!-- <ion-input
         class="text-truncate w-100 h-100 primary-text h4 px-0 m-0"
         fill="solid"
         [ngModel]="scene.name"
+        [disabled]="true"
         [placeholder]="'Name'"
         (ngModelChange)="scene.name = $event; changed.emit(scene)"
-      ></ion-input>
+      ></ion-input> -->
 
       <!-- <mat-icon class="primary-text">
         edit
       </mat-icon> -->
     </div>
 
-    <!-- <p class="secondary-text w-100 text-truncate mt-2">
+    <p class="w-100 secondary-text h-100 mt-2">
       {{
         scene.description && scene.description != ""
           ? scene.description
           : "No Description"
       }}
-    </p> -->
-
-    <ion-textarea
-      class="secondary-text mt-2 w-100"
-      style="overflow-y: scroll; max-height: 100px"
-      [autoGrow]="true"
-      fill="solid"
-      [ngModel]="scene.description"
-      [placeholder]="'No Description'"
-      (ngModelChange)="scene.description = $event; changed.emit(scene)"
-    ></ion-textarea>
+    </p>
   </div>
-
-  <input
-    #sceneImg
-    type="file"
-    (change)="fileChangeEvent($event, scene)"
-    style="display: none"
-  />
 </div>
