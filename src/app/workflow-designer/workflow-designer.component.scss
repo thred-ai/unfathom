@@ -228,3 +228,12 @@ ng-scrollbar {
   overflow: hidden;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+.img-show{
+  opacity: 0;
+}
+
+.img-show:hover{
+  background-color: var(--primaryBackgroundColor);
+  opacity: 0.4;
+}

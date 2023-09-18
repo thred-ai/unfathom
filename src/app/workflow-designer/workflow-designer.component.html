@@ -96,13 +96,24 @@
             <div class="w-100 pb-3">
               <p class="w-100 mb-3 fw-bold primary-text">Image</p>
 
-              <img
-                class="w-100 rounded"
-                [src]="selectedFile.data.ngArguments.scene.images[0]"
+              <div
+                class="position-relative d-flex justify-content-center align-items-center w-100"
                 style="aspect-ratio: 1"
                 role="button"
                 (click)="sceneImg.click()"
-              />
+              >
+                <img
+                  class="w-100 rounded position-absolute"
+                  [src]="selectedFile.data.ngArguments.scene.images[0]"
+                />
+                <div
+                  class="w-100 h-100 position-absolute d-flex justify-content-center align-items-center img-show"
+                  style="z-index: 1"
+                >
+                  <mat-icon class="m-auto primary-text"> upload_file </mat-icon>
+                </div>
+              </div>
+
               <input
                 #sceneImg
                 type="file"

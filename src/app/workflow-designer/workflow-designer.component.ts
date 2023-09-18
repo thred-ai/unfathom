@@ -653,7 +653,7 @@ export class WorkflowDesignerComponent
         scene.images[0] = base64;
 
         // this.iconChanged.emit(file);
-        this.saveLayout();
+        this.designerService.setScene(scene, scene.id)
       }
     };
 
