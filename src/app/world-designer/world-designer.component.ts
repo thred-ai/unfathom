@@ -513,93 +513,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
       })
     );
 
-    // if (world.id == 'TgSTaxx8MZ1PFXVhS8V4') {
-    //   const result = await BABYLON.SceneLoader.ImportMeshAsync(
-    //     '',
-    //     '',
-    //     'assets/sandyav.glb',
-    //     scene,
-    //     undefined,
-    //     '.glb'
-    //   );
-
-    //   var actor2 = result.meshes[0] as BABYLON.Mesh;
-
-    //   actor2.scaling.scaleInPlace(1.5);
-
-    //   actor2.position.y = 321.5; //world.size / 10; //35;
-
-    //   actor2.position.z = world.size / 5 - 555;
-    //   actor2.position.x = world.size / 10 + 905;
-
-    //   console.log(actor2.animations);
-
-    //   const modelTransformNodes = actor2.getChildTransformNodes();
-    //   const modelAnimationGroup = idle.clone('clone', (oldTarget) => {
-    //     return modelTransformNodes.find((node) => node.name === oldTarget.name);
-    //   });
-    //   modelAnimationGroup.start();
-    //   modelAnimationGroup.loopAnimation = true;
-
-    //   const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
-    //     '',
-    //     '',
-    //     'assets/ship.glb',
-    //     scene,
-    //     undefined,
-    //     '.glb'
-    //   );
-
-    //   var actor3 = result2.meshes[0] as BABYLON.Mesh;
-
-    //   // actor3.scaling.scaleInPlace(1);
-
-    //   actor3.position.y = 850.5; //world.size / 10; //35;
-    //   // actor3.rotation.y = (Math.PI/2)
-
-    //   actor3.rotation = new BABYLON.Vector3(Math.PI, Math.PI / 3, 0);
-
-    //   actor3.position.z = world.size / 5 - 380;
-    //   actor3.position.x = world.size / 10 + 905;
-
-    //   actor.checkCollisions = true;
-
-    // console.log(result4);
-
-    // result4.meshes.forEach((mesh) => {
-    //   console.log(mesh.name);
-
-    //   if (mesh.name == 'LAVA') {
-    //     console.log(mesh.name);
-
-    //     const lavaMaterial = new BABYLON.StandardMaterial('la', scene);
-
-    //     // var lavaMaterial = new MATERIALS.LavaMaterial(
-    //     //   'water_material2',
-    //     //   scene
-    //     // );
-
-    //     // lavaMaterial.text = new BABYLON.Texture(
-    //     //   'assets/images/lava_cloud.png',
-    //     //   scene
-    //     // );
-
-    //     lavaMaterial.diffuseTexture = new BABYLON.Texture(
-    //       world.ground!.liquid!.texture,
-    //       scene
-    //     );
-
-    //     // lavaMaterial.speed = 0.5;
-    //     // lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
-    //     // lavaMaterial.unlit = true;
-    //     // mesh.material = lavaMaterial;
-    //     mesh.material = lavaMaterial;
-    //   }
-    // });
-
-    // actor4.position
-    // }
-
     var generator = new BABYLON.ShadowGenerator(world.size, light);
     generator.usePoissonSampling = false;
     // generator.bias = 0.000001;
@@ -626,7 +539,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
       scene
     );
 
-    camera.maxZ = world.size;
+    camera.maxZ = world.size * 2
 
     BABYLON.SceneLoader.OnPluginActivatedObservable.add(function (loader) {
       if (loader.name === 'gltf') {
