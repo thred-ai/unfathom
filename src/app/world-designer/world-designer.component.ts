@@ -140,8 +140,10 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
     // const gl = new BABYLON.GlowLayer('glow', scene);
 
+    var skybox: BABYLON.Mesh | undefined
+
     if (world.sky) {
-      const skybox = BABYLON.MeshBuilder.CreateSphere(
+      skybox = BABYLON.MeshBuilder.CreateSphere(
         'world',
         {
           diameterX: world.size,
@@ -237,7 +239,10 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
           waterMaterial.refractionTexture?.renderList?.push(extraGround);
           waterMaterial.refractionTexture?.renderList?.push(ground);
-          // waterMaterial.reflectionTexture?.renderList?.push(skybox);
+
+          if (skybox){
+            waterMaterial.reflectionTexture?.renderList?.push(skybox);
+          }
 
           waterMaterial.windForce = -15;
           waterMaterial.waveHeight = 1.3;
@@ -246,6 +251,8 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
           waterMaterial.colorBlendFactor = 0.3;
           waterMaterial.bumpHeight = 0.01;
           waterMaterial.waveLength = 0.1;
+
+          
           water.material = waterMaterial;
 
           // const sound = new BABYLON.Sound(
