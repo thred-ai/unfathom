@@ -237,3 +237,12 @@ ng-scrollbar {
   background-color: var(--primaryBackgroundColor);
   opacity: 0.4;
 }
+
+.empty-img-show{
+  opacity: 1;
+}
+
+.empty-img-show:hover{
+  background-color: var(--primaryBackgroundColor);
+  opacity: 0.4;
+}

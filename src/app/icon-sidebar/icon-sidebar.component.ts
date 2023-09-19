@@ -175,6 +175,8 @@ export class IconSidebarComponent implements OnInit {
       shape: 'scene-node',
       x: 300,
       y: 500,
+      width: 600,
+      height: 300,
       data: {
         ngArguments: {
           scene: new Scene(id, 'My New Scene'),
