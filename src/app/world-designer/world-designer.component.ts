@@ -69,6 +69,10 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
   engine?: BABYLON.Engine;
 
+  loaded = false
+
+  @Input() theme!: 'light' | 'dark'
+
   async initWorld() {
     var canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
@@ -91,6 +95,13 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
       this.engine.enableOfflineSupport = false;
 
+      scene.whenReadyAsync(true).then(() =>{
+        this.loaded = true
+        setTimeout(() => {
+          this.engine?.resize();
+        }, 1);
+      })
+
       // Once the scene is loaded, we register a render loop to render it
       this.engine.runRenderLoop(function () {
         let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
@@ -112,10 +123,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
         scene.render();
       });
-
-      setTimeout(() => {
-        this.engine?.resize();
-      }, 100);
 
       // Resize
       window.addEventListener('resize', () => {

@@ -1,1 +1,8 @@
-<canvas class="w-100 h-100" id="canvas"></canvas>
+<canvas class="w-100 h-100" id="canvas" [hidden]="!loaded"> </canvas>
+
+<div
+  class="layout-container h-100 d-flex flex-column justify-content-center align-items-center"
+  *ngIf="!loaded"
+>
+  <verticalai-loader [mode]="theme" [text]="'Initializing World...'"></verticalai-loader>
+</div>
