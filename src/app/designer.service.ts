@@ -267,7 +267,6 @@ export class DesignerService {
       this.graph.on('cell:removed', ({ cell, options }) => {
         // console.log(cell);
         console.log('REMOVE');
-        let scene = cell.data.ngArguments.scene as Scene;
         this.processGraph(cell, options);
       });
 
