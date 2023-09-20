@@ -5,7 +5,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentData } from '@angular/fire/compat/firestore';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { first } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 import firebase from 'firebase/compat/app';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -239,7 +239,7 @@ export class LoadService {
 
   getWorld(id: string, worldId: string, callback: (world?: World) => any) {
     let q = this.db.doc(`Workflows/${id}/Worlds/${worldId}`);
-    q.valueChanges().subscribe((docs2) => {
+    q.valueChanges().pipe(take(1)).subscribe((docs2) => {
       let docs_2 = this.syncWorld(docs2 as World);
       if (docs_2) {
         callback(docs_2);
