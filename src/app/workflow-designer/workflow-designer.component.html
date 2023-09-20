@@ -12,18 +12,18 @@
       class="h-100 border-table-left"
       style="width: 300px !important"
     >
-      <div class="primary-background h-100 w-100" [hidden]="!selectedFile">
-        <!-- <mat-tab-group
+      <div class="primary-background h-100 w-100">
+        <mat-tab-group
           #menu
           class="w-100 h-100"
           dynamicHeight
           animationDuration="0ms"
-        > -->
-        <!-- <mat-tab class="tab">
+        >
+        <mat-tab class="tab">
             <ng-template mat-tab-label>
               <span class="primary-text"> Design </span>
             </ng-template>
-            <ng-template matTabContent> -->
+            <ng-template matTabContent>
         <div
           class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
         >
@@ -43,7 +43,11 @@
                     else emptyImg
                   "
                 >
-                  <img class="w-100 h-100 rounded position-absolute" style="object-fit: cover;" [src]="img" />
+                  <img
+                    class="w-100 h-100 rounded position-absolute"
+                    style="object-fit: cover"
+                    [src]="img"
+                  />
                   <div
                     class="w-100 h-100 position-absolute d-flex justify-content-center align-items-center img-show"
                     style="z-index: 1"
@@ -301,10 +305,10 @@
             </button>
           </div>
         </div>
-        <!-- </ng-template>
-          </mat-tab> -->
+        </ng-template>
+          </mat-tab>
 
-        <!-- <mat-tab class="tab">
+        <mat-tab class="tab">
             <ng-template mat-tab-label>
               <span class="primary-text"> Characters </span>
             </ng-template>
@@ -314,72 +318,98 @@
               >
                 <div class="w-100 h-100 p-3" style="overflow-y: scroll">
                   <div class="w-100 pb-3">
-                    <verticalai-textbox
-                      [title]="'Controller Notes'"
-                      [value]="selectedFile['notes']"
-                      [placeholder]="'Type something...'"
-                      [minHeight]="200"
-                      [maxHeight]="800"
-                      (changed)="selectedFile['notes'] = $event; saveLayout()"
+                    <verticalai-select-field
+                      [title]="'Scene Characters'"
+                      [value]="characterIds"
+                      [data]="characters"
+                      [valueField]="'id'"
+                      [multiple]="true"
+
+                      [displayField]="'name'"
+                      (changed)="
+                        addCharactersToScene($event)
+                      "
                     >
-                    </verticalai-textbox>
+                    </verticalai-select-field>
                   </div>
                 </div>
               </div>
             </ng-template>
-          </mat-tab> -->
-        <!-- </mat-tab-group> -->
+          </mat-tab>
+        </mat-tab-group>
       </div>
     </div>
-  </div>
 
-  <!-- <div class="px-0 mx-0" [style.width.px]="parent.clientWidth">
-    <ng-scrollbar
-      class="scroller"
-      [thumbClass]="'scrollbar-thumb'"
-      [autoWidthDisabled]="false"
-      [visibility]="'always'"
-      [appearance]="'compact'"
-      [track]="'horizontal'"
-      style="height: 40px"
+    <div
+      *ngIf="!selectedFile"
+      class="h-100 border-table-left"
+      style="width: 300px !important"
     >
-      <div
-        class="secondary-background d-flex justify-content-start align-items-center"
-        style="height: 40px"
-      >
+      <div class="primary-background h-100 w-100">
         <div
-          class="bg-transparent"
-          style="height: 40px"
-          [style.width.px]="frame.clientWidth / 5"
-          *ngFor="let item of workflow?.scenes ?? []"
-          [style.background-image]="'url(' + item.images[0] + ')'"
-          [style.background-repeat]="'repeat-x'"
-          [style.background-size]="'contain'"
-        ></div>
+          class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+        >
+          <div class="w-100 h-100 p-3" style="overflow-y: scroll">
+            <div class="w-100 pb-3">
+              <ng-container>
+                <div
+                  class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+                >
+                  <p class="w-100 fw-bold my-auto">All Project Characters</p>
+                  <mat-icon
+                    class="m-auto primary-text"
+                    role="button"
+                    (click)="editCharacter()"
+                  >
+                    add
+                  </mat-icon>
+                </div>
+
+                <div class="w-100">
+                  <div
+                    *ngFor="
+                      let character of characters ?? [];
+                      index as i
+                    "
+                    class="pb-4 d-flex justify-content-between align-items-center"
+                  >
+                    <div
+                      class="d-flex justify-content-start align-items-center"
+                    >
+                      <img
+                        class="border-table rounded-circle me-3"
+                        style="
+                          height: 22.5px;
+                          width: 22.5px !important;
+                          object-fit: cover;
+                        "
+                        [src]="character.img"
+                      />
+
+                      <div class="primary-text text-truncate me-3">
+                        {{ character.name }}
+                      </div>
+                    </div>
+
+                    <div
+                      class="btn bg-orange shadow-0 text-white fw-bold rounded d-flex p-1 justify-content-center align-items-center"
+                      (click)="editCharacter(character)"
+                    >
+                      <ion-icon
+                        class="m-auto"
+                        [name]="'settings-outline'"
+                        slot="end"
+                        role="button"
+                        [matTooltip]="'View Character'"
+                      ></ion-icon>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
       </div>
-    </ng-scrollbar>
-
-    <div class="w-100 d-flex justify-content-between align-items-center px-3 primary-text">
-    <div class="h-100" style="aspect-ratio: 1">
-      <mat-icon> chevron_left </mat-icon>
-    </div>
-    <div class="w-100 h-100" style="flex-grow: 1"></div>
-    <div class="h-100" style="aspect-ratio: 1">
-      <mat-icon> chevron_right </mat-icon>
     </div>
   </div>
-  </div>
 </div>
-
-<div class="position-fixed bg-info" style="width: 100px; height: 100px; z-index: 1;">
-
-</div>
-
-<div
-  style="visibility: hidden; position: fixed"
-  [style.left]="menuTopLeftPosition.x"
-  [style.top]="menuTopLeftPosition.y"
-  [matMenuTriggerFor]="rightMenu"
-></div>
-
-<!-->

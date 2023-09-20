@@ -17,7 +17,11 @@ import {
 import { Dict, LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { WorkflowComponent } from '../workflow/workflow.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { DesignerService } from '../designer.service';
@@ -28,6 +32,8 @@ import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import 'babylonjs-loaders';
 import { World } from '../models/workflow/world.model';
+import { Character } from '../models/workflow/character.model';
+import { CharacterModuleComponent } from '../character-module/character-module.component';
 
 @AutoUnsubscribe
 @Component({
@@ -38,12 +44,19 @@ import { World } from '../models/workflow/world.model';
 export class WorkflowDesignerComponent
   implements OnInit, AfterViewInit, AfterViewChecked
 {
-
   workflow?: Executable;
+
+  set activeWorkflow(workflow: Executable) {
+    this.characters = Object.values(workflow.characters) ?? [];
+    this.workflow = workflow;
+  }
 
   window: Window = window;
 
   frames: Dict<SceneDefinition> = {};
+
+  characters: Character[] = [];
+  characterIds: string[] = [];
 
   @Input() set models(val: SceneDefinition[]) {
     val.forEach((v) => {
@@ -51,9 +64,9 @@ export class WorkflowDesignerComponent
     });
   }
 
-
   @Input() theme: 'light' | 'dark' = 'light';
   @Output() detailsChanged = new EventEmitter<Executable>();
+  @Output() workflowChanged = new EventEmitter<Executable>();
   @Output() selectedFileChanged = new EventEmitter<string>();
   @Output() openWorldSceneChanged = new EventEmitter<World>();
 
@@ -64,7 +77,9 @@ export class WorkflowDesignerComponent
     private loadService: LoadService,
     private designerService: DesignerService,
     private injector: Injector,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {}
 
   selectWorld(scene: Scene) {
@@ -79,8 +94,7 @@ export class WorkflowDesignerComponent
     this.clipboard.copy(text);
   }
 
-  ngAfterViewInit(): void {
-  }
+  ngAfterViewInit(): void {}
 
   initialized = false;
 
@@ -88,6 +102,47 @@ export class WorkflowDesignerComponent
 
   resize() {
     window.dispatchEvent(new Event('resize'));
+  }
+
+  editCharacter(
+    character: Character = new Character(
+      this.loadService.newUtilID,
+      'John',
+      undefined,
+      '',
+      '/assets/profile.png',
+      '',
+      'hero'
+    )
+  ) {
+    let ref = this.dialog.open(CharacterModuleComponent, {
+      width: 'calc(var(--vh, 1vh) * 70)',
+      maxWidth: '650px',
+      maxHeight: 'calc(var(--vh, 1vh) * 100)',
+      panelClass: 'app-full-bleed-dialog',
+
+      data: {
+        character,
+        workflow: this.workflow,
+      },
+    });
+
+    ref.afterClosed().subscribe(async (val) => {
+      if (val && val != '' && val != '0' && val.workflow) {
+        let character = val.character as Character;
+
+        if (val.action == 'delete') {
+          // character.status = 1;
+          return;
+        }
+
+        this.workflow!.characters[character.id] = character;
+
+        this.projectService.workflow.next(this.workflow);
+
+        this.workflowChanged.emit(this.workflow);
+      }
+    });
   }
 
   public ngOnInit() {
@@ -102,13 +157,16 @@ export class WorkflowDesignerComponent
 
     this.projectService.workflow.subscribe((w) => {
       if (w) {
-        this.workflow = w;
-        if (!this.designerService.initialized) {
-          this.designerService.initialized = true;
-          this.designerService.initGraph(this.injector);
-          this.designerService.importJSON(this.workflow.sceneLayout);
-        } else {
-          this.designerService.checkAlgo(w.sceneLayout);
+        this.activeWorkflow = w;
+
+        if (this.workflow) {
+          if (!this.designerService.initialized) {
+            this.designerService.initialized = true;
+            this.designerService.initGraph(this.injector);
+            this.designerService.importJSON(this.workflow.sceneLayout);
+          } else {
+            this.designerService.checkAlgo(w.sceneLayout);
+          }
         }
       }
     });
@@ -117,13 +175,72 @@ export class WorkflowDesignerComponent
       this.toolboxConfiguration = tool;
     });
 
-
     this.designerService.openStep.subscribe((step) => {
       this.selectedFile = step;
+      console.log(this.characters);
+
+      let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+      if (scene){
+        this.characterIds = scene?.characters.map((c) => c.id) ?? [];
+      }
+      else{
+        this.characterIds = []
+      }
+      
     });
   }
 
-  
+  addCharactersToScene(event: string[]) {
+    console.log("oi");
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    let characters: {
+      id: string;
+      spawn: {
+        x: number;
+        y: number;
+        z: number;
+      };
+      direction: {
+        x: number;
+        y: number;
+        z: number;
+      };
+      scale: number;
+    }[] = [];
+
+
+    event.forEach((e) => {
+      let same = scene.characters.find(s => s.id == e)
+
+      if (this.workflow!.characters[e]) {
+        characters.push({
+          id: e,
+          spawn: {
+            x: same?.spawn.x ?? 0,
+            y: same?.spawn.y ?? 1000,
+            z: same?.spawn.z ?? 0,
+          },
+          direction: {
+            x: same?.direction.x ?? 0,
+            y: same?.direction.y ?? 0,
+            z: same?.direction.z ?? 0,
+          },
+          scale: same?.scale ?? 1,
+        });
+      }
+    });
+
+    scene.characters = characters
+
+    this.characterIds = scene.characters.map((c) => c.id);
+
+    console.log(scene.characters)
+
+    this.designerService.setScene(scene, scene.id)
+  }
+
   updateCellName(id: string, value: any) {
     let cell = this.designerService.graph?.getCellById(id);
 

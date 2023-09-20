@@ -15,11 +15,13 @@ export class SelectFieldComponent implements OnInit {
   @Input() bgColor: string = 'var(--secondaryBackgroundColor)';
   @Input() placeholder: string = '';
   @Input() simplify: boolean = false;
+  @Input() multiple: boolean = false;
 
   @Output() changed = new EventEmitter<any>();
   @Output() refresh = new EventEmitter<any>();
 
   change(event: any){
+    console.log(event)
     this.changed.emit(event)
   }
 

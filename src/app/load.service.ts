@@ -397,6 +397,33 @@ export class LoadService {
     return undefined;
   }
 
+  async uploadCharacterImg(file: File, id: string, characterId: string) {
+    try {
+      let ref = this.storage.ref(`workflows/${id}/characters/${characterId}/${characterId}.png`);
+      await ref.put(file, { cacheControl: 'no-cache' });
+      let displayUrl = await ref.getDownloadURL().toPromise();
+
+      return displayUrl;
+    } catch (error) {
+      console.log(error);
+    }
+    return undefined;
+  }
+
+  async uploadCharacterAsset(file: File, id: string, characterId: string) {
+
+    try {
+      let ref = this.storage.ref(`workflows/${id}/characters/${characterId}/${characterId}.glb`);
+      await ref.put(file, { cacheControl: 'no-cache' });
+      let displayUrl = await ref.getDownloadURL().toPromise();
+
+      return displayUrl;
+    } catch (error) {
+      console.log(error);
+    }
+    return undefined;
+  }
+
   async saveSmartUtil(data: Executable, clientId: string) {
     let id = data.id;
 

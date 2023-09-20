@@ -237,12 +237,6 @@ export class WorkflowComponent implements OnInit {
 
       if (user) {
 
-        // if (user?.uid && this.workflow) {
-        //   workflow.creatorId = user.uid;
-        //   this.projectService.workflow.next(workflow);
-        //   this.checkSave();
-        // }
-
         this.route.queryParams.subscribe(async (params) => {
           let proj = params['project'];
           let file = params['file'] ?? 'main';
@@ -472,16 +466,6 @@ export class WorkflowComponent implements OnInit {
 
   @ViewChild(WorkflowDesignerComponent) designer?: WorkflowDesignerComponent;
 
-  removeWorkflow() {
-    // let index = this.loadService.loadedUser.value?.utils.findIndex(
-    //   (w) => w.id == this.workflow?.id
-    // );
-    // if (index != undefined && index > -1) {
-    //   this.loadService.loadedUser.value?.utils.splice(index, 1);
-    // }
-  }
-
-  openTestEditor() {}
 
   async publish(
     workflow = this.workflow,
@@ -507,12 +491,6 @@ export class WorkflowComponent implements OnInit {
       }
     }
   }
-
-  saves: number[] = [];
-  changes: number[] = [];
-
-  loadingMode = 0;
-  loadingChangeMode = 0;
 
   updateWorkflows(workflow = this.workflow) {
     let dev = JSON.parse(
@@ -554,73 +532,6 @@ export class WorkflowComponent implements OnInit {
 
         if (stepName) sameNames[stepName] = (sameNames[stepName] ?? 0) + 1;
 
-        // if (task.componentType == 'switch') {
-        //   let switchTask = task as BranchedStep;
-        //   const branches: TaskTree[] = [];
-        //   Object.keys(switchTask.branches).forEach((name) => {
-        //     let sequence = switchTask.branches[name];
-        //     branches.push(
-        //       new TaskTree(
-        //         name,
-        //         id,
-        //         'category',
-        //         this.analyzeTasks(sequence),
-        //         undefined,
-        //         { type: 'folder', img: 'assets/branch.png' }
-        //       )
-        //     );
-        //   });
-
-        //   objects.push(
-        //     new TaskTree(
-        //       stepName,
-        //       id,
-        //       'category',
-        //       branches,
-        //       new TaskTree(
-        //         (switchTask.properties['fileName'] as string) ??
-        //           this.jsFormattedName(
-        //             switchTask.name,
-        //             sameNames[switchTask.name]
-        //           ),
-        //         switchTask.id + '',
-        //         'model',
-        //         [],
-        //         undefined,
-        //         {
-        //           type: 'model',
-        //           metaType: switchTask.type,
-        //           img: 'assets/switch2.png',
-        //         }
-        //       ),
-        //       { type: 'switch', img: 'assets/switch.png' }
-        //     )
-        //   );
-        // } else if (task.componentType == 'container') {
-        //   let loopTask = task as SequentialStep;
-        //   objects.push(
-        //     new TaskTree(
-        //       stepName,
-        //       id,
-        //       'category',
-        //       this.analyzeTasks(loopTask.sequence),
-        //       new TaskTree(
-        //         (loopTask.properties['fileName'] as string) ??
-        //           this.jsFormattedName(loopTask.name, sameNames[loopTask.name]),
-        //         loopTask.id,
-        //         'model',
-        //         [],
-        //         undefined,
-        //         {
-        //           type: 'container',
-        //           metaType: loopTask.type,
-        //           img: 'assets/container2.png',
-        //         }
-        //       ),
-        //       { type: 'folder', img: 'assets/container.png' }
-        //     )
-        //   );
-        // } else {
         objects.push(
           new TaskTree(
             (task.data.ngArguments.scene?.name as string) ??
@@ -638,7 +549,6 @@ export class WorkflowComponent implements OnInit {
             }
           )
         );
-        // }
       });
 
     return objects;
@@ -667,29 +577,5 @@ export class WorkflowComponent implements OnInit {
 
   jsFormattedName(name: string, same: number) {
     return name + (same > 1 ? `(${same})` : '');
-  }
-
-  defaultCode(type: string) {
-    switch (type) {
-      // case 'switch':
-      //   return this.classes['branch'].text;
-      // case 'container':
-      //   return this.classes['repeat'].text;
-      // case 'gpt-LLM':
-      //   return this.classes['gpt'].text;
-      // case 'gpt3-LLM':
-      //   return this.classes['gpt3'].text;
-      // case 'repl-replicate':
-      //   return this.classes['replicate'].text;
-      // case 'dalle-TIM':
-      //   return this.classes['dalle'].text;
-      // case 'sd-TIM':
-      //   return this.classes['sd'].text;
-      // case 'main':
-      //   return this.classes['main'].text;
-
-      default:
-        return this.classes['default'].text;
-    }
   }
 }

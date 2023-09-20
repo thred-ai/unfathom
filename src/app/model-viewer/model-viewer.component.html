@@ -1,0 +1,50 @@
+<div class="w-100 h-100 position-relative">
+    <model-viewer
+      *ngIf="model"
+      [attr.camera-controls]="camera"
+      class="w-100 h-100 position-absolute"
+      [attr.src]="model"
+      [attr.autoplay]="animate"
+      [attr.skybox-image]="skybox"
+      [attr.environment-image]="skybox"
+      [attr.ar]="ar ? true : undefined"
+      [attr.ios-src]="ios_model"
+      [attr.ar-modes]="ar ? 'scene-viewer quick-look' : undefined"
+      id="{{ id }}"
+      (model-visibility)="visible($event)"
+      (progress)="progress($event)"
+    >
+    </model-viewer>
+    <div
+      class="position-absolute w-100 h-100"
+      *ngIf="!obj.detail.visible"
+      style="z-index: 1000"
+    >
+      <div
+        class="w-100 h-100 position-relative d-flex justify-content-center align-items-center flex-column"
+      >
+        <img class="w-100 h-100 position-absolute" [src]="poster" />
+        <div
+          class="position-absolute d-flex justify-content-center align-items-center flex-column w-100 h-100 bg-white"
+        >
+        <!-- <img
+        loading="lazy"
+        class="h-100 w-100"
+        [useSrcset]="true"
+        [defaultImage]="'/assets/default.png'"
+        [lazyLoad]="img"
+      /> -->
+  
+          <div class="position-absolute big-design-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div class="position-absolute big-design-input-subtitle">
+            {{ pro | number: '1.0-0' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -68,7 +68,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
   engine?: BABYLON.Engine;
 
-  loaded = false;
+  loaded = 'Initializing World';
 
   @Input() theme!: 'light' | 'dark';
 
@@ -93,9 +93,10 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
       scene.activeCamera!.attachControl(canvas);
 
       this.engine.enableOfflineSupport = false;
+      this.loaded = 'Launching World';
 
       scene.whenReadyAsync(true).then(() => {
-        this.loaded = true;
+        this.loaded = '';
         setTimeout(() => {
           this.engine?.resize();
         }, 1);
@@ -431,6 +432,8 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     const runJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
     const idleJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
     const fall = scene.getAnimationGroupByName('F_Falling_Idle_001')!;
+
+    this.loaded = 'Downloading Assets';
 
     await Promise.all(
       worldScene.assets.map(async (asset) => {

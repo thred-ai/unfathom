@@ -24,10 +24,11 @@ export class SceneComponent implements OnInit {
     this.projectService.workflow.subscribe((workflow) => {
       this.workflow = workflow;
 
-      if (this.workflow && this.scene){
-        this.characters = (this.scene.characters.flatMap(c => this.workflow!.characters[c.id]) ?? [])
-      }
 
+      if (this.workflow){
+        this.characters = (this.scene?.characters.map(c => this.workflow!.characters[c.id]) ?? []).filter(c => c != undefined)
+        console.log(this.characters)
+      }
     });
   }
 

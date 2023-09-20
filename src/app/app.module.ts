@@ -136,6 +136,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { NodeComponent } from './node/node.component';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { WorldDesignerComponent } from './world-designer/world-designer.component';
+import { CharacterModuleComponent } from './character-module/character-module.component';
+import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 
 @NgModule({
   declarations: [
@@ -192,6 +194,8 @@ import { WorldDesignerComponent } from './world-designer/world-designer.componen
     SceneComponent,
     NodeComponent,
     WorldDesignerComponent,
+    CharacterModuleComponent,
+    ModelViewerComponent,
   ],
   imports: [
     CommonModule,

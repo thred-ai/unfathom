@@ -5,7 +5,7 @@
 >
   <div class="w-100 h-100 d-flex justify-content-start align-items-center">
     <div
-      class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center"
+      class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
       role="button"
       [matTooltip]="world ? 'Back to Storyboard' : 'Main Menu'"
       [matTooltipPosition]="'below'"
@@ -77,7 +77,7 @@
 
     <ng-container *ngIf="!world">
       <div
-        class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
+        class="h-100 proj mt-0 px-3 d-flex justify-content-center align-items-center"
         [matTooltip]="'New Scene'"
         [matTooltipPosition]="'below'"
         (pointerdown)="startDrag($event)"
@@ -85,9 +85,6 @@
       >
         <div
           class="w-100 d-flex justify-content-center align-items-center"
-          [mdbPopover]="template2"
-          placement="bottom"
-          [trigger]="'click'"
           #folderToggle
         >
           <div
@@ -150,25 +147,7 @@
         </div>
       </div>
 
-      <ng-template #template2>
-        <div
-          class="secondary-background-dark text-start rounded-panel d-flex justify-content-center align-items-center flex-column"
-          id="profile-menu"
-          style="min-width: 300px; max-height: 700px"
-          (clickOutside)="folderToggle.click()"
-        >
-          <div class="big-design-header p-3 pb-3">
-            <b class="fw-bold primary-text-dark">Tools</b>
-            <!-- <p
-          class="rounded-circle fw-bold primary-text d-flex justify-content-center align-content-center"
-          style="aspect-ratio: 1"
-          role="button"
-        >
-          <mat-icon style="aspect-ratio: 1"> add </mat-icon>
-        </p> -->
-          </div>
-        </div>
-      </ng-template>
+
     </ng-container>
 
     <ng-container *ngIf="world"> </ng-container>

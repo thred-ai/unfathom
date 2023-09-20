@@ -9,12 +9,10 @@ import { Snapline } from '@antv/x6-plugin-snapline';
 import { Selection } from '@antv/x6-plugin-selection';
 import { Transform } from '@antv/x6-plugin-transform';
 import { Scene } from './models/workflow/scene.model';
-import { LoadService } from './load.service';
 import { MiniMap } from '@antv/x6-plugin-minimap';
 import { History } from '@antv/x6-plugin-history';
 import { ThemeService } from './theme.service';
 import { World } from './models/workflow/world.model';
-import { Executable } from './models/workflow/executable.model';
 import { ProjectService } from './project.service';
 
 @Injectable({

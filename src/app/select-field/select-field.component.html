@@ -14,6 +14,7 @@
         [placeholder]="placeholder"
         [interfaceOptions]="{ cssClass: 'custom-popover' }"
         [ngModel]="value"
+        [multiple]="multiple"
       >
         <ion-select-option
           *ngFor="let option of data ?? []"

@@ -102,7 +102,7 @@
           class="nft-img h-100 bg-white shadow rounded-circle d-flex justify-content-center align-items-center position-absolute"
           *ngIf="(characters.length ?? 0) > 1"
           style="
-            object-fit: contain;
+            object-fit: cover;
             aspect-ratio: 1;
             top: 0px;
             left: 25px;
@@ -113,7 +113,7 @@
           <img
             class="m-auto rounded-circle"
             style="
-              object-fit: contain;
+              object-fit: cover;
               height: 90%;
               width: 90%;
               overflow: hidden;
@@ -125,7 +125,7 @@
           class="nft-img h-100 bg-white shadow rounded-circle d-flex justify-content-center align-items-center position-absolute"
           *ngIf="(characters.length ?? 0) > 2"
           style="
-            object-fit: contain;
+            object-fit: cover;
             aspect-ratio: 1;
             top: 0px;
             left: 50px;
@@ -136,7 +136,7 @@
           <img
             class="m-auto rounded-circle"
             style="
-              object-fit: contain;
+              object-fit: cover;
               height: 90%;
               width: 90%;
               overflow: hidden;
@@ -189,7 +189,7 @@
         <div
           class="bg-white rounded-circle shadow d-flex justify-content-center align-items-center"
           style="
-            object-fit: contain;
+            object-fit: cover;
             aspect-ratio: 1;
             overflow: hidden;
             width: 30px;
@@ -197,7 +197,7 @@
         >
           <img
             class="m-auto rounded-circle"
-            style="object-fit: contain; height: 90%; width: 90%"
+            style="object-fit: cover; height: 90%; width: 90%"
             [src]="n.img"
           />
         </div>
