@@ -36,11 +36,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/miniature.earth.core.js",
-              "src/miniature.earth.js",
-              "src/hologram",
-              "src/src",
-              "src/modules",
               {
                 "glob": "**/*",
                 "input": "node_modules/verticalkit",
@@ -240,11 +235,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/miniature.earth.core.js",
-              "src/miniature.earth.js",
-              "src/hologram",
-              "src/src",
-              "src/modules",
               {
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
