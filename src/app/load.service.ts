@@ -80,7 +80,6 @@ export class LoadService {
     //   )
     // );
 
-    console.log(scene);
 
     if (this.projectService.workflow.value) {
       // var saved = false
@@ -89,7 +88,6 @@ export class LoadService {
         this.projectService.workflow.value.id,
         scene.id,
         async (world) => {
-          console.log(world);
 
           // if (!world?.assets || world.assets.length == 0) {
           //   world?.assets.push(
@@ -223,7 +221,6 @@ export class LoadService {
   }
 
   async saveWorld(world: World, id: string) {
-    console.log(world);
     try {
       await this.db
         .doc(`Workflows/${id}/Worlds/${world.id}`)

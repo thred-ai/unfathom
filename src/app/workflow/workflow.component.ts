@@ -10,18 +10,15 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Dict, LoadService } from '../load.service';
 import { Developer } from '../models/user/developer.model';
-import { AIModelType } from '../models/workflow/ai-model-type.model';
 import { Trigger } from '../models/workflow/trigger.model';
 import { TrainingData } from '../models/workflow/training-data.model';
-import { Key } from '../models/workflow/key.model';
 import { APIRequest } from '../models/workflow/api-request.model';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Executable } from '../models/workflow/executable.model';
 import { TaskTree } from '../models/workflow/task-tree.model';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-import * as verticalkit from 'verticalkit/compiled';
 import { HttpClient } from '@angular/common/http';
 import { SettingsComponent } from '../settings/settings.component';
 import { WorkflowDesignerComponent } from '../workflow-designer/workflow-designer.component';
@@ -53,7 +50,7 @@ export class WorkflowComponent implements OnInit {
   newTrainingData?: TrainingData;
   newAPIRequest?: APIRequest;
 
-  workflow?: Executable
+  workflow?: Executable;
 
   openStep: Cell.Properties = {};
 
@@ -64,8 +61,7 @@ export class WorkflowComponent implements OnInit {
   mode = 'sidebar';
 
   selectedIcon: string = 'design';
-  openWorldScene?: World
-
+  openWorldScene?: World;
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -128,56 +124,48 @@ export class WorkflowComponent implements OnInit {
       this.newWorkflow = false;
       workflow = app;
       //workflow.layout = this.loadService.sortBranches(workflow.layout);
+      this.projectService.workflow.next(workflow);
+
     } else {
       this.newWorkflow = true;
       workflow = new Executable(
         this.loadService.newUtilID,
-        '',
+        this.loadService.loadedUser.value?.id ?? '',
         new Date().getTime(),
         0,
         '',
         'https://storage.googleapis.com/thred-protocol.appspot.com/resources/default_smartutil_app.png'
       );
-    }
+      this.dev?.utils.push(workflow)
+      this.projectService.workflow.next(workflow);
 
-    this.projectService.workflow.next(workflow);
+      this.save(1)
+    }
 
     // const loadData = () => {
     //   this.loadService.getAPIKeys(workflow.id, workflow.creatorId);
     // };
 
-    if (this.newWorkflow) {
-      this.loadService.currentUser.then((user) => {
-        if (user?.uid && this.workflow) {
-          workflow.creatorId = user.uid;
-          this.projectService.workflow.next(workflow);
-          this.checkSave();
-        }
-      });
-    }
   }
 
-  setWorkflow(id?: string, fileId = 'main') {
-    this.projectService.workflow.next(undefined);
-
+  async setWorkflow(id?: string, fileId = 'main') {
     this.cdr.detectChanges();
 
-    setTimeout(async () => {
-      if (id && this.dev) {
-        let same = this.dev.utils?.find((w) => w.id == id);
+    // setTimeout(async () => {
+    if (id && this.dev) {
+      let same = this.dev.utils?.find((w) => w.id == id);
 
-        if (same) {
-          this.activeWorkflow = same;
-          // same.layout.properties
-        } else {
-          this.activeWorkflow = this.dev.utils[0];
-        }
+      if (same) {
+        this.activeWorkflow = same;
+        // same.layout.properties
       } else {
-        this.activeWorkflow = undefined;
-        this
+        this.activeWorkflow = this.dev.utils[0];
       }
-      await this.selectFile(fileId, this.selectedIcon ?? 'design');
-    }, 100);
+    } else {
+      this.activeWorkflow = undefined;
+    }
+    await this.selectFile(fileId, this.selectedIcon ?? 'design');
+    // }, 100);
 
     // if (val){
     //   val.utils?.push
@@ -200,7 +188,7 @@ export class WorkflowComponent implements OnInit {
   ) {}
 
   clientId!: string;
-  sub?: Subscription
+  sub?: Subscription;
 
   async ngOnInit() {
     // setTimeout(function(){debugger;}, 5000)
@@ -214,10 +202,9 @@ export class WorkflowComponent implements OnInit {
       this.loading = l;
     });
 
-    this.designerService?.openWorld.subscribe(world => {
-      console.log(world)
-      this.openWorldScene = world
-    })
+    this.designerService?.openWorld.subscribe((world) => {
+      this.openWorldScene = world;
+    });
 
     this.designerService.toolboxConfiguration.subscribe((s) => {
       this.models = s ?? [];
@@ -228,18 +215,23 @@ export class WorkflowComponent implements OnInit {
         this.openStep = step;
         // this.selectFile(step.id, this.selectedIcon);
       }
-      this.updateRoute(step?.id)
+      this.updateRoute(step?.id);
     });
 
     this.projectService.workflow.subscribe(async (w) => {
-      this.workflow = w
+      this.workflow = w;
     });
-
 
     this.loadService.loadedUser.subscribe((user) => {
       this.dev = user;
 
       if (user) {
+
+        // if (user?.uid && this.workflow) {
+        //   workflow.creatorId = user.uid;
+        //   this.projectService.workflow.next(workflow);
+        //   this.checkSave();
+        // }
 
         this.route.queryParams.subscribe(async (params) => {
           let proj = params['project'];
@@ -252,19 +244,16 @@ export class WorkflowComponent implements OnInit {
                 this.workflow ??
                 this.dev?.utils.find((f) => f.id == proj) ??
                 this.dev?.utils[0];
-                
 
-              if (!workflow){
-                this.activeWorkflow = undefined
-                workflow = this.workflow
+              if (!workflow) {
+                this.activeWorkflow = undefined;
+                workflow = this.workflow;
               }
 
               if (workflow) {
                 if (layout) {
                   workflow.sceneLayout = layout;
-                }
-                else{
-                  console.log("nol")
+                } else {
                 }
 
                 this.activeWorkflow = workflow;
@@ -282,22 +271,17 @@ export class WorkflowComponent implements OnInit {
                   await this.selectFile('main', selectedModule, workflow, true);
                 }
 
-                this.initExecutable(workflow);
-              }
-              else{
-                console.log("nil")
+              } else {
               }
             });
           }
         });
       }
-
-      
     });
   }
 
-  async updateRoute(stepId: string = 'main'){
-    if (this.workflow && this.selectedIcon){
+  async updateRoute(stepId: string = 'main') {
+    if (this.workflow && this.selectedIcon) {
       await this.router.navigate([], {
         relativeTo: this.route,
         queryParams: {
@@ -312,32 +296,6 @@ export class WorkflowComponent implements OnInit {
       });
     }
   }
-
-  initExecutable(w?: Executable, fetchExecutable = true) {
-    // if (w) {
-    //   this.items.next([
-    //     new TaskTree(
-    //       w.name,
-    //       'app',
-    //       'category',
-    //       this.analyzeTasks(w.sceneLayout.cells),
-    //       new TaskTree('Storyboard', 'main', 'model', [], undefined, {
-    //         img: 'assets/main.png',
-    //         type: 'main',
-    //       }),
-    //       { type: 'folder', img: w.displayUrl }
-    //     ),
-    //   ]);
-    // }
-  }
-
-  async checkSave() {
-    if (this.workflow && this.workflow?.creatorId != '') {
-      await this.save(1, true);
-    }
-  }
-
-  close() {}
 
   get isValid(): boolean {
     if (this.workflow) {
@@ -363,16 +321,17 @@ export class WorkflowComponent implements OnInit {
   }
 
   async save(mode = 1, update = false, workflow = this.workflow) {
-    console.log("tooooooooooooooooooooo[")
 
     if (workflow) {
       try {
         if (mode == 1) {
           let exec = await this.fillExecutable(workflow);
 
-          console.log("SAVING")
 
-          let result = await this.loadService.saveSmartUtil(exec, this.clientId);
+          let result = await this.loadService.saveSmartUtil(
+            exec,
+            this.clientId
+          );
 
           if (result) {
             this.edited = false;
@@ -382,9 +341,7 @@ export class WorkflowComponent implements OnInit {
           }
           return;
         } else if (mode == 2) {
-          console.log(workflow)
-          this.activeWorkflow = workflow
-          console.log("SAVE")
+          this.activeWorkflow = workflow;
           await this.loadService.saveLayout(workflow, this.clientId);
 
           return;
@@ -396,7 +353,6 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
- 
   openPrototype(mode: string = 'window') {
     if (mode == 'window') {
       let ref = this.dialog.open(ApiTesterComponent, {
@@ -533,9 +489,6 @@ export class WorkflowComponent implements OnInit {
       this.loading = false;
       if (callback) {
         callback(result);
-        if (close && result) {
-          this.close();
-        }
       }
     } else {
       if (callback) {
@@ -680,12 +633,6 @@ export class WorkflowComponent implements OnInit {
     return objects;
   }
 
-  async setFieldName(name: string, id: string) {
-    //fileName
-
-    await this.save(1, true);
-  }
-
   findScene(fileId: string, workflow = this.workflow) {
     if (fileId == 'main') {
       return undefined; //new Cell.Properties(new Scene('main'), {});
@@ -706,8 +653,6 @@ export class WorkflowComponent implements OnInit {
       this.selectedIcon = selectedModule;
     }
   }
-
-
 
   jsFormattedName(name: string, same: number) {
     return name + (same > 1 ? `(${same})` : '');

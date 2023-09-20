@@ -30,20 +30,8 @@ import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Graph, Cell } from '@antv/x6';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
-import * as BABYLON from 'babylonjs';
-import * as MATERIALS from 'babylonjs-materials';
-import { CharacterController } from 'babylonjs-charactercontroller';
 import 'babylonjs-loaders';
-import {
-  GLTFFileLoader,
-  GLTFLoaderAnimationStartMode,
-} from 'babylonjs-loaders';
 import { World } from '../models/workflow/world.model';
-import { Ground } from '../models/workflow/ground.model';
-import { Liquid } from '../models/workflow/liquid.model';
-import { LiquidType } from '../models/workflow/liquid-type.enum';
-import { ModelAsset } from '../models/workflow/model-asset.model';
-import { Character } from '../models/workflow/character.model';
 
 @AutoUnsubscribe
 @Component({
@@ -167,7 +155,6 @@ export class WorkflowDesignerComponent
 
 
   selectWorld(scene: Scene){
-    console.log(scene)
     this.loadService.selectWorld(scene)
   }
 
@@ -247,18 +234,14 @@ export class WorkflowDesignerComponent
     this.designerService.initialized = false;
 
     this.designerService.pubJSON.subscribe((json) => {
-      console.log(this.workflow?.sceneLayout);
 
       if (json && this.workflow && json != this.workflow.sceneLayout) {
         this.workflow.sceneLayout = json;
-        console.log('CHANGED JSON');
-        console.log(json);
         this.saveLayout();
       }
     });
-
+ 
     this.projectService.workflow.subscribe((w) => {
-      console.log(w);
       if (w) {
         this.workflow = w;
         if (!this.designerService.initialized) {
@@ -266,7 +249,6 @@ export class WorkflowDesignerComponent
           this.designerService.initGraph(this.injector);
           this.designerService.importJSON(this.workflow.sceneLayout);
         } else {
-          console.log('check algo');
           this.designerService.checkAlgo(w.sceneLayout);
         }
       } else {
@@ -371,7 +353,6 @@ export class WorkflowDesignerComponent
     // this.definition = definition;
 
     // if (this.)
-    console.log(this.workflow);
 
     this.detailsChanged.emit(this.workflow);
   }

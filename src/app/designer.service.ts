@@ -15,12 +15,17 @@ import { History } from '@antv/x6-plugin-history';
 import { ThemeService } from './theme.service';
 import { World } from './models/workflow/world.model';
 import { Executable } from './models/workflow/executable.model';
+import { ProjectService } from './project.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DesignerService {
-  constructor(private db: AngularFirestore, private themeService: ThemeService) {}
+  constructor(
+    private db: AngularFirestore,
+    private themeService: ThemeService,
+    private projectService: ProjectService
+  ) {}
 
   toolboxConfiguration = new BehaviorSubject<SceneDefinition[]>([]);
 
@@ -33,8 +38,8 @@ export class DesignerService {
 
   canRedo = false;
   canUndo = false;
-  
-  initialized = false
+
+  initialized = false;
 
   openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
   openWorld = new BehaviorSubject<World | undefined>(undefined);
@@ -57,6 +62,7 @@ export class DesignerService {
   }
 
   setScene(scene: Scene, id: string) {
+    console.log('SET');
     let node = this.graph
       ?.getCells()
       .find((cell) => (cell.data.ngArguments.scene as Scene).id == id);
@@ -67,11 +73,9 @@ export class DesignerService {
       },
     });
 
-    if (node && node.id == this.openStep.value?.id){
-      console.log("next")
-      this.openStep.next(node.toJSON())
+    if (node && node.id == this.openStep.value?.id) {
+      this.openStep.next(node.toJSON());
     }
-
 
     let json = this.graph?.toJSON();
     if (json) {
@@ -90,7 +94,7 @@ export class DesignerService {
         background: {
           color: 'var(--sectionBackgroundColor)',
         },
-        
+
         panning: true,
         mousewheel: true,
         connecting: {
@@ -103,7 +107,6 @@ export class DesignerService {
           allowPort: false,
           highlight: true,
           allowEdge: false,
-
 
           createEdge(args) {
             return this.createEdge({
@@ -173,7 +176,6 @@ export class DesignerService {
           enabled: true,
           stackSize: 30,
           beforeAddCommand: (event, args) => {
-            console.log(args);
             let a = args as any;
             if (a && a['cell'] && a['cell']['shape'] == 'edge') {
               let edge = this.graph?.getCellById(a['cell'].id);
@@ -258,18 +260,20 @@ export class DesignerService {
       });
 
       this.graph.on('cell:changed', ({ cell, options }) => {
-        console.log('CHANGED');
+        console.log('CHANGE');
         this.processGraph(cell, options);
       });
 
       this.graph.on('cell:removed', ({ cell, options }) => {
         // console.log(cell);
+        console.log('REMOVE');
+        let scene = cell.data.ngArguments.scene as Scene;
         this.processGraph(cell, options);
       });
 
       this.graph.on('cell:added', ({ cell, options }) => {
-        console.log('ADDED');
-        this.processGraph(cell, options);
+        console.log('ADD');
+        this.processGraph(cell, options, false);
       });
 
       // this.graph.on('edge:selected', ({ edge, options }) => {
@@ -304,9 +308,19 @@ export class DesignerService {
     }
   }
 
-  processGraph(cell: Cell<Cell.Properties>, options: Cell.SetOptions) {
-    console.log("tog")
-    if (!options['static'] || !options) {
+  processGraph(
+    cell: Cell<Cell.Properties>,
+    options: Cell.SetOptions,
+    checkSame = true
+  ) {
+    console.log('PROCESS');
+    console.log(cell);
+
+    let same = this.projectService.workflow.value?.sceneLayout.cells.find(
+      (c) => c.data.ngArguments.scene.id == cell.data.ngArguments.scene.id
+    );
+
+    if ((!options['static'] || !options) && (checkSame ? same : true)) {
       if (cell.shape == 'edge') {
         cell.removeProp('sourceMagnet');
         cell.removeProp('sourceView');
@@ -314,16 +328,11 @@ export class DesignerService {
         cell.removeProp('targetView');
       }
 
-      if (cell && cell.id == this.openStep.value?.id){
-        console.log("next")
-        this.openStep.next(cell.toJSON())
+      if (cell && cell.id == this.openStep.value?.id) {
+        this.openStep.next(cell.toJSON());
       }
 
-      console.log('oi');
-
       let json = this.graph?.toJSON();
-
-      console.log("nog")
 
       if (json) {
         this.pubGraph.next(this.graph);

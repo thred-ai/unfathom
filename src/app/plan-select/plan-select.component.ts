@@ -23,7 +23,6 @@ export class PlanSelectComponent implements OnInit {
     private loadService: LoadService,
     public dialogRef: MatDialogRef<PlanSelectComponent>
   ) {
-    console.log(data.script);
     this.activePlan = data.activePlan ?? '';
     this.modelId = data.modelId ?? '';
   }

@@ -99,7 +99,6 @@ export class IconSidebarComponent implements OnInit {
     // The node is a dragged node, which is also a node placed on the canvas by default, and any attribute can be customized
     const node = this.newScene();
 
-    console.log(node)
 
     if (node) this.dnd?.start(node, e);
   }

@@ -57,7 +57,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
       if (this.world && this.project) {
         this.initWorld();
       } else {
-        console.log('oi');
       }
     }
 
@@ -384,7 +383,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     //   ? 'assets/mustafarav2.glb'
     //   : 'assets/sandyav.glb';
 
-    console.log(world.id);
 
     //https://models.readyplayer.me/64fad33c902030ca061803ad.glb
 
@@ -538,7 +536,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
                     cc.setGravity(1);
                   } else if (moving && shift2) {
-                    console.log('oi');
                     object.removeChild(actor, true);
                     moving = false;
                     cc.setAvatar(actor);
