@@ -18,7 +18,7 @@
         (click)="world ? deselectWorld() : null"
         #menuToggle
       >
-      <mat-icon
+        <mat-icon
           *ngIf="world"
           class="my-auto"
           style="
@@ -95,7 +95,6 @@
             role="button"
           >
             <mat-icon>check_box_outline_blank</mat-icon>
-          
           </div>
         </div>
       </div>
@@ -168,8 +167,6 @@
           <mat-icon style="aspect-ratio: 1"> add </mat-icon>
         </p> -->
           </div>
-
-        
         </div>
       </ng-template>
     </ng-container>
@@ -202,7 +199,8 @@
         <!-- <span class="secondary-text">Project</span>
 
         <mat-icon> arrow_right_alt </mat-icon> -->
-        <!-- <img
+        <img
+          *ngIf="!world"
           class="border-table me-2"
           style="
             height: 22.5px;
@@ -211,7 +209,7 @@
             object-fit: cover;
           "
           [src]="executable.displayUrl"
-        /> -->
+        />
         <div
           class="primary-text-dark d-flex justify-content-center align-items-center"
         >

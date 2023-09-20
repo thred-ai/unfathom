@@ -462,9 +462,10 @@ export class WorkflowComponent implements OnInit {
           }
         }
 
+        this.projectService.workflow.next(workflow)
+
         await this.save(1, false, workflow);
 
-        // this.setWorkflow(this.workflow.value!.id, controllerId);
       }
     });
   }
