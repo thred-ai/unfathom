@@ -120,14 +120,24 @@ export class WorkflowComponent implements OnInit {
   set activeWorkflow(app: Executable | undefined) {
     var workflow!: Executable;
 
+   
+
     if (app) {
       this.newWorkflow = false;
       workflow = app;
       //workflow.layout = this.loadService.sortBranches(workflow.layout);
+
+      if (app.id != this.workflow?.id){
+        this.designerService.initialized = false
+      }
+      
       this.projectService.workflow.next(workflow);
+
+
 
     } else {
       this.newWorkflow = true;
+      this.designerService.initialized = false
       workflow = new Executable(
         this.loadService.newUtilID,
         this.loadService.loadedUser.value?.id ?? '',

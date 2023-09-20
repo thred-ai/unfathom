@@ -35,7 +35,6 @@
             [workflow]="workflow"
             [theme]="theme"
             (detailsChanged)="save(2, false, $event)"
-            (iconChanged)="edited = true; workflowIcon = $event; save(0)"
             (selectedFileChanged)="selectFile($event, selectedIcon)"
           >
           </verticalai-workflow-designer>

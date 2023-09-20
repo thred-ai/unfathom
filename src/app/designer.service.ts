@@ -316,7 +316,7 @@ export class DesignerService {
     console.log(cell);
 
     let same = this.projectService.workflow.value?.sceneLayout.cells.find(
-      (c) => c.data.ngArguments.scene.id == cell.data.ngArguments.scene.id
+      (c) => c.data.ngArguments.scene.id == cell.data?.ngArguments?.scene?.id
     );
 
     if ((!options['static'] || !options) && (checkSame ? same : true)) {
