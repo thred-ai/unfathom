@@ -14,12 +14,6 @@ import { Developer } from './models/user/developer.model';
 import { AIModel } from './models/workflow/ai-model.model';
 import { AIModelType } from './models/workflow/ai-model-type.model';
 import { Trigger } from './models/workflow/trigger.model';
-import {
-  BranchedStep,
-  Definition,
-  Sequence,
-  SequentialStep,
-} from 'verticalai-workflow-designer';
 import { TrainingData } from './models/workflow/training-data.model';
 import { Key } from './models/workflow/key.model';
 import { APIRequest } from './models/workflow/api-request.model';
@@ -1453,34 +1447,4 @@ export class LoadService {
     }
   }
 
-  sortBranches(def: Definition) {
-    function analyzeTasks(tasks: Sequence) {
-      tasks.forEach((task) => {
-        if (task.componentType == 'switch') {
-          let switchTask = task as BranchedStep;
-          let order = switchTask.properties['order'] as Dict<any>;
-          let branches = switchTask.branches;
-          let ordered = Object.keys(order).sort((a, b) => {
-            return order[a] - order[b];
-          });
-          const map1: Map<string, any> = new Map();
-          ordered.forEach((key, index) => {
-            map1.set(key, branches[key]);
-          });
-          switchTask.branches = Object.fromEntries(map1);
-          map1.forEach((m) => {
-            analyzeTasks(m);
-          });
-        } else if (task.componentType == 'container') {
-          let loopTask = task as SequentialStep;
-          analyzeTasks(loopTask.sequence);
-        }
-        return;
-      });
-    }
-
-    analyzeTasks(def.sequence);
-
-    return def;
-  }
 }

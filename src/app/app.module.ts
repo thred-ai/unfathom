@@ -89,11 +89,9 @@ import { LayoutSliderComponent } from './layout-slider/layout-slider.component';
 import { WorkflowStatusPipe } from './workflow-status.pipe';
 import { IonicModule } from '@ionic/angular';
 import { WorkflowDesignerComponent } from './workflow-designer/workflow-designer.component';
-import { SequentialWorkflowDesignerModule } from 'vertical-ai-designer-angular';
 import { SelectFieldComponent } from './select-field/select-field.component';
 import { TextFieldComponent } from './text-field/text-field.component';
 import { DictToArrPipe } from './dict-to-arr.pipe';
-import { StepFinderPipe } from './step-finder.pipe';
 import { WorkflowComponent } from './workflow/workflow.component';
 import { ModelTypePipe } from './model-type.pipe';
 import { SafeImgUrlPipe } from './safe-img-url.pipe';
@@ -162,7 +160,6 @@ import { WorldDesignerComponent } from './world-designer/world-designer.componen
     SelectFieldComponent,
     TextFieldComponent,
     DictToArrPipe,
-    StepFinderPipe,
     WorkflowComponent,
     ModelTypePipe,
     SafeImgUrlPipe,
@@ -251,7 +248,6 @@ import { WorldDesignerComponent } from './world-designer/world-designer.componen
     MatDividerModule,
     NgxDropzoneModule,
     DragDropModule,
-    SequentialWorkflowDesignerModule,
     IonicModule,
     ClipboardModule,
     AngularSplitModule,

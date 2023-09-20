@@ -13,15 +13,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import {
-  BranchedStep,
-  Definition,
-  Designer,
-  Step,
-  StepEditorContext,
-  StepsConfiguration,
-} from 'verticalai-workflow-designer';
-import { DesignerComponent } from 'vertical-ai-designer-angular';
+
 import { Dict, LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
 import { TrainingData } from '../models/workflow/training-data.model';
@@ -62,13 +54,11 @@ import { Character } from '../models/workflow/character.model';
 export class WorkflowDesignerComponent
   implements OnInit, AfterViewInit, AfterViewChecked
 {
-  designer?: Designer;
 
   public definitionJSON?: string;
 
   workflow?: Executable;
 
-  BranchedStep!: BranchedStep;
   any!: any;
 
   window: Window = window;
@@ -189,27 +179,6 @@ export class WorkflowDesignerComponent
     this.clipboard.copy(text);
   }
 
-  openAPIEditor(api: APIRequest, step: Step) {
-    // let editor = this.dialog.open(ApiEditorComponent, {
-    //   height: 'calc(var(--vh, 1vh) * 70)',
-    //   width: 'calc(var(--vh, 1vh) * 70)',
-    //   maxWidth: '100vw',
-    //   panelClass: 'app-full-bleed-dialog',
-    //   data: {
-    //     api,
-    //   },
-    // });
-    // editor.afterClosed().subscribe((value) => {
-    //   if (value && value != '') {
-    //     let api = value as APIRequest;
-    //     this.apiRequestChanged.emit(api);
-    //     setTimeout(() => {
-    //       this.refreshStepEditor(step);
-    //     }, 500);
-    //   }
-    // });
-  }
-
   saveAPIKey(id: string, data: string = '') {
     let apiKey = new Key(id, data);
     this.apiKeyChanged.emit(apiKey);
@@ -257,8 +226,6 @@ export class WorkflowDesignerComponent
     }
   }
 
-  @ViewChild('sqdDesigner') public sqdDesigner?: DesignerComponent;
-
   public toolboxConfiguration: SceneDefinition[] = [];
 
   resize() {
@@ -270,52 +237,6 @@ export class WorkflowDesignerComponent
 
   //   context.notifyPropertiesChanged();
   // }
-
-  definitionChanged(definition: Definition) {
-    // this.workflow!.layout = definition;
-    // this.setAPISVG();
-    // this.saveLayout();
-  }
-
-  public readonly stepsConfiguration: StepsConfiguration = {
-    iconUrlProvider: (componentType: string, type: string) => {
-      return this.loadService.iconUrlForController(componentType, type);
-    },
-    canMoveStep: (sourceSequence, step, targetSequence, targetIndex) => {
-      return true;
-    },
-    canInsertStep: (step, targetSequence, targetIndex) => {
-      return true;
-    },
-    canDeleteStep: (step, parentSequence) => {
-      return this.loadService.confirmDelete();
-    },
-    isDeletable: (step, parentSequence) => {
-      // let ref = this._snackBar.open('Delete Controller', 'Delete');
-      // ref.onAction().subscribe(() => {
-      //   return true
-      // });
-
-      // ref.afterDismissed().subscribe(() => {
-      //   return false
-      // });
-
-      return true;
-    },
-    isDraggable: (step, parentSequence) => {
-      return true;
-    },
-    isDuplicable: (step, parentSequence) => {
-      return true;
-    },
-  };
-
-  isNameTaken(name: string, step: BranchedStep) {
-    if (step.branches[name]) {
-      return true;
-    }
-    return false;
-  }
 
   done = false;
 
@@ -394,63 +315,7 @@ export class WorkflowDesignerComponent
     // window.dispatchEvent(new Event('resize'));
   }
 
-  public onDesignerReady(designer: Designer) {
-    this.designer = designer;
-
-    this.rerenderDesigner();
-
-    // if (document.eventListeners) {
-    //   let l = document.eventListeners('keyup')[0];
-    //   document.removeEventListener('keyup', l);
-    // }
-
-    // window.addEventListener(
-    //   'keypress',
-    //   function (event) {
-    //     event.stopImmediatePropagation();
-    //   },
-    //   true
-    // );
-
-    // this.setToolbarLoc()
-
-    try {
-      this.designer?.onSelectedStepIdChanged.subscribe((id) => {
-        setTimeout(() => {
-          if (id) {
-            this.selectedFileChanged.emit(id);
-            // clearListener(id)
-          } else {
-            this.selectedFileChanged.emit('main');
-          }
-        }, 1);
-
-        this.rerenderDesigner();
-      });
-
-      this.designerService.openStep.subscribe((step) => {
-        this.stepContext = undefined;
-        if (step) {
-          if (step.id && step.id != 'main') {
-            this.designer?.selectStepById(step.id);
-            this.downloadDB();
-          } else {
-            this.designer?.clearSelectedStep();
-          }
-          this.rerenderDesigner();
-        }
-      });
-    } catch (error) {}
-
-    // async function clearListener(id: string) {
-    //   let doc = document.getElementsByClassName('sqd-selected')[0];
-
-    //   if (doc) {
-    //     doc.outerHTML = doc.outerHTML
-    //   }
-    // }
-  }
-
+ 
   updateCellName(id: string, value: any) {
     let cell = this.designerService.graph?.getCellById(id);
 
@@ -501,8 +366,6 @@ export class WorkflowDesignerComponent
     //   }
     // }
   }
-
-  stepContext?: StepEditorContext;
 
   public saveLayout() {
     // this.definition = definition;
@@ -586,176 +449,15 @@ export class WorkflowDesignerComponent
     reader.readAsDataURL(blob);
   }
 
-  newBranch(step: BranchedStep) {
-    const map1 = new Map();
-    const map2 = new Map();
-    const map3 = new Map();
-
-    Object.keys(step.branches).forEach((key, index) => {
-      map1.set(key, step.branches[key]);
-      map2.set(key, index);
-      map3.set(key, (step.properties['branches'] as Dict<any>)[key]);
-    });
-
-    let name = `Option ${(Object.keys(step.branches) as string[]).length + 1}`;
-
-    if (this.isNameTaken(name, step)) {
-      var index = 1;
-      do {
-        index += 1;
-        name = `Option ${
-          (Object.keys(step.branches) as string[]).length + index
-        }`;
-      } while (this.isNameTaken(name, step));
-    }
-    map1.set(name, []);
-    map2.set(name, map1.size - 1);
-    map3.set(name, (step.properties['branches'] as Dict<any>)[name]);
-
-    step.branches = Object.fromEntries(map1);
-    step.properties['order'] = Object.fromEntries(map2);
-    step.properties['branches'] = Object.fromEntries(map3);
-
-    this.shouldRefresh = true;
-
-    this.saveLayout();
-  }
-
-  setBranchDescription(
-    branchName: string,
-    step: BranchedStep,
-    description: string
-  ) {
-    if (!step.properties['branches']) {
-      step.properties['branches'] = {};
-    }
-
-    let branches = step.properties['branches'] as Dict<any>;
-
-    branches[branchName] = {
-      description,
-    };
-  }
-
-  openBranchSettings(step: BranchedStep, branch?: string) {
-    let ref = this.dialog.open(SettingsComponent, {
-      width: 'calc(var(--vh, 1vh) * 70)',
-      maxWidth: '650px',
-      maxHeight: 'calc(var(--vh, 1vh) * 100)',
-      panelClass: 'app-full-bleed-dialog',
-
-      data: {
-        step,
-        branch,
-        workflow: this.workflow,
-      },
-    });
-
-    ref.afterClosed().subscribe(async (val) => {
-      if (val && val != '' && val != '0') {
-        let description = val.description ?? '';
-        let title = val.title ?? '';
-
-        this.setBranchName(title, step, branch);
-
-        this.setBranchDescription(title, step, description);
-
-        this.shouldRefresh = true;
-
-        this.saveLayout();
-      }
-    });
-  }
-
   placeholders: Dict<any> = {
     'gpt-LLM': 'ex. Keep answers short',
     switch: 'ex. Choose "Option 1" if the sentiment is happy',
     'dalle-TIM': 'ex. High Definition, Hyper-Realistic',
   };
 
-  setBranchName(newName: string, step: BranchedStep, oldName: string = '') {
-    const map1 = new Map();
-    const map2 = new Map();
-    const map3 = new Map();
-
-    let branches = Object.keys(step.branches);
-    let i = branches.indexOf(oldName);
-
-    if (i > -1) {
-      branches.forEach((key, index) => {
-        var name = key;
-        if (index == i) {
-          name = newName;
-          if (step.properties['default'] == oldName) {
-            step.properties['default'] = name;
-          }
-        }
-        map1.set(name, step.branches[key]);
-        map2.set(name, index);
-        map3.set(name, (step.properties['branches'] as Dict<any>)[key]);
-      });
-
-      step.branches = Object.fromEntries(map1);
-      step.properties['order'] = Object.fromEntries(map2);
-      step.properties['branches'] = Object.fromEntries(map3);
-    }
-  }
-
-  deleteBranch(step: BranchedStep, nameToRemove: string) {
-    const map1 = new Map();
-    const map2 = new Map();
-    const map3 = new Map();
-
-    let branches = Object.keys(step.branches);
-
-    if (branches.length == 2) {
-      return;
-    }
-    branches.forEach((key, index) => {
-      if (key != nameToRemove) {
-        map1.set(key, step.branches[key]);
-      }
-    });
-
-    var index = 0;
-    map1.forEach((m: any, key: string) => {
-      map2.set(key, index);
-      map3.set(key, (step.properties['branches'] as Dict<any>)[key]);
-      index += 1;
-    });
-
-    step.branches = Object.fromEntries(map1);
-    step.properties['order'] = Object.fromEntries(map2);
-    step.properties['branches'] = Object.fromEntries(map3);
-
-    if (step.properties['default'] == nameToRemove) {
-      step.properties['default'] = Object.keys(
-        step.properties['order'] ?? {}
-      )[0] as string;
-    }
-
-    this.shouldRefresh = true;
-
-    this.saveLayout();
-  }
+ 
 
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger?: MatMenuTrigger;
   menuTopLeftPosition = { x: '0', y: '0' };
 
-  onRightClick(event: MouseEvent, branch: string, step: BranchedStep) {
-    // preventDefault avoids to show the visualization of the right-click menu of the browser
-    event.preventDefault();
-    event.stopPropagation();
-
-    // we record the mouse position in our object
-    this.menuTopLeftPosition.x = event.clientX + 'px';
-    this.menuTopLeftPosition.y = event.clientY + 'px';
-
-    // we open the menu
-    // we pass to the menu the information about our object
-    this.matMenuTrigger!.menuData = { item: branch, step };
-
-    // we open the menu
-    this.matMenuTrigger!.openMenu();
-  }
 }

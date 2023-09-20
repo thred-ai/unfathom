@@ -447,45 +447,4 @@
   [matMenuTriggerFor]="rightMenu"
 ></div>
 
-<!-- standard material menu -->
-  <mat-menu #rightMenu="matMenu" class="primary-background">
-    <ng-template matMenuContent let-item="item" let-step="step">
-      <ng-container *ngIf="item.id != 'app'">
-        <button
-          mat-menu-item
-          class="primary-text proj"
-          (click)="openBranchSettings(step, item)"
-        >
-          Edit Path
-        </button>
-
-        <button
-          mat-menu-item
-          class="primary-text proj"
-          *ngIf="step.properties['default'] != item"
-          (click)="step.properties['default'] = item; saveLayout()"
-        >
-          Make Default
-        </button>
-
-        <button
-          mat-menu-item
-          [disabled]="true"
-          class="secondary-text proj"
-          *ngIf="step.properties['default'] == item"
-          [disabled]="true"
-        >
-          Default Path
-        </button>
-
-        <button
-          mat-menu-item
-          class="primary-text proj"
-          (click)="deleteBranch(step, item)"
-        >
-          Delete
-        </button>
-      </ng-container>
-    </ng-template>
-  </mat-menu>
-</div>
+<!-->

@@ -1,8 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { Dict, LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
-import { Key } from '../models/workflow/key.model';
-import { Step } from 'verticalai-workflow-designer';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Developer } from '../models/user/developer.model';
 import { Scene } from '../models/workflow/scene.model';

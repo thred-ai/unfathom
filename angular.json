@@ -92,13 +92,9 @@
               },
               {
                 "input": "node_modules/@ionic/angular/css/flex-utils.css"
-              },
-              {
-                "input": "src/theme/variables.css"
               }
             ],
             "scripts": [
-              "node_modules/chart.js/dist/chart.js",
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/summernote/dist/summernote-lite.min.js"
             ]

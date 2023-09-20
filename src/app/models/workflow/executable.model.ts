@@ -1,4 +1,3 @@
-import { Definition } from 'verticalai-workflow-designer';
 import * as uuid from 'uuid';
 import { Plan } from './plan.model';
 import { Subscription } from './subscription.model';
