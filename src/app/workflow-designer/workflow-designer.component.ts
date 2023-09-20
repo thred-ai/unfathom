@@ -177,6 +177,7 @@ export class WorkflowDesignerComponent
 
 
   selectWorld(scene: Scene){
+    console.log(scene)
     this.loadService.selectWorld(scene)
   }
 

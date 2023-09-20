@@ -78,8 +78,9 @@
     <ng-container *ngIf="!world">
       <div
         class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
-        [matTooltip]="'Tools'"
+        [matTooltip]="'New Scene'"
         [matTooltipPosition]="'below'"
+        (pointerdown)="startDrag($event)"
       >
         <div
           class="w-100 d-flex justify-content-center align-items-center"
@@ -93,15 +94,7 @@
             role="button"
           >
             <mat-icon>check_box_outline_blank</mat-icon>
-            <mat-icon
-              class="my-auto"
-              style="
-                height: 14px;
-                font-size: 14px !important;
-                width: 14px !important;
-              "
-              >expand_more</mat-icon
-            >
+          
           </div>
         </div>
       </div>
@@ -175,34 +168,7 @@
         </p> -->
           </div>
 
-          <div
-            class="w-100 h-100 d-flex justify-content-start align-items-center flex-column"
-            style="overflow-y: scroll"
-            #toolboxGroup
-          >
-            <ng-container *ngFor="let tool of items">
-              <div
-                class="w-100 my-2 px-3 proj"
-                role="button"
-                style="height: 40px"
-                #elem
-                (pointerdown)="startDrag($event)"
-              >
-                <div
-                  class="w-100 h-100 d-flex justify-content-start align-items-center py-2"
-                >
-                  <img
-                    [src]="tool.image"
-                    class="h-100 rounded border-table-dark"
-                    style="aspect-ratio: 1"
-                  />
-                  <span class="ms-3 w-100 primary-text-dark">{{
-                    tool.name
-                  }}</span>
-                </div>
-              </div>
-            </ng-container>
-          </div>
+        
         </div>
       </ng-template>
     </ng-container>

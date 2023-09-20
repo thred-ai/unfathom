@@ -1,15 +1,16 @@
 import { Liquid } from './liquid.model';
+import { Texture } from './texture.model';
 
 export class Ground {
   heightMap!: string;
-  texture!: string;
+  texture!: Texture;
   liquid?: Liquid;
   maxHeight!: number;
   minHeight!: number;
 
   constructor(
     heightMap: string,
-    texture: string,
+    texture: Texture,
     liquid?: Liquid,
     maxHeight: number = 0,
     minHeight: number = 0,

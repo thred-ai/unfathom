@@ -69,9 +69,9 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
   engine?: BABYLON.Engine;
 
-  loaded = false
+  loaded = false;
 
-  @Input() theme!: 'light' | 'dark'
+  @Input() theme!: 'light' | 'dark';
 
   async initWorld() {
     var canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -95,12 +95,12 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
       this.engine.enableOfflineSupport = false;
 
-      scene.whenReadyAsync(true).then(() =>{
-        this.loaded = true
+      scene.whenReadyAsync(true).then(() => {
+        this.loaded = true;
         setTimeout(() => {
           this.engine?.resize();
         }, 1);
-      })
+      });
 
       // Once the scene is loaded, we register a render loop to render it
       this.engine.runRenderLoop(function () {
@@ -147,7 +147,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
     // const gl = new BABYLON.GlowLayer('glow', scene);
 
-    var skybox: BABYLON.Mesh | undefined
+    var skybox: BABYLON.Mesh | undefined;
 
     if (world.sky) {
       skybox = BABYLON.MeshBuilder.CreateSphere(
@@ -164,14 +164,16 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
       const material = new BABYLON.StandardMaterial('world', scene);
 
-      const texture = new BABYLON.Texture(world.sky.texture, scene);
+      if (world.sky.texture.emissive) {
+        const texture = new BABYLON.Texture(world.sky.texture.emissive, scene);
 
-      texture.uScale = 1;
-      texture.vScale = 1;
+        texture.uScale = 1;
+        texture.vScale = 1;
 
-      material.emissiveTexture = texture;
-      material.backFaceCulling = false;
-      skybox.material = material;
+        material.emissiveTexture = texture;
+        material.backFaceCulling = false;
+        skybox.material = material;
+      }
     }
 
     if (world.ground) {
@@ -184,15 +186,70 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
           subdivisions: world.ground.maxHeight / 20,
           minHeight: world.ground.minHeight,
           maxHeight: world.ground.maxHeight,
+          updatable: true,
         },
         scene
       );
 
       var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
-      let groundTexture = new BABYLON.Texture(world.ground.texture, scene);
-      groundTexture.uScale = world.size / 166;
-      groundTexture.vScale = world.size / 166;
-      groundMaterial.diffuseTexture = groundTexture;
+
+      var uvScaleConstant = new BABYLON.Vector2(world.size / 166, world.size / 166)
+
+      if (world.ground.texture.displacement) {
+        ground.applyDisplacementMap(
+          world.ground.texture.displacement,
+          world.ground.minHeight,
+          world.ground.maxHeight,
+          undefined,
+          undefined,
+          uvScaleConstant,
+          true
+        );
+      }
+
+      if (world.ground.texture.diffuse) {
+        let groundTexture = new BABYLON.Texture(
+          world.ground.texture.diffuse,
+          scene
+        );
+        groundTexture.uScale = uvScaleConstant.x;
+        groundTexture.vScale = uvScaleConstant.y;
+
+        groundMaterial.diffuseTexture = groundTexture;
+      }
+
+      if (world.ground.texture.bump) {
+        let groundBumpTexture = new BABYLON.Texture(
+          world.ground.texture.bump,
+          scene
+        );
+        groundBumpTexture.uScale = uvScaleConstant.x;
+        groundBumpTexture.vScale = uvScaleConstant.y;
+
+        groundMaterial.bumpTexture = groundBumpTexture;
+      }
+
+      if (world.ground.texture.ambient) {
+        let groundAmbientTexture = new BABYLON.Texture(
+          world.ground.texture.ambient,
+          scene
+        );
+        groundAmbientTexture.uScale = uvScaleConstant.x;
+        groundAmbientTexture.vScale = uvScaleConstant.y;
+
+        groundMaterial.ambientTexture = groundAmbientTexture;
+      }
+
+      if (world.ground.texture.specular) {
+        let groundSpecularTexture = new BABYLON.Texture(
+          world.ground.texture.specular,
+          scene
+        );
+        groundSpecularTexture.uScale = uvScaleConstant.x;
+        groundSpecularTexture.vScale = uvScaleConstant.y;
+
+        groundMaterial.specularTexture = groundSpecularTexture;
+      }
 
       groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
       ground.position.y = -2.0;
@@ -212,10 +269,13 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
         'extraGround',
         scene
       );
-      extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
-        world.ground.texture,
-        scene
-      );
+
+      if (world.ground.texture.diffuse) {
+        extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
+          world.ground.texture.diffuse,
+          scene
+        );
+      }
 
       extraGround.position.y = -2.05;
 
@@ -239,15 +299,18 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
             'water_material',
             scene
           );
-          waterMaterial.bumpTexture = new BABYLON.Texture(
-            world.ground.liquid.texture,
-            scene
-          ); // Set the bump texture
+
+          if (world.ground.liquid.texture.bump) {
+            waterMaterial.bumpTexture = new BABYLON.Texture(
+              world.ground.liquid.texture.bump,
+              scene
+            ); // Set the bump texture
+          }
 
           waterMaterial.refractionTexture?.renderList?.push(extraGround);
           waterMaterial.refractionTexture?.renderList?.push(ground);
 
-          if (skybox){
+          if (skybox) {
             waterMaterial.reflectionTexture?.renderList?.push(skybox);
           }
 
@@ -259,7 +322,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
           waterMaterial.bumpHeight = 0.01;
           waterMaterial.waveLength = 0.1;
 
-          
           water.material = waterMaterial;
 
           // const sound = new BABYLON.Sound(
@@ -301,10 +363,13 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
             scene
           );
 
-          lavaMaterial.diffuseTexture = new BABYLON.Texture(
-            world.ground.liquid.texture,
-            scene
-          );
+          if (world.ground.liquid.texture.diffuse) {
+            lavaMaterial.diffuseTexture = new BABYLON.Texture(
+              world.ground.liquid.texture.diffuse,
+              scene
+            );
+          }
+
           lavaMaterial.speed = 0.5;
           lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
           lavaMaterial.unlit = true;
@@ -553,7 +618,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
       scene
     );
 
-    camera.maxZ = world.size * 2
+    camera.maxZ = world.size * 2;
 
     BABYLON.SceneLoader.OnPluginActivatedObservable.add(function (loader) {
       if (loader.name === 'gltf') {

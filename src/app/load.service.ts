@@ -33,6 +33,11 @@ import { DesignerService } from './designer.service';
 import { ThemeService } from './theme.service';
 import { ProjectService } from './project.service';
 import { World } from './models/workflow/world.model';
+import { Sky } from './models/workflow/sky.model';
+import { Ground } from './models/workflow/ground.model';
+import { Liquid } from './models/workflow/liquid.model';
+import { LiquidType } from './models/workflow/liquid-type.enum';
+import { Texture } from './models/workflow/texture.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -81,11 +86,15 @@ export class LoadService {
     //   )
     // );
 
+    console.log(scene);
+
     if (this.projectService.workflow.value) {
+      // var saved = false
+
       this.getWorld(
         this.projectService.workflow.value.id,
         scene.id,
-        (world) => {
+        async (world) => {
           console.log(world);
 
           // if (!world?.assets || world.assets.length == 0) {
@@ -136,7 +145,57 @@ export class LoadService {
           //   this.loadService.saveWorld(world!, this.workflow!.id);
           // }
 
-          this.designerService.openWorld.next(world);
+          var w = world;
+
+          // if (w && !saved) {
+          //   saved = true
+          //   let clone = JSON.parse(JSON.stringify(w));
+          //   w.ground!.texture = new Texture(clone.ground.texture);
+          //   w.sky!.texture = new Texture(
+          //     undefined,
+          //     undefined,
+          //     undefined,
+          //     undefined,
+          //     clone.sky.texture
+          //   );
+          //   w.ground!.liquid!.texture = new Texture(
+          //     clone.ground.liquid.texture,
+          //     undefined,
+          //     clone.ground.liquid.texture
+          //   );
+
+          //   await this.saveWorld(w!, this.projectService.workflow.value!.id);
+          // }
+
+          // if (!w) {
+          //   console.log(scene)
+          //   w = new World(
+          //     scene.id,
+          //     1000,
+          //     0.8,
+          //     new Sky(
+          //       1000,
+          //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/skybox.png'
+          //     ),
+          //     new Ground(
+          //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/heightMap.png',
+          //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/sf.png',
+          //       new Liquid(
+          //         'assets/images/lava_lavatile.jpg',
+          //         LiquidType.lava,
+          //         10
+          //       ),
+          //       0,
+          //       600
+          //     )
+          //   );
+          //   await this.saveWorld(
+          //     w!,
+          //     this.projectService.workflow.value!.id
+          //   );
+          // }
+
+          this.designerService.openWorld.next(w);
         }
       );
     }
@@ -188,7 +247,6 @@ export class LoadService {
   }
 
   getWorld(id: string, worldId: string, callback: (world?: World) => any) {
-    this.projectSub?.unsubscribe();
     let q = this.db.doc(`Workflows/${id}/Worlds/${worldId}`);
     q.valueChanges().subscribe((docs2) => {
       let docs_2 = this.syncWorld(docs2 as World);
@@ -1382,13 +1440,17 @@ export class LoadService {
   }
 
   syncWorld(world: any) {
-    return new World(
-      world.id,
-      world.size,
-      world.lightingIntensity,
-      world.sky,
-      world.ground
-    );
+    if (world) {
+      return new World(
+        world.id,
+        world.size,
+        world.lightingIntensity,
+        world.sky,
+        world.ground
+      );
+    } else {
+      return undefined;
+    }
   }
 
   sortBranches(def: Definition) {
