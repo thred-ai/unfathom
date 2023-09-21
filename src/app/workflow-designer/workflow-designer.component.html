@@ -19,94 +19,94 @@
           dynamicHeight
           animationDuration="0ms"
         >
-        <mat-tab class="tab">
+          <mat-tab class="tab">
             <ng-template mat-tab-label>
               <span class="primary-text"> Design </span>
             </ng-template>
             <ng-template matTabContent>
-        <div
-          class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-        >
-          <div class="w-100 h-100 p-3 pb-5" style="overflow-y: scroll">
-            <div class="w-100 pb-3">
-              <p class="w-100 mb-3 fw-bold primary-text">Image</p>
-
               <div
-                class="position-relative d-flex justify-content-center align-items-center w-100 secondary-background"
-                style="aspect-ratio: 1"
-                role="button"
-                (click)="sceneImg.click()"
+                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
               >
-                <ng-container
-                  *ngIf="
-                    selectedFile.data.ngArguments.scene.images[0] as img;
-                    else emptyImg
-                  "
-                >
-                  <img
-                    class="w-100 h-100 rounded position-absolute"
-                    style="object-fit: cover"
-                    [src]="img"
-                  />
-                  <div
-                    class="w-100 h-100 position-absolute d-flex justify-content-center align-items-center img-show"
-                    style="z-index: 1"
-                  >
-                    <mat-icon class="m-auto primary-text">
-                      upload_file
-                    </mat-icon>
-                  </div>
-                </ng-container>
+                <div class="w-100 h-100 p-3 pb-5" style="overflow-y: scroll">
+                  <div class="w-100 pb-3">
+                    <p class="w-100 mb-3 fw-bold primary-text">Image</p>
 
-                <ng-template #emptyImg>
-                  <div
-                    class="w-100 h-100 d-flex justify-content-center align-items-center flex-column p-3 empty-img-show"
-                  >
-                    <ion-icon
-                      class="primary-text h1"
-                      name="image-outline"
-                    ></ion-icon>
-                    <span
-                      class="mt-2 h5 primary-text w-100 text-truncate text-center"
-                      >No Image</span
+                    <div
+                      class="position-relative d-flex justify-content-center align-items-center w-100 secondary-background"
+                      style="aspect-ratio: 1"
+                      role="button"
+                      (click)="sceneImg.click()"
                     >
+                      <ng-container
+                        *ngIf="
+                          selectedFile.data.ngArguments.scene.images[0] as img;
+                          else emptyImg
+                        "
+                      >
+                        <img
+                          class="w-100 h-100 rounded position-absolute"
+                          style="object-fit: cover"
+                          [src]="img"
+                        />
+                        <div
+                          class="w-100 h-100 position-absolute d-flex justify-content-center align-items-center img-show"
+                          style="z-index: 1"
+                        >
+                          <mat-icon class="m-auto primary-text">
+                            upload_file
+                          </mat-icon>
+                        </div>
+                      </ng-container>
+
+                      <ng-template #emptyImg>
+                        <div
+                          class="w-100 h-100 d-flex justify-content-center align-items-center flex-column p-3 empty-img-show"
+                        >
+                          <ion-icon
+                            class="primary-text h1"
+                            name="image-outline"
+                          ></ion-icon>
+                          <span
+                            class="mt-2 h5 primary-text w-100 text-truncate text-center"
+                            >No Image</span
+                          >
+                        </div>
+                      </ng-template>
+                    </div>
+
+                    <input
+                      #sceneImg
+                      type="file"
+                      (change)="fileChangeEvent($event)"
+                      style="display: none"
+                    />
                   </div>
-                </ng-template>
-              </div>
 
-              <input
-                #sceneImg
-                type="file"
-                (change)="fileChangeEvent($event)"
-                style="display: none"
-              />
-            </div>
+                  <div class="w-100 pb-3">
+                    <verticalai-text-field
+                      [title]="'Name'"
+                      [value]="selectedFile.data.ngArguments.scene.name"
+                      [placeholder]="'Scene Name'"
+                      (changed)="
+                        updateCellName(selectedFile.id!, $event); saveLayout()
+                      "
+                    >
+                    </verticalai-text-field>
+                  </div>
 
-            <div class="w-100 pb-3">
-              <verticalai-text-field
-                [title]="'Name'"
-                [value]="selectedFile.data.ngArguments.scene.name"
-                [placeholder]="'Scene Name'"
-                (changed)="
-                  updateCellName(selectedFile.id!, $event); saveLayout()
-                "
-              >
-              </verticalai-text-field>
-            </div>
+                  <div class="w-100 pb-3">
+                    <verticalai-textbox
+                      [title]="'Description'"
+                      [value]="selectedFile.data.ngArguments.scene.description"
+                      [placeholder]="'Scene Description'"
+                      (changed)="
+                        updateCellDesc(selectedFile.id!, $event); saveLayout()
+                      "
+                    >
+                    </verticalai-textbox>
+                  </div>
 
-            <div class="w-100 pb-3">
-              <verticalai-textbox
-                [title]="'Description'"
-                [value]="selectedFile.data.ngArguments.scene.description"
-                [placeholder]="'Scene Description'"
-                (changed)="
-                  updateCellDesc(selectedFile.id!, $event); saveLayout()
-                "
-              >
-              </verticalai-textbox>
-            </div>
-
-            <!-- <ng-container
+                  <!-- <ng-container
                 *ngIf="
                   selectedFile.type == 'gpt-LLM' ||
                   selectedFile.type == 'switch' ||
@@ -284,11 +284,11 @@
                 </div>
               </ng-container> -->
 
-            <button
-              class="btn bg-orange w-100 border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
-              (click)="selectWorld(selectedFile.data.ngArguments.scene)"
-            >
-              <!-- <ng-container *ngIf="loading; else buttonTitles">
+                  <button
+                    class="btn bg-orange w-100 border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
+                    (click)="selectWorld(selectedFile.data.ngArguments.scene)"
+                  >
+                    <!-- <ng-container *ngIf="loading; else buttonTitles">
                       <span class="mx-auto">
                         {{ "Saving" }}
                         <span
@@ -299,16 +299,16 @@
                       </span>
                     </ng-container> -->
 
-              <!-- <ng-template #buttonTitles> -->
-              <ng-container> {{ "Explore World" }}</ng-container>
-              <!-- </ng-template> -->
-            </button>
-          </div>
-        </div>
-        </ng-template>
+                    <!-- <ng-template #buttonTitles> -->
+                    <ng-container> {{ "Explore World" }}</ng-container>
+                    <!-- </ng-template> -->
+                  </button>
+                </div>
+              </div>
+            </ng-template>
           </mat-tab>
 
-        <mat-tab class="tab">
+          <mat-tab class="tab">
             <ng-template mat-tab-label>
               <span class="primary-text"> Characters </span>
             </ng-template>
@@ -324,14 +324,61 @@
                       [data]="characters"
                       [valueField]="'id'"
                       [multiple]="true"
-
                       [displayField]="'name'"
-                      (changed)="
-                        addCharactersToScene($event)
-                      "
+                      (changed)="addCharactersToScene($event)"
                     >
                     </verticalai-select-field>
                   </div>
+
+                  <ion-accordion-group
+                    class="example-headers-align bg-transparent animate__animated animate__fadeIn"
+                    [multiple]="true"
+                    *ngIf="workflow"
+                    (ionChange)="(null)"
+                    id="accordion"
+                  >
+                    <ion-accordion
+                      class="bg-transparent"
+                      [value]="c.id"
+                      *ngFor="
+                        let c of selectedFile.data.ngArguments?.scene
+                          ?.characters ?? []
+                      "
+                    >
+                      <ion-item
+                        slot="header"
+                        class="primary-text"
+                        [color]="theme"
+                      >
+                        <ion-label>{{
+                          workflow.characters[c.id].name
+                        }}</ion-label>
+                      </ion-item>
+                      <div class="ion-padding" slot="content">
+                        <div class="w-100 mb-3">
+                          <verticalai-text-field
+                            [title]="'Spawn Point'"
+                            [type]="'number'"
+                            [range]="{ min: -100000, max: 100000 }"
+                            [simplify]="true"
+                            [value]="c.spawn.x"
+                            [placeholder]="'Spawn'"
+                            (changed)="
+                              updateCellCharacter(
+                                selectedFile.id!,
+                                c.id,
+                                $event,
+                                'spawn',
+                                'x'
+                              );
+                              saveLayout()
+                            "
+                          >
+                          </verticalai-text-field>
+                        </div>
+                      </div>
+                    </ion-accordion>
+                  </ion-accordion-group>
                 </div>
               </div>
             </ng-template>
@@ -365,43 +412,29 @@
                   </mat-icon>
                 </div>
 
-                <div class="w-100">
+                <div class="w-100 row rows-2 justify-content-start g-0">
                   <div
-                    *ngFor="
-                      let character of characters ?? [];
-                      index as i
-                    "
-                    class="pb-4 d-flex justify-content-between align-items-center"
+                    *ngFor="let character of characters ?? []; index as i"
+                    class="col p-1"
+                    style="aspect-ratio: 0.75"
                   >
                     <div
-                      class="d-flex justify-content-start align-items-center"
+                      class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
+                      style="overflow: hidden"
+                      role="button"
+                      (click)="editCharacter(character)"
                     >
                       <img
-                        class="border-table rounded-circle me-3"
-                        style="
-                          height: 22.5px;
-                          width: 22.5px !important;
-                          object-fit: cover;
-                        "
+                        class="w-100 h-100"
+                        style="object-fit: cover"
                         [src]="character.img"
                       />
 
-                      <div class="primary-text text-truncate me-3">
+                      <div
+                        class="primary-text text-truncate py-2 w-100 text-center primary-background"
+                      >
                         {{ character.name }}
                       </div>
-                    </div>
-
-                    <div
-                      class="btn bg-orange shadow-0 text-white fw-bold rounded d-flex p-1 justify-content-center align-items-center"
-                      (click)="editCharacter(character)"
-                    >
-                      <ion-icon
-                        class="m-auto"
-                        [name]="'settings-outline'"
-                        slot="end"
-                        role="button"
-                        [matTooltip]="'View Character'"
-                      ></ion-icon>
                     </div>
                   </div>
                 </div>

@@ -13,7 +13,7 @@ import { Developer } from '../models/user/developer.model';
 import { Trigger } from '../models/workflow/trigger.model';
 import { TrainingData } from '../models/workflow/training-data.model';
 import { APIRequest } from '../models/workflow/api-request.model';
-import { Subscription } from 'rxjs';
+import { Subscription, skip } from 'rxjs';
 import { Executable } from '../models/workflow/executable.model';
 import { TaskTree } from '../models/workflow/task-tree.model';
 
@@ -213,15 +213,12 @@ export class WorkflowComponent implements OnInit {
       this.loading = l;
     });
 
-    this.designerService?.openWorld.subscribe((world) => {
-      if (!this.openWorldScene && world){
-        this.openPrototype()
-      }
-      else{
-
-      }
-      this.openWorldScene = world;
-      
+    
+    this.designerService?.openWorld.pipe(skip(1)).subscribe((world) => {
+        if (!this.openWorldScene){
+          this.openPrototype()
+        }
+        this.openWorldScene = world;
     });
 
     this.designerService.toolboxConfiguration.subscribe((s) => {
@@ -231,8 +228,12 @@ export class WorkflowComponent implements OnInit {
     this.designerService.openStep.subscribe((step) => {
       if (step) {
         this.openStep = step;
-        // this.selectFile(step.id, this.selectedIcon);
+        let scene = step.data.ngArguments.scene
+        if (this.openWorldScene && this.openWorldScene?.id != scene.id){
+          this.loadService.selectWorld(scene)
+        }
       }
+
       this.updateRoute(step?.id);
     });
 

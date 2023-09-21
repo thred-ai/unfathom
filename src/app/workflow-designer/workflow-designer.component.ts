@@ -181,18 +181,16 @@ export class WorkflowDesignerComponent
 
       let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-      if (scene){
+      if (scene) {
         this.characterIds = scene?.characters.map((c) => c.id) ?? [];
+      } else {
+        this.characterIds = [];
       }
-      else{
-        this.characterIds = []
-      }
-      
     });
   }
 
   addCharactersToScene(event: string[]) {
-    console.log("oi");
+    console.log('oi');
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
     let characters: {
@@ -210,9 +208,8 @@ export class WorkflowDesignerComponent
       scale: number;
     }[] = [];
 
-
     event.forEach((e) => {
-      let same = scene.characters.find(s => s.id == e)
+      let same = scene.characters.find((s) => s.id == e);
 
       if (this.workflow!.characters[e]) {
         characters.push({
@@ -232,13 +229,13 @@ export class WorkflowDesignerComponent
       }
     });
 
-    scene.characters = characters
+    scene.characters = characters;
 
     this.characterIds = scene.characters.map((c) => c.id);
 
-    console.log(scene.characters)
+    console.log(scene.characters);
 
-    this.designerService.setScene(scene, scene.id)
+    this.designerService.setScene(scene, scene.id);
   }
 
   updateCellName(id: string, value: any) {
@@ -248,6 +245,34 @@ export class WorkflowDesignerComponent
 
     if (cell && scene) {
       scene.name = value;
+      cell.setData({
+        ngArguments: {
+          scene,
+        },
+      });
+    }
+  }
+
+  updateCellCharacter(
+    id: string,
+    characterId: string,
+    value: any,
+    field: string,
+    subField?: string
+  ) {
+    let cell = this.designerService.graph?.getCellById(id);
+
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    if (cell && scene) {
+      var finalField = scene.characters.find((c) => c.id == characterId) as any;
+
+      if (subField) {
+        finalField[field][subField] = value;
+      } else {
+        finalField[field] = value;
+      }
+
       cell.setData({
         ngArguments: {
           scene,

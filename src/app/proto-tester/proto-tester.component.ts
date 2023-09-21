@@ -59,6 +59,7 @@ export class ProtoTesterComponent implements OnInit {
     this.designService.openWorld.subscribe((w) => {
       console.log(w)
       this.world = w;
+      this.restart()
       this.cdr.detectChanges()
     });
 

@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  <div class="w-100 h-100 renderer" *ngIf="world && scene && project && theme">
+  <div class="w-100 h-100 renderer" *ngIf="world && scene && project && theme; else noWorld">
     <app-world-designer
       *ngIf="visible"
       [world]="world"
@@ -70,4 +70,15 @@
       [theme]="theme"
     ></app-world-designer>
   </div>
+
+  <ng-template #noWorld>
+    <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+        <p
+        class="primary-text m-auto h4"
+        style="overflow-y: hidden; flex-shrink: 1; flex-grow: 0"
+      >
+        No world to show
+      </p>
+    </div>
+  </ng-template>
 </div>

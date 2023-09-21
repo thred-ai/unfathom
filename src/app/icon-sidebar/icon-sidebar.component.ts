@@ -40,7 +40,7 @@ export class IconSidebarComponent implements OnInit {
   @Input() selectedIcon: string = 'settings';
 
   items: SceneDefinition[] = [];
-  world?: World
+  world?: World | null;
 
   @Output() selectedIconChanged = new EventEmitter<string>();
   @Input() theme: 'light' | 'dark' = 'light';
@@ -74,38 +74,34 @@ export class IconSidebarComponent implements OnInit {
     }
   }
 
-  selectWorld(){
-    let scene = this.selectedStep?.data?.ngArguments?.scene as Scene
-    if (scene){
-      this.loadService.selectWorld(scene)
-    }
+  selectWorld() {
+    let scene = this.selectedStep?.data?.ngArguments?.scene as Scene;
+    this.loadService.selectWorld(scene);
   }
 
-
-  deselectWorld(){
-    this.designerService.openWorld.next(undefined)
+  deselectWorld() {
+    this.designerService.openWorld.next(undefined);
   }
 
-  get canUndo(){
-    return this.designerService.canUndo
+  get canUndo() {
+    return this.designerService.canUndo;
   }
 
-  get canRedo(){
-    return this.designerService.canRedo
+  get canRedo() {
+    return this.designerService.canRedo;
   }
 
-  undo(){
-    this.designerService.undo()
+  undo() {
+    this.designerService.undo();
   }
 
-  redo(){
-    this.designerService.redo()
+  redo() {
+    this.designerService.redo();
   }
 
   startDrag(e: MouseEvent) {
     // The node is a dragged node, which is also a node placed on the canvas by default, and any attribute can be customized
     const node = this.newScene();
-
 
     if (node) this.dnd?.start(node, e);
   }
@@ -127,9 +123,9 @@ export class IconSidebarComponent implements OnInit {
       }
     });
 
-    this.designerService?.openWorld.subscribe(world => {
-      this.world = world
-    })
+    this.designerService?.openWorld.subscribe((world) => {
+      this.world = world;
+    });
 
     this.designerService.openStep.subscribe((s) => {
       this.selectedStep = s;
@@ -152,8 +148,6 @@ export class IconSidebarComponent implements OnInit {
   }
 
   images: Dict<string> = {};
-
-
 
   openSettings() {
     this.workflowComponent.openControllerSettings('main');
@@ -193,7 +187,6 @@ export class IconSidebarComponent implements OnInit {
       tools: ['button-remove'],
       ports: {
         groups: {
-
           out: {
             position: 'right',
             attrs: {
@@ -216,11 +209,8 @@ export class IconSidebarComponent implements OnInit {
   }
 
   delete(id: string) {
-
-    this.graph?.removeCell(id)
-
+    this.graph?.removeCell(id);
   }
-
 
   public saveLayout() {
     // this.definition = definition;

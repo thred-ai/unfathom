@@ -55,7 +55,7 @@ export class LoadService {
     },
   };
 
-  async selectWorld(scene: Scene) {
+  async selectWorld(scene?: Scene) {
     // let world = new World(
     //   scene.id,
     //   5000,
@@ -80,8 +80,9 @@ export class LoadService {
     //   )
     // );
 
+    console.log(scene)
 
-    if (this.projectService.workflow.value) {
+    if (this.projectService.workflow.value && scene) {
       // var saved = false
 
       this.getWorld(
@@ -190,6 +191,9 @@ export class LoadService {
           this.designerService.openWorld.next(w);
         }
       );
+    }
+    else{
+      this.designerService.openWorld.next(undefined);
     }
   }
 

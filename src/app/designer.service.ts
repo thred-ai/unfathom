@@ -86,6 +86,7 @@ export class DesignerService {
     let container = document.getElementById('container');
 
     if (container) {
+
       this.graph = new Graph({
         container: document.getElementById('container')!,
         autoResize: true,
