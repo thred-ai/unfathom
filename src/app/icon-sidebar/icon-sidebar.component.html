@@ -318,6 +318,25 @@ placement="right"
 </div>
 </div> -->
 
+<div
+class="h-100 proj{{
+  selectedIcon == 'prototype' ? '-select' : ''
+}} mt-0 d-flex justify-content-center align-items-center"
+style="aspect-ratio: 1"
+role="button"
+[matTooltip]="'Prototype'"
+[matTooltipPosition]="'below'"
+(click)="selectWorld()"
+>
+<div
+  class="mx-2 primary-text-dark fw-bold d-flex justify-content-center align-items-center"
+  style="aspect-ratio: 1"
+>
+  <div class="w-100 h-100">
+    <mat-icon class="fw-bold">play_arrow</mat-icon>
+  </div>
+</div>
+</div>
     <div class="h-100" style="aspect-ratio: 1">
       <div
         class="w-100 proj p-3 d-flex justify-content-center align-items-center"
@@ -419,25 +438,7 @@ placement="right"
       </div>
     </div>
 
-    <!-- <div
-      class="h-100 proj{{
-        selectedIcon == 'prototype' ? '-select' : ''
-      }} mt-0 d-flex justify-content-center align-items-center"
-      style="aspect-ratio: 1"
-      role="button"
-      (click)="openPrototype.emit('window')"
-      [matTooltip]="'Prototype'"
-      [matTooltipPosition]="'below'"
-    >
-      <div
-        class="mx-2 primary-text-dark fw-bold d-flex justify-content-center align-items-center"
-        style="aspect-ratio: 1"
-      >
-        <div class="w-100 h-100">
-          <mat-icon class="fw-bold">play_arrow</mat-icon>
-        </div>
-      </div>
-    </div> -->
+
 
     <!-- <div
     class="h-100 proj{{

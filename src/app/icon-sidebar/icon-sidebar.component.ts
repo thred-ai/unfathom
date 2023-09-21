@@ -45,7 +45,6 @@ export class IconSidebarComponent implements OnInit {
   @Output() selectedIconChanged = new EventEmitter<string>();
   @Input() theme: 'light' | 'dark' = 'light';
 
-  @Output() openPrototype = new EventEmitter<string>();
   @Output() openDatabase = new EventEmitter<any>();
 
   @Output() openProj = new EventEmitter<string | undefined>();
@@ -74,6 +73,14 @@ export class IconSidebarComponent implements OnInit {
       document.documentElement.style.setProperty('--gridColor', `transparent`);
     }
   }
+
+  selectWorld(){
+    let scene = this.selectedStep?.data?.ngArguments?.scene as Scene
+    if (scene){
+      this.loadService.selectWorld(scene)
+    }
+  }
+
 
   deselectWorld(){
     this.designerService.openWorld.next(undefined)
@@ -145,6 +152,8 @@ export class IconSidebarComponent implements OnInit {
   }
 
   images: Dict<string> = {};
+
+
 
   openSettings() {
     this.workflowComponent.openControllerSettings('main');

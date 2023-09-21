@@ -32,6 +32,16 @@ export class ProtoTesterComponent implements OnInit {
     private themeService: ThemeService
   ) {}
 
+ visible = true
+
+  restart(){
+    this.visible = false
+    setTimeout(() => {
+      this.visible = true
+      this.cdr.detectChanges()
+    }, 5);
+  }
+
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
       console.log(w)

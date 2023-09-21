@@ -377,7 +377,7 @@ export class WorkflowComponent implements OnInit {
       });
 
       ref.afterClosed().subscribe(async (val) => {
-        if (val && val != '' && val != '0' && val.dev) {
+        if (val && val != '' && val != '0') {
           // let img = val.img as File;
           // await this.loadService.saveUserInfo(
           //   val.dev,
@@ -386,6 +386,7 @@ export class WorkflowComponent implements OnInit {
           //   (result) => {}
           // );
         }
+        this.openWorldScene = undefined
       });
     } else {
     }
