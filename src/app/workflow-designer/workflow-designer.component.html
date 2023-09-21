@@ -318,45 +318,69 @@
               >
                 <div class="w-100 h-100 p-2 pb-5" style="overflow-y: scroll">
                   <div
-                  class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
-                >
-                  <p class="w-100 fw-bold my-auto">Scene Characters</p>
-                </div>
+                    class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+                  >
+                    <p class="w-100 fw-bold my-auto">Scene Characters</p>
+                  </div>
                   <div class="w-100">
                     <app-search-bar
                       [placeholder]="'Search Characters'"
                       [workflow]="workflow"
-                      [characterIds]="selectedFile.data.ngArguments.scene.characters ?? []"
+                      [characterIds]="
+                        selectedFile.data.ngArguments.scene.characters ?? []
+                      "
                       (characterChanged)="addCharactersToScene($event)"
                     >
                     </app-search-bar>
                   </div>
 
                   <ng-container>
-    
-                    <div class="w-100 row row-cols-2 justify-content-start g-0" *ngIf="workflow">
+                    <div
+                      class="w-100 row row-cols-2 justify-content-start g-0"
+                      *ngIf="workflow"
+                    >
                       <div
                         *ngFor="let character of characterIds ?? []; index as i"
-                        class="col p-1"
+                        class="col p-1 position-relative"
                         style="aspect-ratio: 0.75"
                       >
                         <div
-                          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
+                          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover position-absolute"
                           style="overflow: hidden"
                           role="button"
                           *ngIf="workflow.characters[character] as c"
+                          (click)="editCharacterDetails(character)"
                         >
                           <img
                             class="w-100 h-100"
                             style="object-fit: cover; aspect-ratio: 1"
                             [src]="c.img"
                           />
-    
+
                           <div
                             class="primary-text text-truncate py-2 w-100 text-center primary-background"
                           >
                             {{ c.name }}
                           </div>
+                        </div>
+
+                        <div
+                          class="rounded-circle bg-orange position-absolute"
+                          style="
+                            z-index: 1;
+                            right: 0;
+                            top: 0;
+                            aspect-ratio: 1 !important;
+                          "
+                          role="button"
+                          (click)="removeCharacter(character)"
+                        >
+                          <mat-icon
+                            class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+                            style="font-size: small"
+                          >
+                            close
+                          </mat-icon>
                         </div>
                       </div>
                     </div>
@@ -424,6 +448,7 @@
                       </div>
                     </ion-accordion>
                   </ion-accordion-group> -->
+                
                 </div>
               </div>
             </ng-template>
@@ -460,7 +485,7 @@
                 <div class="w-100 row rows-2 justify-content-start g-0">
                   <div
                     *ngFor="let character of characters ?? []; index as i"
-                    class="col p-1"
+                    class="col p-1 position-relative"
                     style="aspect-ratio: 0.75"
                   >
                     <div
@@ -480,6 +505,25 @@
                       >
                         {{ character.name }}
                       </div>
+                    </div>
+
+                    <div
+                      class="rounded-circle bg-orange position-absolute"
+                      style="
+                        z-index: 1;
+                        right: 0;
+                        top: 0;
+                        aspect-ratio: 1 !important;
+                      "
+                      role="button"
+                      (click)="removeCharacterWorkflow(character.id)"
+                    >
+                      <mat-icon
+                        class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+                        style="font-size: small"
+                      >
+                        close
+                      </mat-icon>
                     </div>
                   </div>
                 </div>

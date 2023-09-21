@@ -53,6 +53,8 @@ ion-searchbar.custom {
   --icon-color: var(--primaryTextColor);
   --clear-button-color: var(--primaryTextColor);
   --border-radius: 4px;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
 }
 
 :host::ng-deep .searchbar-input.sc-ion-searchbar-md {

@@ -34,6 +34,7 @@ import 'babylonjs-loaders';
 import { World } from '../models/workflow/world.model';
 import { Character } from '../models/workflow/character.model';
 import { CharacterModuleComponent } from '../character-module/character-module.component';
+import { AssetModuleComponent } from '../asset-module/asset-module.component';
 
 @AutoUnsubscribe
 @Component({
@@ -145,6 +146,49 @@ export class WorkflowDesignerComponent
     });
   }
 
+  editCharacterDetails(character: string) {
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    let details = scene.characters.find((c) => c.id == character);
+    let c = this.workflow?.characters[character];
+
+    let ref = this.dialog.open(AssetModuleComponent, {
+      width: 'calc(var(--vh, 1vh) * 70)',
+      maxWidth: '650px',
+      maxHeight: 'calc(var(--vh, 1vh) * 100)',
+      panelClass: 'app-full-bleed-dialog',
+
+      data: {
+        character: c,
+        characterDetails: details,
+        workflow: this.workflow,
+      },
+    });
+
+    ref.afterClosed().subscribe(async (val) => {
+      if (val && val != '' && val != '0' && val.workflow) {
+        let character = val.character as Character;
+        let characterDetails = val.characterDetails as any;
+
+        if (val.action == 'delete') {
+          // character.status = 1;
+          return;
+        }
+
+        let index = scene.characters.findIndex((c) => c.id == character.id);
+
+        if (index >= 0) {
+          scene!.characters[index] = characterDetails;
+          this.designerService.setScene(scene, scene.id);
+        }
+
+        this.projectService.workflow.next(this.workflow);
+
+        this.workflowChanged.emit(this.workflow);
+      }
+    });
+  }
+
   public ngOnInit() {
     this.designerService.initialized = false;
 
@@ -195,28 +239,48 @@ export class WorkflowDesignerComponent
 
     let same = scene.characters.find((s) => s.id == e);
 
-      if (this.workflow!.characters[e]) {
-        scene.characters.push({
-          id: e,
-          spawn: {
-            x: same?.spawn.x ?? 0,
-            y: same?.spawn.y ?? 1000,
-            z: same?.spawn.z ?? 0,
-          },
-          direction: {
-            x: same?.direction.x ?? 0,
-            y: same?.direction.y ?? 0,
-            z: same?.direction.z ?? 0,
-          },
-          scale: same?.scale ?? 1,
-        });
-      }
+    if (this.workflow!.characters[e]) {
+      scene.characters.push({
+        id: e,
+        spawn: {
+          x: same?.spawn.x ?? 0,
+          y: same?.spawn.y ?? 1000,
+          z: same?.spawn.z ?? 0,
+        },
+        direction: {
+          x: same?.direction.x ?? 0,
+          y: same?.direction.y ?? 0,
+          z: same?.direction.z ?? 0,
+        },
+        scale: same?.scale ?? 1,
+      });
+    }
 
     this.characterIds = scene.characters.map((c) => c.id);
 
     console.log(scene.characters);
 
     this.designerService.setScene(scene, scene.id);
+  }
+
+  removeCharacter(id: string) {
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    let sameIndex = scene.characters.findIndex((s) => s.id == id);
+
+    if (sameIndex >= 0) {
+      scene.characters.splice(sameIndex, 1);
+    }
+    this.characterIds = scene.characters.map((c) => c.id);
+    this.designerService.setScene(scene, scene.id);
+  }
+
+  removeCharacterWorkflow(id: string) {
+    delete this.workflow?.characters[id];
+
+    this.projectService.workflow.next(this.workflow);
+
+    this.workflowChanged.emit(this.workflow);
   }
 
   updateCellName(id: string, value: any) {
@@ -226,34 +290,6 @@ export class WorkflowDesignerComponent
 
     if (cell && scene) {
       scene.name = value;
-      cell.setData({
-        ngArguments: {
-          scene,
-        },
-      });
-    }
-  }
-
-  updateCellCharacter(
-    id: string,
-    characterId: string,
-    value: any,
-    field: string,
-    subField?: string
-  ) {
-    let cell = this.designerService.graph?.getCellById(id);
-
-    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
-
-    if (cell && scene) {
-      var finalField = scene.characters.find((c) => c.id == characterId) as any;
-
-      if (subField) {
-        finalField[field][subField] = value;
-      } else {
-        finalField[field] = value;
-      }
-
       cell.setData({
         ngArguments: {
           scene,

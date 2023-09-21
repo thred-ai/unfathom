@@ -140,6 +140,7 @@ import { CharacterModuleComponent } from './character-module/character-module.co
 import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { AssetModuleComponent } from './asset-module/asset-module.component';
 
 @NgModule({
   declarations: [
@@ -200,6 +201,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
     ModelViewerComponent,
     ProtoTesterComponent,
     SearchBarComponent,
+    AssetModuleComponent,
   ],
   imports: [
     CommonModule,
