@@ -1,0 +1,95 @@
+input:focus,
+input.form-control:focus {
+  outline: none !important;
+  outline-width: 0 !important;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.loader {
+  width: 60%;
+  height: 60%;
+  border: 2.5px solid #fff;
+  background-color: #9c4aff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotate 1s linear infinite;
+}
+
+.loading-btn {
+  background-color: #9c4aff;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.search-button {
+  animation: search-button-anim 0.25s ease-in;
+  animation-fill-mode: forwards;
+}
+
+@keyframes search-button-anim {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+ion-searchbar.custom {
+  --background: var(--secondaryBackgroundColor);
+  --color: var(--primaryTextColor);
+  --placeholder-color: var(--secondaryTextColor);
+  --icon-color: var(--primaryTextColor);
+  --clear-button-color: var(--primaryTextColor);
+  --border-radius: 4px;
+}
+
+:host::ng-deep .searchbar-input.sc-ion-searchbar-md {
+  font-size: 11px !important;
+}
+
+ion-list.custom-list {
+  padding: 0 !important;
+  background-color: var(--secondaryBackgroundColor) !important;
+  min-height: 30px !important;
+  width: 100% !important;
+}
+
+ion-thumbnail {
+  --size: 30px;
+  // --border-radius: 6px;
+}
+
+ion-item.custom-item {
+  --background: var(--primaryBackgroundColor) !important;
+  color: var(--primaryTextColor) !important;
+  cursor: pointer;
+}
+
+ion-item.custom-item-disabled {
+    --background: var(--primaryBackgroundColor) !important;
+    opacity: 0.5;
+    color: var(--primaryTextColor) !important;
+    pointer-events: none;
+  }
+
+:host::ng-deep .ion-padding {
+  padding-right: 0px;
+  padding-left: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  overflow: hidden;
+}

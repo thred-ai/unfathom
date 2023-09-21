@@ -189,30 +189,14 @@ export class WorkflowDesignerComponent
     });
   }
 
-  addCharactersToScene(event: string[]) {
+  addCharactersToScene(e: string) {
     console.log('oi');
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-    let characters: {
-      id: string;
-      spawn: {
-        x: number;
-        y: number;
-        z: number;
-      };
-      direction: {
-        x: number;
-        y: number;
-        z: number;
-      };
-      scale: number;
-    }[] = [];
-
-    event.forEach((e) => {
-      let same = scene.characters.find((s) => s.id == e);
+    let same = scene.characters.find((s) => s.id == e);
 
       if (this.workflow!.characters[e]) {
-        characters.push({
+        scene.characters.push({
           id: e,
           spawn: {
             x: same?.spawn.x ?? 0,
@@ -227,9 +211,6 @@ export class WorkflowDesignerComponent
           scale: same?.scale ?? 1,
         });
       }
-    });
-
-    scene.characters = characters;
 
     this.characterIds = scene.characters.map((c) => c.id);
 

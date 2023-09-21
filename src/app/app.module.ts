@@ -139,6 +139,7 @@ import { WorldDesignerComponent } from './world-designer/world-designer.componen
 import { CharacterModuleComponent } from './character-module/character-module.component';
 import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
+import { SearchBarComponent } from './search-bar/search-bar.component';
 
 @NgModule({
   declarations: [
@@ -198,6 +199,7 @@ import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
     CharacterModuleComponent,
     ModelViewerComponent,
     ProtoTesterComponent,
+    SearchBarComponent,
   ],
   imports: [
     CommonModule,

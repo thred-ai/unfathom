@@ -1,0 +1,23 @@
+<ion-searchbar
+  type="text"
+  debounce="500"
+  [placeholder]="placeholder"
+  (ionChange)="getItems($event)"
+  #search
+  class="custom"
+></ion-searchbar>
+<ion-list
+  class="custom-list border-table rounded shadow position-fixed"
+  *ngIf="isItemAvailable"
+>
+  <ion-item
+    class="custom-item{{ characters[item.id] ? '-disabled' : '' }}"
+    *ngFor="let item of items"
+    (click)="selectCharacter(item); search.value = ''; isItemAvailable = false"
+  >
+    <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
+      <img class="border-table p-0" [src]="item.img" />
+    </ion-thumbnail>
+    <ion-label style="font-size: small">{{ item.name }}</ion-label>
+  </ion-item>
+</ion-list>
