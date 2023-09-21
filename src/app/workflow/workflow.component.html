@@ -15,7 +15,7 @@
     style="overflow-y: hidden"
     *ngIf="workflow; else noWorkflow"
   >
-    <ng-container *ngIf="!openWorldScene">
+    <!-- <ng-container *ngIf="!openWorldScene"> -->
       <app-file-sidebar
         [hidden]="mode != 'sidebar'"
         [models]="models"
@@ -41,18 +41,18 @@
           </verticalai-workflow-designer>
         </ng-container>
       </div>
-    </ng-container>
+    <!-- </ng-container> -->
 
-    <ng-container *ngIf="openWorldScene && openStep && workflow">
-      <div class="w-100 h-100">
+    <!-- <ng-container *ngIf="openWorldScene && openStep && workflow"> -->
+      <!-- <div class="w-100 h-100">
         <app-world-designer
           [world]="openWorldScene"
           [scene]="openStep.data.ngArguments?.scene"
           [project]="workflow"
           [theme]="theme"
         ></app-world-designer>
-      </div>
-    </ng-container>
+      </div> -->
+    <!-- </ng-container> -->
 
     <!-- <div class="w-100 h-100 d-flex justify-content-center align-items-center">
       <as-split class="w-100 h-100" class="vertical" direction="vertical">

@@ -1,7 +1,9 @@
-<canvas class="w-100 h-100" id="canvas" [hidden]="loaded != ''"> </canvas>
+<div class="w-100 h-100 d-flex justify-content-center align-items-center" [hidden]="loaded != ''">
+    <canvas class="w-100 h-100" id="canvas"> </canvas>
+</div>
 
 <div
-  class="layout-container h-100 d-flex flex-column justify-content-center align-items-center"
+  class="w-100 h-100 d-flex flex-column justify-content-center align-items-center"
   *ngIf="loaded != ''"
 >
   <verticalai-loader [mode]="theme" [text]="loaded"></verticalai-loader>

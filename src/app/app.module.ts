@@ -138,6 +138,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { WorldDesignerComponent } from './world-designer/world-designer.component';
 import { CharacterModuleComponent } from './character-module/character-module.component';
 import { ModelViewerComponent } from './model-viewer/model-viewer.component';
+import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
 
 @NgModule({
   declarations: [
@@ -196,6 +197,7 @@ import { ModelViewerComponent } from './model-viewer/model-viewer.component';
     WorldDesignerComponent,
     CharacterModuleComponent,
     ModelViewerComponent,
+    ProtoTesterComponent,
   ],
   imports: [
     CommonModule,

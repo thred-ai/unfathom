@@ -31,6 +31,7 @@ import { ThemeService } from '../theme.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
+import { ProtoTesterComponent } from '../proto-tester/proto-tester.component';
 
 @AutoUnsubscribe
 @Component({
@@ -213,7 +214,14 @@ export class WorkflowComponent implements OnInit {
     });
 
     this.designerService?.openWorld.subscribe((world) => {
+      if (!this.openWorldScene && world){
+        this.openPrototype()
+      }
+      else{
+
+      }
       this.openWorldScene = world;
+      
     });
 
     this.designerService.toolboxConfiguration.subscribe((s) => {
@@ -359,7 +367,7 @@ export class WorkflowComponent implements OnInit {
 
   openPrototype(mode: string = 'window') {
     if (mode == 'window') {
-      let ref = this.dialog.open(ApiTesterComponent, {
+      let ref = this.dialog.open(ProtoTesterComponent, {
         panelClass: 'prototype-dialog',
         hasBackdrop: false,
         data: {

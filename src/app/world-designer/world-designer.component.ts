@@ -22,6 +22,8 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./world-designer.component.scss'],
 })
 export class WorldDesignerComponent implements OnInit, OnDestroy {
+
+
   @Input() world?: World;
   @Input() scene?: Scene;
   @Input() project?: Executable;
@@ -40,6 +42,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+
     // this.designerService?.openWorld.subscribe((world) => {
     //   this.world = world;
     //   console.log(world)
