@@ -238,7 +238,14 @@ export class WorkflowComponent implements OnInit {
     });
 
     this.projectService.workflow.subscribe(async (w) => {
+      if (w && this.workflow){
+        if (this.workflow.id != w.id){
+          this.dialog.closeAll()
+        }
+      }
+
       this.workflow = w;
+      
     });
 
     this.loadService.loadedUser.subscribe((user) => {
