@@ -22,8 +22,6 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./world-designer.component.scss'],
 })
 export class WorldDesignerComponent implements OnInit, OnDestroy {
-
-
   @Input() world?: World;
   @Input() scene?: Scene;
   @Input() project?: Executable;
@@ -36,13 +34,20 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     direction: { x: number; y: number; z: number };
   };
 
+  characters: {
+    spawn: { x: number; y: number; z: number };
+    id: string;
+    currentPos: { x: number; y: number; z: number };
+    scale: number;
+    direction: { x: number; y: number; z: number };
+  }[] = [];
+
   constructor(
     private designerService?: DesignerService,
     private projectService?: ProjectService
   ) {}
 
   ngOnInit(): void {
-
     // this.designerService?.openWorld.subscribe((world) => {
     //   this.world = world;
     //   console.log(world)
@@ -57,6 +62,13 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
         currentPos: this.scene.characters[0].spawn,
         ...this.scene?.characters[0],
       };
+      this.characters = this.scene.characters.map((c) => {
+        return {
+          currentPos: c.spawn,
+          ...c,
+        };
+      });
+
       if (this.world && this.project) {
         this.initWorld();
       } else {
@@ -90,7 +102,8 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
         this.engine,
         this.world,
         this.scene,
-        this.selectedCharacter
+        this.selectedCharacter,
+        this.characters
       );
 
       scene.activeCamera!.attachControl(canvas);
@@ -144,7 +157,14 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
       currentPos: { x: number; y: number; z: number };
       scale: number;
       direction: { x: number; y: number; z: number };
-    }
+    },
+    characters: {
+      spawn: { x: number; y: number; z: number };
+      id: string;
+      currentPos: { x: number; y: number; z: number };
+      scale: number;
+      direction: { x: number; y: number; z: number };
+    }[]
   ) {
     var scene = new BABYLON.Scene(engine);
 
@@ -196,7 +216,10 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
       var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
 
-      var uvScaleConstant = new BABYLON.Vector2(world.size / 166, world.size / 166)
+      var uvScaleConstant = new BABYLON.Vector2(
+        world.size / 166,
+        world.size / 166
+      );
 
       if (world.ground.texture.displacement) {
         ground.applyDisplacementMap(
@@ -387,7 +410,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     //   ? 'assets/mustafarav2.glb'
     //   : 'assets/sandyav.glb';
 
-
     //https://models.readyplayer.me/64fad33c902030ca061803ad.glb
 
     var light = new BABYLON.DirectionalLight(
@@ -435,6 +457,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     const runJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
     const idleJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
     const fall = scene.getAnimationGroupByName('F_Falling_Idle_001')!;
+
 
     this.loaded = 'Downloading Assets';
 
@@ -594,6 +617,38 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
         }
       })
     );
+
+    await Promise.all(
+      characters.map(async (c) => {
+        if (c.id != character?.id) {
+          console.log("render " + c.id)
+          var avatar2 = this.project?.characters[c.id].assetUrl;
+          console.log(avatar2)
+
+          const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
+            '',
+            '',
+            avatar2,
+            scene,
+            undefined,
+            '.glb'
+          );
+
+          var actor2 = result2.meshes[0] as BABYLON.Mesh;
+
+          console.log(c.scale)
+          actor2.scaling.scaleInPlace(c.scale);
+          actor2.checkCollisions = true;
+
+          actor2.position = new BABYLON.Vector3(
+            c.spawn.x,
+            c.spawn.y,
+            c.spawn.z
+          );
+        }
+      })
+    );
+
 
     var generator = new BABYLON.ShadowGenerator(world.size, light);
     generator.usePoissonSampling = false;

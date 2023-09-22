@@ -14,23 +14,12 @@
         class="primary-text-dark d-flex justify-content-center align-items-center"
         role="button"
         mat-button
-        [matMenuTriggerFor]="world ? null : mainMenu"
-        (click)="world ? deselectWorld() : null"
+        [matMenuTriggerFor]="mainMenu"
         #menuToggle
       >
-        <mat-icon
-          *ngIf="world"
-          class="my-auto"
-          style="
-            height: 14px;
-            font-size: 14px !important;
-            width: 14px !important;
-          "
-          >navigate_before</mat-icon
-        >
+
         <mat-icon [svgIcon]="'unfathom_icon'"></mat-icon>
         <mat-icon
-          *ngIf="!world"
           class="my-auto"
           style="
             height: 14px;

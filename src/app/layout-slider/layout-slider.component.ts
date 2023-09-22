@@ -20,6 +20,7 @@ export class LayoutSliderComponent implements OnInit {
 
   @Input() min: number = 0
   @Input() max: number = 100
+  @Input() step: number = 1
   @Input() title: string = 'Slider'
   @Input() textColor: string = 'var(--primaryTextColor)';
   @Input() lineColor: string = 'var(--secondaryBackgroundColor)';
@@ -28,6 +29,10 @@ export class LayoutSliderComponent implements OnInit {
   @Input() knobTextColor: string = '#ffffff';
 
   @Input() simplify: boolean = false;
+
+  pinFormatter = (value: number) => {
+    return `${value/this.step}`;
+  }
 
 
   sliderVal(event: number){

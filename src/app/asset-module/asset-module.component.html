@@ -93,6 +93,23 @@
               </div>
             </div>
         </div>
+
+        <div
+        class="w-100 pb-3"
+      >
+        <verticalai-layout-slider
+          [value]="(characterDetails['scale'] ?? 1) * 10"
+          [title]="'Scale'"
+          [min]="5"
+          [max]="1000"
+          [step]="10"
+          [lineFillColor]="'#0A99FF'"
+          (valueChange)="
+          characterDetails['scale'] = $event / 10
+          "
+        >
+        </verticalai-layout-slider>
+      </div>
         
 
       </div>
