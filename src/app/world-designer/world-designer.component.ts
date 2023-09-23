@@ -440,6 +440,8 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
     actor.position.z = character.spawn.z; //world.size / 5 - 400;
     actor.position.x = character.spawn.x; //world.size / 10 + 900;
+    
+    
 
     let animationsDir = '/assets/animations/';
 
@@ -457,7 +459,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     const runJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
     const idleJump = scene.getAnimationGroupByName('M_Walk_Jump_003')!;
     const fall = scene.getAnimationGroupByName('F_Falling_Idle_001')!;
-
 
     this.loaded = 'Downloading Assets';
 
@@ -621,10 +622,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     await Promise.all(
       characters.map(async (c) => {
         if (c.id != character?.id) {
-          console.log("render " + c.id)
           var avatar2 = this.project?.characters[c.id].assetUrl;
-          console.log(avatar2)
-
           const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
             '',
             '',
@@ -636,7 +634,15 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
           var actor2 = result2.meshes[0] as BABYLON.Mesh;
 
-          console.log(c.scale)
+          const modelTransformNodes = actor2.getChildTransformNodes();
+          const modelAnimationGroup = idle.clone('clone', (oldTarget) => {
+            return modelTransformNodes.find(
+              (node) => node.name === oldTarget.name
+            );
+          });
+          modelAnimationGroup.start();
+          modelAnimationGroup.loopAnimation = true;
+
           actor2.scaling.scaleInPlace(c.scale);
           actor2.checkCollisions = true;
 
@@ -645,10 +651,15 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
             c.spawn.y,
             c.spawn.z
           );
+
+          actor2.rotation = new BABYLON.Vector3(
+            c.direction.x,
+            c.direction.y,
+            c.direction.z
+          );
         }
       })
     );
-
 
     var generator = new BABYLON.ShadowGenerator(world.size, light);
     generator.usePoissonSampling = false;
