@@ -114,7 +114,7 @@ export class WorkflowDesignerComponent
   editCharacter(
     character: Character = new Character(
       this.loadService.newUtilID,
-      'John',
+      'New NPC',
       undefined,
       '',
       '/assets/default_head.png',
