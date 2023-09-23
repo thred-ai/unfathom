@@ -1,20 +1,20 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Dict, LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
 import { DesignerService } from '../designer.service';
+import { Dict, LoadService } from '../load.service';
+import { Character } from '../models/workflow/character.model';
+import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
-import { ModelAsset } from '../models/workflow/model-asset.model';
 
 @Component({
-  selector: 'app-asset-module',
-  templateUrl: './asset-module.component.html',
-  styleUrls: ['./asset-module.component.scss']
+  selector: 'app-character-edit-module',
+  templateUrl: './character-edit-module.component.html',
+  styleUrls: ['./character-edit-module.component.scss']
 })
-export class AssetModuleComponent implements OnInit {
+export class CharacterEditModuleComponent implements OnInit {
   workflow?: Executable
-  asset?: ModelAsset
-  assetDetails?: Dict<any>
+  character?: Character
+  characterDetails?: Dict<any>
   scene?: Scene
 
   fileDisplay?: string;
@@ -24,14 +24,14 @@ export class AssetModuleComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<AssetModuleComponent>,
+    public dialogRef: MatDialogRef<CharacterEditModuleComponent>,
     private loadService: LoadService,
     private designerService: DesignerService
   ) {
     this.workflow = data.workflow
-    this.asset = data.asset
-    this.assetDetails = data.assetDetails
-    this.fileDisplay = data.asset.assetUrl
+    this.character = data.character
+    this.characterDetails = data.characterDetails
+    this.fileDisplay = data.character.assetUrl
   }
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
@@ -61,9 +61,9 @@ export class AssetModuleComponent implements OnInit {
   }
 
   
-  updateCellAsset(
+  updateCellCharacter(
     id: string,
-    assetId: string,
+    characterId: string,
     value: any,
     field: string,
     subField?: string
@@ -72,7 +72,7 @@ export class AssetModuleComponent implements OnInit {
 
 
     if (cell && this.scene) {
-      var finalField = this.scene.assets.find((c) => c.id == assetId) as any;
+      var finalField = this.scene.characters.find((c) => c.id == characterId) as any;
 
       if (subField) {
         finalField[field][subField] = value;
@@ -96,28 +96,28 @@ export class AssetModuleComponent implements OnInit {
 
     this.loading = "Saving"
 
-    // if (img && workflow && asset) {
-    //   let url = await this.loadService.uploadAssetImg(
+    // if (img && workflow && character) {
+    //   let url = await this.loadService.uploadCharacterImg(
     //     img,
     //     workflow.id,
-    //     asset.id
+    //     character.id
     //   );
 
     //   if (url) {
-    //     asset.img = url;
+    //     character.img = url;
     //   }
     // }
 
-    // if (asset && workflow && asset) {
+    // if (asset && workflow && character) {
     //   this.loading = "Uploading Assets"
-    //   let url = await this.loadService.uploadAssetAsset(
+    //   let url = await this.loadService.uploadCharacterAsset(
     //     asset,
     //     workflow.id,
-    //     asset.id
+    //     character.id
     //   );
 
     //   if (url) {
-    //     asset.assetUrl = url;
+    //     character.assetUrl = url;
     //   }
     // }
 
@@ -126,8 +126,8 @@ export class AssetModuleComponent implements OnInit {
     this.dialogRef.close({
       workflow: this.workflow,
       action,
-      asset: this.asset,
-      assetDetails: this.assetDetails
+      character: this.character,
+      characterDetails: this.characterDetails
     });
   }
 

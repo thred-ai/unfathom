@@ -1,13 +1,13 @@
 <div
   class="w-100 h-100 d-flex justify-content-between align-items-center flex-column primary-background p-3 pb-4"
-  *ngIf="workflow && asset && assetDetails"
+  *ngIf="workflow && character && characterDetails"
 >
   <div class="w-100 h-100 d-flex justify-content-center align-items-center">
     <div class="primary-background w-100 h-100 m-auto" style="max-width: 600px">
       <div class="w-100 h-100">
         <div class="w-100">
           <div class="primary-text fw-bold mb-3" style="font-size: 15px">
-            Asset
+            Character
           </div>
         </div>
       </div>
@@ -15,7 +15,7 @@
       <div class="w-100" style="overflow-y: scroll; max-height: 600px">
 
         <div class="w-100 pb-3">
-            <p class="w-100 mb-3 primary-text fw-bold">Position</p>
+            <p class="w-100 mb-3 primary-text fw-bold">Spawn Point</p>
 
             <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
               <div class="col px-1">
@@ -23,9 +23,9 @@
                   [title]="'X'"
                   [type]="'number'"
                   [range]="{ min: -100000, max: 100000 }"
-                  [value]="assetDetails['spawn'].x"
-                  [placeholder]="'Position (X)'"
-                  (changed)="assetDetails['spawn'].x = $event"
+                  [value]="characterDetails['spawn'].x"
+                  [placeholder]="'Spawn (X)'"
+                  (changed)="characterDetails['spawn'].x = $event"
                 >
                 </verticalai-text-field>
               </div>
@@ -34,9 +34,9 @@
                   [title]="'Y'"
                   [type]="'number'"
                   [range]="{ min: -100000, max: 100000 }"
-                  [value]="assetDetails['spawn'].y"
-                  [placeholder]="'Position (Y)'"
-                  (changed)="assetDetails['spawn'].y = $event"
+                  [value]="characterDetails['spawn'].y"
+                  [placeholder]="'Spawn (Y)'"
+                  (changed)="characterDetails['spawn'].y = $event"
                 >
                 </verticalai-text-field>
               </div>
@@ -45,9 +45,9 @@
                   [title]="'Z'"
                   [type]="'number'"
                   [range]="{ min: -100000, max: 100000 }"
-                  [value]="assetDetails['spawn'].z"
-                  [placeholder]="'Position (Z)'"
-                  (changed)="assetDetails['spawn'].z = $event"
+                  [value]="characterDetails['spawn'].z"
+                  [placeholder]="'Spawn (Z)'"
+                  (changed)="characterDetails['spawn'].z = $event"
                 >
                 </verticalai-text-field>
               </div>
@@ -63,9 +63,9 @@
                   [title]="'X'"
                   [type]="'number'"
                   [range]="{ min: -100000, max: 100000 }"
-                  [value]="assetDetails['direction'].x"
+                  [value]="characterDetails['direction'].x"
                   [placeholder]="'Direction (X)'"
-                  (changed)="assetDetails['direction'].x = $event"
+                  (changed)="characterDetails['direction'].x = $event"
                 >
                 </verticalai-text-field>
               </div>
@@ -74,9 +74,9 @@
                   [title]="'Y'"
                   [type]="'number'"
                   [range]="{ min: -100000, max: 100000 }"
-                  [value]="assetDetails['direction'].y"
+                  [value]="characterDetails['direction'].y"
                   [placeholder]="'Direction (Y)'"
-                  (changed)="assetDetails['direction'].y = $event"
+                  (changed)="characterDetails['direction'].y = $event"
                 >
                 </verticalai-text-field>
               </div>
@@ -85,9 +85,9 @@
                   [title]="'Z'"
                   [type]="'number'"
                   [range]="{ min: -100000, max: 100000 }"
-                  [value]="assetDetails['direction'].z"
+                  [value]="characterDetails['direction'].z"
                   [placeholder]="'Direction (Z)'"
-                  (changed)="assetDetails['direction'].z = $event"
+                  (changed)="characterDetails['direction'].z = $event"
                 >
                 </verticalai-text-field>
               </div>
@@ -98,14 +98,14 @@
         class="w-100 pb-3"
       >
         <verticalai-layout-slider
-          [value]="(assetDetails['scale'] ?? 1) * 10"
+          [value]="(characterDetails['scale'] ?? 1) * 10"
           [title]="'Scale'"
           [min]="5"
           [max]="1000"
           [step]="10"
           [lineFillColor]="'#0A99FF'"
           (valueChange)="
-          assetDetails['scale'] = $event / 10
+          characterDetails['scale'] = $event / 10
           "
         >
         </verticalai-layout-slider>
@@ -129,7 +129,7 @@
         </ng-container>
 
         <ng-template #buttonTitles>
-          <ng-container> {{ "Save Asset" }}</ng-container>
+          <ng-container> {{ "Save Character" }}</ng-container>
         </ng-template>
       </button>
     </div>

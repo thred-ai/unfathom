@@ -142,6 +142,7 @@ import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { AssetModuleComponent } from './asset-module/asset-module.component';
 import { AssetsModuleComponent } from './assets-module/assets-module.component';
+import { CharacterEditModuleComponent } from './character-edit-module/character-edit-module.component';
 
 @NgModule({
   declarations: [
@@ -204,6 +205,7 @@ import { AssetsModuleComponent } from './assets-module/assets-module.component';
     SearchBarComponent,
     AssetModuleComponent,
     AssetsModuleComponent,
+    CharacterEditModuleComponent,
   ],
   imports: [
     CommonModule,

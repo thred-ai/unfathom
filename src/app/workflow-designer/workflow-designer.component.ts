@@ -37,6 +37,7 @@ import { CharacterModuleComponent } from '../character-module/character-module.c
 import { AssetModuleComponent } from '../asset-module/asset-module.component';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { AssetsModuleComponent } from '../assets-module/assets-module.component';
+import { CharacterEditModuleComponent } from '../character-edit-module/character-edit-module.component';
 
 @AutoUnsubscribe
 @Component({
@@ -158,7 +159,7 @@ export class WorkflowDesignerComponent
     let details = scene.characters.find((c) => c.id == character);
     let c = this.workflow?.characters[character];
 
-    let ref = this.dialog.open(AssetModuleComponent, {
+    let ref = this.dialog.open(CharacterEditModuleComponent, {
       width: 'calc(var(--vh, 1vh) * 70)',
       maxWidth: '650px',
       maxHeight: 'calc(var(--vh, 1vh) * 100)',
@@ -168,6 +169,7 @@ export class WorkflowDesignerComponent
         character: c,
         characterDetails: details,
         workflow: this.workflow,
+        type: 'character'
       },
     });
 
@@ -369,6 +371,26 @@ export class WorkflowDesignerComponent
 
   removeCharacterWorkflow(id: string) {
     delete this.workflow?.characters[id];
+
+    this.projectService.workflow.next(this.workflow);
+
+    this.workflowChanged.emit(this.workflow);
+  }
+
+  removeAsset(id: string) {
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    let sameIndex = scene.assets.findIndex((s) => s.id == id);
+
+    if (sameIndex >= 0) {
+      scene.assets.splice(sameIndex, 1);
+    }
+    this.characterIds = scene.assets.map((c) => c.id);
+    this.designerService.setScene(scene, scene.id);
+  }
+
+  removeAssetWorkflow(id: string) {
+    delete this.workflow?.assets[id];
 
     this.projectService.workflow.next(this.workflow);
 

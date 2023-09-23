@@ -488,9 +488,9 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
           object.scaling.scaleInPlace(asset.scale);
   
           object.rotation = new BABYLON.Vector3(
-            asset.direction.x,
-            asset.direction.y,
-            asset.direction.z
+            this.toRadians(asset.direction.x),
+            this.toRadians(asset.direction.y),
+            this.toRadians(asset.direction.z)
           );
   
           object.position = new BABYLON.Vector3(

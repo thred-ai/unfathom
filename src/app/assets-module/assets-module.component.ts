@@ -27,7 +27,7 @@ export class AssetsModuleComponent implements OnInit {
   ) {
     this.workflow = data.workflow
     this.asset = data.asset
-    this.fileDisplay = data.character.assetUrl
+    this.fileDisplay = data.asset.assetUrl
   }
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
