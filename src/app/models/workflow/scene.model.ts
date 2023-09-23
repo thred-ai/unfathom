@@ -20,7 +20,7 @@ export class Scene extends SceneDefinition {
   }[];
 
   assets!: {
-    data: ModelAsset;
+    id: string;
     spawn: { x: number; y: number; z: number };
     direction: { x: number; y: number; z: number };
     scale: number;
@@ -40,7 +40,7 @@ export class Scene extends SceneDefinition {
       scale: number;
     }[] = [],
     assets: {
-      data: ModelAsset;
+      id: string;
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
       scale: number;

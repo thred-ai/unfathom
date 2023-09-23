@@ -5,6 +5,7 @@ import { Scene } from './scene.model';
 import { Character } from './character.model';
 import { SceneLayout } from './scene-layout.model';
 import { Dict } from 'src/app/load.service';
+import { ModelAsset } from './model-asset.model';
 
 export class Executable {
   name!: string;
@@ -20,6 +21,7 @@ export class Executable {
   whitelist?: string[];
   sceneLayout!: SceneLayout;
   characters!: Dict<Character>;
+  assets!: Dict<ModelAsset>;
 
   tracking!: boolean;
   displayUrl!: string;
@@ -47,17 +49,8 @@ export class Executable {
     installWebhook?: string,
     whitelist?: string[],
     sceneLayout?: SceneLayout,
-    characters: Dict<Character> = {
-      main: new Character(
-        'main',
-        'John',
-        'https://storage.googleapis.com/verticalai.appspot.com/workflows/N0ZkJm5xI861jotsjuHy/assets/mustafarav.glb',
-        'A shining knight',
-        undefined,
-        'Gloomy',
-        'hero'
-      ),
-    },
+    characters: Dict<Character> = {},
+    assets: Dict<ModelAsset> = {},
     tracking?: boolean,
     url?: string,
     apiKey?: string,
@@ -78,7 +71,8 @@ export class Executable {
     this.whitelist = whitelist ?? [];
     this.tracking = tracking ?? false;
     this.sceneLayout = sceneLayout ?? { cells: [] };
-    this.characters = characters ?? [];
+    this.characters = characters ?? {};
+    this.assets = assets ?? {}
     this.url = url ?? id;
     this.apiKey = apiKey ?? `V-${uuid.v4()}`;
     this.plan = plan ?? new Subscription('', '', '', 0, 0);

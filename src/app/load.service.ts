@@ -1440,6 +1440,7 @@ export class LoadService {
       workflow.whitelist,
       workflow.sceneLayout,
       workflow.characters,
+      workflow.assets,
       workflow.tracking,
       workflow.url,
       workflow.apiKey,

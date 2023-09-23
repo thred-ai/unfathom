@@ -468,157 +468,159 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
     await Promise.all(
       worldScene.assets.map(async (asset) => {
-        const result = await BABYLON.SceneLoader.ImportMeshAsync(
-          '',
-          '',
-          asset.data.assetUrl,
-          scene,
-          undefined,
-          '.glb'
-        );
 
-        result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
+        let fullAsset = this.project?.assets[asset.id]
 
-        var object = result.meshes[0] as BABYLON.Mesh;
-
-        object.scaling.scaleInPlace(asset.scale);
-
-        object.rotation = new BABYLON.Vector3(
-          asset.direction.x,
-          asset.direction.y,
-          asset.direction.z
-        );
-
-        // actor4.translate(actor4.forward, 810);
-        // actor4.translate(actor4.right, -15);
-
-        object.position = new BABYLON.Vector3(
-          asset.spawn.x,
-          asset.spawn.y,
-          asset.spawn.z
-        );
-
-        if (asset.data.type == 'movable') {
-          let box = object.getHierarchyBoundingVectors();
-
-          object.ellipsoidOffset = new BABYLON.Vector3(
-            0,
-            -(box.max.y - box.min.y),
-            0
+        if (fullAsset){
+          const result = await BABYLON.SceneLoader.ImportMeshAsync(
+            '',
+            '',
+            fullAsset.assetUrl,
+            scene,
+            undefined,
+            '.glb'
           );
-
-          const dsm = new BABYLON.DeviceSourceManager(scene.getEngine());
-
-          var moving = false;
-
-          dsm.onDeviceConnectedObservable.add((eventData) => {
-            if (eventData.deviceType === BABYLON.DeviceType.Keyboard) {
-              const keyboard = dsm.getDeviceSource(BABYLON.DeviceType.Keyboard);
-
-              let delta = 0;
-              const linearSpeed = 600;
-              const angularSpeed = 5;
-              const translation = new BABYLON.Vector3(0, 0, 0);
-              const rotation = new BABYLON.Vector3(0, 0, 0);
-
-              scene.beforeRender = () => {
-                const w = keyboard?.getInput(49);
-                const a = keyboard?.getInput(51);
-                const d = keyboard?.getInput(50);
-                const y = keyboard?.getInput(52);
-                const shift = keyboard?.getInput(57);
-                const shift2 = keyboard?.getInput(48);
-
-                object.locallyTranslate(translation);
-
-                delta = scene.deltaTime ? scene.deltaTime / 1000 : 0;
-                translation.set(0, 0, 0);
-                rotation.set(0, 0, 0);
-
-                if (w === 1) {
-                  if (shift) {
-                    translation.z = linearSpeed * delta;
-                  } else {
-                    translation.z = -linearSpeed * delta;
+  
+          result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
+  
+          var object = result.meshes[0] as BABYLON.Mesh;
+  
+          object.scaling.scaleInPlace(asset.scale);
+  
+          object.rotation = new BABYLON.Vector3(
+            asset.direction.x,
+            asset.direction.y,
+            asset.direction.z
+          );
+  
+          object.position = new BABYLON.Vector3(
+            asset.spawn.x,
+            asset.spawn.y,
+            asset.spawn.z
+          );
+  
+          if (fullAsset.type == 'movable') {
+            let box = object.getHierarchyBoundingVectors();
+  
+            object.ellipsoidOffset = new BABYLON.Vector3(
+              0,
+              -(box.max.y - box.min.y),
+              0
+            );
+  
+            const dsm = new BABYLON.DeviceSourceManager(scene.getEngine());
+  
+            var moving = false;
+  
+            dsm.onDeviceConnectedObservable.add((eventData) => {
+              if (eventData.deviceType === BABYLON.DeviceType.Keyboard) {
+                const keyboard = dsm.getDeviceSource(BABYLON.DeviceType.Keyboard);
+  
+                let delta = 0;
+                const linearSpeed = 600;
+                const angularSpeed = 5;
+                const translation = new BABYLON.Vector3(0, 0, 0);
+                const rotation = new BABYLON.Vector3(0, 0, 0);
+  
+                scene.beforeRender = () => {
+                  const w = keyboard?.getInput(49);
+                  const a = keyboard?.getInput(51);
+                  const d = keyboard?.getInput(50);
+                  const y = keyboard?.getInput(52);
+                  const shift = keyboard?.getInput(57);
+                  const shift2 = keyboard?.getInput(48);
+  
+                  object.locallyTranslate(translation);
+  
+                  delta = scene.deltaTime ? scene.deltaTime / 1000 : 0;
+                  translation.set(0, 0, 0);
+                  rotation.set(0, 0, 0);
+  
+                  if (w === 1) {
+                    if (shift) {
+                      translation.z = linearSpeed * delta;
+                    } else {
+                      translation.z = -linearSpeed * delta;
+                    }
                   }
-                }
-                if (d === 1) {
-                  if (shift) {
-                    rotation.y = angularSpeed * delta;
-                  } else {
-                    rotation.y = -angularSpeed * delta;
+                  if (d === 1) {
+                    if (shift) {
+                      rotation.y = angularSpeed * delta;
+                    } else {
+                      rotation.y = -angularSpeed * delta;
+                    }
                   }
-                }
-
-                if (a === 1) {
-                  if (shift) {
-                    rotation.x -= 0.05;
-                  } else {
-                    rotation.x += 0.05;
+  
+                  if (a === 1) {
+                    if (shift) {
+                      rotation.x -= 0.05;
+                    } else {
+                      rotation.x += 0.05;
+                    }
                   }
-                }
-
-                object.rotation.y += rotation.y;
-                object.rotation.x += rotation.x;
-                object.rotation.z += rotation.z;
-
-                if (object.intersectsMesh(actor, false, true)) {
-                  if (!moving && shift) {
-                    moving = true;
-                    actor.setParent(object, true, true);
-                    cc.setAvatar(object);
-
-                    cc.setGravity(1);
-                  } else if (moving && shift2) {
-                    object.removeChild(actor, true);
-                    moving = false;
-                    cc.setAvatar(actor);
-                    cc.setActionMap(agMap as any);
-
-                    cc.setMode(0);
-
-                    cc.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
-
-                    cc.setNoFirstPerson(false);
-                    cc.setStepOffset(0.4);
-                    cc.setSlopeLimit(30, 60);
-                    cc.setWalkSpeed(7.5);
-                    cc.setTurnSpeed(20);
-                    cc.setJumpSpeed(20);
-                    cc.setRunSpeed(30);
-                    cc.setGravity(50);
+  
+                  object.rotation.y += rotation.y;
+                  object.rotation.x += rotation.x;
+                  object.rotation.z += rotation.z;
+  
+                  if (object.intersectsMesh(actor, false, true)) {
+                    if (!moving && shift) {
+                      moving = true;
+                      actor.setParent(object, true, true);
+                      cc.setAvatar(object);
+  
+                      cc.setGravity(1);
+                    } else if (moving && shift2) {
+                      object.removeChild(actor, true);
+                      moving = false;
+                      cc.setAvatar(actor);
+                      cc.setActionMap(agMap as any);
+  
+                      cc.setMode(0);
+  
+                      cc.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
+  
+                      cc.setNoFirstPerson(false);
+                      cc.setStepOffset(0.4);
+                      cc.setSlopeLimit(30, 60);
+                      cc.setWalkSpeed(7.5);
+                      cc.setTurnSpeed(20);
+                      cc.setJumpSpeed(20);
+                      cc.setRunSpeed(30);
+                      cc.setGravity(50);
+                    }
                   }
-                }
-
-                // camera.rotation.y += rotation.y;
-                // camera.rotation.x += rotation.x;
-                // camera.rotation.z += rotation.z;
-
-                // camera.setPosition(camera.position.addInPlace(translation))
-                // } else {
-                //   // actor3.removeChild(actor);
-                // }
-
-                object.locallyTranslate(translation);
-
-                // if (y === 1) {
-                //   if (shift){
-                //     actor3.rotation.y -= 0.075
-                //     return
-                //   }
-                //   actor3.rotation.y += 0.075;
-                // }
-              };
-
-              // var actionParameter = { trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: actor3 };
-
-              //   actor.actionManager?.registerAction(new BABYLON.ExecuteCodeAction(actionParameter, function(event: BABYLON.ActionEvent)
-              //   {
-              //       console.log("Hit!");
-              //       actor.position.y = actor.position.y
-              //   }));
-            }
-          });
+  
+                  // camera.rotation.y += rotation.y;
+                  // camera.rotation.x += rotation.x;
+                  // camera.rotation.z += rotation.z;
+  
+                  // camera.setPosition(camera.position.addInPlace(translation))
+                  // } else {
+                  //   // actor3.removeChild(actor);
+                  // }
+  
+                  object.locallyTranslate(translation);
+  
+                  // if (y === 1) {
+                  //   if (shift){
+                  //     actor3.rotation.y -= 0.075
+                  //     return
+                  //   }
+                  //   actor3.rotation.y += 0.075;
+                  // }
+                };
+  
+                // var actionParameter = { trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: actor3 };
+  
+                //   actor.actionManager?.registerAction(new BABYLON.ExecuteCodeAction(actionParameter, function(event: BABYLON.ActionEvent)
+                //   {
+                //       console.log("Hit!");
+                //       actor.position.y = actor.position.y
+                //   }));
+              }
+            });
+          }
         }
       })
     );

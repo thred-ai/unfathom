@@ -141,6 +141,7 @@ import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { AssetModuleComponent } from './asset-module/asset-module.component';
+import { AssetsModuleComponent } from './assets-module/assets-module.component';
 
 @NgModule({
   declarations: [
@@ -202,6 +203,7 @@ import { AssetModuleComponent } from './asset-module/asset-module.component';
     ProtoTesterComponent,
     SearchBarComponent,
     AssetModuleComponent,
+    AssetsModuleComponent,
   ],
   imports: [
     CommonModule,

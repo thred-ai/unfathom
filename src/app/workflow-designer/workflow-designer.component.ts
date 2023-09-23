@@ -35,6 +35,8 @@ import { World } from '../models/workflow/world.model';
 import { Character } from '../models/workflow/character.model';
 import { CharacterModuleComponent } from '../character-module/character-module.component';
 import { AssetModuleComponent } from '../asset-module/asset-module.component';
+import { ModelAsset } from '../models/workflow/model-asset.model';
+import { AssetsModuleComponent } from '../assets-module/assets-module.component';
 
 @AutoUnsubscribe
 @Component({
@@ -49,6 +51,7 @@ export class WorkflowDesignerComponent
 
   set activeWorkflow(workflow: Executable) {
     this.characters = Object.values(workflow.characters) ?? [];
+    this.assets = Object.values(workflow.assets) ?? [];
     this.workflow = workflow;
   }
 
@@ -58,6 +61,9 @@ export class WorkflowDesignerComponent
 
   characters: Character[] = [];
   characterIds: string[] = [];
+
+  assets: ModelAsset[] = [];
+  assetIds: string[] = [];
 
   @Input() set models(val: SceneDefinition[]) {
     val.forEach((v) => {
@@ -111,7 +117,7 @@ export class WorkflowDesignerComponent
       'John',
       undefined,
       '',
-      '/assets/profile.png',
+      '/assets/default_head.png',
       '',
       'hero'
     )
@@ -189,6 +195,89 @@ export class WorkflowDesignerComponent
     });
   }
 
+
+  editAsset(
+    asset: ModelAsset = new ModelAsset(
+      'New Asset',
+      this.loadService.newUtilID,
+      undefined,
+      undefined,
+      'static'
+    )
+  ) {
+    let ref = this.dialog.open(AssetsModuleComponent, {
+      width: 'calc(var(--vh, 1vh) * 70)',
+      maxWidth: '650px',
+      maxHeight: 'calc(var(--vh, 1vh) * 100)',
+      panelClass: 'app-full-bleed-dialog',
+
+      data: {
+        asset,
+        workflow: this.workflow,
+      },
+    });
+
+    ref.afterClosed().subscribe(async (val) => {
+      if (val && val != '' && val != '0' && val.workflow) {
+        let asset = val.asset as ModelAsset;
+
+        if (val.action == 'delete') {
+          // character.status = 1;
+          return;
+        }
+
+        this.workflow!.assets[asset.id] = asset;
+
+        this.projectService.workflow.next(this.workflow);
+
+        this.workflowChanged.emit(this.workflow);
+      }
+    });
+  }
+
+  editAssetDetails(asset: string) {
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    let details = scene.assets.find((a) => a.id == asset);
+    let c = this.workflow?.assets[asset];
+
+    let ref = this.dialog.open(AssetModuleComponent, {
+      width: 'calc(var(--vh, 1vh) * 70)',
+      maxWidth: '650px',
+      maxHeight: 'calc(var(--vh, 1vh) * 100)',
+      panelClass: 'app-full-bleed-dialog',
+
+      data: {
+        asset: c,
+        assetDetails: details,
+        workflow: this.workflow,
+      },
+    });
+
+    ref.afterClosed().subscribe(async (val) => {
+      if (val && val != '' && val != '0' && val.workflow) {
+        let asset = val.asset as ModelAsset;
+        let assetDetails = val.assetDetails as any;
+
+        if (val.action == 'delete') {
+          // character.status = 1;
+          return;
+        }
+
+        let index = scene.assets.findIndex((c) => c.id == asset.id);
+
+        if (index >= 0) {
+          scene!.assets[index] = assetDetails;
+          this.designerService.setScene(scene, scene.id);
+        }
+
+        this.projectService.workflow.next(this.workflow);
+
+        this.workflowChanged.emit(this.workflow);
+      }
+    });
+  }
+
   public ngOnInit() {
     this.designerService.initialized = false;
 
@@ -227,8 +316,11 @@ export class WorkflowDesignerComponent
 
       if (scene) {
         this.characterIds = scene?.characters.map((c) => c.id) ?? [];
+        this.assetIds = scene?.assets.map(a => a.id) ?? []
+        console.log(this.assetIds)
       } else {
         this.characterIds = [];
+        this.assetIds = []
       }
     });
   }
