@@ -440,8 +440,12 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
     actor.position.z = character.spawn.z; //world.size / 5 - 400;
     actor.position.x = character.spawn.x; //world.size / 10 + 900;
-    
-    
+
+    actor.rotation = new BABYLON.Vector3(
+      this.toRadians(character.direction.x),
+      this.toRadians(character.direction.y),
+      this.toRadians(character.direction.z)
+    );
 
     let animationsDir = '/assets/animations/';
 
@@ -653,9 +657,9 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
           );
 
           actor2.rotation = new BABYLON.Vector3(
-            c.direction.x,
-            c.direction.y,
-            c.direction.z
+            this.toRadians(c.direction.x),
+            this.toRadians(c.direction.y),
+            this.toRadians(c.direction.z)
           );
         }
       })
@@ -818,4 +822,8 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     this.engine?.dispose();
     this.engine = undefined;
   }
+
+  toRadians = (degrees: number) => {
+    return ((degrees * Math.PI) / 180);
+  };
 }
