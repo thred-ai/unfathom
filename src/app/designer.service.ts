@@ -87,6 +87,13 @@ export class DesignerService {
 
     if (container) {
 
+      if (this.graph){
+        this.graph.clearCells()
+        this.graph.cleanSelection()
+        this.graph.resetSelection()
+        this.graph = undefined
+      }
+
       this.graph = new Graph({
         container: document.getElementById('container')!,
         autoResize: true,
@@ -315,7 +322,7 @@ export class DesignerService {
     console.log(cell);
 
     let same = this.projectService.workflow.value?.sceneLayout.cells.find(
-      (c) => c.data.ngArguments.scene.id == cell.data?.ngArguments?.scene?.id
+      (c) => c.data?.ngArguments.scene.id == cell.data?.ngArguments?.scene?.id
     );
 
     if ((!options['static'] || !options) && (checkSame ? same : true)) {
