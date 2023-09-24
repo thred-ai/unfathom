@@ -338,10 +338,11 @@
                           <app-search-bar
                             [placeholder]="'Search Characters'"
                             [workflow]="workflow"
-                            [characterIds]="
+                            [sceneData]="
                               selectedFile.data.ngArguments.scene.characters ??
                               []
                             "
+                            [searchData]="workflow.characters"
                             (characterChanged)="addCharactersToScene($event)"
                           >
                           </app-search-bar>
@@ -420,10 +421,11 @@
                           <app-search-bar
                             [placeholder]="'Search 3D Assets'"
                             [workflow]="workflow"
-                            [characterIds]="
+                            [sceneData]="
                               selectedFile.data.ngArguments.scene.assets ?? []
                             "
-                            (characterChanged)="addCharactersToScene($event)"
+                            [searchData]="workflow.assets"
+                            (characterChanged)="addAssetToScene($event)"
                           >
                           </app-search-bar>
                         </div>
@@ -610,7 +612,7 @@
                       </mat-icon>
                     </div>
 
-                    <div class="w-100 row rows-2 justify-content-start g-0">
+                    <div class="w-100 row row-cols-2 justify-content-start g-0">
                       <div
                         *ngFor="let asset of assets ?? []; index as i"
                         class="col p-1 position-relative"

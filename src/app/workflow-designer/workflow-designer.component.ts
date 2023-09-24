@@ -169,7 +169,7 @@ export class WorkflowDesignerComponent
         character: c,
         characterDetails: details,
         workflow: this.workflow,
-        type: 'character'
+        type: 'character',
       },
     });
 
@@ -196,7 +196,6 @@ export class WorkflowDesignerComponent
       }
     });
   }
-
 
   editAsset(
     asset: ModelAsset = new ModelAsset(
@@ -318,11 +317,11 @@ export class WorkflowDesignerComponent
 
       if (scene) {
         this.characterIds = scene?.characters.map((c) => c.id) ?? [];
-        this.assetIds = scene?.assets.map(a => a.id) ?? []
-        console.log(this.assetIds)
+        this.assetIds = scene?.assets.map((a) => a.id) ?? [];
+        console.log(this.assetIds);
       } else {
         this.characterIds = [];
-        this.assetIds = []
+        this.assetIds = [];
       }
     });
   }
@@ -353,6 +352,36 @@ export class WorkflowDesignerComponent
     this.characterIds = scene.characters.map((c) => c.id);
 
     console.log(scene.characters);
+
+    this.designerService.setScene(scene, scene.id);
+  }
+
+  addAssetToScene(e: string) {
+    console.log('oi');
+    let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+    let same = scene.assets.find((s) => s.id == e);
+
+    if (this.workflow!.assets[e]) {
+      scene.assets.push({
+        id: e,
+        spawn: {
+          x: same?.spawn.x ?? 0,
+          y: same?.spawn.y ?? 1000,
+          z: same?.spawn.z ?? 0,
+        },
+        direction: {
+          x: same?.direction.x ?? 0,
+          y: same?.direction.y ?? 0,
+          z: same?.direction.z ?? 0,
+        },
+        scale: same?.scale ?? 1,
+      });
+    }
+
+    this.assetIds = scene.assets.map((c) => c.id);
+
+    console.log(scene.assets);
 
     this.designerService.setScene(scene, scene.id);
   }

@@ -11,6 +11,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { Dict, LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
+import { Character } from '../models/workflow/character.model';
 
 @Component({
   selector: 'app-search-bar',
@@ -18,8 +19,9 @@ import { Scene } from '../models/workflow/scene.model';
   styleUrls: ['./search-bar.component.scss'],
 })
 export class SearchBarComponent implements OnInit {
-  @Input() workflow?: Executable;
-  @Input() characterIds: any[] = [];
+  @Input() searchData: Dict<any> = {};
+  @Input() sceneData: any[] = [];
+
   characters: Dict<string> = {};
 
   isItemAvailable = false;
@@ -41,13 +43,11 @@ export class SearchBarComponent implements OnInit {
   }
 
   searchCharacters(text: string) {
-    if (this.workflow?.characters) {
-      this.items = Object.values(this.workflow.characters).filter((c) =>
-        c.name.toLowerCase().includes(text.toLowerCase())
-      );
-      if (this.items.length == 0) {
-        this.isItemAvailable = false;
-      }
+    this.items = Object.values(this.searchData).filter((c) =>
+      c.name.toLowerCase().includes(text.toLowerCase())
+    );
+    if (this.items.length == 0) {
+      this.isItemAvailable = false;
     }
   }
 
@@ -57,7 +57,7 @@ export class SearchBarComponent implements OnInit {
   selectCharacter(value: any) {
     this.characterChanged.emit(value.id);
     setTimeout(() => {
-      this.reloadCharacters()
+      this.reloadCharacters();
     }, 50);
   }
 
@@ -68,12 +68,11 @@ export class SearchBarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.characterIds);
     this.reloadCharacters();
   }
 
   reloadCharacters() {
-    this.characterIds.forEach((c) => {
+    this.sceneData.forEach((c) => {
       this.characters[c.id] = c.id;
     });
   }
