@@ -62,7 +62,6 @@ export class WorkflowComponent implements OnInit {
   mode = 'sidebar';
 
   selectedIcon: string = 'design';
-  openWorldScene?: World;
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -193,9 +192,9 @@ export class WorkflowComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private httpClient: HttpClient,
-    private dialog: MatDialog,
     private themeService: ThemeService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private dialog: MatDialog
   ) {}
 
   clientId!: string;
@@ -213,13 +212,6 @@ export class WorkflowComponent implements OnInit {
       this.loading = l;
     });
 
-    
-    // this.designerService?.openWorld.pipe(skip(1)).subscribe((world) => {
-    //     if (!this.openWorldScene){
-    //       this.openPrototype()
-    //     }
-    //     this.openWorldScene = world;
-    // });
 
     this.designerService.toolboxConfiguration.subscribe((s) => {
       this.models = s ?? [];
@@ -228,10 +220,10 @@ export class WorkflowComponent implements OnInit {
     this.designerService.openStep.subscribe((step) => {
       if (step) {
         this.openStep = step;
-        let scene = step.data.ngArguments.scene
-        if (this.openWorldScene && this.openWorldScene?.id != scene.id){
-          this.loadService.selectWorld(scene)
-        }
+        // let scene = step.data.ngArguments.scene
+        // if (this.openWorldScene && this.openWorldScene?.id != scene.id){
+        //   this.loadService.selectWorld(scene)
+        // }
       }
 
       this.updateRoute(step?.id);
@@ -240,7 +232,7 @@ export class WorkflowComponent implements OnInit {
     this.projectService.workflow.subscribe(async (w) => {
       if (w && this.workflow){
         if (this.workflow.id != w.id){
-          this.dialog.closeAll()
+          // this.dialog.closeAll()
         }
       }
 
@@ -373,31 +365,7 @@ export class WorkflowComponent implements OnInit {
     }
   }
 
-  openPrototype(mode: string = 'window') {
-    if (mode == 'window') {
-      let ref = this.dialog.open(ProtoTesterComponent, {
-        panelClass: 'prototype-dialog',
-        hasBackdrop: false,
-        data: {
-          user: this.dev,
-          workflowComponent: this,
-        },
-      });
 
-      ref.afterClosed().subscribe(async (val) => {
-        if (val && val != '' && val != '0') {
-          // let img = val.img as File;
-          // await this.loadService.saveUserInfo(
-          //   val.dev,
-          //   img,
-          //   img != undefined,
-          //   (result) => {}
-          // );
-        }
-      });
-    } else {
-    }
-  }
 
   async fillExecutable(executable: Executable) {
     const exec = executable;

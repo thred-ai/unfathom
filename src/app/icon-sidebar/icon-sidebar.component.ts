@@ -51,7 +51,6 @@ export class IconSidebarComponent implements OnInit {
 
   @Output() publish = new EventEmitter<Executable>();
   @Output() selectedFileChanged = new EventEmitter<string>();
-  @Output() openPrototype = new EventEmitter<any>();
 
   selectedStep?: Cell.Properties;
 
@@ -75,7 +74,7 @@ export class IconSidebarComponent implements OnInit {
   }
 
   selectWorld() {
-    this.openPrototype.emit()
+    this.loadService.openPrototype()
   }
 
 

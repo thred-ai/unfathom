@@ -5,6 +5,7 @@ import { Executable } from '../models/workflow/executable.model';
 import { ProjectService } from '../project.service';
 import { Character } from '../models/workflow/character.model';
 import { LoadService } from '../load.service';
+import { WorkflowDesignerComponent } from '../workflow-designer/workflow-designer.component';
 
 @Component({
   selector: 'app-scene',
@@ -32,9 +33,7 @@ export class SceneComponent implements OnInit {
   }
 
   selectWorld(){
-    if (this.scene){
-      this.loadService.selectWorld(this.scene)
-    }
+      this.loadService.openPrototype()
   }
 
   @Input() scene?: Scene;
@@ -46,6 +45,6 @@ export class SceneComponent implements OnInit {
   constructor(
     private designService: DesignerService,
     private loadService: LoadService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
   ) {}
 }

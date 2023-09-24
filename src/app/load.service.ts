@@ -80,18 +80,15 @@ export class LoadService {
     //   )
     // );
 
-    console.log(scene)
+    console.log(scene);
 
     if (this.projectService.workflow.value && scene) {
       // var saved = false
-
       // this.designerService.openWorld.next(scene.world);
-
       // this.getWorld(
       //   this.projectService.workflow.value.id,
       //   scene.id,
       //   async (world) => {
-
       //     // if (!world?.assets || world.assets.length == 0) {
       //     //   world?.assets.push(
       //     //     {
@@ -121,7 +118,6 @@ export class LoadService {
       //     //   );
       //     //   this.loadService.saveWorld(world!, this.workflow!.id);
       //     // }
-
       //     // if (!scene?.characters || scene.characters.length == 0) {
       //     //   scene?.characters.push({
       //     //     data: new Character(
@@ -139,9 +135,7 @@ export class LoadService {
       //     //   });
       //     //   this.loadService.saveWorld(world!, this.workflow!.id);
       //     // }
-
       //     var w = world;
-
       //     // if (w && !saved) {
       //     //   saved = true
       //     //   let clone = JSON.parse(JSON.stringify(w));
@@ -158,10 +152,8 @@ export class LoadService {
       //     //     undefined,
       //     //     clone.ground.liquid.texture
       //     //   );
-
       //     //   await this.saveWorld(w!, this.projectService.workflow.value!.id);
       //     // }
-
       //     // if (!w) {
       //     //   console.log(scene)
       //     //   w = new World(
@@ -189,14 +181,10 @@ export class LoadService {
       //     //     this.projectService.workflow.value!.id
       //     //   );
       //     // }
-
       //     // var s = scene
       //     // var x = this.projectService.workflow.value
-
       //     // var same = x?.sceneLayout.cells.findIndex(d => d.data?.ngArguments?.scene.id == s.id)
-
       //     // console.log(same)
-
       //     // if (x && same != undefined && same > -1 && w){
       //     //   var sameS = x.sceneLayout.cells[same].data?.ngArguments?.scene as Scene
       //     //   if (sameS){
@@ -205,12 +193,10 @@ export class LoadService {
       //     //     await this.saveLayout(x, '123')
       //     //   }
       //     // }
-
       //     this.designerService.openWorld.next(w);
       //   }
       // );
-    }
-    else{
+    } else {
       // this.designerService.openWorld.next(undefined);
     }
   }
@@ -242,6 +228,13 @@ export class LoadService {
     return confirm('Are you sure you want to delete this component?');
   }
 
+  openPrototype() {
+    console.log(this.loadedUser.value)
+    if (this.loadedUser.value) {
+      this.designerService.openPrototype(this.loadedUser.value);
+    }
+  }
+
   async saveWorld(world: World, id: string) {
     try {
       await this.db
@@ -261,14 +254,16 @@ export class LoadService {
 
   getWorld(id: string, worldId: string, callback: (world?: World) => any) {
     let q = this.db.doc(`Workflows/${id}/Worlds/${worldId}`);
-    q.valueChanges().pipe(take(1)).subscribe((docs2) => {
-      let docs_2 = this.syncWorld(docs2 as World);
-      if (docs_2) {
-        callback(docs_2);
-      } else {
-        callback(undefined);
-      }
-    });
+    q.valueChanges()
+      .pipe(take(1))
+      .subscribe((docs2) => {
+        let docs_2 = this.syncWorld(docs2 as World);
+        if (docs_2) {
+          callback(docs_2);
+        } else {
+          callback(undefined);
+        }
+      });
   }
 
   finishSignUp(
@@ -421,7 +416,9 @@ export class LoadService {
 
   async uploadCharacterImg(file: File, id: string, characterId: string) {
     try {
-      let ref = this.storage.ref(`workflows/${id}/characters/${characterId}/${characterId}.png`);
+      let ref = this.storage.ref(
+        `workflows/${id}/characters/${characterId}/${characterId}.png`
+      );
       await ref.put(file, { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
 
@@ -434,8 +431,10 @@ export class LoadService {
 
   async uploadAssetImg(file: string, id: string, assetId: string) {
     try {
-      let ref = this.storage.ref(`workflows/${id}/assets/${assetId}/${assetId}.png`);
-      await ref.putString(file, "data_url", { cacheControl: 'no-cache' });
+      let ref = this.storage.ref(
+        `workflows/${id}/assets/${assetId}/${assetId}.png`
+      );
+      await ref.putString(file, 'data_url', { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
 
       return displayUrl;
@@ -446,9 +445,10 @@ export class LoadService {
   }
 
   async uploadCharacterAsset(file: File, id: string, characterId: string) {
-
     try {
-      let ref = this.storage.ref(`workflows/${id}/characters/${characterId}/${characterId}.glb`);
+      let ref = this.storage.ref(
+        `workflows/${id}/characters/${characterId}/${characterId}.glb`
+      );
       await ref.put(file, { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
 
@@ -1507,5 +1507,4 @@ export class LoadService {
       return undefined;
     }
   }
-
 }

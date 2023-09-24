@@ -14,6 +14,9 @@ import { History } from '@antv/x6-plugin-history';
 import { ThemeService } from './theme.service';
 import { World } from './models/workflow/world.model';
 import { ProjectService } from './project.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
+import { Developer } from './models/user/developer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +25,8 @@ export class DesignerService {
   constructor(
     private db: AngularFirestore,
     private themeService: ThemeService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private dialog: MatDialog
   ) {}
 
   toolboxConfiguration = new BehaviorSubject<SceneDefinition[]>([]);
@@ -40,6 +44,7 @@ export class DesignerService {
   initialized = false;
 
   openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
+  openWorld = new BehaviorSubject<World | undefined>(undefined);
 
   // this.toolboxConfiguration.next([new SceneDefinition("Scene", "", "scene")])
 
@@ -389,5 +394,38 @@ export class DesignerService {
 
   redo() {
     this.graph?.redo();
+  }
+
+
+  openRef?: MatDialogRef<ProtoTesterComponent, any>
+
+  openPrototype(dev: Developer, mode: string = 'window') {
+    if (!this.openRef){
+      if (mode == 'window') {
+        this.openRef = this.dialog.open(ProtoTesterComponent, {
+          panelClass: 'prototype-dialog',
+          hasBackdrop: false,
+          data: {
+            user: dev,
+            workflowComponent: this,
+          },
+        });
+  
+        this.openRef.afterClosed().subscribe(async (val) => {
+          if (val && val != '' && val != '0') {
+            // let img = val.img as File;
+            // await this.loadService.saveUserInfo(
+            //   val.dev,
+            //   img,
+            //   img != undefined,
+            //   (result) => {}
+            // );
+          }
+          this.openRef = undefined
+        });
+      } else {
+      }
+    }
+   
   }
 }

@@ -8,7 +8,6 @@
     (openProj)="setWorkflow($event)"
     (publish)="publish()"
     (selectedFileChanged)="selectFile($event, selectedIcon)"
-    (openPrototype)="openPrototype()"
   ></app-icon-sidebar>
   <div
     class="w-100 h-100 d-flex justify-content-between align-content-start"
@@ -37,7 +36,6 @@
             (detailsChanged)="save(2, false, $event)"
             (workflowChanged)="save(1, false, $event)"
             (selectedFileChanged)="selectFile($event, selectedIcon)"
-            (openPrototype)="openPrototype()"
           >
           </verticalai-workflow-designer>
         </ng-container>
