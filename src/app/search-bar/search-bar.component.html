@@ -12,7 +12,7 @@
   *ngIf="isItemAvailable"
 >
   <ion-item
-    class="custom-item{{ characters[item.id] ? '-disabled' : '' }}"
+    class="custom-item p{{ characters[item.id] ? '-disabled' : '' }}"
     *ngFor="let item of items"
     (click)="selectCharacter(item); search.value = ''; isItemAvailable = false"
   >

@@ -386,13 +386,12 @@ export class WorkflowDesignerComponent
     this.designerService.setScene(scene, scene.id);
   }
 
-  removeCharacter(id: string) {
+  removeCharacter(index: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-    let sameIndex = scene.characters.findIndex((s) => s.id == id);
 
-    if (sameIndex >= 0) {
-      scene.characters.splice(sameIndex, 1);
+    if (index >= 0) {
+      scene.characters.splice(index, 1);
     }
     this.characterIds = scene.characters.map((c) => c.id);
     this.designerService.setScene(scene, scene.id);
@@ -406,13 +405,11 @@ export class WorkflowDesignerComponent
     this.workflowChanged.emit(this.workflow);
   }
 
-  removeAsset(id: string) {
+  removeAsset(index: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-    let sameIndex = scene.assets.findIndex((s) => s.id == id);
-
-    if (sameIndex >= 0) {
-      scene.assets.splice(sameIndex, 1);
+    if (index >= 0) {
+      scene.assets.splice(index, 1);
     }
     this.characterIds = scene.assets.map((c) => c.id);
     this.designerService.setScene(scene, scene.id);

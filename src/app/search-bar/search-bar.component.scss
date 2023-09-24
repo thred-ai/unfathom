@@ -79,12 +79,12 @@ ion-item.custom-item {
   cursor: pointer;
 }
 
-ion-item.custom-item-disabled {
-    // --background: var(--primaryBackgroundColor) !important;
-    // opacity: 0.5;
-    // color: var(--primaryTextColor) !important;
-    // pointer-events: none;
-  }
+// ion-item.custom-item-disabled {
+//     // --background: var(--primaryBackgroundColor) !important;
+//     // opacity: 0.5;
+//     // color: var(--primaryTextColor) !important;
+//     // pointer-events: none;
+//   }
 
 :host::ng-deep .ion-padding {
   padding-right: 0px;
