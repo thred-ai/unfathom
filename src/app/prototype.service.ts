@@ -489,7 +489,7 @@ export class PrototypeService {
             asset.spawn.z
           );
 
-          if (fullAsset.type == 'movable') {
+          if (asset.movement.canMount) {
             let box = object.getHierarchyBoundingVectors();
 
             object.ellipsoidOffset = new BABYLON.Vector3(
@@ -500,8 +500,6 @@ export class PrototypeService {
 
             const dsm = new BABYLON.DeviceSourceManager(scene.getEngine());
 
-            var moving = false;
-
             dsm.onDeviceConnectedObservable.add((eventData) => {
               if (eventData.deviceType === BABYLON.DeviceType.Keyboard) {
                 const keyboard = dsm.getDeviceSource(
@@ -509,7 +507,7 @@ export class PrototypeService {
                 );
 
                 let delta = 0;
-                const linearSpeed = 600;
+                const linearSpeed = asset.movement.speed ?? 1;
                 const angularSpeed = 5;
                 const translation = new BABYLON.Vector3(0, 0, 0);
                 const rotation = new BABYLON.Vector3(0, 0, 0);
@@ -814,7 +812,7 @@ export class PrototypeService {
     );
   }
 
-  mountAsset(id: string) {
+  mountAsset(id: string, gravity: number) {
     let scene = this.engine?.scenes[0];
     if (scene && this.selectedCharacter) {
       let assetMesh = scene.getMeshById(id) as BABYLON.Mesh;
@@ -827,7 +825,7 @@ export class PrototypeService {
         actorMesh.setEnabled(false);
         this.cc?.setAvatar(assetMesh);
 
-        this.cc?.setGravity(1);
+        this.cc?.setGravity(gravity);
       }
     }
   }

@@ -236,10 +236,10 @@ export class WorkflowDesignerComponent
     });
   }
 
-  editAssetDetails(asset: string) {
+  editAssetDetails(asset: string, assetIndex: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-    let details = scene.assets.find((a) => a.id == asset);
+    let details = scene.assets[assetIndex]
     let c = this.workflow?.assets[asset];
 
     let ref = this.dialog.open(AssetModuleComponent, {
@@ -265,10 +265,8 @@ export class WorkflowDesignerComponent
           return;
         }
 
-        let index = scene.assets.findIndex((c) => c.id == asset.id);
-
-        if (index >= 0) {
-          scene!.assets[index] = assetDetails;
+        if (assetIndex >= 0) {
+          scene!.assets[assetIndex] = assetDetails;
           this.designerService.setScene(scene, scene.id);
         }
 

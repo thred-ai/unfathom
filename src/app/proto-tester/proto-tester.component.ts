@@ -99,7 +99,7 @@ export class ProtoTesterComponent implements OnInit {
 
   mountAsset(id: string){
     this.mountedAsset = id
-    this.prototypeService.mountAsset(id)
+    this.prototypeService.mountAsset(id, 0)
   }
 
   dismountAsset(id: string){
