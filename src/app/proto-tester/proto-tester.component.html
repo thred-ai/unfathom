@@ -112,23 +112,22 @@
   </ng-template>
 </div>
 
-
 <mat-menu #mainMenu="matMenu" class="secondary-background-dark">
-    <div style="min-width: 250px; max-height: 700px">
-      <button mat-menu-item class="proj toolButton" (click)="restart()">
-        <mat-icon
-          class="my-auto me-2 d-flex justify-content-center align-items-center"
-          style="font-size: 16px"
-          >restart_alt</mat-icon
-        >
-        Reload World
-      </button>
-  
+  <div style="min-width: 250px; max-height: 700px" *ngIf="project">
+    <button mat-menu-item class="proj toolButton" (click)="restart()">
+      <mat-icon
+        class="my-auto me-2 d-flex justify-content-center align-items-center"
+        style="font-size: 16px"
+        >restart_alt</mat-icon
+      >
+      Reload World
+    </button>
+
+    <ng-container *ngIf="!mountedAsset; else dismount">
       <button
         mat-menu-item
         class="proj toolButton"
-        [disabled]="(scene?.assets?.length ?? 0) == 0"
-        
+        [disabled]="mountableAssets.length == 0"
         [matMenuTriggerFor]="projects"
       >
         <mat-icon
@@ -136,23 +135,31 @@
           style="font-size: 16px"
           >sports_esports</mat-icon
         >
-        {{(scene?.assets?.length ?? 0) > 0 ? 'Mount Asset' : 'No Mountable Assets'}}
+        {{ mountableAssets.length > 0 ? "Mount Asset" : "No Mountable Assets" }}
       </button>
-  
-      <!-- <button
-        class="border-table-top-dark proj toolButton"
-        mat-menu-item
-        (click)="saveLayout()"
-      >
+    </ng-container>
+
+    <ng-template #dismount>
+      <button mat-menu-item class="proj toolButton" (click)="(null)" *ngIf="mountedAsset">
         <mat-icon
           class="my-auto me-2 d-flex justify-content-center align-items-center"
           style="font-size: 16px"
-          >cloud_upload</mat-icon
+          >man</mat-icon
         >
-        Save
-      </button> -->
-  
-      <!-- <button mat-menu-item class="proj toolButton" (click)="openSettings()">
+        Dismount "{{project.assets[mountedAsset].name}}"
+      </button>
+    </ng-template>
+
+    <button class="proj toolButton" mat-menu-item [matMenuTriggerFor]="goto">
+      <mat-icon
+        class="my-auto me-2 d-flex justify-content-center align-items-center"
+        style="font-size: 16px"
+        >travel_explore</mat-icon
+      >
+      Go to
+    </button>
+
+    <!-- <button mat-menu-item class="proj toolButton" (click)="openSettings()">
         <mat-icon
           class="my-auto me-2 d-flex justify-content-center align-items-center"
           style="font-size: 16px"
@@ -160,33 +167,32 @@
         >
         Settings...
       </button> -->
-    </div>
-  </mat-menu>
-  
-  <mat-menu #projects="matMenu" class="secondary-background-dark">
-    <ng-container *ngIf="project && scene && scene.assets">
+  </div>
+</mat-menu>
+
+<mat-menu #projects="matMenu" class="secondary-background-dark">
+  <ng-container *ngIf="project && scene && scene.assets">
+    <div
+      class="secondary-background-dark text-start rounded d-flex justify-content-center align-items-center flex-column"
+      id="profile-menu"
+      style="min-width: 350px; max-height: 700px"
+    >
+      <div class="big-design-header p-3 pb-3">
+        <b class="fw-bold primary-text-dark">Assets</b>
+      </div>
+
       <div
-        class="secondary-background-dark text-start rounded d-flex justify-content-center align-items-center flex-column"
-        id="profile-menu"
-        style="min-width: 350px; max-height: 700px"
+        class="w-100 h-100"
+        style="overflow-y: scroll"
+        *ngIf="mountableAssets.length > 0"
       >
-        <div class="big-design-header p-3 pb-3">
-          <b class="fw-bold primary-text-dark">Assets</b>
- 
-        </div>
-  
         <div
-          class="w-100 h-100"
-          style="overflow-y: scroll"
-          *ngIf="scene.assets.length > 0;"
+          *ngFor="let n of mountableAssets ?? []"
+          class="d-flex justify-content-between align-items-center"
+          (click)="(null)"
+          role="button"
         >
-          <div
-            *ngFor="let n of scene.assets ?? []"
-            class="d-flex justify-content-between align-items-center"
-            (click)="null"
-            role="button"
-          >
-            <!-- <div class="d-flex justify-content-between align-items-center">
+          <!-- <div class="d-flex justify-content-between align-items-center">
               <div
                 class="bg-white rounded-icon shadow d-flex justify-content-center align-items-center"
                 style="
@@ -214,18 +220,87 @@
                 </div>
               </div>
             </div> -->
-  
-            <button mat-menu-item class="toolButton">
-              <img
-                class="rounded-icon me-4 border-table-dark"
-                style="object-fit: cover; height: 30px; aspect-ratio: 1"
-                [src]="project.assets[n.id].img"
-              />{{ project.assets[n.id].name }}
-            </button>
-  
-            <!-- <mat-icon class="secondary-text"> chevron_right </mat-icon> -->
-          </div>
+
+          <button mat-menu-item class="toolButton">
+            <img
+              class="rounded-icon me-4 border-table-dark"
+              style="object-fit: cover; height: 30px; aspect-ratio: 1"
+              [src]="project.assets[n].img"
+            />{{ project.assets[n].name }}
+          </button>
+
+          <!-- <mat-icon class="secondary-text"> chevron_right </mat-icon> -->
         </div>
       </div>
-    </ng-container>
-  </mat-menu>
+    </div>
+  </ng-container>
+</mat-menu>
+
+<mat-menu #goto="matMenu" class="secondary-background-dark">
+  <ng-container *ngIf="project && scene && scene.assets && scene.characters">
+    <div
+      class="secondary-background-dark text-start rounded d-flex justify-content-center align-items-center flex-column"
+      id="profile-menu"
+      style="min-width: 350px; max-height: 700px"
+    >
+      <button class="proj toolButton border-table-bottom" mat-menu-item>
+        <mat-icon
+          class="my-auto me-2 d-flex justify-content-center align-items-center"
+          style="font-size: 16px"
+          >near_me</mat-icon
+        >
+        Custom Point
+      </button>
+
+      <div class="big-design-header p-3 pb-3">
+        <b class="fw-bold primary-text-dark">Characters</b>
+      </div>
+
+      <div
+        class="w-100 h-100"
+        style="overflow-y: scroll"
+        *ngIf="scene.characters.length > 0"
+      >
+        <div
+          *ngFor="let n of scene.characters ?? []"
+          class="d-flex justify-content-between align-items-center"
+          (click)="(null)"
+          role="button"
+        >
+          <button mat-menu-item class="toolButton">
+            <img
+              class="rounded-icon me-4 border-table-dark"
+              style="object-fit: cover; height: 30px; aspect-ratio: 1"
+              [src]="project.characters[n.id].img"
+            />{{ project.characters[n.id].name }}
+          </button>
+        </div>
+      </div>
+
+      <div class="big-design-header p-3 pb-3">
+        <b class="fw-bold primary-text-dark">Assets</b>
+      </div>
+
+      <div
+        class="w-100 h-100"
+        style="overflow-y: scroll"
+        *ngIf="scene.assets.length > 0"
+      >
+        <div
+          *ngFor="let n of scene.assets ?? []"
+          class="d-flex justify-content-between align-items-center"
+          (click)="(null)"
+          role="button"
+        >
+          <button mat-menu-item class="toolButton">
+            <img
+              class="rounded-icon me-4 border-table-dark"
+              style="object-fit: cover; height: 30px; aspect-ratio: 1"
+              [src]="project.assets[n.id].img"
+            />{{ project.assets[n.id].name }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</mat-menu>

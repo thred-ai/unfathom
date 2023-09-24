@@ -22,8 +22,9 @@ export class ProtoTesterComponent implements OnInit {
   project?: Executable;
   theme?: 'light' | 'dark' = 'light';
 
+  mountableAssets: string[] = [];
 
-  mountableAssets?: string[]
+  mountedAsset?: string
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -35,40 +36,40 @@ export class ProtoTesterComponent implements OnInit {
     private themeService: ThemeService
   ) {}
 
- visible = true
+  visible = true;
 
-  restart(){
-    this.visible = false
+  restart() {
+    this.visible = false;
     setTimeout(() => {
-      this.visible = true
-      this.cdr.detectChanges()
+      this.visible = true;
+      this.cdr.detectChanges();
     }, 5);
   }
 
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
-      console.log(w)
+      console.log(w);
       this.project = w;
-      this.cdr.detectChanges()
+      this.cdr.detectChanges();
     });
 
     this.designService.openStep.subscribe((s) => {
       this.scene = s?.data?.ngArguments?.scene as Scene;
       this.world = this.scene?.world;
-      //this.mountableAssets = //this.scene.assets.filter(a => this.project?.assets[a.id]. )
-      this.restart()
-      console.log(this.scene)
+      this.mountableAssets = this.scene.assets
+        .filter((a) => a.movement.canMount)
+        .map((x) => x.id);
+      this.restart();
+      console.log(this.scene);
 
-      this.cdr.detectChanges()
+      this.cdr.detectChanges();
     });
-
 
     this.themeService.theme.subscribe((theme) => {
-      console.log(theme)
+      console.log(theme);
       this.theme = theme ?? 'light';
-      this.cdr.detectChanges()
+      this.cdr.detectChanges();
     });
-
 
     interact.default('.prototype-dialog').resizable({
       edges: { top: false, left: true, bottom: true, right: true },
@@ -88,7 +89,7 @@ export class ProtoTesterComponent implements OnInit {
 
           Object.assign(event.target.dataset, { x, y });
 
-          window.dispatchEvent(new Event("resize"))
+          window.dispatchEvent(new Event('resize'));
         },
       },
     });
