@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
+import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
 
 @Component({
   selector: 'app-assets-module',
@@ -51,6 +52,8 @@ export class AssetsModuleComponent implements OnInit {
     reader.readAsDataURL(blob);
   }
 
+  @ViewChild(ModelViewerComponent) modelViewer?: ModelViewerComponent;
+
   async save(action = 'save') {
 
     let asset = this.newAsset as File;
@@ -63,6 +66,22 @@ export class AssetsModuleComponent implements OnInit {
 
     if (asset && workflow && assets) {
       this.loading = "Uploading Assets"
+      if ((!assets.img || assets.img == '') && this.modelViewer){
+        let i = this.modelViewer.screenshot()
+
+        if (i) {
+          let url = await this.loadService.uploadAssetImg(
+            i,
+            workflow.id,
+            assets.id
+          );
+    
+          if (url) {
+            assets.img = url;
+          }
+        }
+
+      }
       let url = await this.loadService.uploadCharacterAsset(
         asset,
         workflow.id,

@@ -37,6 +37,7 @@
             >
               <div class="w-100 h-100 position-absolute">
                 <app-model-viewer
+                #modelViewer
                   *ngIf="fileDisplay; else noFile"
                   [camera]="true"
                   [model]="fileDisplay"
@@ -84,7 +85,7 @@
               <input
               #aImgInput
               type="file"
-              (change)="fileChangeEvent($event, 2)"
+              (change)="fileChangeEvent($event, 1)"
               style="display: none"
             />
             </div>

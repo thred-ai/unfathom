@@ -2,6 +2,7 @@ import { Dict } from 'src/app/load.service';
 import { Character } from './character.model';
 import { SceneDefinition } from './scene-definition.model';
 import { ModelAsset } from './model-asset.model';
+import { World } from './world.model';
 
 export class Scene extends SceneDefinition {
   description!: string;
@@ -26,6 +27,8 @@ export class Scene extends SceneDefinition {
     scale: number;
   }[];
 
+  world: World
+
   constructor(
     id: string,
     name: string = 'My New Scene',
@@ -44,7 +47,8 @@ export class Scene extends SceneDefinition {
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
       scale: number;
-    }[] = []
+    }[] = [],
+    world: World = new World(id)
   ) {
     super(name, images[0], type);
 
@@ -55,5 +59,6 @@ export class Scene extends SceneDefinition {
     this.notes = notes;
     this.characters = characters;
     this.assets = assets;
+    this.world = world
   }
 }

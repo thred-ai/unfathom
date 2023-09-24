@@ -85,112 +85,130 @@ export class LoadService {
     if (this.projectService.workflow.value && scene) {
       // var saved = false
 
-      this.getWorld(
-        this.projectService.workflow.value.id,
-        scene.id,
-        async (world) => {
+      this.designerService.openWorld.next(scene.world);
 
-          // if (!world?.assets || world.assets.length == 0) {
-          //   world?.assets.push(
-          //     {
-          //       data: new ModelAsset(
-          //         'Starship',
-          //         'ship',
-          //         'assets/ship.glb',
-          //         '',
-          //         'movable'
-          //       ),
-          //       spawn: { x: 0, y: 0, z: 0 },
-          //       direction: { x: 0, y: 0, z: 0 },
-          //       scale: 1.5,
-          //     },
-          //     {
-          //       data: new ModelAsset(
-          //         "Darth Vader's Castle",
-          //         'castle',
-          //         'assets/mustafarav.glb',
-          //         "",
-          //         'static'
-          //       ),
-          //       spawn: { x: 0, y: 0, z: 0 },
-          //       direction: { x: 0, y: 0, z: 0 },
-          //       scale: 1.5,
-          //     }
-          //   );
-          //   this.loadService.saveWorld(world!, this.workflow!.id);
-          // }
+      // this.getWorld(
+      //   this.projectService.workflow.value.id,
+      //   scene.id,
+      //   async (world) => {
 
-          // if (!scene?.characters || scene.characters.length == 0) {
-          //   scene?.characters.push({
-          //     data: new Character(
-          //       'main',
-          //       'John',
-          //       'assets/mustafarav.glb',
-          //       'A shining knight',
-          //       undefined,
-          //       'Gloomy',
-          //       'hero'
-          //     ),
-          //     spawn: { x: 0, y: 0, z: 0 },
-          //     direction: { x: 0, y: 0, z: 0 },
-          //     scale: 1.5,
-          //   });
-          //   this.loadService.saveWorld(world!, this.workflow!.id);
-          // }
+      //     // if (!world?.assets || world.assets.length == 0) {
+      //     //   world?.assets.push(
+      //     //     {
+      //     //       data: new ModelAsset(
+      //     //         'Starship',
+      //     //         'ship',
+      //     //         'assets/ship.glb',
+      //     //         '',
+      //     //         'movable'
+      //     //       ),
+      //     //       spawn: { x: 0, y: 0, z: 0 },
+      //     //       direction: { x: 0, y: 0, z: 0 },
+      //     //       scale: 1.5,
+      //     //     },
+      //     //     {
+      //     //       data: new ModelAsset(
+      //     //         "Darth Vader's Castle",
+      //     //         'castle',
+      //     //         'assets/mustafarav.glb',
+      //     //         "",
+      //     //         'static'
+      //     //       ),
+      //     //       spawn: { x: 0, y: 0, z: 0 },
+      //     //       direction: { x: 0, y: 0, z: 0 },
+      //     //       scale: 1.5,
+      //     //     }
+      //     //   );
+      //     //   this.loadService.saveWorld(world!, this.workflow!.id);
+      //     // }
 
-          var w = world;
+      //     // if (!scene?.characters || scene.characters.length == 0) {
+      //     //   scene?.characters.push({
+      //     //     data: new Character(
+      //     //       'main',
+      //     //       'John',
+      //     //       'assets/mustafarav.glb',
+      //     //       'A shining knight',
+      //     //       undefined,
+      //     //       'Gloomy',
+      //     //       'hero'
+      //     //     ),
+      //     //     spawn: { x: 0, y: 0, z: 0 },
+      //     //     direction: { x: 0, y: 0, z: 0 },
+      //     //     scale: 1.5,
+      //     //   });
+      //     //   this.loadService.saveWorld(world!, this.workflow!.id);
+      //     // }
 
-          // if (w && !saved) {
-          //   saved = true
-          //   let clone = JSON.parse(JSON.stringify(w));
-          //   w.ground!.texture = new Texture(clone.ground.texture);
-          //   w.sky!.texture = new Texture(
-          //     undefined,
-          //     undefined,
-          //     undefined,
-          //     undefined,
-          //     clone.sky.texture
-          //   );
-          //   w.ground!.liquid!.texture = new Texture(
-          //     clone.ground.liquid.texture,
-          //     undefined,
-          //     clone.ground.liquid.texture
-          //   );
+      //     var w = world;
 
-          //   await this.saveWorld(w!, this.projectService.workflow.value!.id);
-          // }
+      //     // if (w && !saved) {
+      //     //   saved = true
+      //     //   let clone = JSON.parse(JSON.stringify(w));
+      //     //   w.ground!.texture = new Texture(clone.ground.texture);
+      //     //   w.sky!.texture = new Texture(
+      //     //     undefined,
+      //     //     undefined,
+      //     //     undefined,
+      //     //     undefined,
+      //     //     clone.sky.texture
+      //     //   );
+      //     //   w.ground!.liquid!.texture = new Texture(
+      //     //     clone.ground.liquid.texture,
+      //     //     undefined,
+      //     //     clone.ground.liquid.texture
+      //     //   );
 
-          // if (!w) {
-          //   console.log(scene)
-          //   w = new World(
-          //     scene.id,
-          //     1000,
-          //     0.8,
-          //     new Sky(
-          //       1000,
-          //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/skybox.png'
-          //     ),
-          //     new Ground(
-          //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/heightMap.png',
-          //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/sf.png',
-          //       new Liquid(
-          //         'assets/images/lava_lavatile.jpg',
-          //         LiquidType.lava,
-          //         10
-          //       ),
-          //       0,
-          //       600
-          //     )
-          //   );
-          //   await this.saveWorld(
-          //     w!,
-          //     this.projectService.workflow.value!.id
-          //   );
-          // }
+      //     //   await this.saveWorld(w!, this.projectService.workflow.value!.id);
+      //     // }
 
-          this.designerService.openWorld.next(w);
-        }
-      );
+      //     // if (!w) {
+      //     //   console.log(scene)
+      //     //   w = new World(
+      //     //     scene.id,
+      //     //     1000,
+      //     //     0.8,
+      //     //     new Sky(
+      //     //       1000,
+      //     //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/skybox.png'
+      //     //     ),
+      //     //     new Ground(
+      //     //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/heightMap.png',
+      //     //       'https://storage.googleapis.com/verticalai.appspot.com/workflows/oQ87v3KUtRXFHneq5TAa/scenes/182544f5-2b60-4c8b-8601-fada5017c503/textures/sf.png',
+      //     //       new Liquid(
+      //     //         'assets/images/lava_lavatile.jpg',
+      //     //         LiquidType.lava,
+      //     //         10
+      //     //       ),
+      //     //       0,
+      //     //       600
+      //     //     )
+      //     //   );
+      //     //   await this.saveWorld(
+      //     //     w!,
+      //     //     this.projectService.workflow.value!.id
+      //     //   );
+      //     // }
+
+      //     // var s = scene
+      //     // var x = this.projectService.workflow.value
+
+      //     // var same = x?.sceneLayout.cells.findIndex(d => d.data?.ngArguments?.scene.id == s.id)
+
+      //     // console.log(same)
+
+      //     // if (x && same != undefined && same > -1 && w){
+      //     //   var sameS = x.sceneLayout.cells[same].data?.ngArguments?.scene as Scene
+      //     //   if (sameS){
+      //     //     sameS.world = w
+      //     //     x.sceneLayout.cells[same].data.ngArguments.scene = sameS
+      //     //     await this.saveLayout(x, '123')
+      //     //   }
+      //     // }
+
+      //     this.designerService.openWorld.next(w);
+      //   }
+      // );
     }
     else{
       this.designerService.openWorld.next(undefined);
@@ -405,6 +423,19 @@ export class LoadService {
     try {
       let ref = this.storage.ref(`workflows/${id}/characters/${characterId}/${characterId}.png`);
       await ref.put(file, { cacheControl: 'no-cache' });
+      let displayUrl = await ref.getDownloadURL().toPromise();
+
+      return displayUrl;
+    } catch (error) {
+      console.log(error);
+    }
+    return undefined;
+  }
+
+  async uploadAssetImg(file: string, id: string, assetId: string) {
+    try {
+      let ref = this.storage.ref(`workflows/${id}/assets/${assetId}/${assetId}.png`);
+      await ref.putString(file, "data_url", { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
 
       return displayUrl;
@@ -1458,7 +1489,8 @@ export class LoadService {
       scene.notes,
       scene.type,
       scene.characters,
-      scene.assets
+      scene.assets,
+      this.syncWorld(scene.world)
     );
   }
 

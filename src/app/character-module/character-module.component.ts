@@ -1,15 +1,16 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
 import { Character } from '../models/workflow/character.model';
+import { Scene } from 'babylonjs';
 
 @Component({
   selector: 'app-character-module',
   templateUrl: './character-module.component.html',
   styleUrls: ['./character-module.component.scss'],
 })
-export class CharacterModuleComponent implements OnInit {
+export class CharacterModuleComponent implements OnInit, AfterViewInit {
 
   workflow?: Executable
   character?: Character
@@ -29,6 +30,15 @@ export class CharacterModuleComponent implements OnInit {
     this.workflow = data.workflow
     this.character = data.character
     this.fileDisplay = data.character.assetUrl
+
+    // setTimeout(() => {
+    //   let i = document.getElementById("cont") as HTMLDivElement
+
+    //   console.log(i)
+    //   if (i){
+    //     i.scroll(0,0);
+    //   }
+    // }, 1);
   }
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
@@ -101,5 +111,12 @@ export class CharacterModuleComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
+
+  ngAfterViewInit(): void {
+
+  
+  }
 }
