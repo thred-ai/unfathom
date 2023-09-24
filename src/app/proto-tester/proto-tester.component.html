@@ -28,13 +28,39 @@
       </mat-icon>
     </button> -->
 
-      <div
+      <!-- <div
         class="primary-text m-auto ms-0 me-2"
         style="aspect-ratio: 1"
         role="button"
         (click)="restart()"
       >
         <mat-icon> restart_alt </mat-icon>
+      </div> -->
+
+      <div
+        class="h-100 proj d-flex justify-content-center align-items-center"
+        role="button"
+        [matTooltip]="'Game Menu'"
+        [matTooltipPosition]="'below'"
+      >
+        <div
+          class="primary-text-dark d-flex justify-content-center align-items-center"
+          role="button"
+          mat-button
+          [matMenuTriggerFor]="mainMenu"
+          #menuToggle
+        >
+          <mat-icon [svgIcon]="'unfathom_icon'"></mat-icon>
+          <mat-icon
+            class="my-auto"
+            style="
+              height: 14px;
+              font-size: 14px !important;
+              width: 14px !important;
+            "
+            >expand_more</mat-icon
+          >
+        </div>
       </div>
     </div>
 
@@ -61,7 +87,10 @@
     </div>
   </div>
 
-  <div class="w-100 h-100 renderer" *ngIf="world && scene && project && theme; else noWorld">
+  <div
+    class="w-100 h-100 renderer"
+    *ngIf="world && scene && project && theme; else noWorld"
+  >
     <app-world-designer
       *ngIf="visible"
       [world]="world"
@@ -73,7 +102,7 @@
 
   <ng-template #noWorld>
     <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-        <p
+      <p
         class="primary-text m-auto h4"
         style="overflow-y: hidden; flex-shrink: 1; flex-grow: 0"
       >
@@ -82,3 +111,121 @@
     </div>
   </ng-template>
 </div>
+
+
+<mat-menu #mainMenu="matMenu" class="secondary-background-dark">
+    <div style="min-width: 250px; max-height: 700px">
+      <button mat-menu-item class="proj toolButton" (click)="restart()">
+        <mat-icon
+          class="my-auto me-2 d-flex justify-content-center align-items-center"
+          style="font-size: 16px"
+          >restart_alt</mat-icon
+        >
+        Reload World
+      </button>
+  
+      <button
+        mat-menu-item
+        class="proj toolButton"
+        [disabled]="(scene?.assets?.length ?? 0) == 0"
+        
+        [matMenuTriggerFor]="projects"
+      >
+        <mat-icon
+          class="my-auto me-2 d-flex justify-content-center align-items-center"
+          style="font-size: 16px"
+          >sports_esports</mat-icon
+        >
+        {{(scene?.assets?.length ?? 0) > 0 ? 'Mount Asset' : 'No Mountable Assets'}}
+      </button>
+  
+      <!-- <button
+        class="border-table-top-dark proj toolButton"
+        mat-menu-item
+        (click)="saveLayout()"
+      >
+        <mat-icon
+          class="my-auto me-2 d-flex justify-content-center align-items-center"
+          style="font-size: 16px"
+          >cloud_upload</mat-icon
+        >
+        Save
+      </button> -->
+  
+      <!-- <button mat-menu-item class="proj toolButton" (click)="openSettings()">
+        <mat-icon
+          class="my-auto me-2 d-flex justify-content-center align-items-center"
+          style="font-size: 16px"
+          >settings</mat-icon
+        >
+        Settings...
+      </button> -->
+    </div>
+  </mat-menu>
+  
+  <mat-menu #projects="matMenu" class="secondary-background-dark">
+    <ng-container *ngIf="project && scene && scene.assets">
+      <div
+        class="secondary-background-dark text-start rounded d-flex justify-content-center align-items-center flex-column"
+        id="profile-menu"
+        style="min-width: 350px; max-height: 700px"
+      >
+        <div class="big-design-header p-3 pb-3">
+          <b class="fw-bold primary-text-dark">Assets</b>
+ 
+        </div>
+  
+        <div
+          class="w-100 h-100"
+          style="overflow-y: scroll"
+          *ngIf="scene.assets.length > 0;"
+        >
+          <div
+            *ngFor="let n of scene.assets ?? []"
+            class="d-flex justify-content-between align-items-center"
+            (click)="null"
+            role="button"
+          >
+            <!-- <div class="d-flex justify-content-between align-items-center">
+              <div
+                class="bg-white rounded-icon shadow d-flex justify-content-center align-items-center"
+                style="
+                  object-fit: contain;
+                  aspect-ratio: 1;
+                  overflow: hidden;
+                  width: 45px;
+                "
+              >
+                <img
+                  class="m-auto rounded-icon"
+                  style="object-fit: cover; height: 90%; width: 90%"
+                  [src]="n.displayUrl"
+                />
+              </div>
+              <div class="text-start w-100 ms-2">
+                <div class="w-100 ps-2 primary-text text-start fw-normal">
+                  {{ n.name }}
+                </div>
+                <div
+                  class="w-100 ps-2 primary-text text-start fw-normal"
+                  style="font-size: 10px"
+                >
+                  {{ n.created | date }}
+                </div>
+              </div>
+            </div> -->
+  
+            <button mat-menu-item class="toolButton">
+              <img
+                class="rounded-icon me-4 border-table-dark"
+                style="object-fit: cover; height: 30px; aspect-ratio: 1"
+                [src]="project.assets[n.id].img"
+              />{{ project.assets[n.id].name }}
+            </button>
+  
+            <!-- <mat-icon class="secondary-text"> chevron_right </mat-icon> -->
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </mat-menu>

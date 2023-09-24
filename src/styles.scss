@@ -12484,3 +12484,7 @@ ion-select {
 .mat-mdc-dialog-container .mdc-dialog__surface {
   --mdc-dialog-container-color: transparent !important;
 }
+
+.mat-mdc-menu-panel.mat-mdc-menu-panel{
+  max-width: none !important;
+}

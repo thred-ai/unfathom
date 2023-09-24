@@ -567,12 +567,14 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
                     if (!moving && shift) {
                       moving = true;
                       actor.setParent(object, true, true);
+                      actor.setEnabled(false)
                       cc.setAvatar(object);
   
                       cc.setGravity(1);
                     } else if (moving && shift2) {
                       object.removeChild(actor, true);
                       moving = false;
+                      actor.setEnabled(true)
                       cc.setAvatar(actor);
                       cc.setActionMap(agMap as any);
   
