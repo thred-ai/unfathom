@@ -38,6 +38,7 @@ import { AssetModuleComponent } from '../asset-module/asset-module.component';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { AssetsModuleComponent } from '../assets-module/assets-module.component';
 import { CharacterEditModuleComponent } from '../character-edit-module/character-edit-module.component';
+import { AssetMovement } from '../models/workflow/asset-movement.model';
 
 @AutoUnsubscribe
 @Component({
@@ -333,6 +334,7 @@ export class WorkflowDesignerComponent
 
     if (this.workflow!.characters[e]) {
       scene.characters.push({
+        role: 'Hero',
         id: e,
         spawn: {
           x: same?.spawn.x ?? 0,
@@ -364,6 +366,7 @@ export class WorkflowDesignerComponent
     if (this.workflow!.assets[e]) {
       scene.assets.push({
         id: e,
+        movement: same?.movement ?? new AssetMovement(false),
         spawn: {
           x: same?.spawn.x ?? 0,
           y: same?.spawn.y ?? 1000,

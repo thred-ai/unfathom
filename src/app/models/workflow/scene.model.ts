@@ -3,6 +3,7 @@ import { Character } from './character.model';
 import { SceneDefinition } from './scene-definition.model';
 import { ModelAsset } from './model-asset.model';
 import { World } from './world.model';
+import { AssetMovement } from './asset-movement.model';
 
 export class Scene extends SceneDefinition {
   description!: string;
@@ -15,6 +16,7 @@ export class Scene extends SceneDefinition {
 
   characters!: {
     id: string;
+    role: string,
     spawn: { x: number; y: number; z: number };
     direction: { x: number; y: number; z: number };
     scale: number;
@@ -22,6 +24,7 @@ export class Scene extends SceneDefinition {
 
   assets!: {
     id: string;
+    movement: AssetMovement;
     spawn: { x: number; y: number; z: number };
     direction: { x: number; y: number; z: number };
     scale: number;
@@ -38,12 +41,14 @@ export class Scene extends SceneDefinition {
     type: string = 'scene',
     characters: {
       id: string;
+      role: string,
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
       scale: number;
     }[] = [],
     assets: {
       id: string;
+      movement: AssetMovement;
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
       scale: number;

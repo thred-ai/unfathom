@@ -22,6 +22,9 @@ export class ProtoTesterComponent implements OnInit {
   project?: Executable;
   theme?: 'light' | 'dark' = 'light';
 
+
+  mountableAssets?: string[]
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private loadService: LoadService,
@@ -52,6 +55,7 @@ export class ProtoTesterComponent implements OnInit {
     this.designService.openStep.subscribe((s) => {
       this.scene = s?.data?.ngArguments?.scene as Scene;
       this.world = this.scene?.world;
+      //this.mountableAssets = //this.scene.assets.filter(a => this.project?.assets[a.id]. )
       this.restart()
       console.log(this.scene)
 

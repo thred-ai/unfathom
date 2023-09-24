@@ -89,6 +89,19 @@ export class AssetModuleComponent implements OnInit {
   }
 
 
+
+  movementTypes = [
+    {
+      mountable: true,
+      name: 'Movable'
+    },
+    {
+      mountable: false,
+      name: 'Stationary'
+    }
+  ]
+
+
   async save(action = 'save') {
 
     // let img = this.newImg as File;
