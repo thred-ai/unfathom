@@ -80,10 +80,10 @@ ion-item.custom-item {
 }
 
 ion-item.custom-item-disabled {
-    --background: var(--primaryBackgroundColor) !important;
-    opacity: 0.5;
-    color: var(--primaryTextColor) !important;
-    pointer-events: none;
+    // --background: var(--primaryBackgroundColor) !important;
+    // opacity: 0.5;
+    // color: var(--primaryTextColor) !important;
+    // pointer-events: none;
   }
 
 :host::ng-deep .ion-padding {
