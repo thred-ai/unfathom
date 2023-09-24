@@ -140,13 +140,18 @@
     </ng-container>
 
     <ng-template #dismount>
-      <button mat-menu-item class="proj toolButton" (click)="(null)" *ngIf="mountedAsset">
+      <button
+        mat-menu-item
+        class="proj toolButton"
+        (click)="dismountAsset(mountedAsset)"
+        *ngIf="mountedAsset"
+      >
         <mat-icon
           class="my-auto me-2 d-flex justify-content-center align-items-center"
           style="font-size: 16px"
           >man</mat-icon
         >
-        Dismount "{{project.assets[mountedAsset].name}}"
+        Dismount "{{ project.assets[mountedAsset].name }}"
       </button>
     </ng-template>
 
@@ -189,7 +194,7 @@
         <div
           *ngFor="let n of mountableAssets ?? []"
           class="d-flex justify-content-between align-items-center"
-          (click)="(null)"
+          (click)="mountAsset(n)"
           role="button"
         >
           <!-- <div class="d-flex justify-content-between align-items-center">

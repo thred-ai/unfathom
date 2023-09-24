@@ -9,6 +9,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { DesignerService } from '../designer.service';
 import { ThemeService } from '../theme.service';
 import * as interact from 'interactjs';
+import { PrototypeService } from '../prototype.service';
 
 @AutoUnsubscribe
 @Component({
@@ -33,7 +34,8 @@ export class ProtoTesterComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private projectService: ProjectService,
     private designService: DesignerService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private prototypeService: PrototypeService
   ) {}
 
   visible = true;
@@ -94,4 +96,15 @@ export class ProtoTesterComponent implements OnInit {
       },
     });
   }
+
+  mountAsset(id: string){
+    this.mountedAsset = id
+    this.prototypeService.mountAsset(id)
+  }
+
+  dismountAsset(id: string){
+    this.prototypeService.dismountAsset(id)
+    this.mountedAsset = undefined
+  }
+  
 }

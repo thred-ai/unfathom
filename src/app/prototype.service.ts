@@ -2,18 +2,21 @@ import { Injectable } from '@angular/core';
 import { Scene } from './models/workflow/scene.model';
 import { Executable } from './models/workflow/executable.model';
 import { CharacterController } from 'babylonjs-charactercontroller';
-import { GLTFFileLoader, GLTFLoaderAnimationStartMode } from 'babylonjs-loaders';
+import {
+  GLTFFileLoader,
+  GLTFLoaderAnimationStartMode,
+} from 'babylonjs-loaders';
 import { LiquidType } from './models/workflow/liquid-type.enum';
 import { World } from './models/workflow/world.model';
 import * as BABYLON from 'babylonjs';
 import * as MATERIALS from 'babylonjs-materials';
 import { BehaviorSubject } from 'rxjs';
+import { Dict } from './load.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PrototypeService {
-
   selectedCharacter?: {
     spawn: { x: number; y: number; z: number };
     id: string;
@@ -33,27 +36,24 @@ export class PrototypeService {
   world?: World;
   scene?: Scene;
   project?: Executable;
-
+  cc?: CharacterController;
 
   engine?: BABYLON.Engine;
+  agMap?: Dict<BABYLON.AnimationGroup>
 
   loaded = new BehaviorSubject<string>('');
 
+  constructor() {}
 
-  constructor() { }
+  init(scene: Scene, project: Executable) {
+    this.deinit();
 
+    this.scene = scene;
+    this.world = scene.world;
 
-  init(scene: Scene, project: Executable){
+    this.project = project;
 
-    this.deinit()
-
-    this.scene = scene
-    this.world = scene.world
-
-
-    this.project = project
-
-    console.log(this.project)
+    console.log(this.project);
 
     if (this.scene && this.scene.characters[0]) {
       this.selectedCharacter = {
@@ -68,7 +68,7 @@ export class PrototypeService {
       });
 
       if (this.world && this.project) {
-        console.log("IJNIT")
+        console.log('IJNIT');
         this.initWorld();
       } else {
       }
@@ -419,6 +419,8 @@ export class PrototypeService {
 
     var actor = result.meshes[0] as BABYLON.Mesh;
 
+    actor.id = character.id;
+
     actor.scaling.scaleInPlace(character.scale);
     actor.checkCollisions = true;
 
@@ -456,10 +458,9 @@ export class PrototypeService {
 
     await Promise.all(
       worldScene.assets.map(async (asset) => {
+        let fullAsset = this.project?.assets[asset.id];
 
-        let fullAsset = this.project?.assets[asset.id]
-
-        if (fullAsset){
+        if (fullAsset) {
           const result = await BABYLON.SceneLoader.ImportMeshAsync(
             '',
             '',
@@ -468,48 +469,51 @@ export class PrototypeService {
             undefined,
             '.glb'
           );
-  
+
           result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
-  
+
           var object = result.meshes[0] as BABYLON.Mesh;
-  
+          object.id = asset.id;
+
           object.scaling.scaleInPlace(asset.scale);
-  
+
           object.rotation = new BABYLON.Vector3(
             this.toRadians(asset.direction.x),
             this.toRadians(asset.direction.y),
             this.toRadians(asset.direction.z)
           );
-  
+
           object.position = new BABYLON.Vector3(
             asset.spawn.x,
             asset.spawn.y,
             asset.spawn.z
           );
-  
+
           if (fullAsset.type == 'movable') {
             let box = object.getHierarchyBoundingVectors();
-  
+
             object.ellipsoidOffset = new BABYLON.Vector3(
               0,
               -(box.max.y - box.min.y),
               0
             );
-  
+
             const dsm = new BABYLON.DeviceSourceManager(scene.getEngine());
-  
+
             var moving = false;
-  
+
             dsm.onDeviceConnectedObservable.add((eventData) => {
               if (eventData.deviceType === BABYLON.DeviceType.Keyboard) {
-                const keyboard = dsm.getDeviceSource(BABYLON.DeviceType.Keyboard);
-  
+                const keyboard = dsm.getDeviceSource(
+                  BABYLON.DeviceType.Keyboard
+                );
+
                 let delta = 0;
                 const linearSpeed = 600;
                 const angularSpeed = 5;
                 const translation = new BABYLON.Vector3(0, 0, 0);
                 const rotation = new BABYLON.Vector3(0, 0, 0);
-  
+
                 scene.beforeRender = () => {
                   const w = keyboard?.getInput(49);
                   const a = keyboard?.getInput(51);
@@ -517,13 +521,13 @@ export class PrototypeService {
                   const y = keyboard?.getInput(52);
                   const shift = keyboard?.getInput(57);
                   const shift2 = keyboard?.getInput(48);
-  
+
                   object.locallyTranslate(translation);
-  
+
                   delta = scene.deltaTime ? scene.deltaTime / 1000 : 0;
                   translation.set(0, 0, 0);
                   rotation.set(0, 0, 0);
-  
+
                   if (w === 1) {
                     if (shift) {
                       translation.z = linearSpeed * delta;
@@ -538,7 +542,7 @@ export class PrototypeService {
                       rotation.y = -angularSpeed * delta;
                     }
                   }
-  
+
                   if (a === 1) {
                     if (shift) {
                       rotation.x -= 0.05;
@@ -546,52 +550,52 @@ export class PrototypeService {
                       rotation.x += 0.05;
                     }
                   }
-  
+
                   object.rotation.y += rotation.y;
                   object.rotation.x += rotation.x;
                   object.rotation.z += rotation.z;
-  
+
                   if (object.intersectsMesh(actor, false, true)) {
-                    if (!moving && shift) {
-                      moving = true;
-                      actor.setParent(object, true, true);
-                      actor.setEnabled(false)
-                      cc.setAvatar(object);
-  
-                      cc.setGravity(1);
-                    } else if (moving && shift2) {
-                      object.removeChild(actor, true);
-                      moving = false;
-                      actor.setEnabled(true)
-                      cc.setAvatar(actor);
-                      cc.setActionMap(agMap as any);
-  
-                      cc.setMode(0);
-  
-                      cc.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
-  
-                      cc.setNoFirstPerson(false);
-                      cc.setStepOffset(0.4);
-                      cc.setSlopeLimit(30, 60);
-                      cc.setWalkSpeed(7.5);
-                      cc.setTurnSpeed(20);
-                      cc.setJumpSpeed(20);
-                      cc.setRunSpeed(30);
-                      cc.setGravity(50);
-                    }
+                    // if (!moving && shift) {
+                    //   moving = true;
+                    //   actor.setParent(object, true, true);
+                    //   actor.setEnabled(false);
+                    //   this.cc?.setAvatar(object);
+
+                    //   this.cc?.setGravity(1);
+                    // } else if (moving && shift2) {
+                    //   object.removeChild(actor, true);
+                    //   moving = false;
+                    //   actor.setEnabled(true);
+                    //   this.cc?.setAvatar(actor);
+                    //   this.cc?.setActionMap(agMap as any);
+
+                    //   this.cc?.setMode(0);
+
+                    //   this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
+
+                    //   this.cc?.setNoFirstPerson(false);
+                    //   this.cc?.setStepOffset(0.4);
+                    //   this.cc?.setSlopeLimit(30, 60);
+                    //   this.cc?.setWalkSpeed(7.5);
+                    //   this.cc?.setTurnSpeed(20);
+                    //   this.cc?.setJumpSpeed(20);
+                    //   this.cc?.setRunSpeed(30);
+                    //   this.cc?.setGravity(50);
+                    // }
                   }
-  
+
                   // camera.rotation.y += rotation.y;
                   // camera.rotation.x += rotation.x;
                   // camera.rotation.z += rotation.z;
-  
+
                   // camera.setPosition(camera.position.addInPlace(translation))
                   // } else {
                   //   // actor3.removeChild(actor);
                   // }
-  
+
                   object.locallyTranslate(translation);
-  
+
                   // if (y === 1) {
                   //   if (shift){
                   //     actor3.rotation.y -= 0.075
@@ -600,9 +604,9 @@ export class PrototypeService {
                   //   actor3.rotation.y += 0.075;
                   // }
                 };
-  
+
                 // var actionParameter = { trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: actor3 };
-  
+
                 //   actor.actionManager?.registerAction(new BABYLON.ExecuteCodeAction(actionParameter, function(event: BABYLON.ActionEvent)
                 //   {
                 //       console.log("Hit!");
@@ -629,6 +633,7 @@ export class PrototypeService {
           );
 
           var actor2 = result2.meshes[0] as BABYLON.Mesh;
+          actor2.id = actor2.id;
 
           const modelTransformNodes = actor2.getChildTransformNodes();
           const modelAnimationGroup = idle.clone('clone', (oldTarget) => {
@@ -692,7 +697,7 @@ export class PrototypeService {
       }
     });
 
-    const agMap = {
+    this.agMap = {
       walk,
       idle,
       run,
@@ -701,28 +706,28 @@ export class PrototypeService {
       fall,
     };
 
-    let cc = new CharacterController(actor, camera, scene, agMap);
+    this.cc = new CharacterController(actor, camera, scene, this.agMap);
 
-    cc.setMode(0);
+    this.cc?.setMode(0);
 
-    cc.setFaceForward(true);
+    this.cc?.setFaceForward(true);
 
-    cc.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
+    this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
 
-    cc.setNoFirstPerson(false);
-    cc.setStepOffset(0.4);
-    cc.setSlopeLimit(30, 60);
-    cc.setWalkSpeed(7.5);
-    cc.setTurnSpeed(20);
-    cc.setJumpSpeed(20);
-    cc.setRunSpeed(30);
-    cc.setGravity(50);
+    this.cc?.setNoFirstPerson(false);
+    this.cc?.setStepOffset(0.4);
+    this.cc?.setSlopeLimit(30, 60);
+    this.cc?.setWalkSpeed(7.5);
+    this.cc?.setTurnSpeed(20);
+    this.cc?.setJumpSpeed(20);
+    this.cc?.setRunSpeed(30);
+    this.cc?.setGravity(50);
 
-    cc.enableBlending(0.05);
-    cc.setCameraElasticity(false);
-    cc.makeObstructionInvisible(false);
-    // cc.setGravity(0.5)
-    cc.start();
+    this.cc?.enableBlending(0.05);
+    this.cc?.setCameraElasticity(false);
+    this.cc?.makeObstructionInvisible(false);
+    // this.cc?.setGravity(0.5)
+    this.cc?.start();
 
     // BABYLON.ParticleHelper.CreateAsync('rain', scene, false).then((set) => {
     //   set.systems[0].updateSpeed = 0.1;
@@ -796,7 +801,7 @@ export class PrototypeService {
   }
 
   toRadians = (degrees: number) => {
-    return ((degrees * Math.PI) / 180);
+    return (degrees * Math.PI) / 180;
   };
 
   async importAnimation(dir: string, name: string, scene: BABYLON.Scene) {
@@ -809,7 +814,52 @@ export class PrototypeService {
     );
   }
 
-  deinit(){
+  mountAsset(id: string) {
+    let scene = this.engine?.scenes[0];
+    if (scene && this.selectedCharacter) {
+      let assetMesh = scene.getMeshById(id) as BABYLON.Mesh;
+      let actorMesh = scene.getMeshById(
+        this.selectedCharacter.id
+      ) as BABYLON.Mesh;
+
+      if (assetMesh && actorMesh) {
+        actorMesh.setParent(assetMesh, true, true);
+        actorMesh.setEnabled(false);
+        this.cc?.setAvatar(assetMesh);
+
+        this.cc?.setGravity(1);
+      }
+    }
+  }
+
+  dismountAsset(id: string) {
+    let scene = this.engine?.scenes[0];
+    if (scene && this.selectedCharacter) {
+      let assetMesh = scene.getMeshById(id) as BABYLON.Mesh;
+      let actorMesh = scene.getMeshById(
+        this.selectedCharacter.id
+      ) as BABYLON.Mesh;
+
+      if (assetMesh && actorMesh && this.agMap) {
+        assetMesh.removeChild(actorMesh, true);
+        actorMesh.setEnabled(true);
+        this.cc?.setAvatar(actorMesh);
+        this.cc?.setActionMap(this.agMap as any);
+        this.cc?.setMode(0);
+        this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
+        this.cc?.setNoFirstPerson(false);
+        this.cc?.setStepOffset(0.4);
+        this.cc?.setSlopeLimit(30, 60);
+        this.cc?.setWalkSpeed(7.5);
+        this.cc?.setTurnSpeed(20);
+        this.cc?.setJumpSpeed(20);
+        this.cc?.setRunSpeed(30);
+        this.cc?.setGravity(50);
+      }
+    }
+  }
+
+  deinit() {
     this.engine?.scenes.forEach((scene) => {
       scene.clearCachedVertexData();
       scene.cleanCachedTextureBuffer();
@@ -817,6 +867,7 @@ export class PrototypeService {
 
     this.engine?.dispose();
     this.engine = undefined;
+    this.cc = undefined;
+    this.agMap = undefined
   }
-  
 }
