@@ -214,12 +214,12 @@ export class WorkflowComponent implements OnInit {
     });
 
     
-    this.designerService?.openWorld.pipe(skip(1)).subscribe((world) => {
-        if (!this.openWorldScene){
-          this.openPrototype()
-        }
-        this.openWorldScene = world;
-    });
+    // this.designerService?.openWorld.pipe(skip(1)).subscribe((world) => {
+    //     if (!this.openWorldScene){
+    //       this.openPrototype()
+    //     }
+    //     this.openWorldScene = world;
+    // });
 
     this.designerService.toolboxConfiguration.subscribe((s) => {
       this.models = s ?? [];
@@ -394,7 +394,6 @@ export class WorkflowComponent implements OnInit {
           //   (result) => {}
           // );
         }
-        this.openWorldScene = undefined
       });
     } else {
     }

@@ -40,7 +40,6 @@ export class DesignerService {
   initialized = false;
 
   openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
-  openWorld = new BehaviorSubject<World | undefined>(undefined);
 
   // this.toolboxConfiguration.next([new SceneDefinition("Scene", "", "scene")])
 

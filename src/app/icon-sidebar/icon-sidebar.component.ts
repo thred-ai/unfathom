@@ -40,7 +40,6 @@ export class IconSidebarComponent implements OnInit {
   @Input() selectedIcon: string = 'settings';
 
   items: SceneDefinition[] = [];
-  world?: World | null;
 
   @Output() selectedIconChanged = new EventEmitter<string>();
   @Input() theme: 'light' | 'dark' = 'light';
@@ -52,6 +51,7 @@ export class IconSidebarComponent implements OnInit {
 
   @Output() publish = new EventEmitter<Executable>();
   @Output() selectedFileChanged = new EventEmitter<string>();
+  @Output() openPrototype = new EventEmitter<any>();
 
   selectedStep?: Cell.Properties;
 
@@ -75,13 +75,9 @@ export class IconSidebarComponent implements OnInit {
   }
 
   selectWorld() {
-    let scene = this.selectedStep?.data?.ngArguments?.scene as Scene;
-    this.loadService.selectWorld(scene);
+    this.openPrototype.emit()
   }
 
-  deselectWorld() {
-    this.designerService.openWorld.next(undefined);
-  }
 
   get canUndo() {
     return this.designerService.canUndo;
@@ -121,10 +117,6 @@ export class IconSidebarComponent implements OnInit {
           target: graph,
         });
       }
-    });
-
-    this.designerService?.openWorld.subscribe((world) => {
-      this.world = world;
     });
 
     this.designerService.openStep.subscribe((s) => {

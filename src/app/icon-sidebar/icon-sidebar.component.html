@@ -7,7 +7,7 @@
     <div
       class="h-100 proj mt-0 ps-3 pe-2 d-flex justify-content-center align-items-center border-table-right-dark"
       role="button"
-      [matTooltip]="world ? 'Back to Storyboard' : 'Main Menu'"
+      [matTooltip]="'Main Menu'"
       [matTooltipPosition]="'below'"
     >
       <div
@@ -64,7 +64,6 @@
       </div>
     </div> -->
 
-    <ng-container *ngIf="!world">
       <div
         class="h-100 proj mt-0 px-3 d-flex justify-content-center align-items-center"
         [matTooltip]="'New Scene'"
@@ -137,9 +136,7 @@
       </div>
 
 
-    </ng-container>
 
-    <ng-container *ngIf="world"> </ng-container>
   </div>
 
   <a
@@ -168,7 +165,6 @@
 
         <mat-icon> arrow_right_alt </mat-icon> -->
         <img
-          *ngIf="!world"
           class="border-table me-2"
           style="
             height: 22.5px;
@@ -182,7 +178,7 @@
           class="primary-text-dark d-flex justify-content-center align-items-center"
         >
           {{ executable.name }}
-          <ng-container *ngIf="world && selectedStep">
+          <ng-container *ngIf="selectedStep">
             <span class="secondary-text-dark mx-2" style="font-size: 20px"
               >/</span
             >

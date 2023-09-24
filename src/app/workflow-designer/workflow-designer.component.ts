@@ -76,7 +76,7 @@ export class WorkflowDesignerComponent
   @Output() detailsChanged = new EventEmitter<Executable>();
   @Output() workflowChanged = new EventEmitter<Executable>();
   @Output() selectedFileChanged = new EventEmitter<string>();
-  @Output() openWorldSceneChanged = new EventEmitter<World>();
+  @Output() openPrototype = new EventEmitter<any>();
 
   selectedFile?: Cell.Properties;
 
@@ -90,8 +90,8 @@ export class WorkflowDesignerComponent
     private cdr: ChangeDetectorRef
   ) {}
 
-  selectWorld(scene: Scene) {
-    this.loadService.selectWorld(scene);
+  selectWorld() {
+    this.openPrototype.emit()
   }
 
   @ViewChildren('geditor') divs?: QueryList<ElementRef>;

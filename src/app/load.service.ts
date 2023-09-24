@@ -85,7 +85,7 @@ export class LoadService {
     if (this.projectService.workflow.value && scene) {
       // var saved = false
 
-      this.designerService.openWorld.next(scene.world);
+      // this.designerService.openWorld.next(scene.world);
 
       // this.getWorld(
       //   this.projectService.workflow.value.id,
@@ -211,7 +211,7 @@ export class LoadService {
       // );
     }
     else{
-      this.designerService.openWorld.next(undefined);
+      // this.designerService.openWorld.next(undefined);
     }
   }
 

@@ -51,17 +51,13 @@ export class ProtoTesterComponent implements OnInit {
 
     this.designService.openStep.subscribe((s) => {
       this.scene = s?.data?.ngArguments?.scene as Scene;
+      this.world = this.scene?.world;
+      this.restart()
       console.log(this.scene)
 
       this.cdr.detectChanges()
     });
 
-    this.designService.openWorld.subscribe((w) => {
-      console.log(w)
-      this.world = w;
-      this.restart()
-      this.cdr.detectChanges()
-    });
 
     this.themeService.theme.subscribe((theme) => {
       console.log(theme)
