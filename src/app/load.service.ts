@@ -71,7 +71,6 @@ export class LoadService {
   }
 
   openPrototype() {
-    console.log(this.loadedUser.value)
     if (this.loadedUser.value) {
       this.designerService.openPrototype(this.loadedUser.value);
     }

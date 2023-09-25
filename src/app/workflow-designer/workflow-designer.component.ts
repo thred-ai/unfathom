@@ -309,14 +309,12 @@ export class WorkflowDesignerComponent
 
     this.designerService.openStep.subscribe((step) => {
       this.selectedFile = step;
-      console.log(this.characters);
 
       let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
       if (scene) {
         this.characterIds = scene?.characters.map((c) => c.id) ?? [];
         this.assetIds = scene?.assets.map((a) => a.id) ?? [];
-        console.log(this.assetIds);
       } else {
         this.characterIds = [];
         this.assetIds = [];
@@ -325,7 +323,6 @@ export class WorkflowDesignerComponent
   }
 
   addCharactersToScene(e: string) {
-    console.log('oi');
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
     let same = scene.characters.find((s) => s.id == e);
@@ -350,13 +347,10 @@ export class WorkflowDesignerComponent
 
     this.characterIds = scene.characters.map((c) => c.id);
 
-    console.log(scene.characters);
-
     this.designerService.setScene(scene, scene.id);
   }
 
   addAssetToScene(e: string) {
-    console.log('oi');
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
     let same = scene.assets.find((s) => s.id == e);
@@ -380,8 +374,6 @@ export class WorkflowDesignerComponent
     }
 
     this.assetIds = scene.assets.map((c) => c.id);
-
-    console.log(scene.assets);
 
     this.designerService.setScene(scene, scene.id);
   }

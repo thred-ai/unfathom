@@ -64,7 +64,6 @@ export class DesignerService {
   }
 
   setScene(scene: Scene, id: string) {
-    console.log('SET');
     let node = this.graph
       ?.getCells()
       .find((cell) => (cell.data.ngArguments.scene as Scene).id == id);
@@ -270,18 +269,15 @@ export class DesignerService {
       });
 
       this.graph.on('cell:changed', ({ cell, options }) => {
-        console.log('CHANGE');
         this.processGraph(cell, options);
       });
 
       this.graph.on('cell:removed', ({ cell, options }) => {
         // console.log(cell);
-        console.log('REMOVE');
         this.processGraph(cell, options);
       });
 
       this.graph.on('cell:added', ({ cell, options }) => {
-        console.log('ADD');
         this.processGraph(cell, options, false);
       });
 
@@ -322,9 +318,6 @@ export class DesignerService {
     options: Cell.SetOptions,
     checkSame = true
   ) {
-    console.log('PROCESS');
-    console.log(cell);
-
     let same = this.projectService.workflow.value?.sceneLayout.cells.find(
       (c) => c.data?.ngArguments.scene.id == cell.data?.ngArguments?.scene?.id
     );

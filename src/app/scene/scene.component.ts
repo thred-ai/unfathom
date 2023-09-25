@@ -28,7 +28,6 @@ export class SceneComponent implements OnInit {
 
       if (this.workflow){
         this.characters = (this.scene?.characters.map(c => this.workflow!.characters[c.id]) ?? []).filter(c => c != undefined)
-        console.log(this.characters)
       }
     });
   }

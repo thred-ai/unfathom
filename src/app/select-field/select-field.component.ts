@@ -21,7 +21,6 @@ export class SelectFieldComponent implements OnInit {
   @Output() refresh = new EventEmitter<any>();
 
   change(event: any){
-    console.log(event)
     this.changed.emit(event)
   }
 

@@ -50,7 +50,6 @@ export class ProtoTesterComponent implements OnInit {
 
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
-      console.log(w);
       this.project = w;
       this.cdr.detectChanges();
     });
@@ -62,13 +61,11 @@ export class ProtoTesterComponent implements OnInit {
         .filter((a) => a.movement.canMount)
         .map((x) => x.id);
       this.restart();
-      console.log(this.scene);
 
       this.cdr.detectChanges();
     });
 
     this.themeService.theme.subscribe((theme) => {
-      console.log(theme);
       this.theme = theme ?? 'light';
       this.cdr.detectChanges();
     });

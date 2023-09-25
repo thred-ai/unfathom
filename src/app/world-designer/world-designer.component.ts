@@ -47,7 +47,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     if (this.project && this.scene) {
 
       this.prototypeService.loaded.next(this.loaded)
-      console.log("elel")
       this.prototypeService.init(this.scene, this.project);
 
       this.prototypeService?.loaded.subscribe((loaded) => {

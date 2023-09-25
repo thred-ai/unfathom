@@ -53,8 +53,6 @@ export class PrototypeService {
 
     this.project = project;
 
-    console.log(this.project);
-
     if (this.scene && this.scene.characters[0]) {
       this.selectedCharacter = {
         currentPos: this.scene.characters[0].spawn,
@@ -68,7 +66,6 @@ export class PrototypeService {
       });
 
       if (this.world && this.project) {
-        console.log('IJNIT');
         this.initWorld();
       } else {
       }

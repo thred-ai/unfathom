@@ -117,10 +117,6 @@ export class ApiEditorComponent implements OnInit {
     this.api![field] = Object.fromEntries(map1);
   }
 
-  logAPI() {
-    console.log(this.api);
-  }
-
   isNameTaken(field: 'headers' | 'body' | 'params', name: string) {
     if (this.api![field][name]) {
       return true;
