@@ -123,7 +123,7 @@
       Reload World
     </button>
 
-    <ng-container *ngIf="!mountedAsset; else dismount">
+    <ng-container *ngIf="!mountedAsset && mountableAssets; else dismount">
       <button
         mat-menu-item
         class="proj toolButton"
