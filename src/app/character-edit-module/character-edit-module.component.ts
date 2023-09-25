@@ -5,7 +5,9 @@ import { Dict, LoadService } from '../load.service';
 import { Character } from '../models/workflow/character.model';
 import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-character-edit-module',
   templateUrl: './character-edit-module.component.html',

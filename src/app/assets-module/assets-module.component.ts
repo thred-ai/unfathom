@@ -4,7 +4,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
 import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-assets-module',
   templateUrl: './assets-module.component.html',

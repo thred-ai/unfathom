@@ -17,6 +17,7 @@ import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { PrototypeService } from '../prototype.service';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-world-designer',
   templateUrl: './world-designer.component.html',

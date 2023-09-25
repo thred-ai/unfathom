@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RangeCustomEvent } from '@ionic/angular';
 import { CurrencyMaskInputMode } from 'ngx-currency';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'verticalai-layout-slider',
   templateUrl: './layout-slider.component.html',

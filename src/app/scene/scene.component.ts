@@ -5,8 +5,9 @@ import { Executable } from '../models/workflow/executable.model';
 import { ProjectService } from '../project.service';
 import { Character } from '../models/workflow/character.model';
 import { LoadService } from '../load.service';
-import { WorkflowDesignerComponent } from '../workflow-designer/workflow-designer.component';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-scene',
   templateUrl: './scene.component.html',

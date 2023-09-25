@@ -4,7 +4,9 @@ import { LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
 import { Character } from '../models/workflow/character.model';
 import { Scene } from 'babylonjs';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-character-module',
   templateUrl: './character-module.component.html',

@@ -4,7 +4,9 @@ import { Executable } from '../models/workflow/executable.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Developer } from '../models/user/developer.model';
 import { Scene } from '../models/workflow/scene.model';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',

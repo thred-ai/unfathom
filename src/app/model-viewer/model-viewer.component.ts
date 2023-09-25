@@ -1,5 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-model-viewer',
   templateUrl: './model-viewer.component.html',

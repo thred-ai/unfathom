@@ -5,7 +5,9 @@ import { Executable } from '../models/workflow/executable.model';
 import { DesignerService } from '../designer.service';
 import { Scene } from '../models/workflow/scene.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-asset-module',
   templateUrl: './asset-module.component.html',

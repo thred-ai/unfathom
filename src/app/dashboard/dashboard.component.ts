@@ -12,7 +12,9 @@ import { PlanSelectComponent } from '../plan-select/plan-select.component';
 import { Subscription } from '../models/workflow/subscription.model';
 import { DesignerService } from '../designer.service';
 import { ThemeService } from '../theme.service';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
