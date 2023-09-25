@@ -58,7 +58,7 @@ export class ProtoTesterComponent implements OnInit {
     this.designService.openStep.subscribe((s) => {
       this.scene = s?.data?.ngArguments?.scene as Scene;
       this.world = this.scene?.world;
-      this.mountableAssets = this.scene.assets
+      this.mountableAssets = this.scene?.assets
         .filter((a) => a.movement.canMount)
         .map((x) => x.id);
       this.restart();
