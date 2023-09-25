@@ -216,9 +216,9 @@ export class DesignerService {
           resizing: {
             enabled: true,
             minWidth: 175,
-            maxWidth: 700,
+            maxWidth: 1400,
             minHeight: 225,
-            maxHeight: 900,
+            maxHeight: 1158,
             orthogonal: false,
             restrict: false,
             preserveAspectRatio: false,
