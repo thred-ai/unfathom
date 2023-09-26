@@ -25,7 +25,7 @@ export class ProtoTesterComponent implements OnInit {
 
   mountableAssets: string[] = [];
 
-  mountedAsset?: string
+  mountedAsset?: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -94,14 +94,13 @@ export class ProtoTesterComponent implements OnInit {
     });
   }
 
-  mountAsset(id: string){
-    this.mountedAsset = id
-    this.prototypeService.mountAsset(id, 0)
+  mountAsset(id: string) {
+    this.mountedAsset = id;
+    this.prototypeService.mountAsset(id, 0);
   }
 
-  dismountAsset(id: string){
-    this.prototypeService.dismountAsset(id)
-    this.mountedAsset = undefined
+  dismountAsset(id: string) {
+    this.prototypeService.dismountAsset(id);
+    this.mountedAsset = undefined;
   }
-  
 }
