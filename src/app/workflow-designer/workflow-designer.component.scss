@@ -274,6 +274,17 @@ ion-accordion.accordion-expanded > ion-item[slot="header"] {
   //   --inner-border-width: 1;
 }
 
+// :host::ng-deep .mat-mdc-tab.mdc-tab{
+//   width: 48px !important;
+//   height: 48px !important;
+// }
+
+:host::ng-deep .mdc-tab{
+  min-width: 48px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+}
 :host::ng-deep .ion-accordion-toggle-icon {
   font-size: small;
   color: var(--secondaryTextColor)

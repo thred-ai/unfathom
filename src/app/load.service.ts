@@ -942,10 +942,10 @@ export class LoadService {
     return url;
   }
 
-  async generateScene(sceneId: string, workflowId: string) {
+  async generateScene(sceneId: string, workflowId: string, prompt: string) {
     let world = await new Promise<World | undefined>((resolve, reject) => {
       this.functions
-        .httpsCallable('generateScene', {timeout: 180000})({ sceneId, workflowId, input: "a lava world" })
+        .httpsCallable('generateScene', {timeout: 180000})({ sceneId, workflowId, input: prompt })
         .pipe(first())
         .subscribe(
           async (resp) => {

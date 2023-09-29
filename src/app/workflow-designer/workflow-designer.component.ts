@@ -95,8 +95,8 @@ export class WorkflowDesignerComponent
   selectWorld() {
     let scene = this.selectedFile?.data?.ngArguments?.scene as Scene;
 
-    if (scene && scene.world){
-      this.loadService.openPrototype()
+    if (scene && scene.world) {
+      this.loadService.openPrototype();
     }
   }
 
@@ -116,6 +116,34 @@ export class WorkflowDesignerComponent
 
   resize() {
     window.dispatchEvent(new Event('resize'));
+  }
+
+  loading = false
+
+  sceneDescription = ""
+
+  async generateWorld(desc: string) {
+    let scene = this.selectedFile;
+
+    if (scene && scene.id && this.workflow && desc != "") {
+      this.loading = true
+      let world = await this.loadService.generateScene(
+        scene.id,
+        this.workflow.id,
+        desc
+      );
+      this.loading = false
+      if (world) {
+        let s = this.selectedFile?.data.ngArguments.scene as Scene;
+
+        if (s) {
+          s.world = world;
+          this.designerService.setScene(s, s.id)
+          console.log(s.world)
+          // this.saveLayout();
+        }
+      }
+    }
   }
 
   editCharacter(
@@ -245,7 +273,7 @@ export class WorkflowDesignerComponent
   editAssetDetails(asset: string, assetIndex: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-    let details = scene.assets[assetIndex]
+    let details = scene.assets[assetIndex];
     let c = this.workflow?.assets[asset];
 
     let ref = this.dialog.open(AssetModuleComponent, {
@@ -321,7 +349,6 @@ export class WorkflowDesignerComponent
       if (scene) {
         this.characterIds = scene?.characters.map((c) => c.id) ?? [];
         this.assetIds = scene?.assets.map((a) => a.id) ?? [];
-
       } else {
         this.characterIds = [];
         this.assetIds = [];
@@ -396,14 +423,13 @@ export class WorkflowDesignerComponent
   }
 
   removeCharacterWorkflow(id: string) {
-
-    this.workflow?.sceneLayout?.cells.forEach(c => {
+    this.workflow?.sceneLayout?.cells.forEach((c) => {
       let scene = c.data?.ngArguments?.scene as Scene;
 
-      if (scene){
-        scene.characters = scene.characters.filter(x => x.id != id)
+      if (scene) {
+        scene.characters = scene.characters.filter((x) => x.id != id);
       }
-    })
+    });
 
     delete this.workflow?.characters[id];
 
@@ -424,14 +450,13 @@ export class WorkflowDesignerComponent
   }
 
   removeAssetWorkflow(id: string) {
-
-    this.workflow?.sceneLayout?.cells.forEach(c => {
+    this.workflow?.sceneLayout?.cells.forEach((c) => {
       let scene = c.data?.ngArguments?.scene as Scene;
 
-      if (scene){
-        scene.assets = scene.assets.filter(x => x.id != id)
+      if (scene) {
+        scene.assets = scene.assets.filter((x) => x.id != id);
       }
-    })
+    });
 
     delete this.workflow?.assets[id];
 

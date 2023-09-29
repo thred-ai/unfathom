@@ -10,18 +10,22 @@
     <div
       *ngIf="selectedFile"
       class="h-100 border-table-left"
-      style="width: 300px !important"
+      style="width: 300px !important; overflow-x: hidden;"
     >
       <div class="primary-background h-100 w-100">
         <mat-tab-group
           #menu
           class="w-100 h-100"
           dynamicHeight
+          [fitInkBarToContent]="true"
           animationDuration="0ms"
         >
           <mat-tab class="tab">
             <ng-template mat-tab-label>
-              <span class="primary-text"> Design </span>
+              <!-- <span class="primary-text"> General </span> -->
+              <mat-icon class="primary-text">
+                info
+              </mat-icon>
             </ng-template>
             <ng-template matTabContent>
               <div
@@ -310,7 +314,59 @@
 
           <mat-tab class="tab">
             <ng-template mat-tab-label>
-              <span class="primary-text"> Environment </span>
+              <!-- <span class="primary-text"> World </span> -->
+              <mat-icon class="primary-text">
+                public
+              </mat-icon>
+            </ng-template>
+            <ng-template matTabContent>
+              <div
+                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative px-3"
+              >
+
+              <div class="w-100 pb-3">
+                <verticalai-textbox
+                  [title]="'World'"
+                  [value]="''"
+                  [placeholder]="'World Description'"
+                  (changed)="
+                  sceneDescription = $event
+                  "
+                >
+                </verticalai-textbox>
+                
+              </div>
+
+              <button
+              class="btn bg-orange w-100 border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
+              (click)="generateWorld(sceneDescription)"
+            >
+              <ng-container *ngIf="loading; else buttonTitles">
+                <span class="mx-auto">
+                  {{ "Generating" }}
+                  <span
+                    class="spinner-border spinner-border-sm ms-2 m-auto"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                </span>
+              </ng-container>
+
+              <ng-template #buttonTitles>
+              <ng-container> {{ "Generate World" }}</ng-container>
+              </ng-template>
+            </button>
+
+              </div>
+            </ng-template>
+          </mat-tab>
+
+          <mat-tab class="tab">
+            <ng-template mat-tab-label>
+              <!-- <span class="primary-text"> Models </span> -->
+              <mat-icon class="primary-text">
+                view_in_ar
+              </mat-icon>
             </ng-template>
             <ng-template matTabContent>
               <div

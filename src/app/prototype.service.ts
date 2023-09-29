@@ -333,23 +333,31 @@ export class PrototypeService {
 
       if (world.ground.liquid) {
         BABYLON.Engine.ShadersRepository = '';
-        var water = BABYLON.MeshBuilder.CreateGround(
-          'water',
-          { width: world.size, height: world.size, subdivisions: 32 },
-          scene
-        );
 
-        water.position.y = world.ground.liquid.level;
+        if (world.ground.liquid['liquid'] as any == LiquidType.water){
+          world.ground.liquid['water'] = world.ground.liquid as any
+        }
 
-        if (world.ground.liquid.liquid == LiquidType.water) {
+        if (world.ground.liquid['liquid'] as any == LiquidType.lava){
+          world.ground.liquid['lava'] = world.ground.liquid as any
+        }
+
+        if (world.ground.liquid['water']){
+          var water = BABYLON.MeshBuilder.CreateGround(
+            'water',
+            { width: world.size, height: world.size, subdivisions: 32 },
+            scene
+          );
+          water.position.y = world.ground.liquid['water'].level;
+
           var waterMaterial = new MATERIALS.WaterMaterial(
             'water_material',
             scene
           );
 
-          if (world.ground.liquid.texture.bump) {
+          if (world.ground.liquid['water'].texture.bump) {
             waterMaterial.bumpTexture = new BABYLON.Texture(
-              world.ground.liquid.texture.bump,
+              world.ground.liquid['water'].texture.bump,
               scene
             ); // Set the bump texture
           }
@@ -399,7 +407,17 @@ export class PrototypeService {
           // sound.setPosition(
           //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
           // );
-        } else if (world.ground.liquid.liquid == LiquidType.lava) {
+        
+        }
+
+        if (world.ground.liquid['lava']){
+          var lava = BABYLON.MeshBuilder.CreateGround(
+            'lava',
+            { width: world.size, height: world.size, subdivisions: 32 },
+            scene
+          );
+          lava.position.y = world.ground.liquid['lava'].level;
+
           var lavaMaterial = new MATERIALS.LavaMaterial(
             'water_material',
             scene
@@ -410,9 +428,9 @@ export class PrototypeService {
             scene
           );
 
-          if (world.ground.liquid.texture.diffuse) {
+          if (world.ground.liquid['lava'].texture.diffuse) {
             lavaMaterial.diffuseTexture = new BABYLON.Texture(
-              world.ground.liquid.texture.diffuse,
+              world.ground.liquid['lava'].texture.diffuse,
               scene
             );
           }
@@ -420,8 +438,13 @@ export class PrototypeService {
           lavaMaterial.speed = 0.5;
           lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
           lavaMaterial.unlit = true;
-          water.material = lavaMaterial;
+          lava.material = lavaMaterial;
         }
+
+
+        
+
+
       }
     }
 
