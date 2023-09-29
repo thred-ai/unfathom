@@ -5,12 +5,12 @@
   <div
     class="w-100 h-100 d-flex justify-content-between align-items-center section-background"
   >
-    <div class="w-100 h-100" id="container"></div>
+    <div class="w-100 h-100" style="overflow: hidden;" id="container"></div>
 
     <div
       *ngIf="selectedFile"
       class="h-100 border-table-left"
-      style="width: 300px !important; overflow-x: hidden;"
+      style="width: 300px !important; overflow-x: hidden"
     >
       <div class="primary-background h-100 w-100">
         <mat-tab-group
@@ -23,9 +23,7 @@
           <mat-tab class="tab">
             <ng-template mat-tab-label>
               <!-- <span class="primary-text"> General </span> -->
-              <mat-icon class="primary-text">
-                info
-              </mat-icon>
+              <mat-icon class="primary-text"> info </mat-icon>
             </ng-template>
             <ng-template matTabContent>
               <div
@@ -312,32 +310,45 @@
             </ng-template>
           </mat-tab>
 
+      
+
           <mat-tab class="tab">
             <ng-template mat-tab-label>
               <!-- <span class="primary-text"> World </span> -->
-              <mat-icon class="primary-text">
-                public
-              </mat-icon>
+              <mat-icon class="primary-text"> public </mat-icon>
             </ng-template>
             <ng-template matTabContent>
               <div
-                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative px-3"
+                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
               >
+                <div class="w-100 h-100 p-2 pb-5" style="overflow-y: scroll">
+                  <ion-accordion-group
+                    class="example-headers-align bg-transparent animate__animated animate__fadeIn"
+                    [multiple]="false"
+                    *ngIf="workflow"
+                    (ionChange)="(null)"
+                    id="accordion3"
+                  >
+                    <ion-accordion class="bg-transparent" [value]="'ground'">
+                      <ion-item slot="header" class="primary-text">
+                        <ion-label class="h3 fw-bold">Ground</ion-label>
+                      </ion-item>
+                      <div class="ion-padding" slot="content">
+                        <div class="w-100 pb-3 px-2">
+                          <verticalai-textbox
+                            [title]="'Magic Description (AI)'"
+                            [value]="''"
+                            [placeholder]="'Description'"
+                            (changed)="sceneDescription = $event"
+                          >
+                          </verticalai-textbox>
+                        </div>
+                      </div>
+                    </ion-accordion>
+                  </ion-accordion-group>
+                </div>
 
-              <div class="w-100 pb-3">
-                <verticalai-textbox
-                  [title]="'World'"
-                  [value]="''"
-                  [placeholder]="'World Description'"
-                  (changed)="
-                  sceneDescription = $event
-                  "
-                >
-                </verticalai-textbox>
-                
-              </div>
-
-              <button
+                <!-- <button
               class="btn bg-orange w-100 border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
               (click)="generateWorld(sceneDescription)"
             >
@@ -355,8 +366,7 @@
               <ng-template #buttonTitles>
               <ng-container> {{ "Generate World" }}</ng-container>
               </ng-template>
-            </button>
-
+            </button> -->
               </div>
             </ng-template>
           </mat-tab>
@@ -364,9 +374,7 @@
           <mat-tab class="tab">
             <ng-template mat-tab-label>
               <!-- <span class="primary-text"> Models </span> -->
-              <mat-icon class="primary-text">
-                view_in_ar
-              </mat-icon>
+              <mat-icon class="primary-text"> view_in_ar </mat-icon>
             </ng-template>
             <ng-template matTabContent>
               <div
