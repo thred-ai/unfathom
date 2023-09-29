@@ -1,6 +1,13 @@
 <div
   class="w-100 h-100 d-flex justify-content-center flex-column align-items-center"
 >
-  <span class="my-auto loader {{ mode }}"></span>
+  <!-- <span class="my-auto loader {{ mode }}"></span> -->
+  <object
+    type="image/svg+xml"
+    data="assets/unfathom_icon.svg"
+    class="logo {{ animate ? 'animate' : '' }}"
+  >
+    {{ text }}
+  </object>
   <p *ngIf="text" class="primary-text mt-4 fw-bold">{{ text }}</p>
 </div>

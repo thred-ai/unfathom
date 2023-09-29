@@ -9,6 +9,7 @@ export class LoaderComponent implements OnInit {
 
   @Input() mode: 'light' | 'dark' = 'light'
   @Input() text?: string
+  @Input() animate?: boolean = false
 
 
   constructor() { }
