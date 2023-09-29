@@ -110,24 +110,18 @@
 
 @keyframes colorFade {
   0%, 100% {
-      filter: invert(35%) sepia(100%) hue-rotate(0deg); /* red */
+      filter: brightness(0); /* black */
   }
-  16.67% {
-      filter: invert(60%) sepia(100%) hue-rotate(30deg); /* orange */
+  20% {
+      filter: invert(65%) sepia(80%) hue-rotate(170deg); /* even darker cyan */
   }
-  33.33% {
-      filter: invert(85%) sepia(100%) hue-rotate(60deg); /* yellow */
+  40% {
+      filter: invert(60%) sepia(80%) hue-rotate(80deg); /* even darker green */
   }
-  50% {
-      filter: invert(75%) sepia(80%) hue-rotate(90deg); /* green */
+  60% {
+      filter: invert(25%) sepia(85%) hue-rotate(0deg); /* even darker red */
   }
-  66.67% {
-      filter: invert(40%) sepia(100%) hue-rotate(210deg); /* blue */
-  }
-  83.33% {
-      filter: invert(25%) sepia(95%) hue-rotate(270deg); /* purple */
+  80% {
+      filter: invert(15%) sepia(80%) hue-rotate(270deg); /* even darker purple */
   }
 }
-
-
-
