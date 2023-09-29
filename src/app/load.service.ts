@@ -942,6 +942,27 @@ export class LoadService {
     return url;
   }
 
+  async generateScene(sceneId: string, workflowId: string) {
+    let world = await new Promise<World | undefined>((resolve, reject) => {
+      this.functions
+        .httpsCallable('generateScene', {timeout: 180000})({ sceneId, workflowId, input: "a lava world" })
+        .pipe(first())
+        .subscribe(
+          async (resp) => {
+            console.log(resp as World)
+            resolve(resp);
+          },
+          (err) => {
+            console.error({ err });
+            resolve(undefined);
+          }
+        );
+    });
+    return world;
+  }
+
+  
+
   async saveCode(id: string, uid: string, codeId: string, file: Executable) {
     this.projectService.loading.next(true);
 

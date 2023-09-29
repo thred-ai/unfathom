@@ -12,11 +12,13 @@ import * as BABYLON from 'babylonjs';
 import * as MATERIALS from 'babylonjs-materials';
 import { BehaviorSubject } from 'rxjs';
 import { Dict } from './load.service';
+import { Character } from './models/workflow/character.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PrototypeService {
+
   selectedCharacter?: {
     spawn: { x: number; y: number; z: number };
     id: string;
@@ -33,13 +35,15 @@ export class PrototypeService {
     direction: { x: number; y: number; z: number };
   }[] = [];
 
+  availableCharacters: Dict<Character> = {}
+
   world?: World;
   scene?: Scene;
   project?: Executable;
   cc?: CharacterController;
 
   engine?: BABYLON.Engine;
-  agMap?: Dict<BABYLON.AnimationGroup>
+  agMap?: Dict<BABYLON.AnimationGroup>;
 
   loaded = new BehaviorSubject<string>('');
 
@@ -53,11 +57,43 @@ export class PrototypeService {
 
     this.project = project;
 
-    if (this.scene && this.scene.characters[0]) {
-      this.selectedCharacter = {
-        currentPos: this.scene.characters[0].spawn,
-        ...this.scene?.characters[0],
+    if (this.scene) {
+
+      this.availableCharacters = this.project.characters ?? {}
+
+      if (Object.keys(this.scene.characters).length == 0){
+        this.availableCharacters['default'] = new Character(
+          'default',
+          'Default',
+          'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_avatar.glb',
+          '',
+          'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_head.png',
+          '',
+          'other'
+        );
+      }
+
+      let char = this.scene.characters[0] ?? {
+        id: 'default',
+        role: 'other',
+        spawn: {
+          x: 200,
+          y: 1,
+          z: 200,
+        },
+        direction: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        scale: 1,
       };
+
+      this.selectedCharacter = {
+        currentPos: char.spawn,
+        ...char,
+      };
+
       this.characters = this.scene.characters.map((c) => {
         return {
           currentPos: c.spawn,
@@ -370,7 +406,7 @@ export class PrototypeService {
           );
 
           lavaMaterial.noiseTexture = new BABYLON.Texture(
-            'assets/images/lava_cloud.png',
+            'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
             scene
           );
 
@@ -389,7 +425,7 @@ export class PrototypeService {
       }
     }
 
-    var avatar = this.project?.characters[character.id].assetUrl;
+    var avatar = this.availableCharacters[character.id].assetUrl;
 
     // .id == 'TgSTaxx8MZ1PFXVhS8V4'
     //   ? 'assets/mustafarav2.glb'
@@ -434,7 +470,8 @@ export class PrototypeService {
       this.toRadians(character.direction.z)
     );
 
-    let animationsDir = '/assets/animations/';
+    let animationsDir =
+      'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/animations/';
 
     await this.importAnimation(animationsDir, 'Walk.glb', scene);
     await this.importAnimation(animationsDir, 'Idle.glb', scene);
@@ -556,7 +593,6 @@ export class PrototypeService {
                     //   actor.setParent(object, true, true);
                     //   actor.setEnabled(false);
                     //   this.cc?.setAvatar(object);
-
                     //   this.cc?.setGravity(1);
                     // } else if (moving && shift2) {
                     //   object.removeChild(actor, true);
@@ -564,11 +600,8 @@ export class PrototypeService {
                     //   actor.setEnabled(true);
                     //   this.cc?.setAvatar(actor);
                     //   this.cc?.setActionMap(agMap as any);
-
                     //   this.cc?.setMode(0);
-
                     //   this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
-
                     //   this.cc?.setNoFirstPerson(false);
                     //   this.cc?.setStepOffset(0.4);
                     //   this.cc?.setSlopeLimit(30, 60);
@@ -863,6 +896,6 @@ export class PrototypeService {
     this.engine?.dispose();
     this.engine = undefined;
     this.cc = undefined;
-    this.agMap = undefined
+    this.agMap = undefined;
   }
 }

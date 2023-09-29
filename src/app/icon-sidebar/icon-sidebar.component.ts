@@ -13,6 +13,9 @@ import { ThemeService } from '../theme.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
+import { Ground } from '../models/workflow/ground.model';
+import { Texture } from '../models/workflow/texture.model';
+import { Sky } from '../models/workflow/sky.model';
 
 @AutoUnsubscribe
 @Component({
@@ -74,9 +77,8 @@ export class IconSidebarComponent implements OnInit {
   }
 
   selectWorld() {
-    this.loadService.openPrototype()
+    this.loadService.openPrototype();
   }
-
 
   get canUndo() {
     return this.designerService.canUndo;
@@ -163,6 +165,29 @@ export class IconSidebarComponent implements OnInit {
 
   newScene() {
     let id = this.loadService.newUtilID;
+
+    let scene = new Scene(id, 'My New Scene');
+
+    scene.world.ground = new Ground(
+      'https://storage.googleapis.com/verticalai.appspot.com/default/ground/default_map.png',
+      new Texture(
+        'https://storage.googleapis.com/verticalai.appspot.com/default/ground/texture.png'
+      ),
+      undefined,
+      1
+    );
+
+    scene.world.sky = new Sky(
+      1000,
+      new Texture(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        'https://storage.googleapis.com/verticalai.appspot.com/default/sky/default_sky.png'
+      ),
+    );
+
     return this.graph?.createNode({
       id: id,
       shape: 'scene-node',
@@ -172,7 +197,7 @@ export class IconSidebarComponent implements OnInit {
       height: 300,
       data: {
         ngArguments: {
-          scene: new Scene(id, 'My New Scene'),
+          scene,
         },
       },
       tools: ['button-remove'],

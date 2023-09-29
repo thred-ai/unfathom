@@ -89,7 +89,7 @@
 
   <div
     class="w-100 h-100 renderer"
-    *ngIf="world && scene && project && theme; else noWorld"
+    *ngIf="scene && project && world && theme; else noWorld"
   >
     <app-world-designer
       *ngIf="visible"

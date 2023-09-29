@@ -44,7 +44,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     //   this.project = project;
     // });
 
-    if (this.project && this.scene) {
+    if (this.project && this.scene && this.world) {
 
       this.prototypeService.loaded.next(this.loaded)
       this.prototypeService.init(this.scene, this.project);

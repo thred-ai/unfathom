@@ -90,8 +90,14 @@ export class WorkflowDesignerComponent
     private cdr: ChangeDetectorRef
   ) {}
 
+  // await this.loadService.generateScene(this.selectedFile?.id ?? "", this.workflow!.id)
+
   selectWorld() {
-    this.loadService.openPrototype()
+    let scene = this.selectedFile?.data?.ngArguments?.scene as Scene;
+
+    if (scene && scene.world){
+      this.loadService.openPrototype()
+    }
   }
 
   @ViewChildren('geditor') divs?: QueryList<ElementRef>;
@@ -118,7 +124,7 @@ export class WorkflowDesignerComponent
       'New NPC',
       undefined,
       '',
-      '/assets/default_head.png',
+      'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_head.png',
       '',
       'hero'
     )
@@ -307,7 +313,7 @@ export class WorkflowDesignerComponent
       this.toolboxConfiguration = tool;
     });
 
-    this.designerService.openStep.subscribe((step) => {
+    this.designerService.openStep.subscribe(async (step) => {
       this.selectedFile = step;
 
       let scene = this.selectedFile?.data.ngArguments.scene as Scene;
@@ -315,6 +321,7 @@ export class WorkflowDesignerComponent
       if (scene) {
         this.characterIds = scene?.characters.map((c) => c.id) ?? [];
         this.assetIds = scene?.assets.map((a) => a.id) ?? [];
+
       } else {
         this.characterIds = [];
         this.assetIds = [];
@@ -381,7 +388,6 @@ export class WorkflowDesignerComponent
   removeCharacter(index: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
-
     if (index >= 0) {
       scene.characters.splice(index, 1);
     }
@@ -390,6 +396,15 @@ export class WorkflowDesignerComponent
   }
 
   removeCharacterWorkflow(id: string) {
+
+    this.workflow?.sceneLayout?.cells.forEach(c => {
+      let scene = c.data?.ngArguments?.scene as Scene;
+
+      if (scene){
+        scene.characters = scene.characters.filter(x => x.id != id)
+      }
+    })
+
     delete this.workflow?.characters[id];
 
     this.projectService.workflow.next(this.workflow);
@@ -403,11 +418,21 @@ export class WorkflowDesignerComponent
     if (index >= 0) {
       scene.assets.splice(index, 1);
     }
+
     this.characterIds = scene.assets.map((c) => c.id);
     this.designerService.setScene(scene, scene.id);
   }
 
   removeAssetWorkflow(id: string) {
+
+    this.workflow?.sceneLayout?.cells.forEach(c => {
+      let scene = c.data?.ngArguments?.scene as Scene;
+
+      if (scene){
+        scene.assets = scene.assets.filter(x => x.id != id)
+      }
+    })
+
     delete this.workflow?.assets[id];
 
     this.projectService.workflow.next(this.workflow);
