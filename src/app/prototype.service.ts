@@ -18,7 +18,6 @@ import { Character } from './models/workflow/character.model';
   providedIn: 'root',
 })
 export class PrototypeService {
-
   selectedCharacter?: {
     spawn: { x: number; y: number; z: number };
     id: string;
@@ -35,7 +34,7 @@ export class PrototypeService {
     direction: { x: number; y: number; z: number };
   }[] = [];
 
-  availableCharacters: Dict<Character> = {}
+  availableCharacters: Dict<Character> = {};
 
   world?: World;
   scene?: Scene;
@@ -58,10 +57,7 @@ export class PrototypeService {
     this.project = project;
 
     if (this.scene) {
-
-      this.availableCharacters = this.project.characters ?? {}
-
-      if (Object.keys(this.scene.characters).length == 0){
+      if (Object.keys(this.scene.characters).length == 0) {
         this.availableCharacters['default'] = new Character(
           'default',
           'Default',
@@ -71,6 +67,8 @@ export class PrototypeService {
           '',
           'other'
         );
+      } else {
+        this.availableCharacters = this.project.characters ?? {};
       }
 
       let char = this.scene.characters[0] ?? {
@@ -334,15 +332,15 @@ export class PrototypeService {
       if (world.ground.liquid) {
         BABYLON.Engine.ShadersRepository = '';
 
-        if (world.ground.liquid['liquid'] as any == LiquidType.water){
-          world.ground.liquid['water'] = world.ground.liquid as any
+        if ((world.ground.liquid['liquid'] as any) == LiquidType.water) {
+          world.ground.liquid['water'] = world.ground.liquid as any;
         }
 
-        if (world.ground.liquid['liquid'] as any == LiquidType.lava){
-          world.ground.liquid['lava'] = world.ground.liquid as any
+        if ((world.ground.liquid['liquid'] as any) == LiquidType.lava) {
+          world.ground.liquid['lava'] = world.ground.liquid as any;
         }
 
-        if (world.ground.liquid['water']){
+        if (world.ground.liquid['water']) {
           var water = BABYLON.MeshBuilder.CreateGround(
             'water',
             { width: world.size, height: world.size, subdivisions: 32 },
@@ -407,10 +405,9 @@ export class PrototypeService {
           // sound.setPosition(
           //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
           // );
-        
         }
 
-        if (world.ground.liquid['lava']){
+        if (world.ground.liquid['lava']) {
           var lava = BABYLON.MeshBuilder.CreateGround(
             'lava',
             { width: world.size, height: world.size, subdivisions: 32 },
@@ -440,11 +437,6 @@ export class PrototypeService {
           lavaMaterial.unlit = true;
           lava.material = lavaMaterial;
         }
-
-
-        
-
-
       }
     }
 
