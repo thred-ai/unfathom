@@ -31,8 +31,8 @@
     </ng-container>
 
     <ng-container *ngIf="data.comp == 'asset-details-module'">
-      <app-character-edit-module [data]="data" (changed)="changed.emit($event)">
-      </app-character-edit-module>
+      <app-asset-module [data]="data" (changed)="changed.emit($event)">
+      </app-asset-module>
     </ng-container>
   </div>
 </div>

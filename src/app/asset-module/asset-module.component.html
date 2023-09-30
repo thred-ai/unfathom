@@ -1,176 +1,137 @@
-<div
-  class="w-100 h-100 d-flex justify-content-between align-items-center flex-column primary-background p-3 pb-4"
-  *ngIf="workflow && asset && assetDetails"
->
-  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-    <div class="primary-background w-100 h-100 m-auto" style="max-width: 600px">
-      <div class="w-100 h-100">
-        <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 15px">
-            Asset
-          </div>
-        </div>
-      </div>
+<div class="w-100 h-100 p-3" *ngIf="workflow && asset && assetDetails">
+  <div class="w-100 pb-3">
+    <p class="w-100 mb-3 primary-text fw-bold">Position</p>
 
-      <div class="w-100" style="overflow-y: scroll; max-height: 600px">
-        <div class="w-100 pb-3">
-          <p class="w-100 mb-3 primary-text fw-bold">Position</p>
-
-          <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'X'"
-                [type]="'number'"
-                [range]="{ min: -100000, max: 100000 }"
-                [value]="assetDetails['spawn'].x"
-                [placeholder]="'Position (X)'"
-                (changed)="assetDetails['spawn'].x = $event"
-              >
-              </verticalai-text-field>
-            </div>
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'Y'"
-                [type]="'number'"
-                [range]="{ min: -100000, max: 100000 }"
-                [value]="assetDetails['spawn'].y"
-                [placeholder]="'Position (Y)'"
-                (changed)="assetDetails['spawn'].y = $event"
-              >
-              </verticalai-text-field>
-            </div>
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'Z'"
-                [type]="'number'"
-                [range]="{ min: -100000, max: 100000 }"
-                [value]="assetDetails['spawn'].z"
-                [placeholder]="'Position (Z)'"
-                (changed)="assetDetails['spawn'].z = $event"
-              >
-              </verticalai-text-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="w-100 pb-3">
-          <p class="w-100 mb-3 primary-text fw-bold">Direction (°)</p>
-
-          <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'X'"
-                [type]="'number'"
-                [range]="{ min: -100000, max: 100000 }"
-                [value]="assetDetails['direction'].x"
-                [placeholder]="'Direction (X)'"
-                (changed)="assetDetails['direction'].x = $event"
-              >
-              </verticalai-text-field>
-            </div>
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'Y'"
-                [type]="'number'"
-                [range]="{ min: -100000, max: 100000 }"
-                [value]="assetDetails['direction'].y"
-                [placeholder]="'Direction (Y)'"
-                (changed)="assetDetails['direction'].y = $event"
-              >
-              </verticalai-text-field>
-            </div>
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'Z'"
-                [type]="'number'"
-                [range]="{ min: -100000, max: 100000 }"
-                [value]="assetDetails['direction'].z"
-                [placeholder]="'Direction (Z)'"
-                (changed)="assetDetails['direction'].z = $event"
-              >
-              </verticalai-text-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="w-100 pb-3">
-          <verticalai-layout-slider
-            [value]="(assetDetails['scale'] ?? 1) * 10"
-            [title]="'Scale'"
-            [min]="5"
-            [max]="1000"
-            [step]="10"
-            [lineFillColor]="'#0A99FF'"
-            (valueChange)="assetDetails['scale'] = $event / 10"
-          >
-          </verticalai-layout-slider>
-        </div>
-
-        <div class="w-100 pb-3">
-          <div class="w-100 pb-3">
-            <verticalai-select-field
-              [title]="'Movement'"
-              [value]="assetDetails['movement']['canMount'] ?? false"
-              [data]="movementTypes"
-              [valueField]="'mountable'"
-              [displayField]="'name'"
-              (changed)="assetDetails['movement']['canMount'] = $event"
-            >
-            </verticalai-select-field>
-          </div>
-        </div>
-
-        <div
-          class="w-100 pb-3"
-          *ngIf="assetDetails['movement']['canMount'] ?? true"
+    <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'X'"
+          [type]="'number'"
+          [range]="{ min: -100000, max: 100000 }"
+          [value]="assetDetails['spawn'].x"
+          [placeholder]="'Position (X)'"
+          (changed)="assetDetails['spawn'].x = $event; save()"
         >
-          <p class="w-100 mb-3 primary-text fw-bold">Physics</p>
-
-          <div class="w-100 pb-3 row row-cols-2 justify-content-center g-0">
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'Speed (m/s)'"
-                [type]="'number'"
-                [range]="{ min: 1, max: 1000 }"
-                [value]="assetDetails['movement']['speed'] ?? 2"
-                [placeholder]="'Speed (m/s)'"
-                (changed)="assetDetails['movement']['speed'] = $event"
-              >
-              </verticalai-text-field>
-            </div>
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'Gravity (m/s)'"
-                [type]="'number'"
-                [range]="{ min: 0, max: 100 }"
-                [value]="assetDetails['movement']['gravity'] ?? 9.8"
-                [placeholder]="'Gravity (m/s)'"
-                (changed)="assetDetails['movement']['gravity'] = $event"
-              >
-              </verticalai-text-field>
-            </div>
-          </div>
-        </div>
+        </verticalai-text-field>
       </div>
-      <button
-        class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
-        (click)="save()"
-      >
-        <ng-container *ngIf="loading != ''; else buttonTitles">
-          <span class="mx-auto">
-            {{ loading }}
-            <span
-              class="spinner-border spinner-border-sm ms-2 m-auto"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          </span>
-        </ng-container>
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'Y'"
+          [type]="'number'"
+          [range]="{ min: -100000, max: 100000 }"
+          [value]="assetDetails['spawn'].y"
+          [placeholder]="'Position (Y)'"
+          (changed)="assetDetails['spawn'].y = $event; save()"
+        >
+        </verticalai-text-field>
+      </div>
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'Z'"
+          [type]="'number'"
+          [range]="{ min: -100000, max: 100000 }"
+          [value]="assetDetails['spawn'].z"
+          [placeholder]="'Position (Z)'"
+          (changed)="assetDetails['spawn'].z = $event; save()"
+        >
+        </verticalai-text-field>
+      </div>
+    </div>
+  </div>
 
-        <ng-template #buttonTitles>
-          <ng-container> {{ "Save Asset" }}</ng-container>
-        </ng-template>
-      </button>
+  <div class="w-100 pb-3">
+    <p class="w-100 mb-3 primary-text fw-bold">Direction (°)</p>
+
+    <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'X'"
+          [type]="'number'"
+          [range]="{ min: -100000, max: 100000 }"
+          [value]="assetDetails['direction'].x"
+          [placeholder]="'Direction (X)'"
+          (changed)="assetDetails['direction'].x = $event"
+        >
+        </verticalai-text-field>
+      </div>
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'Y'"
+          [type]="'number'"
+          [range]="{ min: -100000, max: 100000 }"
+          [value]="assetDetails['direction'].y"
+          [placeholder]="'Direction (Y)'"
+          (changed)="assetDetails['direction'].y = $event"
+        >
+        </verticalai-text-field>
+      </div>
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'Z'"
+          [type]="'number'"
+          [range]="{ min: -100000, max: 100000 }"
+          [value]="assetDetails['direction'].z"
+          [placeholder]="'Direction (Z)'"
+          (changed)="assetDetails['direction'].z = $event"
+        >
+        </verticalai-text-field>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-100 pb-3">
+    <verticalai-layout-slider
+      [value]="(assetDetails['scale'] ?? 1) * 10"
+      [title]="'Scale'"
+      [min]="5"
+      [max]="1000"
+      [step]="10"
+      [lineFillColor]="'#0A99FF'"
+      (valueChange)="assetDetails['scale'] = $event / 10; save()"
+    >
+    </verticalai-layout-slider>
+  </div>
+
+  <div class="w-100 pb-3">
+    <div class="w-100 pb-3">
+      <verticalai-select-field
+        [title]="'Movement'"
+        [value]="assetDetails['movement']['canMount'] ?? false"
+        [data]="movementTypes"
+        [valueField]="'mountable'"
+        [displayField]="'name'"
+        (changed)="assetDetails['movement']['canMount'] = $event; save()"
+      >
+      </verticalai-select-field>
+    </div>
+  </div>
+
+  <div class="w-100 pb-3" *ngIf="assetDetails['movement']['canMount'] ?? true">
+    <p class="w-100 mb-3 primary-text fw-bold">Physics</p>
+
+    <div class="w-100 pb-3 row row-cols-2 justify-content-center g-0">
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'Speed (m/s)'"
+          [type]="'number'"
+          [range]="{ min: 1, max: 1000 }"
+          [value]="assetDetails['movement']['speed'] ?? 2"
+          [placeholder]="'Speed (m/s)'"
+          (changed)="assetDetails['movement']['speed'] = $event; save()"
+        >
+        </verticalai-text-field>
+      </div>
+      <div class="col px-1">
+        <verticalai-text-field
+          [title]="'Gravity (m/s)'"
+          [type]="'number'"
+          [range]="{ min: 0, max: 100 }"
+          [value]="assetDetails['movement']['gravity'] ?? 9.8"
+          [placeholder]="'Gravity (m/s)'"
+          (changed)="assetDetails['movement']['gravity'] = $event; save()"
+        >
+        </verticalai-text-field>
+      </div>
     </div>
   </div>
 </div>

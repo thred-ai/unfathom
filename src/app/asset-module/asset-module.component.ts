@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Dict, LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
@@ -11,30 +19,25 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 @Component({
   selector: 'app-asset-module',
   templateUrl: './asset-module.component.html',
-  styleUrls: ['./asset-module.component.scss']
+  styleUrls: ['./asset-module.component.scss'],
 })
 export class AssetModuleComponent implements OnInit {
-  workflow?: Executable
-  asset?: ModelAsset
-  assetDetails?: Dict<any>
-  scene?: Scene
+  workflow?: Executable;
+  asset?: ModelAsset;
+  assetDetails?: Dict<any>;
+  scene?: Scene;
 
   fileDisplay?: string;
 
-  loading = ''
+  @Input() data: any = {};
+
+  @Output() changed = new EventEmitter<any>();
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<AssetModuleComponent>,
     private loadService: LoadService,
     private designerService: DesignerService
-  ) {
-    this.workflow = data.workflow
-    this.asset = data.asset
-    this.assetDetails = data.assetDetails
-    this.fileDisplay = data.asset.assetUrl
-  }
+  ) {}
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
     let file = event.target.files[0];
@@ -47,22 +50,19 @@ export class AssetModuleComponent implements OnInit {
     reader.onload = (event: any) => {
       var base64 = event.target.result;
 
-      if (type == 1){
+      if (type == 1) {
         let imgIcon = document.getElementById('imgIcon') as HTMLImageElement;
         imgIcon!.src = base64;
         // this.newImg = file;
-      }
-      else if (type == 2){
+      } else if (type == 2) {
         // this.newAsset = file;
         this.fileDisplay = base64;
       }
-
     };
 
     reader.readAsDataURL(blob);
   }
 
-  
   updateCellAsset(
     id: string,
     assetId: string,
@@ -71,7 +71,6 @@ export class AssetModuleComponent implements OnInit {
     subField?: string
   ) {
     let cell = this.designerService.graph?.getCellById(id);
-
 
     if (cell && this.scene) {
       var finalField = this.scene.assets.find((c) => c.id == assetId) as any;
@@ -90,26 +89,22 @@ export class AssetModuleComponent implements OnInit {
     }
   }
 
-
-
   movementTypes = [
     {
       mountable: true,
-      name: 'Movable'
+      name: 'Movable',
     },
     {
       mountable: false,
-      name: 'Stationary'
-    }
-  ]
-
+      name: 'Stationary',
+    },
+  ];
 
   async save(action = 'save') {
-
     // let img = this.newImg as File;
     // let asset = this.newAsset as File;
 
-    this.loading = "Saving"
+    // this.loading = "Saving"
 
     // if (img && workflow && asset) {
     //   let url = await this.loadService.uploadAssetImg(
@@ -136,15 +131,25 @@ export class AssetModuleComponent implements OnInit {
     //   }
     // }
 
-    this.loading = ""
+    // this.dialogRef.close({
+    //   workflow: this.workflow,
+    //   action,
+    //   asset: this.asset,
+    //   assetDetails: this.assetDetails
+    // });'
 
-    this.dialogRef.close({
+    this.changed.emit({
       workflow: this.workflow,
       action,
       asset: this.asset,
-      assetDetails: this.assetDetails
+      assetDetails: this.assetDetails,
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.workflow = this.data.workflow;
+    this.asset = this.data.asset;
+    this.assetDetails = this.data.assetDetails;
+    this.fileDisplay = this.data.asset?.assetUrl;
+  }
 }

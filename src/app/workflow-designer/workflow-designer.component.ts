@@ -371,39 +371,68 @@ export class WorkflowDesignerComponent
     let details = scene.assets[assetIndex];
     let c = this.workflow?.assets[asset];
 
-    let ref = this.dialog.open(AssetModuleComponent, {
-      width: 'calc(var(--vh, 1vh) * 70)',
-      maxWidth: '650px',
-      maxHeight: 'calc(var(--vh, 1vh) * 100)',
-      panelClass: 'app-full-bleed-dialog',
-
-      data: {
+    this.openMenu(
+      'asset-details-module',
+      {
         asset: c,
         assetDetails: details,
         workflow: this.workflow,
       },
-    });
+      (data) => {
+        if (data && data != '' && data != '0' && data.workflow) {
+          // let asset = data.asset as ModelAsset;
+          let assetDetails = data.assetDetails as any;
 
-    ref.afterClosed().subscribe(async (val) => {
-      if (val && val != '' && val != '0' && val.workflow) {
-        let asset = val.asset as ModelAsset;
-        let assetDetails = val.assetDetails as any;
+          if (data.action == 'delete') {
+            // character.status = 1;
+            return;
+          }
 
-        if (val.action == 'delete') {
-          // character.status = 1;
-          return;
+          if (assetIndex >= 0) {
+            scene!.assets[assetIndex] = assetDetails;
+            this.designerService.setScene(scene, scene.id);
+          }
+
+          this.projectService.workflow.next(this.workflow);
+
+          this.workflowChanged.emit(this.workflow);
         }
-
-        if (assetIndex >= 0) {
-          scene!.assets[assetIndex] = assetDetails;
-          this.designerService.setScene(scene, scene.id);
-        }
-
-        this.projectService.workflow.next(this.workflow);
-
-        this.workflowChanged.emit(this.workflow);
       }
-    });
+    );
+
+    // let ref = this.dialog.open(AssetModuleComponent, {
+    //   width: 'calc(var(--vh, 1vh) * 70)',
+    //   maxWidth: '650px',
+    //   maxHeight: 'calc(var(--vh, 1vh) * 100)',
+    //   panelClass: 'app-full-bleed-dialog',
+
+    //   data: {
+    //     asset: c,
+    //     assetDetails: details,
+    //     workflow: this.workflow,
+    //   },
+    // });
+
+    // ref.afterClosed().subscribe(async (val) => {
+    //   if (val && val != '' && val != '0' && val.workflow) {
+    //     let asset = val.asset as ModelAsset;
+    //     let assetDetails = val.assetDetails as any;
+
+    //     if (val.action == 'delete') {
+    //       // character.status = 1;
+    //       return;
+    //     }
+
+    //     if (assetIndex >= 0) {
+    //       scene!.assets[assetIndex] = assetDetails;
+    //       this.designerService.setScene(scene, scene.id);
+    //     }
+
+    //     this.projectService.workflow.next(this.workflow);
+
+    //     this.workflowChanged.emit(this.workflow);
+    //   }
+    // });
   }
 
   public ngOnInit() {
@@ -437,11 +466,10 @@ export class WorkflowDesignerComponent
     });
 
     this.designerService.openStep.subscribe(async (step) => {
-
-      if (step?.id != this.selectedFile?.id){
-        this.selectedData = undefined
+      if (step?.id != this.selectedFile?.id && this.selectedData) {
+        this.selectedData = undefined;
       }
-      
+
       this.selectedFile = step;
 
       let scene = this.selectedFile?.data.ngArguments.scene as Scene;
@@ -453,7 +481,6 @@ export class WorkflowDesignerComponent
         this.characterIds = [];
         this.assetIds = [];
       }
-
     });
   }
 
