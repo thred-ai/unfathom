@@ -15,7 +15,6 @@
       <app-extended-menu
         [data]="selectedData.data"
         (close)="selectedData = undefined"
-        
         (changed)="selectedData.callback ? selectedData.callback($event) : null"
       >
       </app-extended-menu>
@@ -33,6 +32,7 @@
           dynamicHeight
           [fitInkBarToContent]="true"
           animationDuration="0ms"
+          (selectedTabChange)="selectedData = undefined"
         >
           <mat-tab class="tab">
             <ng-template mat-tab-label>
@@ -346,7 +346,72 @@
                         <ion-label class="h3 fw-bold">Ground</ion-label>
                       </ion-item>
                       <div class="ion-padding" slot="content">
-                        <div class="w-100 pb-3 px-2">
+                        <div class="w-100 pb-3">
+                          <div
+                            class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+                          >
+                            <p class="w-100 fw-bold my-auto">Project Characters</p>
+                            <mat-icon
+                              class="m-auto primary-text"
+                              role="button"
+                              (click)="editCharacter()"
+                            >
+                              add
+                            </mat-icon>
+                          </div>
+      
+                          <div class="row row-cols-2 justify-content-start g-0">
+                            <div
+                              *ngFor="let character of characters ?? []; index as i"
+                              class="col p-1 position-relative"
+                              style="aspect-ratio: 0.75"
+                            >
+                              <div
+                                class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
+                                style="overflow: hidden"
+                                role="button"
+                                (click)="editCharacter(character)"
+                              >
+                                <img
+                                  class="w-100 h-100"
+                                  style="object-fit: cover; aspect-ratio: 1"
+                                  [src]="character.img"
+                                />
+      
+                                <div
+                                  class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
+                                >
+                                  <p
+                                    class="mx-auto primary-text text-truncate text-center"
+                                    style="width: 70px"
+                                  >
+                                    {{ character.name }}
+                                  </p>
+                                </div>
+                              </div>
+      
+                              <div
+                                class="rounded-circle bg-orange position-absolute"
+                                style="
+                                  z-index: 1;
+                                  right: 0;
+                                  top: 0;
+                                  aspect-ratio: 1 !important;
+                                "
+                                role="button"
+                                (click)="removeCharacterWorkflow(character.id)"
+                              >
+                                <mat-icon
+                                  class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+                                  style="font-size: small"
+                                >
+                                  close
+                                </mat-icon>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- <div class="w-100 pb-3 px-2">
                           <verticalai-textbox
                             [title]="'Magic Description (AI)'"
                             [value]="''"
@@ -354,7 +419,7 @@
                             (changed)="sceneDescription = $event"
                           >
                           </verticalai-textbox>
-                        </div>
+                        </div> -->
                       </div>
                     </ion-accordion>
                   </ion-accordion-group>
@@ -585,6 +650,7 @@
           class="w-100 h-100"
           dynamicHeight
           animationDuration="0ms"
+          (selectedTabChange)="selectedData = undefined"
         >
           <mat-tab class="tab">
             <ng-template mat-tab-label>

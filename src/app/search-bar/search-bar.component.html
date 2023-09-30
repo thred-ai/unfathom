@@ -8,11 +8,11 @@
 ></ion-searchbar>
 <ion-list
   class="custom-list border-table rounded shadow position-fixed"
-  style="z-index: 1000;"
+  style="z-index: 1000 !important;"
   *ngIf="isItemAvailable"
 >
   <ion-item
-    class="custom-item p{{ characters[item.id] ? '-disabled' : '' }}"
+    class="custom-item{{ characters[item.id] ? '-disabled' : '' }}"
     *ngFor="let item of items"
     (click)="selectCharacter(item); search.value = ''; isItemAvailable = false"
   >

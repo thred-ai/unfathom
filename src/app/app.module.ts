@@ -144,6 +144,9 @@ import { AssetModuleComponent } from './asset-module/asset-module.component';
 import { AssetsModuleComponent } from './assets-module/assets-module.component';
 import { CharacterEditModuleComponent } from './character-edit-module/character-edit-module.component';
 import { ExtendedMenuComponent } from './extended-menu/extended-menu.component';
+import { WorldEditComponent } from './world-edit/world-edit.component';
+import { SkyEditComponent } from './sky-edit/sky-edit.component';
+import { GroundEditComponent } from './ground-edit/ground-edit.component';
 
 @NgModule({
   declarations: [
@@ -208,6 +211,9 @@ import { ExtendedMenuComponent } from './extended-menu/extended-menu.component';
     AssetsModuleComponent,
     CharacterEditModuleComponent,
     ExtendedMenuComponent,
+    WorldEditComponent,
+    SkyEditComponent,
+    GroundEditComponent,
   ],
   imports: [
     CommonModule,

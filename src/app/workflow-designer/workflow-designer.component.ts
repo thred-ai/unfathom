@@ -39,6 +39,7 @@ import { ModelAsset } from '../models/workflow/model-asset.model';
 import { AssetsModuleComponent } from '../assets-module/assets-module.component';
 import { CharacterEditModuleComponent } from '../character-edit-module/character-edit-module.component';
 import { AssetMovement } from '../models/workflow/asset-movement.model';
+import { LiquidType } from '../models/workflow/liquid-type.enum';
 
 @AutoUnsubscribe
 @Component({
@@ -105,6 +106,8 @@ export class WorkflowDesignerComponent
   @ViewChildren('geditor') divs?: QueryList<ElementRef>;
 
   ngAfterViewChecked(): void {}
+
+  sceneComponents: { id: string; img: string; name: string }[] = [];
 
   copy(text: string) {
     this.clipboard.copy(text);
