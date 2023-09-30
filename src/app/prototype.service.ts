@@ -332,12 +332,12 @@ export class PrototypeService {
       if (world.ground.liquid) {
         BABYLON.Engine.ShadersRepository = '';
 
-        if ((world.ground.liquid['liquid'] as any) == LiquidType.water) {
-          world.ground.liquid['water'] = world.ground.liquid as any;
+        if ((world.ground.liquid['liquid'] as any) == LiquidType.water && !world.ground.liquid['water']) {
+          // world.ground.liquid['water'] = world.ground.liquid as any;
         }
 
-        if ((world.ground.liquid['liquid'] as any) == LiquidType.lava) {
-          world.ground.liquid['lava'] = world.ground.liquid as any;
+        if ((world.ground.liquid['liquid'] as any) == LiquidType.lava && !world.ground.liquid['lava']) {
+          // world.ground.liquid['lava'] = world.ground.liquid as any;
         }
 
         if (world.ground.liquid['water']) {

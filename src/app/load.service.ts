@@ -422,6 +422,8 @@ export class LoadService {
           })
         );
 
+        console.log(data)
+
         let uploadData = JSON.parse(
           JSON.stringify({
             modified: date,
