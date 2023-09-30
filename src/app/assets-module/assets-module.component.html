@@ -1,96 +1,79 @@
-<div
-  class="w-100 h-100 d-flex justify-content-between align-items-center flex-column primary-background p-3 pb-4"
-  *ngIf="workflow && asset"
->
-  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-    <div class="primary-background w-100 h-100 m-auto" style="max-width: 600px">
-      <div class="w-100 h-100">
-        <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 15px">
-            Asset
+<div class="w-100 h-100 p-3" *ngIf="workflow && asset">
+  <div class="primary-background w-100 h-100 m-auto">
+    <div class="w-100 pb-3">
+      <verticalai-text-field
+        [title]="'Name'"
+        [value]="asset.name"
+        [placeholder]="'Name'"
+        (changed)="asset.name = $event; save()"
+      >
+      </verticalai-text-field>
+    </div>
+
+    <div class="w-100 h-100 pb-3">
+      <div class="w-100 h-100 py-3">
+        <p class="w-100 mb-3 primary-text fw-bold">Asset File (.glb)</p>
+
+        <div
+          class="w-100 secondary-background rounded position-relative"
+          style="height: 250px"
+        >
+          <div class="w-100 h-100 position-absolute">
+            <app-model-viewer
+              #modelViewer
+              *ngIf="fileDisplay; else noFile"
+              [camera]="true"
+              [model]="fileDisplay"
+              [animate]="true"
+              [poster]="'/assets/default.png'"
+              [id]="'viewer'"
+              [ar]="false"
+            >
+            </app-model-viewer>
+            <ng-template #noFile>
+              <div
+                class="d-flex justify-content-center align-items-center w-100 h-100"
+              >
+                <span
+                  class="m-auto primary-text h5"
+                  role="button"
+                  (click)="aImgInput.click()"
+                  >No asset to display</span
+                >
+              </div>
+            </ng-template>
           </div>
+
+          <div
+            class="position-absolute"
+            style="z-index: 1; right: 10px; bottom: 10px"
+          >
+            <button
+              class="mb-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
+              (click)="fileDisplay = undefined"
+              [matTooltip]="'Remove'"
+              *ngIf="fileDisplay"
+            >
+              <mat-icon> delete </mat-icon>
+            </button>
+            <button
+              class="mt-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
+              [matTooltip]="'Upload New'"
+              (click)="aImgInput.click()"
+            >
+              <mat-icon> upload_file </mat-icon>
+            </button>
+          </div>
+
+          <input
+            #aImgInput
+            type="file"
+            (change)="fileChangeEvent($event, 1)"
+            style="display: none"
+          />
         </div>
       </div>
-
-      <div class="w-100" style="overflow-y: scroll; max-height: 600px">
-
-        <div class="w-100 pb-3">
-          <verticalai-text-field
-            [title]="'Name'"
-            [value]="asset.name"
-            [placeholder]="'Name'"
-            (changed)="asset.name = $event"
-          >
-          </verticalai-text-field>
-        </div>
-
-        <div class="w-100 h-100 pb-3">
-
-          <div class="w-100 h-100 py-3">
-            <p class="w-100 mb-3 primary-text fw-bold">
-              Asset File (.glb)
-            </p>
-
-            <div
-              class="w-100 secondary-background rounded position-relative"
-              style="height: 250px"
-            >
-              <div class="w-100 h-100 position-absolute">
-                <app-model-viewer
-                #modelViewer
-                  *ngIf="fileDisplay; else noFile"
-                  [camera]="true"
-                  [model]="fileDisplay"
-                  [animate]="true"
-                  [poster]="'/assets/default.png'"
-                  [id]="'viewer'"
-                  [ar]="false"
-                >
-                </app-model-viewer>
-                <ng-template #noFile>
-                  <div
-                    class="d-flex justify-content-center align-items-center w-100 h-100"
-                  >
-                    <span
-                      class="m-auto primary-text h5"
-                      role="button"
-                      (click)="aImgInput.click()"
-                      >No asset to display</span
-                    >
-                  </div>
-                </ng-template>
-              </div>
-
-              <div
-                class="position-absolute"
-                style="z-index: 1; right: 10px; bottom: 10px"
-              >
-                <button
-                  class="mb-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
-                  (click)="fileDisplay = undefined"
-                  [matTooltip]="'Remove'"
-                  *ngIf="fileDisplay"
-                >
-                  <mat-icon> delete </mat-icon>
-                </button>
-                <button
-                  class="mt-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
-                  [matTooltip]="'Upload New'"
-                  (click)="aImgInput.click()"
-                >
-                  <mat-icon> upload_file </mat-icon>
-                </button>
-              </div>
-
-              <input
-              #aImgInput
-              type="file"
-              (change)="fileChangeEvent($event, 1)"
-              style="display: none"
-            />
-            </div>
-          </div>
-          <!-- <ngx-dropzone
+      <!-- <ngx-dropzone
                 class="w-100 h-100 bg-transparent border-0"
                 style="z-index: 1000; pointer-events: none"
                 (change)="dropped($event)"
@@ -99,7 +82,7 @@
                 #drop
               >
               </ngx-dropzone> -->
-          <!-- <div
+      <!-- <div
                     *ngIf="!data.asset"
                     class="position-absolute d-flex justify-content-end align-items-center flex-column"
                     style="right: 10px; top: 10px; bottom: 10px; z-index: 1001"
@@ -121,27 +104,6 @@
                       <mat-icon> close </mat-icon>
                     </a>
                   </div> -->
-        </div>
-      </div>
-      <button
-        class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
-        (click)="save()"
-      >
-        <ng-container *ngIf="loading != ''; else buttonTitles">
-          <span class="mx-auto">
-            {{ loading }}
-            <span
-              class="spinner-border spinner-border-sm ms-2 m-auto"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          </span>
-        </ng-container>
-
-        <ng-template #buttonTitles>
-          <ng-container> {{ "Save Asset" }}</ng-container>
-        </ng-template>
-      </button>
     </div>
   </div>
 </div>

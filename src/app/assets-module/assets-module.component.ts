@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
@@ -10,28 +19,25 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 @Component({
   selector: 'app-assets-module',
   templateUrl: './assets-module.component.html',
-  styleUrls: ['./assets-module.component.scss']
+  styleUrls: ['./assets-module.component.scss'],
 })
 export class AssetsModuleComponent implements OnInit {
-
-  workflow?: Executable
-  asset?: ModelAsset
-  newAsset?: File
+  workflow?: Executable;
+  asset?: ModelAsset;
+  newAsset?: File;
 
   fileDisplay?: string;
 
-  loading = ''
+  loading = '';
+
+  @Input() data: any = {};
+
+  @Output() changed = new EventEmitter<any>();
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<AssetsModuleComponent>,
     private loadService: LoadService
-  ) {
-    this.workflow = data.workflow
-    this.asset = data.asset
-    this.fileDisplay = data.asset.assetUrl
-  }
+  ) {}
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
     let file = event.target.files[0];
@@ -44,11 +50,11 @@ export class AssetsModuleComponent implements OnInit {
     reader.onload = (event: any) => {
       var base64 = event.target.result;
 
-      if (type == 1){
+      if (type == 1) {
         this.newAsset = file;
         this.fileDisplay = base64;
+        this.save()
       }
-
     };
 
     reader.readAsDataURL(blob);
@@ -57,19 +63,17 @@ export class AssetsModuleComponent implements OnInit {
   @ViewChild(ModelViewerComponent) modelViewer?: ModelViewerComponent;
 
   async save(action = 'save') {
-
     let asset = this.newAsset as File;
 
     let workflow = this.workflow as Executable;
     let assets = this.asset as ModelAsset;
 
-    this.loading = "Saving Asset"
-
+    this.loading = 'Saving Asset';
 
     if (asset && workflow && assets) {
-      this.loading = "Uploading Assets"
-      if ((!assets.img || assets.img == '') && this.modelViewer){
-        let i = this.modelViewer.screenshot()
+      this.loading = 'Uploading Assets';
+      if ((!assets.img || assets.img == '') && this.modelViewer) {
+        let i = this.modelViewer.screenshot();
 
         if (i) {
           let url = await this.loadService.uploadAssetImg(
@@ -77,12 +81,11 @@ export class AssetsModuleComponent implements OnInit {
             workflow.id,
             assets.id
           );
-    
+
           if (url) {
             assets.img = url;
           }
         }
-
       }
       let url = await this.loadService.uploadCharacterAsset(
         asset,
@@ -92,18 +95,28 @@ export class AssetsModuleComponent implements OnInit {
 
       if (url) {
         assets.assetUrl = url;
+        this.newAsset = undefined;
       }
     }
 
-    this.loading = ""
+    // this.dialogRef.close({
+    //   workflow: this.workflow,
+    //   action,
+    //   asset: assets,
+    // });
 
-    this.dialogRef.close({
+    this.asset = assets
+
+    this.changed.emit({
       workflow: this.workflow,
       action,
       asset: assets,
     });
   }
 
-  ngOnInit(): void {}
-
+  ngOnInit(): void {
+    this.workflow = this.data.workflow;
+    this.asset = this.data.asset;
+    this.fileDisplay = this.data.asset?.assetUrl;
+  }
 }

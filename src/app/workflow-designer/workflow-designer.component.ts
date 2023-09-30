@@ -67,6 +67,8 @@ export class WorkflowDesignerComponent
   assets: ModelAsset[] = [];
   assetIds: string[] = [];
 
+  selectedData?: { data: any; callback: ((data: any) => any) | undefined };
+
   @Input() set models(val: SceneDefinition[]) {
     val.forEach((v) => {
       this.frames[v.type] = v;
@@ -118,32 +120,47 @@ export class WorkflowDesignerComponent
     window.dispatchEvent(new Event('resize'));
   }
 
-  loading = false
+  loading = false;
 
-  sceneDescription = ""
+  sceneDescription = '';
 
   async generateWorld(desc: string) {
     let scene = this.selectedFile;
 
-    if (scene && scene.id && this.workflow && desc != "") {
-      this.loading = true
+    if (scene && scene.id && this.workflow && desc != '') {
+      this.loading = true;
       let world = await this.loadService.generateScene(
         scene.id,
         this.workflow.id,
         desc
       );
-      this.loading = false
+      this.loading = false;
       if (world) {
         let s = this.selectedFile?.data.ngArguments.scene as Scene;
 
         if (s) {
           s.world = world;
-          this.designerService.setScene(s, s.id)
-          console.log(s.world)
+          this.designerService.setScene(s, s.id);
+          console.log(s.world);
           // this.saveLayout();
         }
       }
     }
+  }
+
+  openMenu(comp: string, data: any, callback?: (data: any) => any) {
+    this.selectedData = undefined;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.selectedData = {
+        data: {
+          comp,
+          ...data,
+        },
+        callback,
+      };
+    }, 1);
   }
 
   editCharacter(
@@ -157,34 +174,55 @@ export class WorkflowDesignerComponent
       'hero'
     )
   ) {
-    let ref = this.dialog.open(CharacterModuleComponent, {
-      width: 'calc(var(--vh, 1vh) * 70)',
-      maxWidth: '650px',
-      maxHeight: 'calc(var(--vh, 1vh) * 100)',
-      panelClass: 'app-full-bleed-dialog',
+    this.openMenu(
+      'character-module',
+      { character, workflow: this.workflow },
+      (data) => {
+        if (data && data != '' && data != '0' && data.workflow) {
+          let character = data.character as Character;
 
-      data: {
-        character,
-        workflow: this.workflow,
-      },
-    });
+          if (data.action == 'delete') {
+            // character.status = 1;
+            return;
+          }
 
-    ref.afterClosed().subscribe(async (val) => {
-      if (val && val != '' && val != '0' && val.workflow) {
-        let character = val.character as Character;
+          this.workflow!.characters[character.id] = character;
 
-        if (val.action == 'delete') {
-          // character.status = 1;
-          return;
+          this.projectService.workflow.next(this.workflow);
+
+          this.workflowChanged.emit(this.workflow);
         }
-
-        this.workflow!.characters[character.id] = character;
-
-        this.projectService.workflow.next(this.workflow);
-
-        this.workflowChanged.emit(this.workflow);
       }
-    });
+    );
+
+    // let ref = this.dialog.open(CharacterModuleComponent, {
+    //   width: 'calc(var(--vh, 1vh) * 70)',
+    //   maxWidth: '650px',
+    //   maxHeight: 'calc(var(--vh, 1vh) * 100)',
+    //   panelClass: 'app-full-bleed-dialog',
+
+    //   data: {
+    //     character,
+    //     workflow: this.workflow,
+    //   },
+    // });
+
+    // ref.afterClosed().subscribe(async (val) => {
+    //   if (val && val != '' && val != '0' && val.workflow) {
+    //     let character = val.character as Character;
+
+    //     if (val.action == 'delete') {
+    //       // character.status = 1;
+    //       return;
+    //     }
+
+    //     this.workflow!.characters[character.id] = character;
+
+    //     this.projectService.workflow.next(this.workflow);
+
+    //     this.workflowChanged.emit(this.workflow);
+    //   }
+    // });
   }
 
   editCharacterDetails(character: string) {
@@ -193,42 +231,76 @@ export class WorkflowDesignerComponent
     let details = scene.characters.find((c) => c.id == character);
     let c = this.workflow?.characters[character];
 
-    let ref = this.dialog.open(CharacterEditModuleComponent, {
-      width: 'calc(var(--vh, 1vh) * 70)',
-      maxWidth: '650px',
-      maxHeight: 'calc(var(--vh, 1vh) * 100)',
-      panelClass: 'app-full-bleed-dialog',
-
-      data: {
+    this.openMenu(
+      'character-details-module',
+      {
         character: c,
         characterDetails: details,
         workflow: this.workflow,
         type: 'character',
       },
-    });
+      (data) => {
+        if (data && data != '' && data != '0' && data.workflow) {
+          let character = data.character as Character;
+          let characterDetails = data.characterDetails as any;
 
-    ref.afterClosed().subscribe(async (val) => {
-      if (val && val != '' && val != '0' && val.workflow) {
-        let character = val.character as Character;
-        let characterDetails = val.characterDetails as any;
+          if (data.action == 'delete') {
+            // character.status = 1;
+            return;
+          }
 
-        if (val.action == 'delete') {
-          // character.status = 1;
-          return;
+          let index = scene.characters.findIndex((c) => c.id == character.id);
+
+          console.log('ou');
+
+          if (index >= 0) {
+            scene!.characters[index] = characterDetails;
+            this.designerService.setScene(scene, scene.id);
+          }
+
+          this.projectService.workflow.next(this.workflow);
+
+          this.workflowChanged.emit(this.workflow);
         }
-
-        let index = scene.characters.findIndex((c) => c.id == character.id);
-
-        if (index >= 0) {
-          scene!.characters[index] = characterDetails;
-          this.designerService.setScene(scene, scene.id);
-        }
-
-        this.projectService.workflow.next(this.workflow);
-
-        this.workflowChanged.emit(this.workflow);
       }
-    });
+    );
+
+    // let ref = this.dialog.open(CharacterEditModuleComponent, {
+    //   width: 'calc(var(--vh, 1vh) * 70)',
+    //   maxWidth: '650px',
+    //   maxHeight: 'calc(var(--vh, 1vh) * 100)',
+    //   panelClass: 'app-full-bleed-dialog',
+
+    //   data: {
+    //     character: c,
+    //     characterDetails: details,
+    //     workflow: this.workflow,
+    //     type: 'character',
+    //   },
+    // });
+
+    // ref.afterClosed().subscribe(async (val) => {
+    //   if (val && val != '' && val != '0' && val.workflow) {
+    //     let character = val.character as Character;
+    //     let characterDetails = val.characterDetails as any;
+
+    //     if (val.action == 'delete') {
+    //       // character.status = 1;
+    //       return;
+    //     }
+
+    //     let index = scene.characters.findIndex((c) => c.id == character.id);
+
+    //     if (index >= 0) {
+    //       scene!.characters[index] = characterDetails;
+    //       this.designerService.setScene(scene, scene.id);
+    //     }
+
+    //     this.projectService.workflow.next(this.workflow);
+
+    //     this.workflowChanged.emit(this.workflow);
+    //   }
+    // });
   }
 
   editAsset(
@@ -240,34 +312,57 @@ export class WorkflowDesignerComponent
       'static'
     )
   ) {
-    let ref = this.dialog.open(AssetsModuleComponent, {
-      width: 'calc(var(--vh, 1vh) * 70)',
-      maxWidth: '650px',
-      maxHeight: 'calc(var(--vh, 1vh) * 100)',
-      panelClass: 'app-full-bleed-dialog',
-
-      data: {
+    this.openMenu(
+      'asset-module',
+      {
         asset,
         workflow: this.workflow,
       },
-    });
+      (data) => {
+        if (data && data != '' && data != '0' && data.workflow) {
+          let asset = data.asset as ModelAsset;
 
-    ref.afterClosed().subscribe(async (val) => {
-      if (val && val != '' && val != '0' && val.workflow) {
-        let asset = val.asset as ModelAsset;
+          if (data.action == 'delete') {
+            // character.status = 1;
+            return;
+          }
 
-        if (val.action == 'delete') {
-          // character.status = 1;
-          return;
+          this.workflow!.assets[asset.id] = asset;
+
+          this.projectService.workflow.next(this.workflow);
+
+          this.workflowChanged.emit(this.workflow);
         }
-
-        this.workflow!.assets[asset.id] = asset;
-
-        this.projectService.workflow.next(this.workflow);
-
-        this.workflowChanged.emit(this.workflow);
       }
-    });
+    );
+    // let ref = this.dialog.open(AssetsModuleComponent, {
+    //   width: 'calc(var(--vh, 1vh) * 70)',
+    //   maxWidth: '650px',
+    //   maxHeight: 'calc(var(--vh, 1vh) * 100)',
+    //   panelClass: 'app-full-bleed-dialog',
+
+    //   data: {
+    //     asset,
+    //     workflow: this.workflow,
+    //   },
+    // });
+
+    // ref.afterClosed().subscribe(async (val) => {
+    //   if (val && val != '' && val != '0' && val.workflow) {
+    //     let asset = val.asset as ModelAsset;
+
+    //     if (val.action == 'delete') {
+    //       // character.status = 1;
+    //       return;
+    //     }
+
+    //     this.workflow!.assets[asset.id] = asset;
+
+    //     this.projectService.workflow.next(this.workflow);
+
+    //     this.workflowChanged.emit(this.workflow);
+    //   }
+    // });
   }
 
   editAssetDetails(asset: string, assetIndex: number) {
@@ -342,6 +437,11 @@ export class WorkflowDesignerComponent
     });
 
     this.designerService.openStep.subscribe(async (step) => {
+
+      if (step?.id != this.selectedFile?.id){
+        this.selectedData = undefined
+      }
+      
       this.selectedFile = step;
 
       let scene = this.selectedFile?.data.ngArguments.scene as Scene;
@@ -353,6 +453,7 @@ export class WorkflowDesignerComponent
         this.characterIds = [];
         this.assetIds = [];
       }
+
     });
   }
 

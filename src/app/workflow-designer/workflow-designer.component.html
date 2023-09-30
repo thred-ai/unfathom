@@ -5,12 +5,26 @@
   <div
     class="w-100 h-100 d-flex justify-content-between align-items-center section-background"
   >
-    <div class="w-100 h-100" style="overflow: hidden;" id="container"></div>
+    <div class="w-100 h-100" style="overflow: hidden" id="container"></div>
+
+    <div
+      class="h-100 border-table-left primary-background"
+      style="width: 400px !important; overflow-x: hidden; flex-shrink: 0"
+      *ngIf="selectedData"
+    >
+      <app-extended-menu
+        [data]="selectedData.data"
+        (close)="selectedData = undefined"
+        
+        (changed)="selectedData.callback ? selectedData.callback($event) : null"
+      >
+      </app-extended-menu>
+    </div>
 
     <div
       *ngIf="selectedFile"
       class="h-100 border-table-left"
-      style="width: 300px !important; overflow-x: hidden"
+      style="width: 250px !important; flex-shrink: 0; overflow-x: hidden"
     >
       <div class="primary-background h-100 w-100">
         <mat-tab-group
@@ -310,8 +324,6 @@
             </ng-template>
           </mat-tab>
 
-      
-
           <mat-tab class="tab">
             <ng-template mat-tab-label>
               <!-- <span class="primary-text"> World </span> -->
@@ -565,7 +577,7 @@
     <div
       *ngIf="!selectedFile"
       class="h-100 border-table-left"
-      style="width: 300px !important"
+      style="width: 250px !important; overflow-x: hidden; flex-shrink: 0"
     >
       <div class="primary-background h-100 w-100">
         <mat-tab-group

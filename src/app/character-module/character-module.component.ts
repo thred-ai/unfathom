@@ -1,4 +1,13 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
 import { Executable } from '../models/workflow/executable.model';
@@ -13,29 +22,25 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./character-module.component.scss'],
 })
 export class CharacterModuleComponent implements OnInit, AfterViewInit {
-
-  workflow?: Executable
-  character?: Character
+  workflow?: Executable;
+  character?: Character;
   newImg?: File;
-  newAsset?: File
+  newAsset?: File;
 
   fileDisplay?: string;
 
-  loading = ''
+  @Input() data: any = {};
+
+  @Output() changed = new EventEmitter<any>();
+
+  loading = '';
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<CharacterModuleComponent>,
-    private loadService: LoadService
+    private loadService: LoadService,
   ) {
-    this.workflow = data.workflow
-    this.character = data.character
-    this.fileDisplay = data.character.assetUrl
-
     // setTimeout(() => {
     //   let i = document.getElementById("cont") as HTMLDivElement
-
     //   console.log(i)
     //   if (i){
     //     i.scroll(0,0);
@@ -54,30 +59,27 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
     reader.onload = (event: any) => {
       var base64 = event.target.result;
 
-      if (type == 1){
+      if (type == 1) {
         let imgIcon = document.getElementById('imgIcon') as HTMLImageElement;
         imgIcon!.src = base64;
         this.newImg = file;
-      }
-      else if (type == 2){
+      } else if (type == 2) {
         this.newAsset = file;
         this.fileDisplay = base64;
       }
 
+      this.save();
     };
 
     reader.readAsDataURL(blob);
   }
 
   async save(action = 'save') {
-
     let img = this.newImg as File;
     let asset = this.newAsset as File;
 
     let workflow = this.workflow as Executable;
     let character = this.character as Character;
-
-    this.loading = "Saving Character"
 
     if (img && workflow && character) {
       let url = await this.loadService.uploadCharacterImg(
@@ -88,11 +90,11 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
 
       if (url) {
         character.img = url;
+        this.newImg = undefined;
       }
     }
 
     if (asset && workflow && character) {
-      this.loading = "Uploading Assets"
       let url = await this.loadService.uploadCharacterAsset(
         asset,
         workflow.id,
@@ -101,12 +103,17 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
 
       if (url) {
         character.assetUrl = url;
+        this.newAsset = undefined;
       }
     }
 
-    this.loading = ""
+    // this.dialogRef.close({
+    //   workflow: this.workflow,
+    //   action,
+    //   character: this.character,
+    // });
 
-    this.dialogRef.close({
+    this.changed.emit({
       workflow: this.workflow,
       action,
       character: this.character,
@@ -114,11 +121,10 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-
+    this.workflow = this.data.workflow;
+    this.character = this.data.character;
+    this.fileDisplay = this.data.character?.assetUrl;
   }
 
-  ngAfterViewInit(): void {
-
-  
-  }
+  ngAfterViewInit(): void {}
 }

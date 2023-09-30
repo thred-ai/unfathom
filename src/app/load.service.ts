@@ -256,6 +256,7 @@ export class LoadService {
   }
 
   async uploadCharacterImg(file: File, id: string, characterId: string) {
+    this.projectService.loading.next(true);
     try {
       let ref = this.storage.ref(
         `workflows/${id}/characters/${characterId}/${characterId}.png`
@@ -267,10 +268,12 @@ export class LoadService {
     } catch (error) {
       console.log(error);
     }
+    this.projectService.loading.next(false);
     return undefined;
   }
 
   async uploadAssetImg(file: string, id: string, assetId: string) {
+    this.projectService.loading.next(true);
     try {
       let ref = this.storage.ref(
         `workflows/${id}/assets/${assetId}/${assetId}.png`
@@ -282,10 +285,12 @@ export class LoadService {
     } catch (error) {
       console.log(error);
     }
+    this.projectService.loading.next(false);
     return undefined;
   }
 
   async uploadCharacterAsset(file: File, id: string, characterId: string) {
+    this.projectService.loading.next(true);
     try {
       let ref = this.storage.ref(
         `workflows/${id}/characters/${characterId}/${characterId}.glb`
@@ -297,6 +302,7 @@ export class LoadService {
     } catch (error) {
       console.log(error);
     }
+    this.projectService.loading.next(false);
     return undefined;
   }
 

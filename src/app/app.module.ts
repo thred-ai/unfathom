@@ -143,6 +143,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { AssetModuleComponent } from './asset-module/asset-module.component';
 import { AssetsModuleComponent } from './assets-module/assets-module.component';
 import { CharacterEditModuleComponent } from './character-edit-module/character-edit-module.component';
+import { ExtendedMenuComponent } from './extended-menu/extended-menu.component';
 
 @NgModule({
   declarations: [
@@ -206,6 +207,7 @@ import { CharacterEditModuleComponent } from './character-edit-module/character-
     AssetModuleComponent,
     AssetsModuleComponent,
     CharacterEditModuleComponent,
+    ExtendedMenuComponent,
   ],
   imports: [
     CommonModule,
