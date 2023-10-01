@@ -26,6 +26,7 @@ export class ProtoTesterComponent implements OnInit {
   mountableAssets: string[] = [];
 
   mountedAsset?: string;
+  selectedCharacter?: string;
 
   worldDescription?: string
 
@@ -68,6 +69,14 @@ export class ProtoTesterComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
+    this.prototypeService.mountedAsset.subscribe(asset => {
+      this.mountedAsset = asset
+    })
+
+    this.prototypeService.selectedCharacter.subscribe(character => {
+      this.selectedCharacter = character
+    })
+
     this.themeService.theme.subscribe((theme) => {
       this.theme = theme ?? 'light';
       this.cdr.detectChanges();
@@ -98,12 +107,14 @@ export class ProtoTesterComponent implements OnInit {
   }
 
   mountAsset(id: string) {
-    this.mountedAsset = id;
     this.prototypeService.mountAsset(id, 0);
   }
 
   dismountAsset(id: string) {
     this.prototypeService.dismountAsset(id);
-    this.mountedAsset = undefined;
+  }
+
+  selectCharacter(id: string) {
+    this.prototypeService.selectCharacter(id);
   }
 }

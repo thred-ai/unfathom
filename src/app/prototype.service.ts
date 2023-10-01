@@ -18,13 +18,7 @@ import { Character } from './models/workflow/character.model';
   providedIn: 'root',
 })
 export class PrototypeService {
-  selectedCharacter?: {
-    spawn: { x: number; y: number; z: number };
-    id: string;
-    currentPos: { x: number; y: number; z: number };
-    scale: number;
-    direction: { x: number; y: number; z: number };
-  };
+  selectedCharacter = new BehaviorSubject<string | undefined>(undefined);
 
   characters: {
     spawn: { x: number; y: number; z: number };
@@ -45,6 +39,8 @@ export class PrototypeService {
   agMap?: Dict<BABYLON.AnimationGroup>;
 
   loaded = new BehaviorSubject<string>('');
+
+  mountedAsset = new BehaviorSubject<string | undefined>(undefined);
 
   constructor() {}
 
@@ -87,10 +83,7 @@ export class PrototypeService {
         scale: 1,
       };
 
-      this.selectedCharacter = {
-        currentPos: char.spawn,
-        ...char,
-      };
+      this.selectedCharacter.next(char.id);
 
       this.characters = this.scene.characters.map((c) => {
         return {
@@ -117,74 +110,70 @@ export class PrototypeService {
       this.engine = new BABYLON.Engine(canvas, true);
 
       //Creating scene
-      var { scene, actor } = await this.createScene2(
-        this.engine,
-        this.world,
-        this.scene,
-        this.selectedCharacter,
-        this.characters
-      );
+      let res = await this.createScene2(this.engine, this.world, this.scene);
 
-      scene.activeCamera!.attachControl(canvas);
+      if (res) {
+        let scene = res;
 
-      this.engine.enableOfflineSupport = false;
-      this.loaded.next('Launching Scene');
+        this.engine.enableOfflineSupport = false;
+        this.loaded.next('Launching Scene');
 
-      scene.whenReadyAsync(true).then(() => {
-        this.loaded.next('');
-        setTimeout(() => {
+        scene.whenReadyAsync(true).then(() => {
+          this.loaded.next('');
+          setTimeout(() => {
+            this.engine?.resize();
+          }, 1);
+        });
+
+        // Once the scene is loaded, we register a render loop to render it
+        this.engine.runRenderLoop(() => {
+          let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
+          if (cam) {
+            const angle = BABYLON.Vector3.GetAngleBetweenVectorsOnPlane(
+              cam.getForwardRay().direction,
+              BABYLON.Vector3.Backward(),
+              BABYLON.Vector3.Up()
+            );
+
+            // actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
+            //   new BABYLON.Vector3(1, 0, 0),
+            //   100
+            // );
+
+            if (this.selectedCharacter.value) {
+              let actor = scene.getMeshById(
+                this.selectedCharacter.value
+              ) as BABYLON.Mesh;
+
+              actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
+                BABYLON.Vector3.Up(),
+                -angle
+              );
+            }
+            scene.render();
+          }
+        });
+
+        // Resize
+        window.addEventListener('resize', () => {
           this.engine?.resize();
-        }, 1);
-      });
-
-      // Once the scene is loaded, we register a render loop to render it
-      this.engine.runRenderLoop(function () {
-        let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
-        const angle = BABYLON.Vector3.GetAngleBetweenVectorsOnPlane(
-          cam.getForwardRay().direction,
-          BABYLON.Vector3.Backward(),
-          BABYLON.Vector3.Up()
-        );
-
-        // actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
-        //   new BABYLON.Vector3(1, 0, 0),
-        //   100
-        // );
-
-        actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
-          BABYLON.Vector3.Up(),
-          -angle
-        );
-
-        scene.render();
-      });
-
-      // Resize
-      window.addEventListener('resize', () => {
-        this.engine?.resize();
-      });
+        });
+      }
     }
   }
 
-  async createScene2(
-    engine: BABYLON.Engine,
-    world: World,
-    worldScene: Scene,
-    character: {
-      spawn: { x: number; y: number; z: number };
-      id: string;
-      currentPos: { x: number; y: number; z: number };
-      scale: number;
-      direction: { x: number; y: number; z: number };
-    },
-    characters: {
-      spawn: { x: number; y: number; z: number };
-      id: string;
-      currentPos: { x: number; y: number; z: number };
-      scale: number;
-      direction: { x: number; y: number; z: number };
-    }[]
-  ) {
+  async createScene2(engine: BABYLON.Engine, world: World, worldScene: Scene) {
+    if (!this.selectedCharacter.value) {
+      return;
+    }
+
+    let sameCharacter = this.characters.find(
+      (c) => c.id == this.selectedCharacter.value
+    );
+
+    if (!sameCharacter) {
+      return;
+    }
     var scene = new BABYLON.Scene(engine);
 
     // const gl = new BABYLON.GlowLayer('glow', scene);
@@ -432,7 +421,8 @@ export class PrototypeService {
       }
     }
 
-    var avatar = this.availableCharacters[character.id].assetUrl;
+    var avatar =
+      this.availableCharacters[this.selectedCharacter.value].assetUrl;
 
     // .id == 'TgSTaxx8MZ1PFXVhS8V4'
     //   ? 'assets/mustafarav2.glb'
@@ -459,22 +449,20 @@ export class PrototypeService {
 
     var actor = result.meshes[0] as BABYLON.Mesh;
 
-    actor.id = character.id;
+    actor.id = this.selectedCharacter.value;
 
-    actor.scaling.scaleInPlace(character.scale);
+    actor.scaling.scaleInPlace(sameCharacter.scale);
     actor.checkCollisions = true;
 
-    actor.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
+    actor.position.y = sameCharacter.spawn.y; //world.size / 10 + 20; //35;
 
-    actor.position.y = character.spawn.y; //world.size / 10 + 20; //35;
-
-    actor.position.z = character.spawn.z; //world.size / 5 - 400;
-    actor.position.x = character.spawn.x; //world.size / 10 + 900;
+    actor.position.z = sameCharacter.spawn.z; //world.size / 5 - 400;
+    actor.position.x = sameCharacter.spawn.x; //world.size / 10 + 900;
 
     actor.rotation = new BABYLON.Vector3(
-      this.toRadians(character.direction.x),
-      this.toRadians(character.direction.y),
-      this.toRadians(character.direction.z)
+      this.toRadians(sameCharacter.direction.x),
+      this.toRadians(sameCharacter.direction.y),
+      this.toRadians(sameCharacter.direction.z)
     );
 
     let animationsDir =
@@ -595,58 +583,9 @@ export class PrototypeService {
                   object.rotation.z += rotation.z;
 
                   if (object.intersectsMesh(actor, false, true)) {
-                    // if (!moving && shift) {
-                    //   moving = true;
-                    //   actor.setParent(object, true, true);
-                    //   actor.setEnabled(false);
-                    //   this.cc?.setAvatar(object);
-                    //   this.cc?.setGravity(1);
-                    // } else if (moving && shift2) {
-                    //   object.removeChild(actor, true);
-                    //   moving = false;
-                    //   actor.setEnabled(true);
-                    //   this.cc?.setAvatar(actor);
-                    //   this.cc?.setActionMap(agMap as any);
-                    //   this.cc?.setMode(0);
-                    //   this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
-                    //   this.cc?.setNoFirstPerson(false);
-                    //   this.cc?.setStepOffset(0.4);
-                    //   this.cc?.setSlopeLimit(30, 60);
-                    //   this.cc?.setWalkSpeed(7.5);
-                    //   this.cc?.setTurnSpeed(20);
-                    //   this.cc?.setJumpSpeed(20);
-                    //   this.cc?.setRunSpeed(30);
-                    //   this.cc?.setGravity(50);
-                    // }
                   }
-
-                  // camera.rotation.y += rotation.y;
-                  // camera.rotation.x += rotation.x;
-                  // camera.rotation.z += rotation.z;
-
-                  // camera.setPosition(camera.position.addInPlace(translation))
-                  // } else {
-                  //   // actor3.removeChild(actor);
-                  // }
-
                   object.locallyTranslate(translation);
-
-                  // if (y === 1) {
-                  //   if (shift){
-                  //     actor3.rotation.y -= 0.075
-                  //     return
-                  //   }
-                  //   actor3.rotation.y += 0.075;
-                  // }
                 };
-
-                // var actionParameter = { trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: actor3 };
-
-                //   actor.actionManager?.registerAction(new BABYLON.ExecuteCodeAction(actionParameter, function(event: BABYLON.ActionEvent)
-                //   {
-                //       console.log("Hit!");
-                //       actor.position.y = actor.position.y
-                //   }));
               }
             });
           }
@@ -655,8 +594,8 @@ export class PrototypeService {
     );
 
     await Promise.all(
-      characters.map(async (c) => {
-        if (c.id != character?.id) {
+      this.characters.map(async (c) => {
+        if (c.id != this.selectedCharacter.value) {
           var avatar2 = this.project?.characters[c.id].assetUrl;
           const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
             '',
@@ -668,16 +607,7 @@ export class PrototypeService {
           );
 
           var actor2 = result2.meshes[0] as BABYLON.Mesh;
-          actor2.id = actor2.id;
-
-          const modelTransformNodes = actor2.getChildTransformNodes();
-          const modelAnimationGroup = idle.clone('clone', (oldTarget) => {
-            return modelTransformNodes.find(
-              (node) => node.name === oldTarget.name
-            );
-          });
-          modelAnimationGroup.start();
-          modelAnimationGroup.loopAnimation = true;
+          actor2.id = c.id;
 
           actor2.scaling.scaleInPlace(c.scale);
           actor2.checkCollisions = true;
@@ -693,6 +623,8 @@ export class PrototypeService {
             this.toRadians(c.direction.y),
             this.toRadians(c.direction.z)
           );
+
+          this.setAnimation(actor2, idle, scene, `default_${c.id}`);
         }
       })
     );
@@ -706,25 +638,6 @@ export class PrototypeService {
     generator.setTransparencyShadow(true);
     generator.addShadowCaster(actor, true);
 
-    var alpha = -(Math.PI / 2 + actor.rotation.y);
-    var beta = Math.PI / 2.5;
-    var camTarget = new BABYLON.Vector3(
-      actor.position.x,
-      actor.position.y + 1.5,
-      actor.position.z
-    );
-
-    var camera = new BABYLON.ArcRotateCamera(
-      'ArcRotateCamera',
-      alpha,
-      beta,
-      10,
-      camTarget,
-      scene
-    );
-
-    camera.maxZ = world.size * 2;
-
     BABYLON.SceneLoader.OnPluginActivatedObservable.add(function (loader) {
       if (loader.name === 'gltf') {
         (loader as GLTFFileLoader).animationStartMode =
@@ -732,37 +645,67 @@ export class PrototypeService {
       }
     });
 
-    this.agMap = {
-      walk,
-      idle,
-      run,
-      idleJump,
-      runJump,
-      fall,
-    };
+    this.selectedCharacter.subscribe((c) => {
+      //
+      if (c) {
+        let actorMesh = scene.getMeshById(c) as BABYLON.Mesh;
 
-    this.cc = new CharacterController(actor, camera, scene, this.agMap);
+        if (actorMesh) {
+          let idleClone = this.cloneAnimation(
+            actorMesh,
+            idle,
+            scene,
+            `idle_${this.selectedCharacter.value}`
+          );
 
-    this.cc?.setMode(0);
+          let walkClone = this.cloneAnimation(
+            actorMesh,
+            walk,
+            scene,
+            `walk_${this.selectedCharacter.value}`
+          );
 
-    this.cc?.setFaceForward(true);
+          let runClone = this.cloneAnimation(
+            actorMesh,
+            run,
+            scene,
+            `run_${this.selectedCharacter.value}`
+          );
 
-    this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
+          let idleJumpClone = this.cloneAnimation(
+            actorMesh,
+            idleJump,
+            scene,
+            `jump_${this.selectedCharacter.value}`
+          );
 
-    this.cc?.setNoFirstPerson(false);
-    this.cc?.setStepOffset(0.4);
-    this.cc?.setSlopeLimit(30, 60);
-    this.cc?.setWalkSpeed(7.5);
-    this.cc?.setTurnSpeed(20);
-    this.cc?.setJumpSpeed(20);
-    this.cc?.setRunSpeed(30);
-    this.cc?.setGravity(50);
+          let fallClone = this.cloneAnimation(
+            actorMesh,
+            fall,
+            scene,
+            `fall_${this.selectedCharacter.value}`
+          );
 
-    this.cc?.enableBlending(0.05);
-    this.cc?.setCameraElasticity(false);
-    this.cc?.makeObstructionInvisible(false);
-    // this.cc?.setGravity(0.5)
-    this.cc?.start();
+          let runJumpClone = this.cloneAnimation(
+            actorMesh,
+            runJump,
+            scene,
+            `runJump_${this.selectedCharacter.value}`
+          );
+
+          let agMap = {
+            walk: walkClone,
+            idle: idleClone,
+            run: runClone,
+            idleJump: idleJumpClone,
+            runJump: runJumpClone,
+            fall: fallClone,
+          };
+
+          this.initializeCharacterController(actorMesh, scene, agMap);
+        }
+      }
+    });
 
     // BABYLON.ParticleHelper.CreateAsync('rain', scene, false).then((set) => {
     //   set.systems[0].updateSpeed = 0.1;
@@ -832,12 +775,111 @@ export class PrototypeService {
 
     // const gl2 = new BABYLON.GlowLayer('bolt', scene);
 
-    return { scene, actor };
+    return scene;
+  }
+
+  initializeCharacterController(
+    actor: BABYLON.Mesh,
+    scene: BABYLON.Scene,
+    agMap: Dict<BABYLON.AnimationGroup>,
+    speed: number = 7.5,
+    gravity: number = 50,
+    forward: boolean = true
+  ) {
+    if (this.cc && scene.activeCamera) {
+      this.cc.stop();
+      this.cc = undefined;
+      scene.activeCamera!.detachControl();
+      scene.removeCamera(scene.activeCamera);
+    }
+    setTimeout(() => {
+      var alpha = -(Math.PI / 2 + actor.rotation.y);
+      var beta = Math.PI / 2.5;
+      var camTarget = new BABYLON.Vector3(
+        actor.position.x,
+        actor.position.y + 1.5,
+        actor.position.z
+      );
+
+      var camera = new BABYLON.ArcRotateCamera(
+        'ArcRotateCamera',
+        alpha,
+        beta,
+        10,
+        camTarget,
+        scene
+      );
+
+      camera.maxZ = this.world!.size * 2;
+
+      actor.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
+
+      this.cc = new CharacterController(actor, camera, scene, agMap);
+      this.cc?.setMode(0);
+
+      this.cc?.setFaceForward(forward);
+
+      this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
+
+      this.cc?.setNoFirstPerson(false);
+      this.cc?.setStepOffset(0.4);
+      this.cc?.setSlopeLimit(30, 60);
+      this.cc?.setWalkSpeed(speed);
+      this.cc?.setTurnSpeed(20);
+      this.cc?.setJumpSpeed(speed * 2.5);
+      this.cc?.setRunSpeed(speed * 4);
+      this.cc?.setGravity(gravity);
+
+      this.cc?.enableBlending(0.05);
+      this.cc?.setCameraElasticity(false);
+      this.cc?.makeObstructionInvisible(false);
+      this.cc?.start();
+
+      var canvas = document.getElementById('canvas') as HTMLCanvasElement;
+      scene.activeCamera!.attachControl(canvas);
+    }, 10);
+
+    // this.cc?.setGravity(0.5)
   }
 
   toRadians = (degrees: number) => {
     return (degrees * Math.PI) / 180;
   };
+
+  setAnimation(
+    actor: BABYLON.Mesh,
+    animation: BABYLON.AnimationGroup,
+    scene: BABYLON.Scene,
+    animationId: string
+  ) {
+    let modelAnimationGroup = this.cloneAnimation(
+      actor,
+      animation,
+      scene,
+      animationId
+    );
+    modelAnimationGroup.start();
+    modelAnimationGroup.loopAnimation = true;
+  }
+
+  cloneAnimation(
+    actor: BABYLON.Mesh,
+    animation: BABYLON.AnimationGroup,
+    scene: BABYLON.Scene,
+    animationId: string
+  ) {
+    const modelTransformNodes = actor.getChildTransformNodes();
+    let anim = scene.getAnimationGroupByName(animationId);
+    if (anim) {
+      anim.stop();
+      scene.removeAnimationGroup(anim);
+    }
+    const modelAnimationGroup = animation.clone(animationId, (oldTarget) => {
+      return modelTransformNodes.find((node) => node.name === oldTarget.name);
+    });
+
+    return modelAnimationGroup;
+  }
 
   async importAnimation(dir: string, name: string, scene: BABYLON.Scene) {
     return BABYLON.SceneLoader.ImportAnimationsAsync(
@@ -851,45 +893,69 @@ export class PrototypeService {
 
   mountAsset(id: string, gravity: number) {
     let scene = this.engine?.scenes[0];
-    if (scene && this.selectedCharacter) {
+    if (scene && this.selectedCharacter.value) {
       let assetMesh = scene.getMeshById(id) as BABYLON.Mesh;
       let actorMesh = scene.getMeshById(
-        this.selectedCharacter.id
+        this.selectedCharacter.value
       ) as BABYLON.Mesh;
 
-      if (assetMesh && actorMesh) {
-        actorMesh.setParent(assetMesh, true, true);
-        actorMesh.setEnabled(false);
-        this.cc?.setAvatar(assetMesh);
+      let asset = this.scene?.assets.find((a) => a.id == id);
 
-        this.cc?.setGravity(gravity);
+      if (assetMesh && actorMesh && asset) {
+        // actorMesh.setParent(assetMesh, true, true);
+        // actorMesh.setEnabled(false);
+        this.initializeCharacterController(
+          assetMesh,
+          scene,
+          {},
+          asset.movement.speed,
+          asset.movement.gravity,
+          false
+        );
+        setTimeout(() => {
+          this.mountedAsset.next(id);
+        }, 20);
+      }
+    }
+  }
+
+  selectCharacter(id: string) {
+    let scene = this.engine?.scenes[0];
+    if (scene && this.selectedCharacter.value) {
+      let actorMesh = scene.getMeshById(id) as BABYLON.Mesh;
+      let oldActorMesh = scene.getMeshById(
+        this.selectedCharacter.value
+      ) as BABYLON.Mesh;
+      const anim = scene.getAnimationGroupByName(
+        'M_Standing_Idle_Variations_001'
+      )!;
+      if (oldActorMesh && anim) {
+        this.setAnimation(
+          oldActorMesh,
+          anim,
+          scene,
+          `default_${this.selectedCharacter.value}`
+        );
+      }
+      if (actorMesh) {
+        this.selectedCharacter.next(id);
       }
     }
   }
 
   dismountAsset(id: string) {
     let scene = this.engine?.scenes[0];
-    if (scene && this.selectedCharacter) {
+    if (scene && this.selectedCharacter.value) {
       let assetMesh = scene.getMeshById(id) as BABYLON.Mesh;
       let actorMesh = scene.getMeshById(
-        this.selectedCharacter.id
+        this.selectedCharacter.value
       ) as BABYLON.Mesh;
 
-      if (assetMesh && actorMesh && this.agMap) {
-        assetMesh.removeChild(actorMesh, true);
-        actorMesh.setEnabled(true);
-        this.cc?.setAvatar(actorMesh);
-        this.cc?.setActionMap(this.agMap as any);
-        this.cc?.setMode(0);
-        this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
-        this.cc?.setNoFirstPerson(false);
-        this.cc?.setStepOffset(0.4);
-        this.cc?.setSlopeLimit(30, 60);
-        this.cc?.setWalkSpeed(7.5);
-        this.cc?.setTurnSpeed(20);
-        this.cc?.setJumpSpeed(20);
-        this.cc?.setRunSpeed(30);
-        this.cc?.setGravity(50);
+      if (assetMesh && actorMesh) {
+        // assetMesh.removeChild(actorMesh, true);
+        // actorMesh.setEnabled(true);
+        this.mountedAsset.next(undefined);
+        this.selectCharacter(this.selectedCharacter.value)
       }
     }
   }
@@ -904,5 +970,7 @@ export class PrototypeService {
     this.engine = undefined;
     this.cc = undefined;
     this.agMap = undefined;
+    this.selectedCharacter.next(undefined)
+    this.mountedAsset.next(undefined)
   }
 }

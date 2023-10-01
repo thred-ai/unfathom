@@ -139,6 +139,21 @@
       </button>
     </ng-container>
 
+    <ng-container *ngIf="selectedCharacter;">
+      <button
+        mat-menu-item
+        class="proj toolButton"
+        [matMenuTriggerFor]="characters"
+      >
+        <mat-icon
+          class="my-auto me-2 d-flex justify-content-center align-items-center"
+          style="font-size: 16px"
+          >sports_esports</mat-icon
+        >
+        {{project.characters[selectedCharacter].name}}
+      </button>
+    </ng-container>
+
     <ng-template #dismount>
       <button
         mat-menu-item
@@ -232,6 +247,72 @@
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
               [src]="project.assets[n].img"
             />{{ project.assets[n].name }}
+          </button>
+
+          <!-- <mat-icon class="secondary-text"> chevron_right </mat-icon> -->
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</mat-menu>
+
+<mat-menu #characters="matMenu" class="secondary-background-dark">
+  <ng-container *ngIf="project && scene && scene.characters">
+    <div
+      class="secondary-background-dark text-start rounded d-flex justify-content-center align-items-center flex-column"
+      id="profile-menu"
+      style="min-width: 350px; max-height: 700px"
+    >
+      <div class="big-design-header p-3 pb-3">
+        <b class="fw-bold primary-text-dark">Characters</b>
+      </div>
+
+      <div
+        class="w-100 h-100"
+        style="overflow-y: scroll"
+        *ngIf="scene.characters.length > 0"
+      >
+        <div
+          *ngFor="let n of scene.characters ?? []"
+          class="d-flex justify-content-between align-items-center"
+          (click)="selectCharacter(n.id)"
+          role="button"
+        >
+          <!-- <div class="d-flex justify-content-between align-items-center">
+              <div
+                class="bg-white rounded-icon shadow d-flex justify-content-center align-items-center"
+                style="
+                  object-fit: contain;
+                  aspect-ratio: 1;
+                  overflow: hidden;
+                  width: 45px;
+                "
+              >
+                <img
+                  class="m-auto rounded-icon"
+                  style="object-fit: cover; height: 90%; width: 90%"
+                  [src]="n.displayUrl"
+                />
+              </div>
+              <div class="text-start w-100 ms-2">
+                <div class="w-100 ps-2 primary-text text-start fw-normal">
+                  {{ n.name }}
+                </div>
+                <div
+                  class="w-100 ps-2 primary-text text-start fw-normal"
+                  style="font-size: 10px"
+                >
+                  {{ n.created | date }}
+                </div>
+              </div>
+            </div> -->
+
+          <button mat-menu-item class="toolButton">
+            <img
+              class="rounded-icon me-4 border-table-dark"
+              style="object-fit: cover; height: 30px; aspect-ratio: 1"
+              [src]="project.characters[n.id].img"
+            />{{ project.characters[n.id].name }}
           </button>
 
           <!-- <mat-icon class="secondary-text"> chevron_right </mat-icon> -->

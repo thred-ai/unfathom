@@ -78,18 +78,30 @@
       </div>
     </div>
   </div>
-
+<!-- 
   <div class="w-100 pb-3">
     <verticalai-layout-slider
-      [value]="(assetDetails['scale'] ?? 1) * 10"
+      [value]="(assetDetails['scale'] ?? 1) * 100"
       [title]="'Scale'"
-      [min]="5"
-      [max]="1000"
-      [step]="10"
+      [min]="1"
+      [max]="10000"
+      [step]="100"
       [lineFillColor]="'#0A99FF'"
-      (valueChange)="assetDetails['scale'] = $event / 10; save()"
+      (valueChange)="assetDetails['scale'] = $event / 100; save()"
     >
     </verticalai-layout-slider>
+  </div> -->
+
+  <div class="w-100 pb-3">
+    <verticalai-text-field
+      [title]="'Scale'"
+      [type]="'number'"
+      [range]="{ min: 0.01, max: 1000 }"
+      [value]="assetDetails['scale']"
+      [placeholder]="'Scale'"
+      (changed)="assetDetails['scale'] = $event; save()"
+    >
+    </verticalai-text-field>
   </div>
 
   <div class="w-100 pb-3">
