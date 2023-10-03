@@ -36,6 +36,234 @@
         >
           <mat-tab class="tab">
             <ng-template mat-tab-label>
+              <!-- <span class="primary-text"> Models </span> -->
+              <mat-icon class="primary-text"> public </mat-icon>
+            </ng-template>
+            <ng-template matTabContent>
+              <div
+                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+              >
+                <div class="w-100 h-100 p-2 pb-5" style="overflow-y: scroll">
+                  <div
+                    class="w-100"
+                    *ngIf="
+                      selectedFile &&
+                      selectedFile.data?.ngArguments?.scene as scene
+                    "
+                  >
+                    <ion-item
+                      slot="header"
+                      class="primary-text w-100 border-0 file-item"
+                      role="button"
+                      (click)="openWorldMenu()"
+                    >
+                      <ng-container>
+                        <ion-thumbnail
+                          slot="end"
+                          [style.--border-radius]="'6px'"
+                        >
+                          <!-- <img
+                        class="border-table p-0"
+                        [src]="scene.images[0]"
+                      /> -->
+                        </ion-thumbnail>
+                        <ion-label style="font-size: small"
+                          >Environment</ion-label
+                        >
+                        <ion-icon
+                          class="secondary-text my-auto"
+                          style="font-size: 15px; cursor: pointer"
+                          [name]="'chevron-back-outline'"
+                          slot="start"
+                          role="button"
+                          (click)="(null)"
+                        ></ion-icon>
+                      </ng-container>
+                    </ion-item>
+                  </div>
+
+                  <ion-accordion-group
+                    class="example-headers-align bg-transparent animate__animated animate__fadeIn"
+                    [multiple]="false"
+                    *ngIf="workflow"
+                    (ionChange)="(null)"
+                    id="accordion"
+                  >
+                    <ion-accordion
+                      class="bg-transparent"
+                      [value]="'characters'"
+                    >
+                      <ion-item slot="header" class="primary-text">
+                        <ion-label class="p">Characters</ion-label>
+                      </ion-item>
+                      <div class="ion-padding" slot="content">
+                        <div class="w-100 py-2 pb-3">
+                          <app-search-bar
+                            [placeholder]="'Search Characters'"
+                            [workflow]="workflow"
+                            [sceneData]="
+                              selectedFile.data.ngArguments.scene.characters ??
+                              []
+                            "
+                            [searchData]="workflow.characters"
+                            (characterChanged)="addCharactersToScene($event)"
+                          >
+                          </app-search-bar>
+                        </div>
+
+                        <ng-container>
+                          <div
+                            class="w-100 row row-cols-2 justify-content-start g-0"
+                            *ngIf="workflow"
+                          >
+                            <div
+                              *ngFor="
+                                let character of characterIds ?? [];
+                                index as i
+                              "
+                              class="col p-1 position-relative"
+                              style="aspect-ratio: 0.75"
+                            >
+                              <div
+                                class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover position-absolute"
+                                style="overflow: hidden"
+                                role="button"
+                                *ngIf="workflow.characters[character] as c"
+                                (click)="editCharacterDetails(character)"
+                              >
+                                <img
+                                  class="w-100 h-100"
+                                  style="object-fit: cover; aspect-ratio: 1"
+                                  [src]="c.img"
+                                />
+
+                                <div
+                                  class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
+                                >
+                                  <p
+                                    class="mx-auto primary-text text-truncate text-center"
+                                    style="width: 70px"
+                                  >
+                                    {{ c.name }}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div
+                                class="rounded-circle bg-orange position-absolute"
+                                style="
+                                  z-index: 1;
+                                  right: 0;
+                                  top: 0;
+                                  aspect-ratio: 1 !important;
+                                "
+                                role="button"
+                                (click)="removeCharacter(i)"
+                              >
+                                <mat-icon
+                                  class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+                                  style="font-size: small"
+                                >
+                                  close
+                                </mat-icon>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </ion-accordion>
+
+                    <ion-accordion class="bg-transparent" [value]="'assets'">
+                      <ion-item slot="header" class="primary-text">
+                        <ion-label class="p">3D Assets</ion-label>
+                      </ion-item>
+                      <div class="ion-padding" slot="content">
+                        <div class="w-100 py-2 pb-3">
+                          <app-search-bar
+                            [placeholder]="'Search 3D Assets'"
+                            [workflow]="workflow"
+                            [sceneData]="
+                              selectedFile.data.ngArguments.scene.assets ?? []
+                            "
+                            [searchData]="workflow.assets"
+                            (characterChanged)="addAssetToScene($event)"
+                          >
+                          </app-search-bar>
+                        </div>
+
+                        <ng-container>
+                          <div
+                            class="w-100 row row-cols-2 justify-content-start g-0"
+                            *ngIf="workflow"
+                          >
+                            <div
+                              *ngFor="let asset of assetIds ?? []; index as i"
+                              class="col p-1 position-relative"
+                              style="aspect-ratio: 0.75"
+                            >
+                              <div
+                                class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover position-absolute"
+                                style="overflow: hidden"
+                                role="button"
+                                #col
+                                *ngIf="workflow.assets[asset] as a"
+                                (click)="editAssetDetails(asset, i)"
+                              >
+                                <img
+                                  class="w-100 h-100"
+                                  style="object-fit: cover; aspect-ratio: 1"
+                                  [src]="a.img"
+                                />
+
+                                <div
+                                  class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
+                                >
+                                  <p
+                                    class="mx-auto primary-text text-truncate text-center"
+                                    style="width: 70px"
+                                  >
+                                    {{ a.name }}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div
+                                class="rounded-circle bg-orange position-absolute"
+                                style="
+                                  z-index: 1;
+                                  right: 0;
+                                  top: 0;
+                                  aspect-ratio: 1 !important;
+                                "
+                                role="button"
+                                (click)="removeAsset(i)"
+                              >
+                                <mat-icon
+                                  class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+                                  style="font-size: small"
+                                >
+                                  close
+                                </mat-icon>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </ion-accordion>
+                  </ion-accordion-group>
+
+                  <button
+                    class="btn bg-orange w-100 border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
+                    (click)="selectWorld()"
+                  >
+                    Explore World
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+          <mat-tab class="tab">
+            <ng-template mat-tab-label>
               <!-- <span class="primary-text"> General </span> -->
               <mat-icon class="primary-text"> info </mat-icon>
             </ng-template>
@@ -299,248 +527,6 @@
                   </verticalai-select-field>
                 </div>
               </ng-container> -->
-
-                  <button
-                    class="btn bg-orange w-100 border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
-                    (click)="selectWorld()"
-                  >
-                    <!-- <ng-container *ngIf="loading; else buttonTitles">
-                      <span class="mx-auto">
-                        {{ "Saving" }}
-                        <span
-                          class="spinner-border spinner-border-sm ms-2 m-auto"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      </span>
-                    </ng-container> -->
-
-                    <!-- <ng-template #buttonTitles> -->
-                    <ng-container> {{ "Explore World" }}</ng-container>
-                    <!-- </ng-template> -->
-                  </button>
-                </div>
-              </div>
-            </ng-template>
-          </mat-tab>
-
-          <mat-tab class="tab">
-            <ng-template mat-tab-label>
-              <!-- <span class="primary-text"> Models </span> -->
-              <mat-icon class="primary-text"> public </mat-icon>
-            </ng-template>
-            <ng-template matTabContent>
-              <div
-                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-              >
-                <div class="w-100 h-100 p-2 pb-5" style="overflow-y: scroll">
-                  <div
-                    class="w-100"
-                    *ngIf="
-                      selectedFile &&
-                      selectedFile.data?.ngArguments?.scene as scene
-                    "
-                  >
-                    <ion-item
-                      slot="header"
-                      class="primary-text w-100 border-0 file-item"
-                      role="button"
-                      (click)="openWorldMenu()"
-                    >
-                      <ng-container>
-                        <ion-thumbnail
-                          slot="end"
-                          [style.--border-radius]="'6px'"
-                        >
-                          <!-- <img
-                          class="border-table p-0"
-                          [src]="scene.images[0]"
-                        /> -->
-                        </ion-thumbnail>
-                        <ion-label style="font-size: small"
-                          >World Settings</ion-label
-                        >
-                        <ion-icon
-                          class="secondary-text my-auto"
-                          style="font-size: 15px; cursor: pointer"
-                          [name]="'chevron-back-outline'"
-                          slot="start"
-                          role="button"
-                          (click)="(null)"
-                        ></ion-icon>
-                      </ng-container>
-                    </ion-item>
-                  </div>
-
-                  <ion-accordion-group
-                    class="example-headers-align bg-transparent animate__animated animate__fadeIn"
-                    [multiple]="false"
-                    *ngIf="workflow"
-                    (ionChange)="(null)"
-                    id="accordion"
-                  >
-                    <ion-accordion
-                      class="bg-transparent"
-                      [value]="'characters'"
-                    >
-                      <ion-item slot="header" class="primary-text">
-                        <ion-label class="h3">Characters</ion-label>
-                      </ion-item>
-                      <div class="ion-padding" slot="content">
-                        <div class="w-100 py-2 pb-3">
-                          <app-search-bar
-                            [placeholder]="'Search Characters'"
-                            [workflow]="workflow"
-                            [sceneData]="
-                              selectedFile.data.ngArguments.scene.characters ??
-                              []
-                            "
-                            [searchData]="workflow.characters"
-                            (characterChanged)="addCharactersToScene($event)"
-                          >
-                          </app-search-bar>
-                        </div>
-
-                        <ng-container>
-                          <div
-                            class="w-100 row row-cols-2 justify-content-start g-0"
-                            *ngIf="workflow"
-                          >
-                            <div
-                              *ngFor="
-                                let character of characterIds ?? [];
-                                index as i
-                              "
-                              class="col p-1 position-relative"
-                              style="aspect-ratio: 0.75"
-                            >
-                              <div
-                                class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover position-absolute"
-                                style="overflow: hidden"
-                                role="button"
-                                *ngIf="workflow.characters[character] as c"
-                                (click)="editCharacterDetails(character)"
-                              >
-                                <img
-                                  class="w-100 h-100"
-                                  style="object-fit: cover; aspect-ratio: 1"
-                                  [src]="c.img"
-                                />
-
-                                <div
-                                  class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
-                                >
-                                  <p
-                                    class="mx-auto primary-text text-truncate text-center"
-                                    style="width: 70px"
-                                  >
-                                    {{ c.name }}
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div
-                                class="rounded-circle bg-orange position-absolute"
-                                style="
-                                  z-index: 1;
-                                  right: 0;
-                                  top: 0;
-                                  aspect-ratio: 1 !important;
-                                "
-                                role="button"
-                                (click)="removeCharacter(i)"
-                              >
-                                <mat-icon
-                                  class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
-                                  style="font-size: small"
-                                >
-                                  close
-                                </mat-icon>
-                              </div>
-                            </div>
-                          </div>
-                        </ng-container>
-                      </div>
-                    </ion-accordion>
-
-                    <ion-accordion class="bg-transparent" [value]="'assets'">
-                      <ion-item slot="header" class="primary-text">
-                        <ion-label class="h3">3D Assets</ion-label>
-                      </ion-item>
-                      <div class="ion-padding" slot="content">
-                        <div class="w-100 py-2 pb-3">
-                          <app-search-bar
-                            [placeholder]="'Search 3D Assets'"
-                            [workflow]="workflow"
-                            [sceneData]="
-                              selectedFile.data.ngArguments.scene.assets ?? []
-                            "
-                            [searchData]="workflow.assets"
-                            (characterChanged)="addAssetToScene($event)"
-                          >
-                          </app-search-bar>
-                        </div>
-
-                        <ng-container>
-                          <div
-                            class="w-100 row row-cols-2 justify-content-start g-0"
-                            *ngIf="workflow"
-                          >
-                            <div
-                              *ngFor="let asset of assetIds ?? []; index as i"
-                              class="col p-1 position-relative"
-                              style="aspect-ratio: 0.75"
-                            >
-                              <div
-                                class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover position-absolute"
-                                style="overflow: hidden"
-                                role="button"
-                                #col
-                                *ngIf="workflow.assets[asset] as a"
-                                (click)="editAssetDetails(asset, i)"
-                              >
-                                <img
-                                  class="w-100 h-100"
-                                  style="object-fit: cover; aspect-ratio: 1"
-                                  [src]="a.img"
-                                />
-
-                                <div
-                                  class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
-                                >
-                                  <p
-                                    class="mx-auto primary-text text-truncate text-center"
-                                    style="width: 70px"
-                                  >
-                                    {{ a.name }}
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div
-                                class="rounded-circle bg-orange position-absolute"
-                                style="
-                                  z-index: 1;
-                                  right: 0;
-                                  top: 0;
-                                  aspect-ratio: 1 !important;
-                                "
-                                role="button"
-                                (click)="removeAsset(i)"
-                              >
-                                <mat-icon
-                                  class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
-                                  style="font-size: small"
-                                >
-                                  close
-                                </mat-icon>
-                              </div>
-                            </div>
-                          </div>
-                        </ng-container>
-                      </div>
-                    </ion-accordion>
-                  </ion-accordion-group>
                 </div>
               </div>
             </ng-template>
@@ -560,11 +546,12 @@
           class="w-100 h-100"
           dynamicHeight
           animationDuration="0ms"
+          [fitInkBarToContent]="true"
           (selectedTabChange)="selectedData = undefined"
         >
           <mat-tab class="tab">
             <ng-template mat-tab-label>
-              <span class="primary-text"> Characters </span>
+              <mat-icon class="primary-text"> accessibility_new </mat-icon>
             </ng-template>
             <ng-template matTabContent>
               <div
@@ -643,7 +630,8 @@
 
           <mat-tab class="tab">
             <ng-template mat-tab-label>
-              <span class="primary-text"> 3D Assets </span>
+              <!-- <span class="primary-text"> 3D Assets </span> -->
+              <mat-icon class="primary-text"> apartment </mat-icon>
             </ng-template>
             <ng-template matTabContent>
               <div
@@ -704,6 +692,85 @@
                           "
                           role="button"
                           (click)="removeAssetWorkflow(asset.id)"
+                        >
+                          <mat-icon
+                            class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+                            style="font-size: small"
+                          >
+                            close
+                          </mat-icon>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+
+          <mat-tab class="tab">
+            <ng-template mat-tab-label>
+              <mat-icon class="primary-text"> image </mat-icon>
+            </ng-template>
+            <ng-template matTabContent>
+              <div
+                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+              >
+                <div class="w-100 h-100 p-3" style="overflow-y: scroll">
+                  <div class="w-100 pb-3">
+                    <div
+                      class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+                    >
+                      <p class="w-100 fw-bold my-auto">Project Textures</p>
+                      <mat-icon
+                        class="m-auto primary-text"
+                        role="button"
+                        (click)="editCharacter()"
+                      >
+                        add
+                      </mat-icon>
+                    </div>
+
+                    <div class="row row-cols-2 justify-content-start g-0">
+                      <div
+                        *ngFor="let character of characters ?? []; index as i"
+                        class="col p-1 position-relative"
+                        style="aspect-ratio: 0.75"
+                      >
+                        <div
+                          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
+                          style="overflow: hidden"
+                          role="button"
+                          (click)="editCharacter(character)"
+                        >
+                          <img
+                            class="w-100 h-100"
+                            style="object-fit: cover; aspect-ratio: 1"
+                            [src]="character.img"
+                          />
+
+                          <div
+                            class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
+                          >
+                            <p
+                              class="mx-auto primary-text text-truncate text-center"
+                              style="width: 70px"
+                            >
+                              {{ character.name }}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div
+                          class="rounded-circle bg-orange position-absolute"
+                          style="
+                            z-index: 1;
+                            right: 0;
+                            top: 0;
+                            aspect-ratio: 1 !important;
+                          "
+                          role="button"
+                          (click)="removeCharacterWorkflow(character.id)"
                         >
                           <mat-icon
                             class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"

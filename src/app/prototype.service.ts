@@ -55,6 +55,7 @@ export class PrototypeService {
 
     if (this.scene) {
       if (Object.keys(this.scene.characters).length == 0) {
+        console.log('DEFAULT');
         this.availableCharacters['default'] = new Character(
           'default',
           'Default',
@@ -92,6 +93,15 @@ export class PrototypeService {
           ...c,
         };
       });
+
+      if (this.characters.length == 0) {
+        this.characters = [
+          {
+            currentPos: char.spawn,
+            ...char,
+          },
+        ];
+      }
 
       if (this.world && this.project) {
         this.initWorld();
@@ -175,6 +185,7 @@ export class PrototypeService {
     if (!sameCharacter) {
       return;
     }
+
     var scene = new BABYLON.Scene(engine);
 
     // const gl = new BABYLON.GlowLayer('glow', scene);
@@ -956,22 +967,23 @@ export class PrototypeService {
         // assetMesh.removeChild(actorMesh, true);
         // actorMesh.setEnabled(true);
         this.mountedAsset.next(undefined);
-        this.selectCharacter(this.selectedCharacter.value)
+        this.selectCharacter(this.selectedCharacter.value);
       }
     }
   }
 
-  generateLiquidTexture(
-    type: LiquidType
-  ) {
+  generateLiquidTexture(type: LiquidType) {
     if (type == LiquidType.lava) {
       let tex = new Texture();
-      tex.diffuse = "https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg";
+      tex.diffuse =
+        'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
       return tex;
     } else {
       let tex = new Texture();
-      tex.bump = "https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png";
-      tex.diffuse = "https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png";
+      tex.bump =
+        'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
+      tex.diffuse =
+        'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
       return tex;
     }
   }
@@ -986,7 +998,7 @@ export class PrototypeService {
     this.engine = undefined;
     this.cc = undefined;
     this.agMap = undefined;
-    this.selectedCharacter.next(undefined)
-    this.mountedAsset.next(undefined)
+    this.selectedCharacter.next(undefined);
+    this.mountedAsset.next(undefined);
   }
 }

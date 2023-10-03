@@ -147,7 +147,7 @@
           style="font-size: 16px"
           >accessibility</mat-icon
         >
-        {{project.characters[selectedCharacter].name}}
+        {{project.characters[selectedCharacter]?.name ?? 'No Character'}}
       </button>
     </ng-container>
 

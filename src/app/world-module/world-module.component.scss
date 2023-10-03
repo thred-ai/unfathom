@@ -1,0 +1,26 @@
+:host::ng-deep .ion-padding {
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    overflow: hidden;
+  }
+  
+  ion-accordion.accordion-collapsing > ion-item[slot="header"],
+  ion-accordion.accordion-collapsed > ion-item[slot="header"] {
+    --background: transparent !important;
+    --color: var(--primaryTextColor) !important;
+    --padding-start: 5px !important;
+    --padding-end: 5px !important;
+  }
+  
+  ion-accordion.accordion-expanding > ion-item[slot="header"],
+  ion-accordion.accordion-expanded > ion-item[slot="header"] {
+    --background: transparent !important;
+    --color: var(--primaryTextColor) !important;
+    --padding-start: 5px !important;
+    --padding-end: 5px !important;
+    //   --border-color: #6c757d;
+    //   --inner-border-width: 1;
+  }
+  

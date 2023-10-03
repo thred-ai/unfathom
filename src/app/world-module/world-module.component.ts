@@ -17,6 +17,7 @@ export class WorldModuleComponent implements OnInit {
   @Output() changed = new EventEmitter<any>();
 
   world?: World;
+  scene?: Scene;
 
   constructor(
     private designService: DesignerService,
@@ -37,7 +38,7 @@ export class WorldModuleComponent implements OnInit {
   worldLiquids: string[] = [];
 
   selectLiquids(liquids: string[]) {
-    if (this.world && this.world.ground) {
+    if (this.world && this.scene && this.world.ground) {
       console.log(liquids);
       Object.keys(this.world.ground.liquid).forEach(liquid => {
         if (!liquids.includes(liquid)){
@@ -54,15 +55,53 @@ export class WorldModuleComponent implements OnInit {
           );
         }
       });
+      this.designService.setScene(this.scene, this.scene.id)
     }
   }
 
   ngOnInit(): void {
     this.designService.openStep.subscribe((s) => {
-      this.world = (s?.data.ngArguments?.scene as Scene)?.world as World;
+      this.scene = (s?.data.ngArguments?.scene as Scene);
+
+      this.world = this.scene?.world as World;
       this.worldLiquids = Object.keys(this.world?.ground?.liquid ?? {}) ?? [];
     });
   }
 
-  save() {}
+  save() {
+
+  }
+
+
+
+
+
+
+
+
+  // async fileChangeEvent(event: any, type = "none"): Promise<void> {
+  //   let file = event.target.files[0];
+
+  //   let buffer = await file.arrayBuffer();
+
+  //   var blob = new Blob([buffer]);
+
+  //   var reader = new FileReader();
+  //   reader.onload = (event: any) => {
+  //     var base64 = event.target.result;
+
+  //     if (type == 1) {
+  //       let imgIcon = document.getElementById('imgIcon') as HTMLImageElement;
+  //       imgIcon!.src = base64;
+  //       this.newImg = file;
+  //     } else if (type == 2) {
+  //       this.newAsset = file;
+  //       this.fileDisplay = base64;
+  //     }
+
+  //     this.save();
+  //   };
+
+  //   reader.readAsDataURL(blob);
+  // }
 }

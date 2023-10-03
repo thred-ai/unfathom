@@ -123,13 +123,42 @@
                 [valueField]="'id'"
                 [displayField]="'name'"
                 [placeholder]="'No Liquid'"
-                (changed)="
-                  selectLiquids($event); save()
-                "
+                (changed)="selectLiquids($event); save()"
               >
               </verticalai-select-field>
             </div>
           </div>
+
+          <ion-accordion-group
+            class="example-headers-align bg-transparent animate__animated animate__fadeIn"
+            [multiple]="false"
+            (ionChange)="(null)"
+            id="accordion"
+          >
+            <ion-accordion
+              class="bg-transparent"
+              [value]="'water'"
+              *ngIf="world.ground.liquid['water']"
+            >
+              <ion-item slot="header" class="primary-text">
+                <ion-label class="h3">Water</ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">
+                
+              </div>
+            </ion-accordion>
+
+            <ion-accordion
+              class="bg-transparent"
+              [value]="'lava'"
+              *ngIf="world.ground.liquid['lava']"
+            >
+              <ion-item slot="header" class="primary-text">
+                <ion-label class="h3">Lava</ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content"></div>
+            </ion-accordion>
+          </ion-accordion-group>
         </div>
       </div>
     </ng-template>
@@ -180,3 +209,8 @@
     </ng-template>
   </mat-tab>
 </mat-tab-group>
+
+
+<ng-template>
+
+</ng-template>
