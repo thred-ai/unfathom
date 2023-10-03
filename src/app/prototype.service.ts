@@ -13,6 +13,7 @@ import * as MATERIALS from 'babylonjs-materials';
 import { BehaviorSubject } from 'rxjs';
 import { Dict } from './load.service';
 import { Character } from './models/workflow/character.model';
+import { Texture } from './models/workflow/texture.model';
 
 @Injectable({
   providedIn: 'root',
@@ -574,7 +575,7 @@ export class PrototypeService {
                     if (shift) {
                       rotation.x -= 0.05;
                     } else {
-                      rotation.x += 0.05;
+                      rotation.x = 0.05;
                     }
                   }
 
@@ -957,6 +958,21 @@ export class PrototypeService {
         this.mountedAsset.next(undefined);
         this.selectCharacter(this.selectedCharacter.value)
       }
+    }
+  }
+
+  generateLiquidTexture(
+    type: LiquidType
+  ) {
+    if (type == LiquidType.lava) {
+      let tex = new Texture();
+      tex.diffuse = "https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg";
+      return tex;
+    } else {
+      let tex = new Texture();
+      tex.bump = "https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png";
+      tex.diffuse = "https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png";
+      return tex;
     }
   }
 

@@ -50,6 +50,7 @@ export class ThemeService {
           `--${theme}--${colorKey}`,
           `${this.themes[theme][colorKey]}`
         );
+        console.log(`--${theme}--${colorKey}`)
       });
     });
   }

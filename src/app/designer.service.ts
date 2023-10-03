@@ -101,7 +101,7 @@ export class DesignerService {
         container: document.getElementById('container')!,
         autoResize: true,
         background: {
-          color: 'var(--sectionBackgroundColor)',
+          color: 'var(--dark--sectionBackgroundColor)',
         },
 
         panning: true,
@@ -171,7 +171,7 @@ export class DesignerService {
           args: [
             {
               color:
-                this.themeService.themes[this.themeService.theme.value][
+                this.themeService.themes['dark'][
                   'gridColor'
                 ], // main grid line color
               thickness: 1, // main grid line width

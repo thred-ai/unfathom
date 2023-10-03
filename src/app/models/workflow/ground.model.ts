@@ -8,6 +8,7 @@ export class Ground {
   liquid!: Dict<Liquid>
   maxHeight!: number;
   minHeight!: number;
+  hidden!: boolean
 
   constructor(
     heightMap: string,
@@ -15,11 +16,13 @@ export class Ground {
     liquid: Dict<Liquid> = {},
     maxHeight: number = 0,
     minHeight: number = 0,
+    hidden: boolean = false
   ) {
     this.heightMap = heightMap;
     this.texture = texture;
     this.liquid = liquid;
     this.maxHeight = maxHeight
     this.minHeight = minHeight
+    this.hidden = hidden
   }
 }

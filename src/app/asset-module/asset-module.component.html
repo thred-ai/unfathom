@@ -50,7 +50,7 @@
           [range]="{ min: -100000, max: 100000 }"
           [value]="assetDetails['direction'].x"
           [placeholder]="'Direction (X)'"
-          (changed)="assetDetails['direction'].x = $event"
+          (changed)="assetDetails['direction'].x = $event; save()"
         >
         </verticalai-text-field>
       </div>
@@ -61,7 +61,7 @@
           [range]="{ min: -100000, max: 100000 }"
           [value]="assetDetails['direction'].y"
           [placeholder]="'Direction (Y)'"
-          (changed)="assetDetails['direction'].y = $event"
+          (changed)="assetDetails['direction'].y = $event; save()"
         >
         </verticalai-text-field>
       </div>
@@ -72,7 +72,7 @@
           [range]="{ min: -100000, max: 100000 }"
           [value]="assetDetails['direction'].z"
           [placeholder]="'Direction (Z)'"
-          (changed)="assetDetails['direction'].z = $event"
+          (changed)="assetDetails['direction'].z = $event; save()"
         >
         </verticalai-text-field>
       </div>

@@ -64,7 +64,6 @@ export class ProtoTesterComponent implements OnInit {
       this.mountableAssets = this.scene?.assets
         .filter((a) => a.movement.canMount)
         .map((x) => x.id);
-      this.restart();
 
       this.cdr.detectChanges();
     });

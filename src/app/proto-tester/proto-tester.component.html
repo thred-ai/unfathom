@@ -93,9 +93,6 @@
   >
     <app-world-designer
       *ngIf="visible"
-      [world]="world"
-      [scene]="scene"
-      [project]="project"
       [theme]="theme"
     ></app-world-designer>
   </div>
@@ -148,7 +145,7 @@
         <mat-icon
           class="my-auto me-2 d-flex justify-content-center align-items-center"
           style="font-size: 16px"
-          >sports_esports</mat-icon
+          >accessibility</mat-icon
         >
         {{project.characters[selectedCharacter].name}}
       </button>

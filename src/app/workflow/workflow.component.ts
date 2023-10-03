@@ -120,24 +120,19 @@ export class WorkflowComponent implements OnInit {
   set activeWorkflow(app: Executable | undefined) {
     var workflow!: Executable;
 
-   
-
     if (app) {
       this.newWorkflow = false;
       workflow = app;
       //workflow.layout = this.loadService.sortBranches(workflow.layout);
 
-      if (app.id != this.workflow?.id){
-        this.designerService.initialized = false
+      if (app.id != this.workflow?.id) {
+        this.designerService.initialized = false;
       }
-      
+
       this.projectService.workflow.next(workflow);
-
-
-
     } else {
       this.newWorkflow = true;
-      this.designerService.initialized = false
+      this.designerService.initialized = false;
       workflow = new Executable(
         this.loadService.newUtilID,
         this.loadService.loadedUser.value?.id ?? '',
@@ -146,16 +141,15 @@ export class WorkflowComponent implements OnInit {
         '',
         'https://storage.googleapis.com/thred-protocol.appspot.com/resources/default_smartutil_app.png'
       );
-      this.dev?.utils.push(workflow)
+      this.dev?.utils.push(workflow);
       this.projectService.workflow.next(workflow);
 
-      this.save(1)
+      this.save(1);
     }
 
     // const loadData = () => {
     //   this.loadService.getAPIKeys(workflow.id, workflow.creatorId);
     // };
-
   }
 
   async setWorkflow(id?: string, fileId = 'main') {
@@ -212,7 +206,6 @@ export class WorkflowComponent implements OnInit {
       this.loading = l;
     });
 
-
     this.designerService.toolboxConfiguration.subscribe((s) => {
       this.models = s ?? [];
     });
@@ -230,14 +223,13 @@ export class WorkflowComponent implements OnInit {
     });
 
     this.projectService.workflow.subscribe(async (w) => {
-      if (w && this.workflow){
-        if (this.workflow.id != w.id){
+      if (w && this.workflow) {
+        if (this.workflow.id != w.id) {
           // this.dialog.closeAll()
         }
       }
 
       this.workflow = w;
-      
     });
 
     this.loadService.loadedUser.subscribe((user) => {
@@ -250,42 +242,38 @@ export class WorkflowComponent implements OnInit {
           let file = params['file'] ?? 'main';
           let selectedModule = params['module'] ?? 'design';
 
-          if (this.dev && this.dev.utils) {
-            this.loadService.getLayout(proj, this.clientId, async (layout) => {
-              let workflow =
-                this.workflow ??
-                this.dev?.utils.find((f) => f.id == proj) ??
-                this.dev?.utils[0];
+          let workflow =
+            this.workflow ??
+            this.dev?.utils.find((f) => f.id == proj) ??
+            this.dev?.utils[0];
 
-              if (!workflow) {
-                this.activeWorkflow = undefined;
-                workflow = this.workflow;
-              }
+          if (!workflow) {
+            this.activeWorkflow = undefined;
+            workflow = this.workflow;
+          }
 
-              if (workflow) {
-                if (layout) {
-                  workflow.sceneLayout = layout;
-                } else {
-                }
 
-                this.activeWorkflow = workflow;
+        // this.loadService.getLayout(workflow!.id, this.clientId, l => {
+        //   this.workflow!.sceneLayout = l!
+        //   this.save(1)
+        // })
 
-                if (!this.openStep.id) {
-                  await this.selectFile(
-                    file ?? 'main',
-                    selectedModule,
-                    workflow,
-                    true
-                  );
-                }
+          if (workflow) {
+            this.activeWorkflow = workflow;
 
-                if (!this.openStep.id) {
-                  await this.selectFile('main', selectedModule, workflow, true);
-                }
+            if (!this.openStep.id) {
+              await this.selectFile(
+                file ?? 'main',
+                selectedModule,
+                workflow,
+                true
+              );
+            }
 
-              } else {
-              }
-            });
+            if (!this.openStep.id) {
+              await this.selectFile('main', selectedModule, workflow, true);
+            }
+          } else {
           }
         });
       }
@@ -333,12 +321,10 @@ export class WorkflowComponent implements OnInit {
   }
 
   async save(mode = 1, update = false, workflow = this.workflow) {
-
     if (workflow) {
       try {
         if (mode == 1) {
           let exec = await this.fillExecutable(workflow);
-
 
           let result = await this.loadService.saveSmartUtil(
             exec,
@@ -354,7 +340,7 @@ export class WorkflowComponent implements OnInit {
           return;
         } else if (mode == 2) {
           this.activeWorkflow = workflow;
-          await this.loadService.saveLayout(workflow, this.clientId);
+          // await this.loadService.saveLayout(workflow, this.clientId);
 
           return;
         }
@@ -364,8 +350,6 @@ export class WorkflowComponent implements OnInit {
     } else {
     }
   }
-
-
 
   async fillExecutable(executable: Executable) {
     const exec = executable;
@@ -440,16 +424,14 @@ export class WorkflowComponent implements OnInit {
           }
         }
 
-        this.projectService.workflow.next(workflow)
+        this.projectService.workflow.next(workflow);
 
         await this.save(1, false, workflow);
-
       }
     });
   }
 
   @ViewChild(WorkflowDesignerComponent) designer?: WorkflowDesignerComponent;
-
 
   async publish(
     workflow = this.workflow,

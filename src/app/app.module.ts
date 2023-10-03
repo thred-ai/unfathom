@@ -147,6 +147,7 @@ import { ExtendedMenuComponent } from './extended-menu/extended-menu.component';
 import { WorldEditComponent } from './world-edit/world-edit.component';
 import { SkyEditComponent } from './sky-edit/sky-edit.component';
 import { GroundEditComponent } from './ground-edit/ground-edit.component';
+import { WorldModuleComponent } from './world-module/world-module.component';
 
 @NgModule({
   declarations: [
@@ -214,6 +215,7 @@ import { GroundEditComponent } from './ground-edit/ground-edit.component';
     WorldEditComponent,
     SkyEditComponent,
     GroundEditComponent,
+    WorldModuleComponent,
   ],
   imports: [
     CommonModule,

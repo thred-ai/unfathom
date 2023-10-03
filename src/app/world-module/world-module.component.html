@@ -1,0 +1,182 @@
+<mat-tab-group
+  #menu
+  class="w-100 h-100"
+  dynamicHeight
+  [fitInkBarToContent]="true"
+  animationDuration="0ms"
+  *ngIf="world && world.sky"
+>
+  <mat-tab class="tab">
+    <ng-template mat-tab-label>
+      <span class="primary-text me-3"> World </span>
+      <mat-icon class="primary-text"> public </mat-icon>
+    </ng-template>
+    <ng-template matTabContent>
+      <div
+        class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+      >
+        <div class="w-100 h-100 p-3 pb-5" style="overflow-y: scroll">
+          <div class="w-100 pb-3">
+            <div class="px-1">
+              <verticalai-text-field
+                [title]="'World Size'"
+                [type]="'number'"
+                [range]="{ min: 10, max: 100000 }"
+                [value]="world.size"
+                [placeholder]="'World Size'"
+                (changed)="world.size = $event; save()"
+              >
+              </verticalai-text-field>
+            </div>
+          </div>
+          <div class="w-100 pb-3">
+            <div class="px-1">
+              <verticalai-text-field
+                [title]="'Lighting'"
+                [type]="'number'"
+                [range]="{ min: 0, max: 5 }"
+                [value]="world.lightingIntensity"
+                [placeholder]="'Lighting'"
+                (changed)="world.lightingIntensity = $event; save()"
+              >
+              </verticalai-text-field>
+            </div>
+
+            <!-- <div class="w-100 pb-3 row row-cols-2 justify-content-center g-0">
+              <div class="px-1">
+                <verticalai-text-field
+                  [title]="'Size'"
+                  [type]="'number'"
+                  [range]="{ min: 10, max: 100000 }"
+                  [value]="world.size"
+                  [placeholder]="'Direction (X)'"
+                  (changed)="world.size = $event; save()"
+                >
+                </verticalai-text-field>
+              </div>
+              <div class="col px-1">
+                <verticalai-text-field
+                  [title]="'Height'"
+                  [type]="'number'"
+                  [range]="{ min: 10, max: 100000 }"
+                  [value]="world.sky.height"
+                  [placeholder]="'Direction (Y)'"
+                  (changed)="world.sky.height = $event; save()"
+                >
+                </verticalai-text-field>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab class="tab">
+    <ng-template mat-tab-label>
+      <span class="primary-text me-3"> Ground </span>
+      <mat-icon class="primary-text"> grass </mat-icon>
+    </ng-template>
+    <ng-template matTabContent>
+      <div
+        class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+      >
+        <div
+          class="w-100 h-100 p-3 pb-5"
+          style="overflow-y: scroll"
+          *ngIf="world.ground"
+        >
+          <div class="w-100 pb-3">
+            <p class="w-100 mb-3 fw-bold primary-text">
+              {{ toggle.checked ? "Visible" : "Hidden" }}
+            </p>
+            <div class="px-1">
+              <mat-slide-toggle
+                #toggle
+                [checked]="!world.ground.hidden"
+                (change)="world.ground.hidden = !$event.checked"
+              ></mat-slide-toggle>
+            </div>
+          </div>
+
+          <div class="w-100 pb-3">
+            <div class="px-1">
+              <verticalai-text-field
+                [title]="'Max Surface Height'"
+                [type]="'number'"
+                [range]="{ min: 10, max: 100000 }"
+                [value]="world.ground.maxHeight"
+                [placeholder]="'Max Surface Height'"
+                (changed)="world.ground.maxHeight = $event; save()"
+              >
+              </verticalai-text-field>
+            </div>
+          </div>
+
+          <div class="w-100 pb-3">
+            <div class="px-1">
+              <verticalai-select-field
+                [title]="'Liquids'"
+                [multiple]="true"
+                [value]="worldLiquids"
+                [data]="liquids"
+                [valueField]="'id'"
+                [displayField]="'name'"
+                [placeholder]="'No Liquid'"
+                (changed)="
+                  selectLiquids($event); save()
+                "
+              >
+              </verticalai-select-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab class="tab">
+    <ng-template mat-tab-label>
+      <span class="primary-text me-3"> Sky </span>
+      <mat-icon class="primary-text"> light_mode </mat-icon>
+    </ng-template>
+    <ng-template matTabContent>
+      <div
+        class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+      >
+        <div
+          class="w-100 h-100 p-3 pb-5"
+          style="overflow-y: scroll"
+          *ngIf="world.sky"
+        >
+          <div class="w-100 pb-3">
+            <p class="w-100 mb-3 fw-bold primary-text">
+              {{ toggle.checked ? "Visible" : "Hidden" }}
+            </p>
+            <div class="px-1">
+              <mat-slide-toggle
+                #toggle
+                [checked]="!world.sky.hidden"
+                (change)="world.sky.hidden = !$event.checked"
+              ></mat-slide-toggle>
+            </div>
+          </div>
+
+          <div class="w-100 pb-3">
+            <div class="px-1">
+              <verticalai-text-field
+                [title]="'Sky Height'"
+                [type]="'number'"
+                [range]="{ min: 10, max: 100000 }"
+                [value]="world.sky.height"
+                [placeholder]="'Sky Height'"
+                (changed)="world.sky.height = $event; save()"
+              >
+              </verticalai-text-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

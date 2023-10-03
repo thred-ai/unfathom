@@ -44,15 +44,23 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     //   this.project = project;
     // });
 
-    if (this.project && this.scene && this.world) {
+    this.projectService.workflow.subscribe((w) => {
+      this.project = w;
+    });
 
-      this.prototypeService.loaded.next(this.loaded)
-      this.prototypeService.init(this.scene, this.project);
+    this.designerService.openStep.subscribe((s) => {
+      this.scene = s?.data?.ngArguments?.scene as Scene;
+      this.world = this.scene?.world;
 
-      this.prototypeService?.loaded.subscribe((loaded) => {
-        this.loaded = loaded;
-      });
-    }
+      if (this.project && this.scene && this.world) {
+        this.prototypeService.loaded.next(this.loaded);
+        this.prototypeService.init(this.scene, this.project);
+
+        this.prototypeService?.loaded.subscribe((loaded) => {
+          this.loaded = loaded;
+        });
+      }
+    });
 
     // this.designerService?.openStep.subscribe((scene) => {
     //   this.scene = scene?.data?.ngArguments?.scene as Scene;
@@ -67,6 +75,6 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
   @Input() theme!: 'light' | 'dark';
 
   ngOnDestroy(): void {
-   this.prototypeService.deinit()
+    this.prototypeService.deinit();
   }
 }

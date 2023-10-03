@@ -326,7 +326,7 @@
 
           <mat-tab class="tab">
             <ng-template mat-tab-label>
-              <!-- <span class="primary-text"> World </span> -->
+              <!-- <span class="primary-text"> Models </span> -->
               <mat-icon class="primary-text"> public </mat-icon>
             </ng-template>
             <ng-template matTabContent>
@@ -334,130 +334,44 @@
                 class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
               >
                 <div class="w-100 h-100 p-2 pb-5" style="overflow-y: scroll">
-                  <ion-accordion-group
-                    class="example-headers-align bg-transparent animate__animated animate__fadeIn"
-                    [multiple]="false"
-                    *ngIf="workflow"
-                    (ionChange)="(null)"
-                    id="accordion3"
+                  <div
+                    class="w-100"
+                    *ngIf="
+                      selectedFile &&
+                      selectedFile.data?.ngArguments?.scene as scene
+                    "
                   >
-                    <ion-accordion class="bg-transparent" [value]="'ground'">
-                      <ion-item slot="header" class="primary-text">
-                        <ion-label class="h3 fw-bold">Ground</ion-label>
-                      </ion-item>
-                      <div class="ion-padding" slot="content">
-                        <div class="w-100 pb-3">
-                          <div
-                            class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
-                          >
-                            <p class="w-100 fw-bold my-auto">Project Characters</p>
-                            <mat-icon
-                              class="m-auto primary-text"
-                              role="button"
-                              (click)="editCharacter()"
-                            >
-                              add
-                            </mat-icon>
-                          </div>
-      
-                          <div class="row row-cols-2 justify-content-start g-0">
-                            <div
-                              *ngFor="let character of characters ?? []; index as i"
-                              class="col p-1 position-relative"
-                              style="aspect-ratio: 0.75"
-                            >
-                              <div
-                                class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
-                                style="overflow: hidden"
-                                role="button"
-                                (click)="editCharacter(character)"
-                              >
-                                <img
-                                  class="w-100 h-100"
-                                  style="object-fit: cover; aspect-ratio: 1"
-                                  [src]="character.img"
-                                />
-      
-                                <div
-                                  class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
-                                >
-                                  <p
-                                    class="mx-auto primary-text text-truncate text-center"
-                                    style="width: 70px"
-                                  >
-                                    {{ character.name }}
-                                  </p>
-                                </div>
-                              </div>
-      
-                              <div
-                                class="rounded-circle bg-orange position-absolute"
-                                style="
-                                  z-index: 1;
-                                  right: 0;
-                                  top: 0;
-                                  aspect-ratio: 1 !important;
-                                "
-                                role="button"
-                                (click)="removeCharacterWorkflow(character.id)"
-                              >
-                                <mat-icon
-                                  class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
-                                  style="font-size: small"
-                                >
-                                  close
-                                </mat-icon>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- <div class="w-100 pb-3 px-2">
-                          <verticalai-textbox
-                            [title]="'Magic Description (AI)'"
-                            [value]="''"
-                            [placeholder]="'Description'"
-                            (changed)="sceneDescription = $event"
-                          >
-                          </verticalai-textbox>
-                        </div> -->
-                      </div>
-                    </ion-accordion>
-                  </ion-accordion-group>
-                </div>
+                    <ion-item
+                      slot="header"
+                      class="primary-text w-100 border-0 file-item"
+                      role="button"
+                      (click)="openWorldMenu()"
+                    >
+                      <ng-container>
+                        <ion-thumbnail
+                          slot="end"
+                          [style.--border-radius]="'6px'"
+                        >
+                          <!-- <img
+                          class="border-table p-0"
+                          [src]="scene.images[0]"
+                        /> -->
+                        </ion-thumbnail>
+                        <ion-label style="font-size: small"
+                          >World Settings</ion-label
+                        >
+                        <ion-icon
+                          class="secondary-text my-auto"
+                          style="font-size: 15px; cursor: pointer"
+                          [name]="'chevron-back-outline'"
+                          slot="start"
+                          role="button"
+                          (click)="(null)"
+                        ></ion-icon>
+                      </ng-container>
+                    </ion-item>
+                  </div>
 
-                <!-- <button
-              class="btn bg-orange w-100 border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
-              (click)="generateWorld(sceneDescription)"
-            >
-              <ng-container *ngIf="loading; else buttonTitles">
-                <span class="mx-auto">
-                  {{ "Generating" }}
-                  <span
-                    class="spinner-border spinner-border-sm ms-2 m-auto"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                </span>
-              </ng-container>
-
-              <ng-template #buttonTitles>
-              <ng-container> {{ "Generate World" }}</ng-container>
-              </ng-template>
-            </button> -->
-              </div>
-            </ng-template>
-          </mat-tab>
-
-          <mat-tab class="tab">
-            <ng-template mat-tab-label>
-              <!-- <span class="primary-text"> Models </span> -->
-              <mat-icon class="primary-text"> view_in_ar </mat-icon>
-            </ng-template>
-            <ng-template matTabContent>
-              <div
-                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-              >
-                <div class="w-100 h-100 p-2 pb-5" style="overflow-y: scroll">
                   <ion-accordion-group
                     class="example-headers-align bg-transparent animate__animated animate__fadeIn"
                     [multiple]="false"
@@ -470,9 +384,7 @@
                       [value]="'characters'"
                     >
                       <ion-item slot="header" class="primary-text">
-                        <ion-label class="h3 fw-bold"
-                          >Characters (Scene)</ion-label
-                        >
+                        <ion-label class="h3">Characters</ion-label>
                       </ion-item>
                       <div class="ion-padding" slot="content">
                         <div class="w-100 py-2 pb-3">
@@ -553,9 +465,7 @@
 
                     <ion-accordion class="bg-transparent" [value]="'assets'">
                       <ion-item slot="header" class="primary-text">
-                        <ion-label class="h3 fw-bold"
-                          >3D Assets (Scene)</ion-label
-                        >
+                        <ion-label class="h3">3D Assets</ion-label>
                       </ion-item>
                       <div class="ion-padding" slot="content">
                         <div class="w-100 py-2 pb-3">

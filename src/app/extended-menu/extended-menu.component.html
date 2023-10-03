@@ -34,5 +34,10 @@
       <app-asset-module [data]="data" (changed)="changed.emit($event)">
       </app-asset-module>
     </ng-container>
+
+    <ng-container *ngIf="data.comp == 'world-module'">
+      <app-world-module [data]="data" (changed)="changed.emit($event)">
+      </app-world-module>
+    </ng-container>
   </div>
 </div>

@@ -289,3 +289,26 @@ ion-accordion.accordion-expanded > ion-item[slot="header"] {
   font-size: small;
   color: var(--secondaryTextColor)
 }
+
+
+ion-thumbnail {
+  --size: 25px;
+  // --border-radius: 6px;
+}
+
+.file-item {
+  --border-color: transparent;
+  color: #ffffff;
+  font-weight: normal;
+  --background: transparent !important;
+  cursor: pointer;
+}
+
+.file-item.selected {
+  --background:  var(--primarySectionHoverColor) !important;
+}
+
+.file-item:not(.selected):hover {
+  --background:  var(--primarySectionHoverColor) !important;
+  
+}

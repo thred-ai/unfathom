@@ -151,6 +151,28 @@ export class WorkflowDesignerComponent
     }
   }
 
+  openWorldMenu() {
+    this.openMenu('world-module', undefined, (data) => {
+      if (data && data != '' && data != '0' && data.workflow) {
+        let world = data.world as World;
+
+        if (data.action == 'delete') {
+          // character.status = 1;
+          return;
+        }
+
+        let scene = this.selectedFile?.data.ngArguments.scene as Scene;
+
+        if (scene) {
+          scene.world = world;
+          this.designerService.setScene(scene, scene.id);
+          this.projectService.workflow.next(this.workflow);
+          this.workflowChanged.emit(this.workflow);
+        }
+      }
+    });
+  }
+
   openMenu(comp: string, data: any, callback?: (data: any) => any) {
     this.selectedData = undefined;
     this.cdr.detectChanges();
@@ -629,6 +651,13 @@ export class WorkflowDesignerComponent
   public saveLayout() {
     this.detailsChanged.emit(this.workflow);
   }
+
+  elements = [
+    {
+      name: 'Ground',
+      id: 'ground',
+    },
+  ];
 
   @ViewChild('frame') frame?: ElementRef<HTMLElement>;
 
