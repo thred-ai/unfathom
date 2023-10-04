@@ -1,94 +1,113 @@
-<div class="w-100 h-100 p-3" *ngIf="workflow && character && characterDetails">
-  <div class="w-100 pb-3">
-    <p class="w-100 mb-3 primary-text fw-bold">Spawn Point</p>
-
-    <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
-      <div class="col px-1">
-        <verticalai-text-field
-          [title]="'X'"
-          [type]="'number'"
-          [range]="{ min: -100000, max: 100000 }"
-          [value]="characterDetails['spawn'].x"
-          [placeholder]="'Spawn (X)'"
-          (changed)="characterDetails['spawn'].x = $event; save()"
+<div class="w-100 h-100">
+  <div class="w-100 h-100">
+    <div class="w-100 p-3">
+      <div class="w-100 d-flex justify-content-between align-items-center">
+        <div class="primary-text fw-bold" style="font-size: 15px">
+          {{character?.name ?? 'Character'}}
+        </div>
+        <button
+          class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2"
+          (click)="save()"
         >
-        </verticalai-text-field>
-      </div>
-      <div class="col px-1">
-        <verticalai-text-field
-          [title]="'Y'"
-          [type]="'number'"
-          [range]="{ min: -100000, max: 100000 }"
-          [value]="characterDetails['spawn'].y"
-          [placeholder]="'Spawn (Y)'"
-          (changed)="characterDetails['spawn'].y = $event; save()"
-        >
-        </verticalai-text-field>
-      </div>
-      <div class="col px-1">
-        <verticalai-text-field
-          [title]="'Z'"
-          [type]="'number'"
-          [range]="{ min: -100000, max: 100000 }"
-          [value]="characterDetails['spawn'].z"
-          [placeholder]="'Spawn (Z)'"
-          (changed)="characterDetails['spawn'].z = $event; save()"
-        >
-        </verticalai-text-field>
+          Save
+        </button>
       </div>
     </div>
-  </div>
-
-  <div class="w-100 pb-3">
-    <p class="w-100 mb-3 primary-text fw-bold">Direction (°)</p>
-
-    <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
-      <div class="col px-1">
-        <verticalai-text-field
-          [title]="'X'"
-          [type]="'number'"
-          [range]="{ min: -100000, max: 100000 }"
-          [value]="characterDetails['direction'].x"
-          [placeholder]="'Direction (X)'"
-          (changed)="characterDetails['direction'].x = $event; save()"
-        >
-        </verticalai-text-field>
-      </div>
-      <div class="col px-1">
-        <verticalai-text-field
-          [title]="'Y'"
-          [type]="'number'"
-          [range]="{ min: -100000, max: 100000 }"
-          [value]="characterDetails['direction'].y"
-          [placeholder]="'Direction (Y)'"
-          (changed)="characterDetails['direction'].y = $event; save()"
-        >
-        </verticalai-text-field>
-      </div>
-      <div class="col px-1">
-        <verticalai-text-field
-          [title]="'Z'"
-          [type]="'number'"
-          [range]="{ min: -100000, max: 100000 }"
-          [value]="characterDetails['direction'].z"
-          [placeholder]="'Direction (Z)'"
-          (changed)="characterDetails['direction'].z = $event; save()"
-        >
-        </verticalai-text-field>
-      </div>
-    </div>
-  </div>
-
-  <div class="w-100 pb-3">
-    <verticalai-text-field
-      [title]="'Scale'"
-      [type]="'number'"
-      [range]="{ min: 0.01, max: 1000 }"
-      [value]="characterDetails['scale']"
-      [placeholder]="'Scale'"
-      (changed)="characterDetails['scale'] = $event; save()"
+    <div
+      class="w-100 h-100 p-3"
+      *ngIf="workflow && character && characterDetails"
     >
-    </verticalai-text-field>
-  </div>
+      <div class="w-100 pb-3">
+        <p class="w-100 mb-3 primary-text fw-bold">Spawn Point</p>
 
+        <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
+          <div class="col px-1">
+            <verticalai-text-field
+              [title]="'X'"
+              [type]="'number'"
+              [range]="{ min: -100000, max: 100000 }"
+              [value]="characterDetails['spawn'].x"
+              [placeholder]="'Spawn (X)'"
+              (changed)="characterDetails['spawn'].x = $event"
+            >
+            </verticalai-text-field>
+          </div>
+          <div class="col px-1">
+            <verticalai-text-field
+              [title]="'Y'"
+              [type]="'number'"
+              [range]="{ min: -100000, max: 100000 }"
+              [value]="characterDetails['spawn'].y"
+              [placeholder]="'Spawn (Y)'"
+              (changed)="characterDetails['spawn'].y = $event"
+            >
+            </verticalai-text-field>
+          </div>
+          <div class="col px-1">
+            <verticalai-text-field
+              [title]="'Z'"
+              [type]="'number'"
+              [range]="{ min: -100000, max: 100000 }"
+              [value]="characterDetails['spawn'].z"
+              [placeholder]="'Spawn (Z)'"
+              (changed)="characterDetails['spawn'].z = $event"
+            >
+            </verticalai-text-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-100 pb-3">
+        <p class="w-100 mb-3 primary-text fw-bold">Direction (°)</p>
+
+        <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
+          <div class="col px-1">
+            <verticalai-text-field
+              [title]="'X'"
+              [type]="'number'"
+              [range]="{ min: -100000, max: 100000 }"
+              [value]="characterDetails['direction'].x"
+              [placeholder]="'Direction (X)'"
+              (changed)="characterDetails['direction'].x = $event"
+            >
+            </verticalai-text-field>
+          </div>
+          <div class="col px-1">
+            <verticalai-text-field
+              [title]="'Y'"
+              [type]="'number'"
+              [range]="{ min: -100000, max: 100000 }"
+              [value]="characterDetails['direction'].y"
+              [placeholder]="'Direction (Y)'"
+              (changed)="characterDetails['direction'].y = $event"
+            >
+            </verticalai-text-field>
+          </div>
+          <div class="col px-1">
+            <verticalai-text-field
+              [title]="'Z'"
+              [type]="'number'"
+              [range]="{ min: -100000, max: 100000 }"
+              [value]="characterDetails['direction'].z"
+              [placeholder]="'Direction (Z)'"
+              (changed)="characterDetails['direction'].z = $event"
+            >
+            </verticalai-text-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-100 pb-3">
+        <verticalai-text-field
+          [title]="'Scale'"
+          [type]="'number'"
+          [range]="{ min: 0.01, max: 1000 }"
+          [value]="characterDetails['scale']"
+          [placeholder]="'Scale'"
+          (changed)="characterDetails['scale'] = $event"
+        >
+        </verticalai-text-field>
+      </div>
+    </div>
+  </div>
 </div>

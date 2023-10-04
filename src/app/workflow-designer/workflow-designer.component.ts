@@ -492,6 +492,14 @@ export class WorkflowDesignerComponent
     this.projectService.save(this.workflow);
   }
 
+  extendedMenuFinish(data: any){
+
+    if (this.selectedData?.callback){
+      this.selectedData.callback(data)
+    }
+    this.selectedData = undefined
+  }
+
   elements = [
     {
       name: 'Ground',

@@ -15,7 +15,7 @@
       <app-extended-menu
         [data]="selectedData.data"
         (close)="selectedData = undefined"
-        (changed)="selectedData.callback ? selectedData.callback($event) : null"
+        (changed)="extendedMenuFinish($event)"
       >
       </app-extended-menu>
     </div>
