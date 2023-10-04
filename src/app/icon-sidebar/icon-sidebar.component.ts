@@ -52,7 +52,6 @@ export class IconSidebarComponent implements OnInit {
   @Output() openProj = new EventEmitter<string | undefined>();
   @Output() newFrame = new EventEmitter<any>();
 
-  @Output() publish = new EventEmitter<Executable>();
   @Output() selectedFileChanged = new EventEmitter<string>();
 
   selectedStep?: Cell.Properties;
@@ -235,6 +234,6 @@ export class IconSidebarComponent implements OnInit {
 
     this.loading = true;
 
-    this.publish.emit(this.executable);
+    this.projectService.save(this.executable);
   }
 }

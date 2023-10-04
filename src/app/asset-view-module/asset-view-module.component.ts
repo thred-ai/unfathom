@@ -29,6 +29,8 @@ export class AssetViewModuleComponent implements OnInit {
     callback: ((data: any) => any) | undefined;
   }>();
 
+  @Output() close = new EventEmitter<any>();
+
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
       if (w) {
@@ -55,17 +57,16 @@ export class AssetViewModuleComponent implements OnInit {
         workflow: this.workflow,
       },
       callback: (data) => {
-        if (data && data != '' && data != '0' && data.workflow) {
+        if (data && data != '' && data != '0') {
           let asset = data.asset as ModelAsset;
-
-          if (data.action == 'delete') {
-            // character.status = 1;
-            return;
-          }
 
           this.workflow!.assets[asset.id] = asset;
 
-          this.projectService.workflow.next(this.workflow);
+          this.projectService.save(this.workflow);
+
+          setTimeout(() => {
+            this.close.emit()
+          }, 100);
 
           // this.workflowChanged.emit(this.workflow);
         }

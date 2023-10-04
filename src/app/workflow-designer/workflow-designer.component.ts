@@ -77,8 +77,6 @@ export class WorkflowDesignerComponent
   }
 
   @Input() theme: 'light' | 'dark' = 'light';
-  @Output() detailsChanged = new EventEmitter<Executable>();
-  @Output() workflowChanged = new EventEmitter<Executable>();
 
   selectedFile?: Cell.Properties;
 
@@ -165,8 +163,7 @@ export class WorkflowDesignerComponent
         if (scene) {
           scene.world = world;
           this.designerService.setScene(scene, scene.id);
-          this.projectService.workflow.next(this.workflow);
-          this.workflowChanged.emit(this.workflow);
+          this.projectService.save(this.workflow);
         }
       }
     });
@@ -222,7 +219,7 @@ export class WorkflowDesignerComponent
 
           this.projectService.workflow.next(this.workflow);
 
-          this.workflowChanged.emit(this.workflow);
+          this.projectService.save(this.workflow);
         }
       }
     );
@@ -265,8 +262,6 @@ export class WorkflowDesignerComponent
     // });
   }
 
-
-
   editAssetDetails(asset: string, assetIndex: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
@@ -297,7 +292,7 @@ export class WorkflowDesignerComponent
 
           this.projectService.workflow.next(this.workflow);
 
-          this.workflowChanged.emit(this.workflow);
+          this.projectService.save(this.workflow);
         }
       }
     );
@@ -463,7 +458,6 @@ export class WorkflowDesignerComponent
     this.designerService.setScene(scene, scene.id);
   }
 
-
   updateCellName(id: string, value: any) {
     let cell = this.designerService.graph?.getCellById(id);
 
@@ -495,7 +489,7 @@ export class WorkflowDesignerComponent
   }
 
   public saveLayout() {
-    this.detailsChanged.emit(this.workflow);
+    this.projectService.save(this.workflow);
   }
 
   elements = [

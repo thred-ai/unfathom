@@ -66,6 +66,9 @@ export class ImageModuleComponent implements OnInit {
 
           this.projectService.workflow.next(this.workflow);
 
+          this.projectService.save(this.workflow)
+
+      
           // this.workflowChanged.emit(this.workflow);
         }
       },

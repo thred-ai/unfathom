@@ -84,7 +84,7 @@ export class WorkflowComponent implements OnInit {
     if ($event.metaKey && charCode === 's') {
       $event.preventDefault();
       // Action on Cmd + S
-      await this.save(1, true);
+      await this.projectService.save();
     }
     // if ($event.metaKey && charCode === 'c') {
     //   $event.preventDefault();
@@ -103,7 +103,8 @@ export class WorkflowComponent implements OnInit {
     if ($event.ctrlKey && charCode === 's') {
       $event.preventDefault();
       // Action on Ctrl + S
-      await this.save(1, true);
+
+      this.projectService.save()
     }
     // if ($event.ctrlKey && charCode === 'c') {
     //   $event.preventDefault();
@@ -144,7 +145,7 @@ export class WorkflowComponent implements OnInit {
       this.dev?.utils.push(workflow);
       this.projectService.workflow.next(workflow);
 
-      this.save(1);
+      this.projectService.save(workflow)
     }
 
     // const loadData = () => {
@@ -300,36 +301,6 @@ export class WorkflowComponent implements OnInit {
     return false;
   }
 
-  async save(mode = 1, update = false, workflow = this.workflow) {
-    if (workflow) {
-      try {
-        if (mode == 1) {
-          let exec = await this.fillExecutable(workflow);
-
-          let result = await this.loadService.saveSmartUtil(
-            exec,
-            this.clientId
-          );
-
-          if (result) {
-            this.edited = false;
-            if (update) {
-              this.updateWorkflows(exec);
-            }
-          }
-          return;
-        } else if (mode == 2) {
-          this.activeWorkflow = workflow;
-          // await this.loadService.saveLayout(workflow, this.clientId);
-
-          return;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-    }
-  }
 
   async fillExecutable(executable: Executable) {
     const exec = executable;
@@ -403,40 +374,13 @@ export class WorkflowComponent implements OnInit {
             workflow = w;
           }
         }
-
-        this.projectService.workflow.next(workflow);
-
-        await this.save(1, false, workflow);
+        this.projectService.save(workflow)
       }
     });
   }
 
   @ViewChild(WorkflowDesignerComponent) designer?: WorkflowDesignerComponent;
 
-  async publish(
-    workflow = this.workflow,
-    close = false,
-    callback?: (result?: Executable) => any
-  ) {
-    const w = workflow;
-    if (w) {
-      this.loading = true;
-
-      await this.save(1, false);
-      w.executableUrl = await this.loadService.uploadExecutable(w.id, w);
-
-      let result = await this.loadService.publishSmartUtil(w);
-
-      this.loading = false;
-      if (callback) {
-        callback(result);
-      }
-    } else {
-      if (callback) {
-        callback();
-      }
-    }
-  }
 
   updateWorkflows(workflow = this.workflow) {
     let dev = JSON.parse(

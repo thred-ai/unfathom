@@ -12,6 +12,11 @@ export class ProjectService {
   loadedModels = new BehaviorSubject<Dict<AIModelType>>({});
   loading = new BehaviorSubject<boolean>(false);
   workflow = new BehaviorSubject<Executable | undefined>(undefined);
+  saveWorkflow = new BehaviorSubject<Executable | undefined>(undefined);
 
+
+  save(workflow = this.workflow.value){
+    this.saveWorkflow.next(workflow)
+  }
   constructor() { }
 }

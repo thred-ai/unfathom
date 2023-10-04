@@ -53,7 +53,6 @@ export class AssetsModuleComponent implements OnInit {
       if (type == 1) {
         this.newAsset = file;
         this.fileDisplay = base64;
-        this.save()
       }
     };
 
@@ -108,15 +107,13 @@ export class AssetsModuleComponent implements OnInit {
     this.asset = assets
 
     this.changed.emit({
-      workflow: this.workflow,
-      action,
       asset: assets,
     });
   }
 
   ngOnInit(): void {
     this.workflow = this.data.workflow;
-    this.asset = this.data.asset;
+    this.asset = JSON.parse(JSON.stringify(this.data.asset));
     this.fileDisplay = this.data.asset?.assetUrl;
   }
 }

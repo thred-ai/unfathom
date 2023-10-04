@@ -28,6 +28,8 @@ export class CharacterViewModuleComponent implements OnInit {
     callback: ((data: any) => any) | undefined;
   }>();
 
+  @Output() close = new EventEmitter<any>();
+
   ngOnInit(): void {
 
 
@@ -61,18 +63,17 @@ export class CharacterViewModuleComponent implements OnInit {
       comp: 'character-module',
       data: { character, workflow: this.workflow },
       callback: (data) => {
-        if (data && data != '' && data != '0' && data.workflow) {
+        if (data && data != '' && data != '0') {
           let character = data.character as Character;
 
-          if (data.action == 'delete') {
-            // character.status = 1;
-            return;
-          }
-
+       
           this.workflow!.characters[character.id] = character;
 
-          this.projectService.workflow.next(this.workflow);
+          this.projectService.save(this.workflow)
 
+          setTimeout(() => {
+            this.close.emit()
+          }, 100);
           // this.workflowChanged.emit(this.workflow);
         }
       },
@@ -122,6 +123,7 @@ export class CharacterViewModuleComponent implements OnInit {
 
     this.projectService.workflow.next(this.workflow);
 
+    this.close.emit()
     // this.workflowChanged.emit(this.workflow);
   }
 }

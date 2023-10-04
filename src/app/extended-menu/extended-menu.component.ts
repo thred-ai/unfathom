@@ -14,4 +14,6 @@ export class ExtendedMenuComponent implements OnInit {
   @Output() changed = new EventEmitter<any>();
 
   ngOnInit(): void {}
+
+  
 }

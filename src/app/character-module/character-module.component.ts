@@ -37,7 +37,7 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private loadService: LoadService,
+    private loadService: LoadService
   ) {
     // setTimeout(() => {
     //   let i = document.getElementById("cont") as HTMLDivElement
@@ -67,8 +67,6 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
         this.newAsset = file;
         this.fileDisplay = base64;
       }
-
-      this.save();
     };
 
     reader.readAsDataURL(blob);
@@ -114,15 +112,13 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
     // });
 
     this.changed.emit({
-      workflow: this.workflow,
-      action,
       character: this.character,
     });
   }
 
   ngOnInit(): void {
     this.workflow = this.data.workflow;
-    this.character = this.data.character;
+    this.character = JSON.parse(JSON.stringify(this.data.character));
     this.fileDisplay = this.data.character?.assetUrl;
   }
 

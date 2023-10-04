@@ -142,16 +142,19 @@
 
       <app-character-view-module
         (openMenu)="openMenu($event.comp, $event.data, $event.callback)"
+        (close)="selectedData = undefined"
         *ngIf="mode == 'characters'"
       ></app-character-view-module>
 
       <app-image-module
       (openMenu)="openMenu($event.comp, $event.data, $event.callback)"
+      (close)="selectedData = undefined"
       *ngIf="mode == 'textures'"
     ></app-image-module>
 
       <app-asset-view-module
         (openMenu)="openMenu($event.comp, $event.data, $event.callback)"
+        (close)="selectedData = undefined"
         *ngIf="mode == 'assets'"
       ></app-asset-view-module>
     </div>

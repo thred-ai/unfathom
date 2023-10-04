@@ -56,7 +56,18 @@ export class LoadService {
     private titleService: Title,
     private designerService: DesignerService,
     private projectService: ProjectService
-  ) {}
+  ) {
+    this.projectService.saveWorkflow.subscribe(async (workflow) => {
+      if (workflow) {
+        this.projectService.workflow.next(workflow);
+
+        let result = await this.saveSmartUtil(workflow);
+
+        if (result) {
+        }
+      }
+    });
+  }
 
   // .bg-theme{
   //   background-color: #1F1F1F;
@@ -306,7 +317,7 @@ export class LoadService {
     return undefined;
   }
 
-  async saveSmartUtil(data: Executable, clientId: string) {
+  async saveSmartUtil(data: Executable) {
     let id = data.id;
 
     let uid = (await this.currentUser)?.uid;

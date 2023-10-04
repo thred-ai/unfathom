@@ -3,20 +3,9 @@
   style="overflow: hidden"
   *ngIf="data && data.comp"
 >
-  <div class="w-100 p-3">
-    <div class="w-100 d-flex justify-content-between align-items-center">
-      <div class="primary-text fw-bold" style="font-size: 15px">Character</div>
-      <button
-        class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2"
-        (click)="close.emit()"
-      >
-        Save
-      </button>
-    </div>
-  </div>
   <div class="w-100 h-100" style="overflow-y: scroll">
     <ng-container *ngIf="data.comp == 'character-module'">
-      <app-character-module [data]="data" (changed)="changed.emit($event)">
+      <app-character-module #char [data]="data" (changed)="changed.emit($event)">
       </app-character-module>
     </ng-container>
 
@@ -26,7 +15,7 @@
     </ng-container>
 
     <ng-container *ngIf="data.comp == 'asset-module'">
-      <app-assets-module [data]="data" (changed)="changed.emit($event)">
+      <app-assets-module #ass [data]="data" (changed)="changed.emit($event)">
       </app-assets-module>
     </ng-container>
 
