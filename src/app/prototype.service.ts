@@ -974,12 +974,12 @@ export class PrototypeService {
 
   generateLiquidTexture(type: LiquidType) {
     if (type == LiquidType.lava) {
-      let tex = new Texture();
+      let tex = new Texture("lava");
       tex.diffuse =
         'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
       return tex;
     } else {
-      let tex = new Texture();
+      let tex = new Texture("water");
       tex.bump =
         'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
       tex.diffuse =

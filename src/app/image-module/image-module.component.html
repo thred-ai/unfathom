@@ -1,0 +1,58 @@
+<div class="w-100 h-100 p-3" style="overflow-y: scroll">
+  <div class="w-100 pb-3">
+    <div
+      class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+    >
+      <p class="w-100 fw-bold my-auto">Project Textures</p>
+      <mat-icon
+        class="m-auto primary-text"
+        role="button"
+        (click)="editCharacter()"
+      >
+        add
+      </mat-icon>
+    </div>
+
+    <div class="row row-cols-2 justify-content-start g-0">
+      <div
+        *ngFor="let texture of textures ?? []; index as i"
+        class="col p-1 position-relative"
+        style="aspect-ratio: 0.75"
+      >
+        <div
+          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
+          style="overflow: hidden"
+          role="button"
+          (click)="editCharacter(texture)"
+        >
+          <img
+            class="w-100 h-100"
+            style="object-fit: cover;"
+            [src]="
+              texture.diffuse ??
+              texture.ambient ??
+              texture.bump ??
+              texture.specular ??
+              texture.emissive ??
+              texture.displacement ?? '/assets/default.png'
+            "
+          />
+        </div>
+
+        <div
+          class="rounded-circle bg-orange position-absolute"
+          style="z-index: 1; right: 0; top: 0; aspect-ratio: 1 !important"
+          role="button"
+          (click)="removeCharacterWorkflow(texture.id)"
+        >
+          <mat-icon
+            class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+            style="font-size: small"
+          >
+            close
+          </mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

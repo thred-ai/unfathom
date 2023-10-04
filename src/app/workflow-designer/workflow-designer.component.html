@@ -21,7 +21,7 @@
     </div>
 
     <div
-      *ngIf="selectedFile"
+    *ngIf="selectedFile"
       class="h-100 border-table-left"
       style="width: 250px !important; flex-shrink: 0; overflow-x: hidden"
     >
@@ -43,7 +43,11 @@
               <div
                 class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
               >
-                <div class="w-100 h-100 p-2 pb-5" style="overflow-y: scroll">
+                <div
+                  class="w-100 h-100 p-2 pb-5"
+                  style="overflow-y: scroll"
+                  *ngIf="selectedFile"
+                >
                   <div
                     class="w-100"
                     *ngIf="
@@ -271,7 +275,11 @@
               <div
                 class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
               >
-                <div class="w-100 h-100 p-3 pb-5" style="overflow-y: scroll">
+                <div
+                  class="w-100 h-100 p-3 pb-5"
+                  style="overflow-y: scroll"
+                  *ngIf="selectedFile"
+                >
                   <div class="w-100 pb-3">
                     <p class="w-100 mb-3 fw-bold primary-text">Image</p>
 
@@ -527,261 +535,6 @@
                   </verticalai-select-field>
                 </div>
               </ng-container> -->
-                </div>
-              </div>
-            </ng-template>
-          </mat-tab>
-        </mat-tab-group>
-      </div>
-    </div>
-
-    <div
-      *ngIf="!selectedFile"
-      class="h-100 border-table-left"
-      style="width: 250px !important; overflow-x: hidden; flex-shrink: 0"
-    >
-      <div class="primary-background h-100 w-100">
-        <mat-tab-group
-          #menu2
-          class="w-100 h-100"
-          dynamicHeight
-          animationDuration="0ms"
-          [fitInkBarToContent]="true"
-          (selectedTabChange)="selectedData = undefined"
-        >
-          <mat-tab class="tab">
-            <ng-template mat-tab-label>
-              <mat-icon class="primary-text"> accessibility_new </mat-icon>
-            </ng-template>
-            <ng-template matTabContent>
-              <div
-                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-              >
-                <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-                  <div class="w-100 pb-3">
-                    <div
-                      class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
-                    >
-                      <p class="w-100 fw-bold my-auto">Project Characters</p>
-                      <mat-icon
-                        class="m-auto primary-text"
-                        role="button"
-                        (click)="editCharacter()"
-                      >
-                        add
-                      </mat-icon>
-                    </div>
-
-                    <div class="row row-cols-2 justify-content-start g-0">
-                      <div
-                        *ngFor="let character of characters ?? []; index as i"
-                        class="col p-1 position-relative"
-                        style="aspect-ratio: 0.75"
-                      >
-                        <div
-                          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
-                          style="overflow: hidden"
-                          role="button"
-                          (click)="editCharacter(character)"
-                        >
-                          <img
-                            class="w-100 h-100"
-                            style="object-fit: cover; aspect-ratio: 1"
-                            [src]="character.img"
-                          />
-
-                          <div
-                            class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
-                          >
-                            <p
-                              class="mx-auto primary-text text-truncate text-center"
-                              style="width: 70px"
-                            >
-                              {{ character.name }}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div
-                          class="rounded-circle bg-orange position-absolute"
-                          style="
-                            z-index: 1;
-                            right: 0;
-                            top: 0;
-                            aspect-ratio: 1 !important;
-                          "
-                          role="button"
-                          (click)="removeCharacterWorkflow(character.id)"
-                        >
-                          <mat-icon
-                            class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
-                            style="font-size: small"
-                          >
-                            close
-                          </mat-icon>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ng-template>
-          </mat-tab>
-
-          <mat-tab class="tab">
-            <ng-template mat-tab-label>
-              <!-- <span class="primary-text"> 3D Assets </span> -->
-              <mat-icon class="primary-text"> apartment </mat-icon>
-            </ng-template>
-            <ng-template matTabContent>
-              <div
-                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-              >
-                <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-                  <div class="w-100 pb-3">
-                    <div
-                      class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
-                    >
-                      <p class="w-100 fw-bold my-auto">Project 3D Assets</p>
-                      <mat-icon
-                        class="m-auto primary-text"
-                        role="button"
-                        (click)="editAsset()"
-                      >
-                        add
-                      </mat-icon>
-                    </div>
-
-                    <div class="w-100 row row-cols-2 justify-content-start g-0">
-                      <div
-                        *ngFor="let asset of assets ?? []; index as i"
-                        class="col p-1 position-relative"
-                        style="aspect-ratio: 0.75"
-                      >
-                        <div
-                          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
-                          style="overflow: hidden"
-                          role="button"
-                          (click)="editAsset(asset)"
-                        >
-                          <img
-                            class="w-100 h-100"
-                            style="object-fit: cover; aspect-ratio: 1"
-                            [src]="asset.img"
-                          />
-
-                          <div
-                            class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
-                          >
-                            <p
-                              class="mx-auto primary-text text-truncate text-center"
-                              style="width: 70px"
-                            >
-                              {{ asset.name }}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div
-                          class="rounded-circle bg-orange position-absolute"
-                          style="
-                            z-index: 1;
-                            right: 0;
-                            top: 0;
-                            aspect-ratio: 1 !important;
-                          "
-                          role="button"
-                          (click)="removeAssetWorkflow(asset.id)"
-                        >
-                          <mat-icon
-                            class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
-                            style="font-size: small"
-                          >
-                            close
-                          </mat-icon>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ng-template>
-          </mat-tab>
-
-          <mat-tab class="tab">
-            <ng-template mat-tab-label>
-              <mat-icon class="primary-text"> image </mat-icon>
-            </ng-template>
-            <ng-template matTabContent>
-              <div
-                class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-              >
-                <div class="w-100 h-100 p-3" style="overflow-y: scroll">
-                  <div class="w-100 pb-3">
-                    <div
-                      class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
-                    >
-                      <p class="w-100 fw-bold my-auto">Project Textures</p>
-                      <mat-icon
-                        class="m-auto primary-text"
-                        role="button"
-                        (click)="editCharacter()"
-                      >
-                        add
-                      </mat-icon>
-                    </div>
-
-                    <div class="row row-cols-2 justify-content-start g-0">
-                      <div
-                        *ngFor="let character of characters ?? []; index as i"
-                        class="col p-1 position-relative"
-                        style="aspect-ratio: 0.75"
-                      >
-                        <div
-                          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
-                          style="overflow: hidden"
-                          role="button"
-                          (click)="editCharacter(character)"
-                        >
-                          <img
-                            class="w-100 h-100"
-                            style="object-fit: cover; aspect-ratio: 1"
-                            [src]="character.img"
-                          />
-
-                          <div
-                            class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
-                          >
-                            <p
-                              class="mx-auto primary-text text-truncate text-center"
-                              style="width: 70px"
-                            >
-                              {{ character.name }}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div
-                          class="rounded-circle bg-orange position-absolute"
-                          style="
-                            z-index: 1;
-                            right: 0;
-                            top: 0;
-                            aspect-ratio: 1 !important;
-                          "
-                          role="button"
-                          (click)="removeCharacterWorkflow(character.id)"
-                        >
-                          <mat-icon
-                            class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
-                            style="font-size: small"
-                          >
-                            close
-                          </mat-icon>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </ng-template>

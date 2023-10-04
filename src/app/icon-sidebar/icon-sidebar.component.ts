@@ -171,6 +171,7 @@ export class IconSidebarComponent implements OnInit {
     scene.world.ground = new Ground(
       'https://storage.googleapis.com/verticalai.appspot.com/default/ground/default_map.png',
       new Texture(
+        'ground',
         'https://storage.googleapis.com/verticalai.appspot.com/default/ground/texture.png'
       ),
       undefined,
@@ -180,12 +181,13 @@ export class IconSidebarComponent implements OnInit {
     scene.world.sky = new Sky(
       1000,
       new Texture(
+        'sky',
         undefined,
         undefined,
         undefined,
         undefined,
         'https://storage.googleapis.com/verticalai.appspot.com/default/sky/default_sky.png'
-      ),
+      )
     );
 
     return this.graph?.createNode({

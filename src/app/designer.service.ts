@@ -17,6 +17,7 @@ import { ProjectService } from './project.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProtoTesterComponent } from './proto-tester/proto-tester.component';
 import { Developer } from './models/user/developer.model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +27,14 @@ export class DesignerService {
     private db: AngularFirestore,
     private themeService: ThemeService,
     private projectService: ProjectService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
+    this.selectedIcon.subscribe(icon => {
+      this.updateRoute()
+    })
+  }
 
   toolboxConfiguration = new BehaviorSubject<SceneDefinition[]>([]);
 
@@ -45,6 +52,7 @@ export class DesignerService {
 
   openStep = new BehaviorSubject<Cell.Properties | undefined>(undefined);
   openWorld = new BehaviorSubject<World | undefined>(undefined);
+  selectedIcon = new BehaviorSubject<string>('none');
 
   // this.toolboxConfiguration.next([new SceneDefinition("Scene", "", "scene")])
 
@@ -420,5 +428,41 @@ export class DesignerService {
       }
     }
    
+  }
+
+  async selectFile(
+    fileId: string | undefined,
+    workflow = this.projectService.workflow.value,
+    update = true
+  ) {
+    if (workflow && fileId) {
+      if (this.openStep?.value?.id != fileId) {
+        this.openStep.next(this.findScene(fileId));
+      }
+    }
+  }
+
+  findScene(fileId: string, workflow = this.projectService.workflow.value) {
+    if (fileId == 'main') {
+      return undefined; //new Cell.Properties(new Scene('main'), {});
+    }
+    return workflow?.sceneLayout.cells.find((cell) => cell.id == fileId);
+  }
+
+  async updateRoute(stepId: string = this.openStep.value?.id ?? 'main') {
+    if (this.projectService.workflow.value && this.selectedIcon.value) {
+      await this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          project: this.projectService.workflow.value?.id,
+          file: stepId,
+          module: this.selectedIcon.value,
+        },
+        queryParamsHandling: 'merge',
+        // preserve the existing query params in the route
+        skipLocationChange: false,
+        // do not trigger navigation
+      });
+    }
   }
 }

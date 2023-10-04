@@ -1,4 +1,5 @@
 export class Texture {
+  id!: string
   ambient?: string;
   diffuse?: string;
   bump?: string;
@@ -11,6 +12,7 @@ export class Texture {
   displacement?: string
 
   constructor(
+    id: string,
     diffuse?: string,
     ambient?: string,
     bump?: string,
@@ -22,6 +24,7 @@ export class Texture {
     reflection?: string,
     displacement?: string
   ) {
+    this.id = id
     this.ambient = ambient;
     this.diffuse = diffuse;
     this.bump = bump;

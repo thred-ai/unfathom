@@ -1,11 +1,11 @@
 <div
-  class="primary-background h-100 d-flex flex-column justify-content-between align-items-center border-table-right"
-  style="width: 250px !important; overflow-y: scroll"
+  class="h-100 w-100 d-flex flex-column justify-content-between align-items-center"
+  style="overflow-y: scroll"
 >
   <!-- [value]="openLayouts"
       (ionChange)="setOpenLayouts($event)" -->
 
-  <ng-container *ngIf="executable">
+  <ng-container *ngIf="workflow">
     <div class="w-100 h-100 pb-3" style="overflow-y: scroll">
       <!-- <ng-container
         *ngTemplateOutlet="recursiveList; context: { $implicit: items }"
@@ -26,7 +26,7 @@
           selectedFile == item.id ? 'selected' : ''
         }}"
         role="button"
-        (click)="selectedFile = item.id; selectedFileChanged.emit(item.id!)"
+        (click)="selectedFile = item.id; fileChanged(item)"
       >
         <ng-container>
           <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
@@ -143,50 +143,6 @@
     </ion-item>
   </ng-template> -->
 
-  <ng-template #sceneList let-data>
-    <!-- <div class="w-100 p-2 px-3 pb-1" *ngIf="data.title && data.title != ''">
-      <span class="primary-text w-100" >
-        {{data.title}}
-      </span>
-    </div> -->
-    <div class="w-100 {{ data.underline ? 'border-table-bottom' : '' }}">
-      <ion-item
-        *ngFor="let item of data.items"
-        slot="header"
-        class="primary-text w-100 border-0 file-item {{
-          selectedFile == item.id ? 'selected' : ''
-        }}"
-        role="button"
-        (click)="selectedFile = item.id; selectedFileChanged.emit(item.id)"
-      >
-        <ng-container>
-          <ion-thumbnail slot="start" [style.--border-radius]="'6px'">
-            <img
-              class="border-table p-0"
-              [src]="item.images[0] ?? frames[item.type].image"
-            />
-          </ion-thumbnail>
-          <ion-label
-            style="font-size: small"
-            (contextmenu)="
-              item.id != 'main' ? onRightClick($event, item) : undefined
-            "
-            >{{ item.name }}</ion-label
-          >
-          <ion-icon
-            *ngIf="item.id != 'main'"
-            class="secondary-text my-auto"
-            style="font-size: 15px; cursor: pointer"
-            [name]="'ellipsis-vertical'"
-            slot="end"
-            role="button"
-            [matTooltip]="'Actions'"
-            (click)="onRightClick($event, item)"
-          ></ion-icon>
-        </ng-container>
-      </ion-item>
-    </div>
-  </ng-template>
 </div>
 
 <!-- an hidden div is created to set the position of appearance of the menu-->

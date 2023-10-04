@@ -148,6 +148,11 @@ import { WorldEditComponent } from './world-edit/world-edit.component';
 import { SkyEditComponent } from './sky-edit/sky-edit.component';
 import { GroundEditComponent } from './ground-edit/ground-edit.component';
 import { WorldModuleComponent } from './world-module/world-module.component';
+import { TextureUploadComponent } from './texture-upload/texture-upload.component';
+import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
+import { ImageModuleComponent } from './image-module/image-module.component';
+import { CharacterViewModuleComponent } from './character-view-module/character-view-module.component';
+import { AssetViewModuleComponent } from './asset-view-module/asset-view-module.component';
 
 @NgModule({
   declarations: [
@@ -216,6 +221,11 @@ import { WorldModuleComponent } from './world-module/world-module.component';
     SkyEditComponent,
     GroundEditComponent,
     WorldModuleComponent,
+    TextureUploadComponent,
+    MenuSidebarComponent,
+    ImageModuleComponent,
+    CharacterViewModuleComponent,
+    AssetViewModuleComponent,
   ],
   imports: [
     CommonModule,

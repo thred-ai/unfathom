@@ -61,7 +61,7 @@ export class WorkflowComponent implements OnInit {
 
   mode = 'sidebar';
 
-  selectedIcon: string = 'design';
+  selectedIcon: string = 'none';
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -168,7 +168,7 @@ export class WorkflowComponent implements OnInit {
     } else {
       this.activeWorkflow = undefined;
     }
-    await this.selectFile(fileId, this.selectedIcon ?? 'design');
+    await this.designerService.selectFile(fileId);
     // }, 100);
 
     // if (val){
@@ -183,7 +183,6 @@ export class WorkflowComponent implements OnInit {
     private designerService: DesignerService,
     @Inject(PLATFORM_ID) private platformID: Object,
     private cdr: ChangeDetectorRef,
-    private router: Router,
     private route: ActivatedRoute,
     private httpClient: HttpClient,
     private themeService: ThemeService,
@@ -206,10 +205,6 @@ export class WorkflowComponent implements OnInit {
       this.loading = l;
     });
 
-    this.designerService.toolboxConfiguration.subscribe((s) => {
-      this.models = s ?? [];
-    });
-
     this.designerService.openStep.subscribe((step) => {
       if (step) {
         this.openStep = step;
@@ -219,7 +214,7 @@ export class WorkflowComponent implements OnInit {
         // }
       }
 
-      this.updateRoute(step?.id);
+      this.designerService.updateRoute(step?.id);
     });
 
     this.projectService.workflow.subscribe(async (w) => {
@@ -240,7 +235,7 @@ export class WorkflowComponent implements OnInit {
         this.route.queryParams.subscribe(async (params) => {
           let proj = params['project'];
           let file = params['file'] ?? 'main';
-          let selectedModule = params['module'] ?? 'design';
+          let selectedModule = params['module'] ?? 'none';
 
           let workflow =
             this.workflow ??
@@ -252,6 +247,7 @@ export class WorkflowComponent implements OnInit {
             workflow = this.workflow;
           }
 
+          this.designerService.selectedIcon.next(selectedModule)
 
         // this.loadService.getLayout(workflow!.id, this.clientId, l => {
         //   this.workflow!.sceneLayout = l!
@@ -262,16 +258,15 @@ export class WorkflowComponent implements OnInit {
             this.activeWorkflow = workflow;
 
             if (!this.openStep.id) {
-              await this.selectFile(
+              await this.designerService.selectFile(
                 file ?? 'main',
-                selectedModule,
                 workflow,
                 true
               );
             }
 
             if (!this.openStep.id) {
-              await this.selectFile('main', selectedModule, workflow, true);
+              await this.designerService.selectFile('main', workflow, true);
             }
           } else {
           }
@@ -280,22 +275,7 @@ export class WorkflowComponent implements OnInit {
     });
   }
 
-  async updateRoute(stepId: string = 'main') {
-    if (this.workflow && this.selectedIcon) {
-      await this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: {
-          project: this.workflow.id,
-          file: stepId,
-          module: this.selectedIcon,
-        },
-        queryParamsHandling: 'merge',
-        // preserve the existing query params in the route
-        skipLocationChange: false,
-        // do not trigger navigation
-      });
-    }
-  }
+
 
   get isValid(): boolean {
     if (this.workflow) {
@@ -392,7 +372,7 @@ export class WorkflowComponent implements OnInit {
       panelClass: 'app-full-bleed-dialog',
 
       data: {
-        step: controllerId != 'main' ? this.findScene(controllerId) : undefined,
+        step: controllerId != 'main' ? this.designerService.findScene(controllerId) : undefined,
         workflow: this.workflow,
       },
     });
@@ -520,26 +500,8 @@ export class WorkflowComponent implements OnInit {
     return objects;
   }
 
-  findScene(fileId: string, workflow = this.workflow) {
-    if (fileId == 'main') {
-      return undefined; //new Cell.Properties(new Scene('main'), {});
-    }
-    return workflow?.sceneLayout.cells.find((cell) => cell.id == fileId);
-  }
 
-  async selectFile(
-    fileId: string | undefined,
-    selectedModule: string | undefined,
-    workflow = this.workflow,
-    update = true
-  ) {
-    if (workflow && fileId && selectedModule) {
-      if (this.openStep?.id != fileId) {
-        this.designerService.openStep.next(this.findScene(fileId));
-      }
-      this.selectedIcon = selectedModule;
-    }
-  }
+
 
   jsFormattedName(name: string, same: number) {
     return name + (same > 1 ? `(${same})` : '');

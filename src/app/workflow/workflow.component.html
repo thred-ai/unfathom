@@ -4,10 +4,8 @@
   <app-icon-sidebar
     [selectedIcon]="selectedIcon"
     [theme]="theme"
-    (selectedIconChanged)="selectFile(openStep!.id, $event)"
     (openProj)="setWorkflow($event)"
     (publish)="publish()"
-    (selectedFileChanged)="selectFile($event, selectedIcon)"
   ></app-icon-sidebar>
   <div
     class="w-100 h-100 d-flex justify-content-between align-content-start"
@@ -15,35 +13,22 @@
     *ngIf="workflow; else noWorkflow"
   >
     <!-- <ng-container *ngIf="!openWorldScene"> -->
-      <app-file-sidebar
-        [hidden]="mode != 'sidebar'"
+    <app-menu-sidebar> </app-menu-sidebar>
+
+    <div class="w-100 h-100">
+      <verticalai-workflow-designer
+        #designer
         [models]="models"
-        [selectedIcon]="selectedIcon"
-        [triggers]="triggers"
-        [workflow]="workflow"
-        [executable]="workflow"
+        [theme]="theme"
         (detailsChanged)="save(1, false, $event)"
-        (selectedFileChanged)="selectFile($event, selectedIcon)"
+        (workflowChanged)="save(1, false, $event)"
       >
-      </app-file-sidebar>
-      <div class="w-100 h-100">
-        <ng-container *ngIf="selectedIcon == 'design'">
-          <verticalai-workflow-designer
-            #designer
-            [models]="models"
-            [workflow]="workflow"
-            [theme]="theme"
-            (detailsChanged)="save(1, false, $event)"
-            (workflowChanged)="save(1, false, $event)"
-            (selectedFileChanged)="selectFile($event, selectedIcon)"
-          >
-          </verticalai-workflow-designer>
-        </ng-container>
-      </div>
+      </verticalai-workflow-designer>
+    </div>
     <!-- </ng-container> -->
 
     <!-- <ng-container *ngIf="openWorldScene && openStep && workflow"> -->
-      <!-- <div class="w-100 h-100">
+    <!-- <div class="w-100 h-100">
         <app-world-designer
           [world]="openWorldScene"
           [scene]="openStep.data.ngArguments?.scene"
@@ -85,10 +70,7 @@
     <div
       class="layout-container h-100 d-flex flex-column justify-content-center align-items-center"
     >
-      <verticalai-loader
-        [mode]="theme"
-        [animate]="true"
-      ></verticalai-loader>
+      <verticalai-loader [mode]="theme" [animate]="true"></verticalai-loader>
     </div>
   </ng-template>
 </div>

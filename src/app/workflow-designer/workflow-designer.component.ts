@@ -79,7 +79,6 @@ export class WorkflowDesignerComponent
   @Input() theme: 'light' | 'dark' = 'light';
   @Output() detailsChanged = new EventEmitter<Executable>();
   @Output() workflowChanged = new EventEmitter<Executable>();
-  @Output() selectedFileChanged = new EventEmitter<string>();
 
   selectedFile?: Cell.Properties;
 
@@ -188,68 +187,6 @@ export class WorkflowDesignerComponent
     }, 1);
   }
 
-  editCharacter(
-    character: Character = new Character(
-      this.loadService.newUtilID,
-      'New NPC',
-      undefined,
-      '',
-      'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_head.png',
-      '',
-      'hero'
-    )
-  ) {
-    this.openMenu(
-      'character-module',
-      { character, workflow: this.workflow },
-      (data) => {
-        if (data && data != '' && data != '0' && data.workflow) {
-          let character = data.character as Character;
-
-          if (data.action == 'delete') {
-            // character.status = 1;
-            return;
-          }
-
-          this.workflow!.characters[character.id] = character;
-
-          this.projectService.workflow.next(this.workflow);
-
-          this.workflowChanged.emit(this.workflow);
-        }
-      }
-    );
-
-    // let ref = this.dialog.open(CharacterModuleComponent, {
-    //   width: 'calc(var(--vh, 1vh) * 70)',
-    //   maxWidth: '650px',
-    //   maxHeight: 'calc(var(--vh, 1vh) * 100)',
-    //   panelClass: 'app-full-bleed-dialog',
-
-    //   data: {
-    //     character,
-    //     workflow: this.workflow,
-    //   },
-    // });
-
-    // ref.afterClosed().subscribe(async (val) => {
-    //   if (val && val != '' && val != '0' && val.workflow) {
-    //     let character = val.character as Character;
-
-    //     if (val.action == 'delete') {
-    //       // character.status = 1;
-    //       return;
-    //     }
-
-    //     this.workflow!.characters[character.id] = character;
-
-    //     this.projectService.workflow.next(this.workflow);
-
-    //     this.workflowChanged.emit(this.workflow);
-    //   }
-    // });
-  }
-
   editCharacterDetails(character: string) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
@@ -328,67 +265,7 @@ export class WorkflowDesignerComponent
     // });
   }
 
-  editAsset(
-    asset: ModelAsset = new ModelAsset(
-      'New Asset',
-      this.loadService.newUtilID,
-      undefined,
-      undefined,
-      'static'
-    )
-  ) {
-    this.openMenu(
-      'asset-module',
-      {
-        asset,
-        workflow: this.workflow,
-      },
-      (data) => {
-        if (data && data != '' && data != '0' && data.workflow) {
-          let asset = data.asset as ModelAsset;
 
-          if (data.action == 'delete') {
-            // character.status = 1;
-            return;
-          }
-
-          this.workflow!.assets[asset.id] = asset;
-
-          this.projectService.workflow.next(this.workflow);
-
-          this.workflowChanged.emit(this.workflow);
-        }
-      }
-    );
-    // let ref = this.dialog.open(AssetsModuleComponent, {
-    //   width: 'calc(var(--vh, 1vh) * 70)',
-    //   maxWidth: '650px',
-    //   maxHeight: 'calc(var(--vh, 1vh) * 100)',
-    //   panelClass: 'app-full-bleed-dialog',
-
-    //   data: {
-    //     asset,
-    //     workflow: this.workflow,
-    //   },
-    // });
-
-    // ref.afterClosed().subscribe(async (val) => {
-    //   if (val && val != '' && val != '0' && val.workflow) {
-    //     let asset = val.asset as ModelAsset;
-
-    //     if (val.action == 'delete') {
-    //       // character.status = 1;
-    //       return;
-    //     }
-
-    //     this.workflow!.assets[asset.id] = asset;
-
-    //     this.projectService.workflow.next(this.workflow);
-
-    //     this.workflowChanged.emit(this.workflow);
-    //   }
-    // });
-  }
 
   editAssetDetails(asset: string, assetIndex: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
@@ -575,22 +452,6 @@ export class WorkflowDesignerComponent
     this.designerService.setScene(scene, scene.id);
   }
 
-  removeCharacterWorkflow(id: string) {
-    this.workflow?.sceneLayout?.cells.forEach((c) => {
-      let scene = c.data?.ngArguments?.scene as Scene;
-
-      if (scene) {
-        scene.characters = scene.characters.filter((x) => x.id != id);
-      }
-    });
-
-    delete this.workflow?.characters[id];
-
-    this.projectService.workflow.next(this.workflow);
-
-    this.workflowChanged.emit(this.workflow);
-  }
-
   removeAsset(index: number) {
     let scene = this.selectedFile?.data.ngArguments.scene as Scene;
 
@@ -602,21 +463,6 @@ export class WorkflowDesignerComponent
     this.designerService.setScene(scene, scene.id);
   }
 
-  removeAssetWorkflow(id: string) {
-    this.workflow?.sceneLayout?.cells.forEach((c) => {
-      let scene = c.data?.ngArguments?.scene as Scene;
-
-      if (scene) {
-        scene.assets = scene.assets.filter((x) => x.id != id);
-      }
-    });
-
-    delete this.workflow?.assets[id];
-
-    this.projectService.workflow.next(this.workflow);
-
-    this.workflowChanged.emit(this.workflow);
-  }
 
   updateCellName(id: string, value: any) {
     let cell = this.designerService.graph?.getCellById(id);

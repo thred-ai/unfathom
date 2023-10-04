@@ -48,15 +48,7 @@ export class FileSidebarComponent implements OnInit {
 
   // flowModels: Dict<AIModelType> = {};
 
-  @Input() triggers: Dict<Trigger> = {};
-  @Input() trainingData: Dict<TrainingData> = {};
-  @Input() apiKeys: Dict<Key> = {};
-  @Input() apiRequests: Dict<APIRequest> = {};
-  @Input() executable?: Executable;
-  @Input() selectedIcon?: string;
-
   @Output() detailsChanged = new EventEmitter<Executable>();
-  @Output() selectedFileChanged = new EventEmitter<string>();
 
   loadedUser?: Developer;
 
@@ -74,9 +66,11 @@ export class FileSidebarComponent implements OnInit {
   ) {}
 
   removeFile(id: string) {
+    this.graph?.removeCell(id);
+  }
 
-    this.graph?.removeCell(id)
-
+  fileChanged(file: Cell.Properties) {
+    this.designerService.openStep.next(file);
   }
 
   ngOnInit(): void {
@@ -87,12 +81,18 @@ export class FileSidebarComponent implements OnInit {
         //   new Cell.Properties(new Scene('main', 'Storyboard', undefined, ['assets/main.png']), {}),
         // ].concat(w.sceneLayout.cells);
 
-        this.items = w.sceneLayout.cells.filter(t => t.shape != 'edge')
-
+        this.items = w.sceneLayout.cells.filter((t) => t.shape != 'edge');
       }
     });
+
+    this.projectService.workflow.subscribe((w) => {
+      if (w) {
+        this.workflow = w;
+      }
+    });
+
     this.designerService.openStep.subscribe((step) => {
-        this.selectedFile = step?.id;      
+      this.selectedFile = step?.id;
     });
     this.loadService.loadedUser.subscribe((l) => {
       if (l) {
