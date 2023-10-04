@@ -6,6 +6,7 @@ import { Character } from './character.model';
 import { SceneLayout } from './scene-layout.model';
 import { Dict } from 'src/app/load.service';
 import { ModelAsset } from './model-asset.model';
+import { Texture } from './texture.model';
 
 export class Executable {
   name!: string;
@@ -22,6 +23,7 @@ export class Executable {
   sceneLayout!: SceneLayout;
   characters!: Dict<Character>;
   assets!: Dict<ModelAsset>;
+  textures!: Dict<Texture>;
 
   tracking!: boolean;
   displayUrl!: string;
@@ -29,7 +31,6 @@ export class Executable {
   apiKey!: string;
   plan?: Subscription;
   executableUrl?: string;
-
 
   resetUrl() {
     return `https://storage.cloud.google.com/verticalai.appspot.com/workflows/${this.id}/icon-${this.id}.png`;
@@ -51,6 +52,7 @@ export class Executable {
     sceneLayout?: SceneLayout,
     characters: Dict<Character> = {},
     assets: Dict<ModelAsset> = {},
+    textures: Dict<Texture> = {},
     tracking?: boolean,
     url?: string,
     apiKey?: string,
@@ -72,7 +74,8 @@ export class Executable {
     this.tracking = tracking ?? false;
     this.sceneLayout = sceneLayout ?? { cells: [] };
     this.characters = characters ?? {};
-    this.assets = assets ?? {}
+    this.textures = textures ?? {};
+    this.assets = assets ?? {};
     this.url = url ?? id;
     this.apiKey = apiKey ?? `V-${uuid.v4()}`;
     this.plan = plan ?? new Subscription('', '', '', 0, 0);

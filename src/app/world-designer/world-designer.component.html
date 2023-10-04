@@ -1,12 +1,18 @@
-
-  <div class="w-100 h-100 d-flex justify-content-center align-items-center rounded" style="overflow: hidden;" [hidden]="loaded != ''">
-    <canvas class="w-100 h-100" id="canvas"> </canvas>
+<div
+  class="w-100 h-100 d-flex justify-content-center align-items-center rounded"
+  style="overflow: hidden"
+  [hidden]="loaded != ''"
+>
+  <canvas class="w-100 h-100" id="canvas"> </canvas>
 </div>
 
 <div
   class="w-100 h-100 d-flex flex-column justify-content-center align-items-center"
   *ngIf="loaded != ''"
 >
-  <verticalai-loader [mode]="theme" [text]="loaded" [animate]="true"></verticalai-loader>
+  <verticalai-loader
+    [mode]="theme"
+    [text]="loaded"
+    [animate]="true"
+  ></verticalai-loader>
 </div>
-

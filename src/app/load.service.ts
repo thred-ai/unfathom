@@ -1340,6 +1340,7 @@ export class LoadService {
       workflow.sceneLayout,
       workflow.characters,
       workflow.assets,
+      workflow.textures,
       workflow.tracking,
       workflow.url,
       workflow.apiKey,
