@@ -5,7 +5,9 @@ import { Executable } from '../models/workflow/executable.model';
 import { ProjectService } from '../project.service';
 import { DesignerService } from '../designer.service';
 import { Scene } from '../models/workflow/scene.model';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-character-view-module',
   templateUrl: './character-view-module.component.html',

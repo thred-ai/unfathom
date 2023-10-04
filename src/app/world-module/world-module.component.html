@@ -1,216 +1,389 @@
-<mat-tab-group
-  #menu
-  class="w-100 h-100"
-  dynamicHeight
-  [fitInkBarToContent]="true"
-  animationDuration="0ms"
-  *ngIf="world && world.sky"
->
-  <mat-tab class="tab">
-    <ng-template mat-tab-label>
-      <span class="primary-text me-3"> World </span>
-      <mat-icon class="primary-text"> public </mat-icon>
-    </ng-template>
-    <ng-template matTabContent>
-      <div
-        class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-      >
-        <div class="w-100 h-100 p-3 pb-5" style="overflow-y: scroll">
-          <div class="w-100 pb-3">
+<div class="w-100 h-100">
+  <div class="w-100 h-100">
+    <div class="w-100 p-3">
+      <div class="w-100 d-flex justify-content-between align-items-center">
+        <div class="primary-text fw-bold" style="font-size: 15px">
+          Environment
+        </div>
+        <button
+          class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2"
+          (click)="save()"
+        >
+          {{ loading == "" ? "Save" : loading }}
+        </button>
+      </div>
+    </div>
+
+    <mat-tab-group
+      #menu
+      class="w-100 h-100"
+      dynamicHeight
+      [fitInkBarToContent]="true"
+      animationDuration="0ms"
+      *ngIf="world && world.sky"
+    >
+      <mat-tab class="tab">
+        <ng-template mat-tab-label>
+          <span class="primary-text me-3"> Space </span>
+          <mat-icon class="primary-text"> aspect_ratio </mat-icon>
+        </ng-template>
+        <ng-template matTabContent>
+          <div
+            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+          >
+            <div class="w-100 h-100 p-3 pb-5" style="overflow-y: scroll">
+              <div class="w-100 pb-3">
+                <div class="px-1">
+                  <verticalai-text-field
+                    [title]="'Space Size'"
+                    [type]="'number'"
+                    [range]="{ min: 10, max: 100000 }"
+                    [value]="world.size"
+                    [placeholder]="'Space Size'"
+                    (changed)="world.size = $event"
+                  >
+                  </verticalai-text-field>
+                </div>
+              </div>
+              <div class="w-100 pb-3">
+                <div class="px-1">
+                  <verticalai-text-field
+                    [title]="'Lighting'"
+                    [type]="'number'"
+                    [range]="{ min: 0, max: 5 }"
+                    [value]="world.lightingIntensity"
+                    [placeholder]="'Lighting'"
+                    (changed)="world.lightingIntensity = $event"
+                  >
+                  </verticalai-text-field>
+                </div>
+
+                <!-- <div class="w-100 pb-3 row row-cols-2 justify-content-center g-0">
             <div class="px-1">
               <verticalai-text-field
-                [title]="'World Size'"
+                [title]="'Size'"
                 [type]="'number'"
                 [range]="{ min: 10, max: 100000 }"
                 [value]="world.size"
-                [placeholder]="'World Size'"
-                (changed)="world.size = $event; save()"
+                [placeholder]="'Direction (X)'"
+                (changed)="world.size = $event"
               >
               </verticalai-text-field>
             </div>
-          </div>
-          <div class="w-100 pb-3">
-            <div class="px-1">
+            <div class="col px-1">
               <verticalai-text-field
-                [title]="'Lighting'"
-                [type]="'number'"
-                [range]="{ min: 0, max: 5 }"
-                [value]="world.lightingIntensity"
-                [placeholder]="'Lighting'"
-                (changed)="world.lightingIntensity = $event; save()"
-              >
-              </verticalai-text-field>
-            </div>
-
-            <!-- <div class="w-100 pb-3 row row-cols-2 justify-content-center g-0">
-              <div class="px-1">
-                <verticalai-text-field
-                  [title]="'Size'"
-                  [type]="'number'"
-                  [range]="{ min: 10, max: 100000 }"
-                  [value]="world.size"
-                  [placeholder]="'Direction (X)'"
-                  (changed)="world.size = $event; save()"
-                >
-                </verticalai-text-field>
-              </div>
-              <div class="col px-1">
-                <verticalai-text-field
-                  [title]="'Height'"
-                  [type]="'number'"
-                  [range]="{ min: 10, max: 100000 }"
-                  [value]="world.sky.height"
-                  [placeholder]="'Direction (Y)'"
-                  (changed)="world.sky.height = $event; save()"
-                >
-                </verticalai-text-field>
-              </div>
-            </div> -->
-          </div>
-        </div>
-      </div>
-    </ng-template>
-  </mat-tab>
-
-  <mat-tab class="tab">
-    <ng-template mat-tab-label>
-      <span class="primary-text me-3"> Ground </span>
-      <mat-icon class="primary-text"> grass </mat-icon>
-    </ng-template>
-    <ng-template matTabContent>
-      <div
-        class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-      >
-        <div
-          class="w-100 h-100 p-3 pb-5"
-          style="overflow-y: scroll"
-          *ngIf="world.ground"
-        >
-          <div class="w-100 pb-3">
-            <p class="w-100 mb-3 fw-bold primary-text">
-              {{ toggle.checked ? "Visible" : "Hidden" }}
-            </p>
-            <div class="px-1">
-              <mat-slide-toggle
-                #toggle
-                [checked]="!world.ground.hidden"
-                (change)="world.ground.hidden = !$event.checked"
-              ></mat-slide-toggle>
-            </div>
-          </div>
-
-          <div class="w-100 pb-3">
-            <div class="px-1">
-              <verticalai-text-field
-                [title]="'Max Surface Height'"
-                [type]="'number'"
-                [range]="{ min: 10, max: 100000 }"
-                [value]="world.ground.maxHeight"
-                [placeholder]="'Max Surface Height'"
-                (changed)="world.ground.maxHeight = $event; save()"
-              >
-              </verticalai-text-field>
-            </div>
-          </div>
-
-          <div class="w-100 pb-3">
-            <div class="px-1">
-              <verticalai-select-field
-                [title]="'Liquids'"
-                [multiple]="true"
-                [value]="worldLiquids"
-                [data]="liquids"
-                [valueField]="'id'"
-                [displayField]="'name'"
-                [placeholder]="'No Liquid'"
-                (changed)="selectLiquids($event); save()"
-              >
-              </verticalai-select-field>
-            </div>
-          </div>
-
-          <ion-accordion-group
-            class="example-headers-align bg-transparent animate__animated animate__fadeIn"
-            [multiple]="false"
-            (ionChange)="(null)"
-            id="accordion"
-          >
-            <ion-accordion
-              class="bg-transparent"
-              [value]="'water'"
-              *ngIf="world.ground.liquid['water']"
-            >
-              <ion-item slot="header" class="primary-text">
-                <ion-label class="h3">Water</ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">
-                
-              </div>
-            </ion-accordion>
-
-            <ion-accordion
-              class="bg-transparent"
-              [value]="'lava'"
-              *ngIf="world.ground.liquid['lava']"
-            >
-              <ion-item slot="header" class="primary-text">
-                <ion-label class="h3">Lava</ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content"></div>
-            </ion-accordion>
-          </ion-accordion-group>
-        </div>
-      </div>
-    </ng-template>
-  </mat-tab>
-
-  <mat-tab class="tab">
-    <ng-template mat-tab-label>
-      <span class="primary-text me-3"> Sky </span>
-      <mat-icon class="primary-text"> light_mode </mat-icon>
-    </ng-template>
-    <ng-template matTabContent>
-      <div
-        class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
-      >
-        <div
-          class="w-100 h-100 p-3 pb-5"
-          style="overflow-y: scroll"
-          *ngIf="world.sky"
-        >
-          <div class="w-100 pb-3">
-            <p class="w-100 mb-3 fw-bold primary-text">
-              {{ toggle.checked ? "Visible" : "Hidden" }}
-            </p>
-            <div class="px-1">
-              <mat-slide-toggle
-                #toggle
-                [checked]="!world.sky.hidden"
-                (change)="world.sky.hidden = !$event.checked"
-              ></mat-slide-toggle>
-            </div>
-          </div>
-
-          <div class="w-100 pb-3">
-            <div class="px-1">
-              <verticalai-text-field
-                [title]="'Sky Height'"
+                [title]="'Height'"
                 [type]="'number'"
                 [range]="{ min: 10, max: 100000 }"
                 [value]="world.sky.height"
-                [placeholder]="'Sky Height'"
-                (changed)="world.sky.height = $event; save()"
+                [placeholder]="'Direction (Y)'"
+                (changed)="world.sky.height = $event"
               >
               </verticalai-text-field>
             </div>
+          </div> -->
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+        </ng-template>
+      </mat-tab>
 
+      <mat-tab class="tab">
+        <ng-template mat-tab-label>
+          <span class="primary-text me-3"> Ground </span>
+          <mat-icon class="primary-text"> grass </mat-icon>
+        </ng-template>
+        <ng-template matTabContent>
+          <div
+            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+          >
+            <div
+              class="w-100 h-100 p-3 pb-5"
+              style="overflow-y: scroll"
+              *ngIf="world.ground"
+            >
+              <div class="w-100 pb-3">
+                <p class="w-100 mb-3 fw-bold primary-text">
+                  {{ toggle.checked ? "Visible" : "Hidden" }}
+                </p>
+                <div class="px-1">
+                  <mat-slide-toggle
+                    #toggle
+                    [checked]="!world.ground.hidden"
+                    (change)="world.ground.hidden = !$event.checked"
+                  ></mat-slide-toggle>
+                </div>
+              </div>
 
-<ng-template>
+              <div class="w-100 pb-3">
+                <div class="px-1">
+                  <verticalai-text-field
+                    [title]="'Max Surface Height'"
+                    [type]="'number'"
+                    [range]="{ min: 10, max: 100000 }"
+                    [value]="world.ground.maxHeight"
+                    [placeholder]="'Max Surface Height'"
+                    (changed)="world.ground.maxHeight = $event"
+                  >
+                  </verticalai-text-field>
+                </div>
+              </div>
 
-</ng-template>
+              <div class="wrap-input1 w-100 py-3 px-0">
+                <p class="w-100 mb-3 primary-text fw-bold">Surface Texture</p>
+
+                <div
+                  class="w-100 d-flex justify-content-start align-items-center"
+                >
+                  <div
+                    class="w-auto rounded-circle border-table shadow d-flex justify-content-center align-items-center section-background"
+                    style="
+                      object-fit: contain;
+                      aspect-ratio: 1;
+                      height: 60px;
+                      overflow: hidden;
+                    "
+                  >
+                    <div
+                      class="m-auto position-relative img-input rounded-circle pic-hover"
+                      style="height: 90%; width: 90%; overflow: hidden"
+                      role="button"
+                      (click)="cImgInput.click()"
+                    >
+                      <img
+                        class="w-100 h-100 position-absolute"
+                        style="z-index: 50; object-fit: cover"
+                        [src]="world.ground.texture.diffuse"
+                        id="ground"
+                      />
+                      <!-- <div
+                              class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                              style="z-index: 51; opacity: 0.5"
+                            >
+                              <mat-icon class="m-auto">upload </mat-icon>
+                            </div> -->
+                      <input
+                        #cImgInput
+                        type="file"
+                        (change)="fileChangeEvent($event, 'ground')"
+                        style="display: none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wrap-input1 w-100 py-3 px-0">
+                <p class="w-100 mb-3 primary-text fw-bold">Heightmap</p>
+
+                <div
+                  class="w-100 d-flex justify-content-start align-items-center"
+                >
+                  <div
+                    class="w-auto rounded-circle border-table shadow d-flex justify-content-center align-items-center section-background"
+                    style="
+                      object-fit: contain;
+                      aspect-ratio: 1;
+                      height: 60px;
+                      overflow: hidden;
+                    "
+                  >
+                    <div
+                      class="m-auto position-relative img-input rounded-circle pic-hover"
+                      style="height: 90%; width: 90%; overflow: hidden"
+                      role="button"
+                      (click)="xImgInput.click()"
+                    >
+                      <img
+                        class="w-100 h-100 position-absolute"
+                        style="z-index: 50; object-fit: cover"
+                        [src]="world.ground.heightMap"
+                        id="map"
+                      />
+                      <!-- <div
+                              class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                              style="z-index: 51; opacity: 0.5"
+                            >
+                              <mat-icon class="m-auto">upload </mat-icon>
+                            </div> -->
+                      <input
+                        #xImgInput
+                        type="file"
+                        (change)="fileChangeEvent($event, 'map')"
+                        style="display: none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="w-100 pb-3">
+                <div class="px-1">
+                  <verticalai-select-field
+                    [title]="'Liquids'"
+                    [multiple]="true"
+                    [value]="worldLiquids"
+                    [data]="liquids"
+                    [valueField]="'id'"
+                    [displayField]="'name'"
+                    [placeholder]="'No Liquid'"
+                    (changed)="selectLiquids($event)"
+                  >
+                  </verticalai-select-field>
+                </div>
+              </div>
+
+              <ion-accordion-group
+                class="example-headers-align bg-transparent animate__animated animate__fadeIn"
+                [multiple]="false"
+                (ionChange)="(null)"
+                id="accordion"
+              >
+                <ion-accordion
+                  class="bg-transparent"
+                  [value]="'water'"
+                  *ngIf="world.ground.liquid['water']"
+                >
+                  <ion-item slot="header" class="primary-text">
+                    <ion-label class="h3">Water</ion-label>
+                  </ion-item>
+                  <div class="ion-padding" slot="content">
+                    <div class="w-100 pb-3">
+                      <div class="px-1">
+                        <verticalai-text-field
+                          [title]="'Surface Level'"
+                          [type]="'number'"
+                          [range]="{ min: 10, max: 100000 }"
+                          [value]="world.ground.liquid['water'].level"
+                          [placeholder]="'Surface Level'"
+                          (changed)="
+                            world.ground.liquid['water'].level = $event
+                          "
+                        >
+                        </verticalai-text-field>
+                      </div>
+                    </div>
+                  </div>
+                </ion-accordion>
+
+                <ion-accordion
+                  class="bg-transparent"
+                  [value]="'lava'"
+                  *ngIf="world.ground.liquid['lava']"
+                >
+                  <ion-item slot="header" class="primary-text">
+                    <ion-label class="h3">Lava</ion-label>
+                  </ion-item>
+                  <div class="ion-padding" slot="content">
+                    <div class="w-100 pb-3">
+                      <div class="px-1">
+                        <verticalai-text-field
+                          [title]="'Surface Level'"
+                          [type]="'number'"
+                          [range]="{ min: 10, max: 100000 }"
+                          [value]="world.ground.liquid['lava'].level"
+                          [placeholder]="'Surface Level'"
+                          (changed)="world.ground.liquid['lava'].level = $event"
+                        >
+                        </verticalai-text-field>
+                      </div>
+                    </div>
+                  </div>
+                </ion-accordion>
+              </ion-accordion-group>
+            </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab class="tab">
+        <ng-template mat-tab-label>
+          <span class="primary-text me-3"> Sky </span>
+          <mat-icon class="primary-text"> light_mode </mat-icon>
+        </ng-template>
+        <ng-template matTabContent>
+          <div
+            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+          >
+            <div
+              class="w-100 h-100 p-3 pb-5"
+              style="overflow-y: scroll"
+              *ngIf="world.sky"
+            >
+              <div class="w-100 pb-3">
+                <p class="w-100 mb-3 fw-bold primary-text">
+                  {{ toggle.checked ? "Visible" : "Hidden" }}
+                </p>
+                <div class="px-1">
+                  <mat-slide-toggle
+                    #toggle
+                    [checked]="!world.sky.hidden"
+                    (change)="world.sky.hidden = !$event.checked"
+                  ></mat-slide-toggle>
+                </div>
+              </div>
+
+              <div class="w-100 pb-3">
+                <div class="px-1">
+                  <verticalai-text-field
+                    [title]="'Sky Height'"
+                    [type]="'number'"
+                    [range]="{ min: 10, max: 100000 }"
+                    [value]="world.sky.height"
+                    [placeholder]="'Sky Height'"
+                    (changed)="world.sky.height = $event"
+                  >
+                  </verticalai-text-field>
+                </div>
+              </div>
+
+              <div class="wrap-input1 w-100 py-3 px-0">
+                <p class="w-100 mb-3 primary-text fw-bold">Sky Texture</p>
+
+                <div
+                  class="w-100 d-flex justify-content-start align-items-center"
+                >
+                  <div
+                    class="w-auto rounded-circle border-table shadow d-flex justify-content-center align-items-center section-background"
+                    style="
+                      object-fit: contain;
+                      aspect-ratio: 1;
+                      height: 60px;
+                      overflow: hidden;
+                    "
+                  >
+                    <div
+                      class="m-auto position-relative img-input rounded-circle pic-hover"
+                      style="height: 90%; width: 90%; overflow: hidden"
+                      role="button"
+                      (click)="sImgInput.click()"
+                    >
+                      <img
+                        class="w-100 h-100 position-absolute"
+                        style="z-index: 50; object-fit: cover"
+                        [src]="world.sky.texture.emissive"
+                        id="sky"
+                      />
+                      <!-- <div
+                              class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                              style="z-index: 51; opacity: 0.5"
+                            >
+                              <mat-icon class="m-auto">upload </mat-icon>
+                            </div> -->
+                      <input
+                        #sImgInput
+                        type="file"
+                        (change)="fileChangeEvent($event, 'sky')"
+                        style="display: none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

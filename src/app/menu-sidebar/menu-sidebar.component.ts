@@ -14,7 +14,9 @@ import { ThemeService } from '../theme.service';
 import { WorkflowComponent } from '../workflow/workflow.component';
 import { Texture } from '../models/workflow/texture.model';
 import { Scene } from '../models/workflow/scene.model';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-menu-sidebar',
   templateUrl: './menu-sidebar.component.html',

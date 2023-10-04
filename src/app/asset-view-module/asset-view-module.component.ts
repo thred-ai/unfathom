@@ -6,7 +6,9 @@ import { Scene } from '../models/workflow/scene.model';
 import { DesignerService } from '../designer.service';
 import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-asset-view-module',
   templateUrl: './asset-view-module.component.html',

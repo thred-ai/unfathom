@@ -512,6 +512,17 @@ export class LoadService {
     }
   }
 
+  async saveImg(file: File, path: string){
+
+    try {
+      let ref = this.storage.ref(path);
+      await ref.put(file, { cacheControl: 'no-cache' });
+      return ref.getDownloadURL().toPromise();
+    } catch (error) {
+      return undefined
+    }
+  }
+
   async setUserInfoInitial(user: firebase.User) {
     let uid = user.uid;
     let email = user.email;

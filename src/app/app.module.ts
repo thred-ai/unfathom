@@ -153,6 +153,7 @@ import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
 import { ImageModuleComponent } from './image-module/image-module.component';
 import { CharacterViewModuleComponent } from './character-view-module/character-view-module.component';
 import { AssetViewModuleComponent } from './asset-view-module/asset-view-module.component';
+import { ImagesModuleComponent } from './images-module/images-module.component';
 
 @NgModule({
   declarations: [
@@ -226,6 +227,7 @@ import { AssetViewModuleComponent } from './asset-view-module/asset-view-module.
     ImageModuleComponent,
     CharacterViewModuleComponent,
     AssetViewModuleComponent,
+    ImagesModuleComponent,
   ],
   imports: [
     CommonModule,

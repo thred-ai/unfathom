@@ -6,7 +6,9 @@ import { Executable } from '../models/workflow/executable.model';
 import { ProjectService } from '../project.service';
 import { Scene } from '../models/workflow/scene.model';
 import { Texture } from '../models/workflow/texture.model';
+import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-image-module',
   templateUrl: './image-module.component.html',
