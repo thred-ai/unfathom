@@ -1,7 +1,12 @@
-.proj:hover{
-    background-color: var(--dark--primarySectionHoverColor);
-  }
-  
-  .proj-select{
-    background-color: var(--dark--primaryColor);
-  }
+.proj{
+    color: var(--primaryTextColor);
+}
+
+.proj:hover {
+  background-color: var(--primarySectionHoverColor);
+}
+
+.proj-select {
+  background-color: var(--primaryColor);
+  color: var(--dark--primaryTextColor);
+}
