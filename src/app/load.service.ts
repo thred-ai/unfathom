@@ -512,14 +512,13 @@ export class LoadService {
     }
   }
 
-  async saveImg(file: File, path: string){
-
+  async saveImg(file: File, path: string) {
     try {
       let ref = this.storage.ref(path);
       await ref.put(file, { cacheControl: 'no-cache' });
       return ref.getDownloadURL().toPromise();
     } catch (error) {
-      return undefined
+      return undefined;
     }
   }
 
@@ -1397,5 +1396,19 @@ export class LoadService {
     } else {
       return undefined;
     }
+  }
+
+  getPrototype(
+    workflowId: string,
+    callback: (exec: Executable) => any
+  ) {
+    let q = this.db.collection(`Workflows`).doc(workflowId);
+
+    console.log(workflowId)
+    q.valueChanges().subscribe((docs2) => {
+      let w = this.syncWorkflow(docs2);
+      callback(w);
+      // s.unsubscribe();
+    });
   }
 }

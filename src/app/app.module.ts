@@ -155,6 +155,7 @@ import { CharacterViewModuleComponent } from './character-view-module/character-
 import { AssetViewModuleComponent } from './asset-view-module/asset-view-module.component';
 import { ImagesModuleComponent } from './images-module/images-module.component';
 import { ShareComponent } from './share/share.component';
+import { PrototypeModuleComponent } from './prototype-module/prototype-module.component';
 
 @NgModule({
   declarations: [
@@ -230,6 +231,7 @@ import { ShareComponent } from './share/share.component';
     AssetViewModuleComponent,
     ImagesModuleComponent,
     ShareComponent,
+    PrototypeModuleComponent,
   ],
   imports: [
     CommonModule,

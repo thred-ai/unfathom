@@ -1,41 +1,37 @@
 <div
-  class="w-100 h-100 d-flex flex-column justify-content-between align-items-center primary-background-dark"
-  cdkDrag
-  cdkDragRootElement=".cdk-overlay-pane"
-  style="overflow: hidden"
+  class="layout-container-full secondary-background-dark my-0 d-flex justify-content-between align-content-center flex-column"
 >
   <div
-    class="w-100 d-flex justify-content-between align-items-center px-3"
+    class="w-100 d-flex justify-content-between align-items-center px-3 border-table-bottom-dark"
     style="height: 50px !important; cursor: crosshair; flex-shrink: 0"
-    cdkDragHandle
   >
     <div class="h-100 d-flex justify-content-start align-content-center">
       <!-- <button
-      class="btn bg-orange shadow-0 border-0 fw-bold text-white d-flex justify-content-between align-content-center p-1 me-1 my-auto"
-      (click)="run()"
-    >
-      <mat-icon class="fw-bold" style="aspect-ratio: 1">
-        play_arrow
-      </mat-icon>
-    </button>
-    <button
-      class="btn bg-orange shadow-0 border-0 fw-bold text-white d-flex justify-content-between align-content-center p-1 ms-1 my-auto"
-      (click)="loadingMode = 0"
-    >
+  class="btn bg-orange shadow-0 border-0 fw-bold text-white d-flex justify-content-between align-content-center p-1 me-1 my-auto"
+  (click)="run()"
+>
+  <mat-icon class="fw-bold" style="aspect-ratio: 1">
+    play_arrow
+  </mat-icon>
+</button>
+<button
+  class="btn bg-orange shadow-0 border-0 fw-bold text-white d-flex justify-content-between align-content-center p-1 ms-1 my-auto"
+  (click)="loadingMode = 0"
+>
 
-      <mat-icon class="fw-bold" style="aspect-ratio: 1">
-        stop
-      </mat-icon>
-    </button> -->
+  <mat-icon class="fw-bold" style="aspect-ratio: 1">
+    stop
+  </mat-icon>
+</button> -->
 
       <!-- <div
-        class="primary-text m-auto ms-0 me-2"
-        style="aspect-ratio: 1"
-        role="button"
-        (click)="restart()"
-      >
-        <mat-icon> restart_alt </mat-icon>
-      </div> -->
+    class="primary-text m-auto ms-0 me-2"
+    style="aspect-ratio: 1"
+    role="button"
+    (click)="restart()"
+  >
+    <mat-icon> restart_alt </mat-icon>
+  </div> -->
 
       <div
         class="h-100 proj d-flex justify-content-center align-items-center"
@@ -65,51 +61,56 @@
     </div>
 
     <div class="h-100 d-flex justify-content-end align-content-center">
-      <div
-        class="primary-text-dark m-auto"
-        style="aspect-ratio: 1"
-        role="button"
-        (click)="dialogRef.close()"
+      <a
+        class="btn rounded-10 shadow-0 w-100 primary-text-dark d-flex justify-content-start px-0 align-content-center py-2"
+        style="cursor: pointer"
       >
-        <mat-icon class="w-100 h-100" style="font-size: 18px">
-          open_in_new
-        </mat-icon>
-      </div>
-
-      <div
-        class="primary-text-dark ms-3 m-auto me-0"
-        style="aspect-ratio: 1"
-        role="button"
-        (click)="dialogRef.close()"
-      >
-        <mat-icon class="w-100 h-100" style="font-size: 20px"> close </mat-icon>
-      </div>
+        <div
+          class="text-center mx-auto secondary-text-dark d-flex justify-content-center align-items-center"
+          role="button"
+          *ngIf="project"
+        >
+          <!-- <span class="secondary-text">Project</span>
+    
+            <mat-icon> arrow_right_alt </mat-icon> -->
+          <img
+            class="border-table-dark me-2"
+            style="
+              height: 22.5px;
+              border-radius: 6px;
+              width: 22.5px !important;
+              object-fit: cover;
+            "
+            [src]="project.displayUrl"
+          />
+          <div
+            class="primary-text-dark d-flex justify-content-center align-items-center"
+          >
+            {{ project.name }}
+            <ng-container *ngIf="scene">
+              <span class="secondary-text-dark mx-2" style="font-size: 20px"
+                >/</span
+              >
+              {{ scene.name }}
+            </ng-container>
+          </div>
+        </div>
+      </a>
     </div>
   </div>
 
   <div
-    class="w-100 h-100 renderer primary-background"
-    *ngIf="scene && project && world && theme; else noWorld"
+    class="w-100 h-100 renderer primary-background-dark"
+    *ngIf="scene && project && world && theme"
   >
     <app-world-designer
       *ngIf="visible"
-      [theme]="theme"
+      [theme]="'dark'"
       [world]="world"
       [scene]="scene"
       [project]="project"
     ></app-world-designer>
   </div>
-
-  <ng-template #noWorld>
-    <div class="w-100 h-100 d-flex justify-content-center align-items-center primary-background">
-      <p
-        class="primary-text m-auto h4"
-        style="overflow-y: hidden; flex-shrink: 1; flex-grow: 0"
-      >
-        No scene to show
-      </p>
-    </div>
-  </ng-template>
 </div>
 
 <mat-menu #mainMenu="matMenu" class="secondary-background-dark">
@@ -139,7 +140,7 @@
       </button>
     </ng-container>
 
-    <ng-container *ngIf="selectedCharacter;">
+    <ng-container *ngIf="selectedCharacter">
       <button
         mat-menu-item
         class="proj toolButton"
@@ -150,7 +151,7 @@
           style="font-size: 16px"
           >accessibility</mat-icon
         >
-        {{project.characters[selectedCharacter]?.name ?? 'No Character'}}
+        {{ project.characters[selectedCharacter]?.name ?? "No Character" }}
       </button>
     </ng-container>
 
@@ -170,7 +171,7 @@
       </button>
     </ng-template>
 
-    <button class="proj toolButton" mat-menu-item [matMenuTriggerFor]="goto">
+    <button class="proj toolButton" mat-menu-item [matMenuTriggerFor]="goto" [disabled]="true">
       <mat-icon
         class="my-auto me-2 d-flex justify-content-center align-items-center"
         style="font-size: 16px"
@@ -180,13 +181,13 @@
     </button>
 
     <!-- <button mat-menu-item class="proj toolButton" (click)="openSettings()">
-        <mat-icon
-          class="my-auto me-2 d-flex justify-content-center align-items-center"
-          style="font-size: 16px"
-          >settings</mat-icon
-        >
-        Settings...
-      </button> -->
+          <mat-icon
+            class="my-auto me-2 d-flex justify-content-center align-items-center"
+            style="font-size: 16px"
+            >settings</mat-icon
+          >
+          Settings...
+        </button> -->
   </div>
 </mat-menu>
 
@@ -213,33 +214,33 @@
           role="button"
         >
           <!-- <div class="d-flex justify-content-between align-items-center">
-              <div
-                class="bg-white rounded-icon shadow d-flex justify-content-center align-items-center"
-                style="
-                  object-fit: contain;
-                  aspect-ratio: 1;
-                  overflow: hidden;
-                  width: 45px;
-                "
-              >
-                <img
-                  class="m-auto rounded-icon"
-                  style="object-fit: cover; height: 90%; width: 90%"
-                  [src]="n.displayUrl"
-                />
-              </div>
-              <div class="text-start w-100 ms-2">
-                <div class="w-100 ps-2 primary-text text-start fw-normal">
-                  {{ n.name }}
-                </div>
                 <div
-                  class="w-100 ps-2 primary-text text-start fw-normal"
-                  style="font-size: 10px"
+                  class="bg-white rounded-icon shadow d-flex justify-content-center align-items-center"
+                  style="
+                    object-fit: contain;
+                    aspect-ratio: 1;
+                    overflow: hidden;
+                    width: 45px;
+                  "
                 >
-                  {{ n.created | date }}
+                  <img
+                    class="m-auto rounded-icon"
+                    style="object-fit: cover; height: 90%; width: 90%"
+                    [src]="n.displayUrl"
+                  />
                 </div>
-              </div>
-            </div> -->
+                <div class="text-start w-100 ms-2">
+                  <div class="w-100 ps-2 primary-text text-start fw-normal">
+                    {{ n.name }}
+                  </div>
+                  <div
+                    class="w-100 ps-2 primary-text text-start fw-normal"
+                    style="font-size: 10px"
+                  >
+                    {{ n.created | date }}
+                  </div>
+                </div>
+              </div> -->
 
           <button mat-menu-item class="toolButton">
             <img
@@ -279,33 +280,33 @@
           role="button"
         >
           <!-- <div class="d-flex justify-content-between align-items-center">
-              <div
-                class="bg-white rounded-icon shadow d-flex justify-content-center align-items-center"
-                style="
-                  object-fit: contain;
-                  aspect-ratio: 1;
-                  overflow: hidden;
-                  width: 45px;
-                "
-              >
-                <img
-                  class="m-auto rounded-icon"
-                  style="object-fit: cover; height: 90%; width: 90%"
-                  [src]="n.displayUrl"
-                />
-              </div>
-              <div class="text-start w-100 ms-2">
-                <div class="w-100 ps-2 primary-text text-start fw-normal">
-                  {{ n.name }}
-                </div>
                 <div
-                  class="w-100 ps-2 primary-text text-start fw-normal"
-                  style="font-size: 10px"
+                  class="bg-white rounded-icon shadow d-flex justify-content-center align-items-center"
+                  style="
+                    object-fit: contain;
+                    aspect-ratio: 1;
+                    overflow: hidden;
+                    width: 45px;
+                  "
                 >
-                  {{ n.created | date }}
+                  <img
+                    class="m-auto rounded-icon"
+                    style="object-fit: cover; height: 90%; width: 90%"
+                    [src]="n.displayUrl"
+                  />
                 </div>
-              </div>
-            </div> -->
+                <div class="text-start w-100 ms-2">
+                  <div class="w-100 ps-2 primary-text text-start fw-normal">
+                    {{ n.name }}
+                  </div>
+                  <div
+                    class="w-100 ps-2 primary-text text-start fw-normal"
+                    style="font-size: 10px"
+                  >
+                    {{ n.created | date }}
+                  </div>
+                </div>
+              </div> -->
 
           <button mat-menu-item class="toolButton">
             <img

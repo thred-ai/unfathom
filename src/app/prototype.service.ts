@@ -14,6 +14,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Dict } from './load.service';
 import { Character } from './models/workflow/character.model';
 import { Texture } from './models/workflow/texture.model';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +44,7 @@ export class PrototypeService {
 
   mountedAsset = new BehaviorSubject<string | undefined>(undefined);
 
-  constructor() {}
+  constructor(private db: AngularFirestore) {}
 
   init(scene: Scene, project: Executable) {
     this.deinit();
@@ -974,12 +975,12 @@ export class PrototypeService {
 
   generateLiquidTexture(type: LiquidType) {
     if (type == LiquidType.lava) {
-      let tex = new Texture("lava");
+      let tex = new Texture('lava');
       tex.diffuse =
         'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
       return tex;
     } else {
-      let tex = new Texture("water");
+      let tex = new Texture('water');
       tex.bump =
         'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
       tex.diffuse =

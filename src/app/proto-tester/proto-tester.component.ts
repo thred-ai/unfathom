@@ -54,6 +54,7 @@ export class ProtoTesterComponent implements OnInit {
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
       this.project = w;
+      this.restart()
       this.cdr.detectChanges();
     });
 
@@ -64,7 +65,7 @@ export class ProtoTesterComponent implements OnInit {
       this.mountableAssets = this.scene?.assets
         .filter((a) => a.movement.canMount)
         .map((x) => x.id);
-
+        this.restart()
       this.cdr.detectChanges();
     });
 

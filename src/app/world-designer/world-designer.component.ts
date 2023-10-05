@@ -44,25 +44,26 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     //   this.project = project;
     // });
 
-    this.projectService.workflow.subscribe((w) => {
-      this.project = w;
-    });
+    // this.projectService.workflow.subscribe((w) => {
+    //   this.project = w;
+    // });
 
-    this.designerService.openStep.subscribe((s) => {
-      this.scene = s?.data?.ngArguments?.scene as Scene;
-      this.world = this.scene?.world;
+    // this.designerService.openStep.subscribe((s) => {
+    //   this.scene = s?.data?.ngArguments?.scene as Scene;
+    //   this.world = this.scene?.world;
 
-      if (this.project && this.scene && this.world) {
-        this.prototypeService.loaded.next(this.loaded);
-        setTimeout(() => {
-          this.prototypeService.init(this.scene!, this.project!);
-        }, 100);
+    // });
 
-        this.prototypeService?.loaded.subscribe((loaded) => {
-          this.loaded = loaded;
-        });
-      }
-    });
+    if (this.project && this.scene && this.world) {
+      this.prototypeService.loaded.next(this.loaded);
+      setTimeout(() => {
+        this.prototypeService.init(this.scene!, this.project!);
+      }, 100);
+
+      this.prototypeService?.loaded.subscribe((loaded) => {
+        this.loaded = loaded;
+      });
+    }
 
     // this.designerService?.openStep.subscribe((scene) => {
     //   this.scene = scene?.data?.ngArguments?.scene as Scene;
