@@ -28,5 +28,10 @@
       <app-world-module [data]="data" (changed)="changed.emit($event)">
       </app-world-module>
     </ng-container>
+
+    <ng-container *ngIf="data.comp == 'image-module'">
+        <app-image-module [data]="data" (changed)="changed.emit($event)">
+        </app-image-module>
+      </ng-container>
   </div>
 </div>

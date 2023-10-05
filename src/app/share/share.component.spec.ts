@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImagesModuleComponent } from './images-module.component';
+import { ShareComponent } from './share.component';
 
-describe('ImagesModuleComponent', () => {
-  let component: ImagesModuleComponent;
-  let fixture: ComponentFixture<ImagesModuleComponent>;
+describe('ShareComponent', () => {
+  let component: ShareComponent;
+  let fixture: ComponentFixture<ShareComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ImagesModuleComponent ]
+      declarations: [ ShareComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ImagesModuleComponent);
+    fixture = TestBed.createComponent(ShareComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

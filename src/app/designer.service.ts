@@ -216,6 +216,7 @@ export class DesignerService {
         new Selection({
           enabled: true,
           multiple: false,
+          
         })
       );
 

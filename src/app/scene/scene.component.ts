@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Scene } from '../models/workflow/scene.model';
 import { DesignerService } from '../designer.service';
 import { Executable } from '../models/workflow/executable.model';
@@ -22,6 +22,8 @@ export class SceneComponent implements OnInit {
   ngOnInit() {
     this.designService.openStep.subscribe((step) => {
       this.selected = (step?.data?.ngArguments?.scene as Scene)?.id;
+      console.log(this.selected)
+      this.cdr.detectChanges()
     });
     this.projectService.workflow.subscribe((workflow) => {
       this.workflow = workflow;
@@ -46,5 +48,6 @@ export class SceneComponent implements OnInit {
     private designService: DesignerService,
     private loadService: LoadService,
     private projectService: ProjectService,
+    private cdr: ChangeDetectorRef
   ) {}
 }
