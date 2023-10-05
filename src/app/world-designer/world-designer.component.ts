@@ -28,6 +28,9 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
   @Input() scene?: Scene;
   @Input() project?: Executable;
 
+  totalLength = 0
+  totalLoaded = 0
+
   constructor(
     private designerService: DesignerService,
     private projectService: ProjectService,

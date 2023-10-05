@@ -500,15 +500,21 @@ export class PrototypeService {
 
     await Promise.all(
       worldScene.assets.map(async (asset) => {
+
         let fullAsset = this.project?.assets[asset.id];
 
         if (fullAsset) {
+          this.loaded.next(`Downloading "${fullAsset.name}"`);
+
           const result = await BABYLON.SceneLoader.ImportMeshAsync(
             '',
             '',
             fullAsset.assetUrl,
             scene,
-            undefined,
+            (data => {
+              
+
+            }),
             '.glb'
           );
 
@@ -609,6 +615,7 @@ export class PrototypeService {
     await Promise.all(
       this.characters.map(async (c) => {
         if (c.id != this.selectedCharacter.value) {
+          this.loaded.next(`Downloading "${this.project?.characters[c.id].name}"`);
           var avatar2 = this.project?.characters[c.id].assetUrl;
           const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
             '',

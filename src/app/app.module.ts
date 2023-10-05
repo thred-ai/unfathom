@@ -156,6 +156,7 @@ import { AssetViewModuleComponent } from './asset-view-module/asset-view-module.
 import { ImagesModuleComponent } from './images-module/images-module.component';
 import { ShareComponent } from './share/share.component';
 import { PrototypeModuleComponent } from './prototype-module/prototype-module.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -256,6 +257,7 @@ import { PrototypeModuleComponent } from './prototype-module/prototype-module.co
     ResizableModule,
     MatSlideToggleModule,
     MatButtonToggleModule,
+    MatProgressBarModule,
     MatSliderModule,
     NgScrollbarModule,
     MatAutocompleteModule,
