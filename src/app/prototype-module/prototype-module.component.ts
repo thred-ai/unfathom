@@ -53,8 +53,9 @@ export class PrototypeModuleComponent implements OnInit {
       this.loadService.getPrototype(proj, (exec) => {
         if (exec) {
           this.project = exec;
-          this.scene = exec.sceneLayout.cells.find((c) => c.id == file)?.data
-            ?.ngArguments?.scene as Scene;
+          this.scene = exec.sceneLayout.cells.find(
+            (c) => (c.data?.ngArguments?.scene as Scene)?.id == file
+          )?.data?.ngArguments?.scene as Scene;
           this.world = this.scene?.world;
           this.mountableAssets = this.scene?.assets
             .filter((a) => a.movement.canMount)
