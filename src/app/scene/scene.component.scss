@@ -19,6 +19,15 @@ ion-textarea {
     opacity: 0.92;
 }
 
+.selected-img{
+    background-color: #13191f !important;
+    opacity: 0.92;
+
+    .img{
+        opacity: 0.62;
+    }
+}
+
 
 .test{
     display: -webkit-box;

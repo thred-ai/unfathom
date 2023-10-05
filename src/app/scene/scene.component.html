@@ -7,7 +7,7 @@
   #top
 >
   <div class="h-100 secondary-background-dark {{
-    selected == scene.id ? 'selected' : ''
+    selected == scene.id ? 'selected-img' : ''
   }}" style="aspect-ratio: 1">
     <img
       *ngIf="scene!.images[0]; else noImage"

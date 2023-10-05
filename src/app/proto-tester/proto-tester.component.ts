@@ -28,7 +28,7 @@ export class ProtoTesterComponent implements OnInit {
   mountedAsset?: string;
   selectedCharacter?: string;
 
-  worldDescription?: string
+  worldDescription?: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -51,31 +51,43 @@ export class ProtoTesterComponent implements OnInit {
     }, 5);
   }
 
+  openPrototypeFull(
+    id: string | undefined = this.scene?.id,
+    workflowId: string | undefined = this.project?.id
+  ) {
+    if (id && workflowId) {
+      window.open(
+        `https://app.unfathom.co/share/${workflowId}/scene/${id}`,
+        '_blank'
+      );
+    }
+  }
+
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
       this.project = w;
-      this.restart()
+      this.restart();
       this.cdr.detectChanges();
     });
 
     this.designService.openStep.subscribe((s) => {
       this.scene = s?.data?.ngArguments?.scene as Scene;
       this.world = this.scene?.world;
-      console.log(this.world)
+      console.log(this.world);
       this.mountableAssets = this.scene?.assets
         .filter((a) => a.movement.canMount)
         .map((x) => x.id);
-        this.restart()
+      this.restart();
       this.cdr.detectChanges();
     });
 
-    this.prototypeService.mountedAsset.subscribe(asset => {
-      this.mountedAsset = asset
-    })
+    this.prototypeService.mountedAsset.subscribe((asset) => {
+      this.mountedAsset = asset;
+    });
 
-    this.prototypeService.selectedCharacter.subscribe(character => {
-      this.selectedCharacter = character
-    })
+    this.prototypeService.selectedCharacter.subscribe((character) => {
+      this.selectedCharacter = character;
+    });
 
     this.themeService.theme.subscribe((theme) => {
       this.theme = theme ?? 'light';

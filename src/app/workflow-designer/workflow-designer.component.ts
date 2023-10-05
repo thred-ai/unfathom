@@ -170,6 +170,10 @@ export class WorkflowDesignerComponent
   }
 
   openMenu(comp: string, data: any, callback?: (data: any) => any) {
+    if (this.selectedData?.data?.comp == comp){
+      this.selectedData = undefined
+      return
+    }
     this.selectedData = undefined;
     this.cdr.detectChanges();
 
