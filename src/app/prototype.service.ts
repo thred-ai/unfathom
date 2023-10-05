@@ -176,7 +176,7 @@ export class PrototypeService {
 
   async createScene2(engine: BABYLON.Engine, world: World, worldScene: Scene) {
     if (!this.selectedCharacter.value) {
-      return;
+      return undefined;
     }
 
     let sameCharacter = this.characters.find(
@@ -184,7 +184,7 @@ export class PrototypeService {
     );
 
     if (!sameCharacter) {
-      return;
+      return undefined;
     }
 
     var scene = new BABYLON.Scene(engine);

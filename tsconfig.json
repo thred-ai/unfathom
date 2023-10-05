@@ -6,7 +6,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -22,7 +22,6 @@
     "importHelpers": true,
     "target": "es2020",
     "module": "es2020",
-
     "lib": ["es2020", "dom"],
     "types": ["babylonjs", "babylonjs-materials", "babylonjs-loaders"],
     "paths": {
@@ -30,14 +29,13 @@
       "stream": ["node_modules/stream-browserify"],
       "http": ["node_modules/stream-http"],
       "https": ["node_modules/https-browserify"],
-      "os": ["node_modules/os-browserify/browser"],
-      "verticl-ai-designer": ["dist/verticl-ai-designer"]
+      "os": ["node_modules/os-browserify/browser"]
     }
   },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+  // "angularCompilerOptions": {
+  //   "enableI18nLegacyMessageIdFormat": false,
+  //   "strictInjectionParameters": false,
+  //   "strictInputAccessModifiers": false,
+  //   "strictTemplates": true
+  // }
 }

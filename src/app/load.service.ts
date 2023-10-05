@@ -87,6 +87,19 @@ export class LoadService {
     }
   }
 
+  openPrototypeFull(
+    id: string | undefined = this.designerService.openStep?.value?.data
+      ?.ngArguments.scene?.id,
+    workflowId: string | undefined = this.projectService.workflow?.value?.id
+  ) {
+    if (id && workflowId) {
+      window.open(
+        `https://app.unfathom.co/share/${workflowId}/scene/${id}`,
+        '_blank'
+      );
+    }
+  }
+
   async saveWorld(world: World, id: string) {
     try {
       await this.db
@@ -1398,13 +1411,10 @@ export class LoadService {
     }
   }
 
-  getPrototype(
-    workflowId: string,
-    callback: (exec: Executable) => any
-  ) {
+  getPrototype(workflowId: string, callback: (exec: Executable) => any) {
     let q = this.db.collection(`Workflows`).doc(workflowId);
 
-    console.log(workflowId)
+    console.log(workflowId);
     q.valueChanges().subscribe((docs2) => {
       let w = this.syncWorkflow(docs2);
       callback(w);

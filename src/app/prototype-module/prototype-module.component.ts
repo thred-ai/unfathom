@@ -9,6 +9,7 @@ import { ThemeService } from '../theme.service';
 import { ActivatedRoute } from '@angular/router';
 import { Cell } from '@antv/x6';
 import { LoadService } from '../load.service';
+import { Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-prototype-module',
@@ -31,7 +32,8 @@ export class PrototypeModuleComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private prototypeService: PrototypeService,
     private loadService: LoadService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private metaService: Meta
   ) {}
 
   visible = true;

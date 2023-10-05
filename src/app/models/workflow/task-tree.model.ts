@@ -18,7 +18,7 @@ export class TaskTree {
   ) {
     this.id = id;
     this.name = name ?? 'New Task';
-    this.type = type ?? '';
+    this.type = type ?? 'model';
     this.sequence = sequence ?? [];
     this.categoryTask = categoryTask
     this.metadata = metadata ?? {}

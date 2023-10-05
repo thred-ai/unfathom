@@ -35,7 +35,7 @@ export class SceneComponent implements OnInit {
   }
 
   selectWorld(){
-      this.loadService.openPrototype()
+      this.loadService.openPrototypeFull()
   }
 
   @Input() scene?: Scene;

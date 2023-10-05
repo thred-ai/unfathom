@@ -50,14 +50,7 @@ export class AppComponent {
 
   sendToChildEmitter = new EventEmitter();
 
-  isMobile() {
-    if (isPlatformBrowser(this.platformID)) {
-      let height = window.innerHeight;
-      let width = window.innerWidth;
-      return width < height;
-    }
-    return false;
-  }
+
 
   editBilling(){
     this.dialog.open(SharedDialogComponent, {

@@ -56,6 +56,7 @@
     "@ionic/angular": "^6.7.1",
     "@ionic/cli": "^7.1.1",
     "@ngstack/code-editor": "^5.0.0",
+    "@nguniversal/builders": "^16.2.0",
     "@nguniversal/express-engine": "^13.1.1",
     "@stripe/stripe-js": "^1.52.1",
     "@svgdotjs/svg.js": "^3.1.1",
