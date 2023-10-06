@@ -47,6 +47,17 @@ export class PrototypeModuleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    console.log(isMobile)
+    if (isMobile) {
+      /* your code here */
+      if (screen.orientation) { // Property doesn't exist on screen in IE11   
+        screen.orientation.addEventListener("change", (event) => {
+          console.log()
+        });
+    }
+    }
+
     this.route.params.subscribe(async (params) => {
       let proj = params['id'] as string;
       let file = params['scene'] as string;

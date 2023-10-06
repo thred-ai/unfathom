@@ -1,32 +1,41 @@
 :host ::ng-deep .mat-content.mat-content-hide-toggle {
-    padding: 0 !important;
-    margin: 0 !important;
-    aspect-ratio: 1;
-  }
-  
-  // :host ::ng-deep .mat-accordion {
-  //   padding: 0 !important;
-  // }
-  
-  
-  :host ::ng-deep .mat-expansion-panel-body {
-    width: 100% !important;
-    padding: 0 !important;
-  }
-  
-  :host ::ng-deep .mat-expansion-panel-header {
-    aspect-ratio: 1 !important;
-    height: auto !important;
-  }
-  
-  // :host ::ng-deep .ion-padding {
-  //   padding-right: 0px;
-  //   padding-left: 7.5px;
-  //   border-top-left-radius: 10px;
-  //   border-bottom-left-radius: 10px;
-  //   overflow: hidden;
-  // }
-  
+  padding: 0 !important;
+  margin: 0 !important;
+  aspect-ratio: 1;
+}
 
-  
-  
+// :host ::ng-deep .mat-accordion {
+//   padding: 0 !important;
+// }
+
+:host ::ng-deep .mat-expansion-panel-body {
+  width: 100% !important;
+  padding: 0 !important;
+}
+
+:host ::ng-deep .mat-expansion-panel-header {
+  aspect-ratio: 1 !important;
+  height: auto !important;
+}
+
+// :host ::ng-deep .ion-padding {
+//   padding-right: 0px;
+//   padding-left: 7.5px;
+//   border-top-left-radius: 10px;
+//   border-bottom-left-radius: 10px;
+//   overflow: hidden;
+// }
+
+@media only screen and (orientation: portrait) {
+  #wrapper {
+    display: none;
+  }
+  #warning-message {
+    display: block;
+  }
+}
+@media only screen and (orientation: landscape) {
+  #warning-message {
+    display: none;
+  }
+}

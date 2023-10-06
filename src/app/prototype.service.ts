@@ -193,7 +193,7 @@ export class PrototypeService {
 
     var skybox: BABYLON.Mesh | undefined;
 
-    if (world.sky) {
+    if (world.sky && !world.sky.hidden) {
       skybox = BABYLON.MeshBuilder.CreateSphere(
         'world',
         {
@@ -220,7 +220,7 @@ export class PrototypeService {
       }
     }
 
-    if (world.ground) {
+    if (world.ground && !world.ground.hidden) {
       var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
         'ground',
         world.ground.heightMap,
