@@ -7,6 +7,18 @@
   >
     <div class="w-100 h-100" style="overflow: hidden" id="container"></div>
 
+    <!-- <div
+      class="w-100 h-100 renderer primary-background"
+      *ngIf="selectedFile?.data?.ngArguments?.scene && workflow && theme"
+    >
+      <app-world-designer
+        *ngIf="visible"
+        [theme]="theme"
+        [scene]="selectedFile?.data?.ngArguments?.scene"
+        [project]="workflow"
+      ></app-world-designer>
+    </div> -->
+
     <div
       class="h-100 border-table-left primary-background"
       style="width: 400px !important; overflow-x: hidden; flex-shrink: 0"
@@ -21,7 +33,7 @@
     </div>
 
     <div
-    *ngIf="selectedFile"
+      *ngIf="selectedFile"
       class="h-100 border-table-left"
       style="width: 250px !important; flex-shrink: 0; overflow-x: hidden"
     >

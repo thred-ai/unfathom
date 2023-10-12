@@ -24,7 +24,7 @@ import { PrototypeService } from '../prototype.service';
   styleUrls: ['./world-designer.component.scss'],
 })
 export class WorldDesignerComponent implements OnInit, OnDestroy {
-  @Input() world?: World;
+  
   @Input() scene?: Scene;
   @Input() project?: Executable;
 
@@ -57,7 +57,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
     // });
 
-    if (this.project && this.scene && this.world) {
+    if (this.project && this.scene) {
       this.prototypeService.loaded.next(this.loaded);
       setTimeout(() => {
         this.prototypeService.init(this.scene!, this.project!);
