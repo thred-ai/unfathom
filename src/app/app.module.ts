@@ -93,7 +93,6 @@ import { SelectFieldComponent } from './select-field/select-field.component';
 import { TextFieldComponent } from './text-field/text-field.component';
 import { DictToArrPipe } from './dict-to-arr.pipe';
 import { WorkflowComponent } from './workflow/workflow.component';
-import { ModelTypePipe } from './model-type.pipe';
 import { SafeImgUrlPipe } from './safe-img-url.pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { TextboxComponent } from './textbox/textbox.component';
@@ -101,7 +100,6 @@ import { SplitPipe } from './split.pipe';
 import { PrettifyJsonPipe } from './prettify-json.pipe';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { ApiUrlPipe } from './api-url.pipe';
-import { ApiEditorComponent } from './api-editor/api-editor.component';
 // import { CodeEditorModule } from '@ngstack/code-editor';
 import { RawEditFilterPipe } from './raw-edit-filter.pipe';
 // import { CodeEditorComponent } from './code-editor/code-editor.component';
@@ -182,14 +180,12 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     TextFieldComponent,
     DictToArrPipe,
     WorkflowComponent,
-    ModelTypePipe,
     SafeImgUrlPipe,
     LoaderComponent,
     TextboxComponent,
     SplitPipe,
     PrettifyJsonPipe,
     ApiUrlPipe,
-    ApiEditorComponent,
     RawEditFilterPipe,
     // CodeEditorComponent,
     WorkflowInfoComponent,

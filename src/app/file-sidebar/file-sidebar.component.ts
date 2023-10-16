@@ -9,12 +9,7 @@ import {
 } from '@angular/core';
 
 import { Dict, LoadService } from '../load.service';
-import { AIModelType } from '../models/workflow/ai-model-type.model';
-import { APIRequest } from '../models/workflow/api-request.model';
-import { Key } from '../models/workflow/key.model';
 import { TaskTree } from '../models/workflow/task-tree.model';
-import { TrainingData } from '../models/workflow/training-data.model';
-import { Trigger } from '../models/workflow/trigger.model';
 import { WorkflowComponent } from '../workflow/workflow.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Executable } from '../models/workflow/executable.model';

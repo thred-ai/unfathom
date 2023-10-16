@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService, Dict } from '../load.service';
-import { APIRequest } from '../models/workflow/api-request.model';
 import { Executable } from '../models/workflow/executable.model';
 import { Developer } from '../models/user/developer.model';
 import { Clipboard } from '@angular/cdk/clipboard';

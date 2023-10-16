@@ -11,8 +11,6 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Meta, Title } from '@angular/platform-browser';
 import { Developer } from './models/user/developer.model';
-import { AIModel } from './models/workflow/ai-model.model';
-import { AIModelType } from './models/workflow/ai-model-type.model';
 import { Executable } from './models/workflow/executable.model';
 import { Scene } from './models/workflow/scene.model';
 import { SceneLayout } from './models/workflow/scene-layout.model';
@@ -207,7 +205,6 @@ export class LoadService {
       localStorage.removeItem('name');
       localStorage.removeItem('email');
       this.loadedUser.next(undefined);
-      this.projectService.loadedModels.next({});
       this.projectService.loading.next(false);
       this.themeService.theme.next('light');
       this.projectService.workflow.next(undefined);
@@ -664,49 +661,7 @@ export class LoadService {
       });
   }
 
-  getModels(callback: (result: Dict<AIModelType>) => any) {
-    try {
-      this.db
-        .collection('ModelTypes')
-        .valueChanges()
-        .subscribe((docs) => {
-          let modelTypes = (docs as any[]) ?? [];
 
-          let models: Dict<AIModelType> = {};
-
-          modelTypes.forEach((model) => {
-            models[model.id] = new AIModelType(model.name, model.id, {});
-          });
-
-          this.db
-            .collection('Models', (ref) =>
-              ref.where('status', '==', 0).orderBy('rank', 'asc')
-            )
-            .valueChanges()
-            .subscribe((docs) => {
-              let docs_2 = (docs as any[]) ?? [];
-
-              docs_2.forEach((d) => {
-                models[d.type].models[d.id] = new AIModel(
-                  d.name,
-                  d.id,
-                  d.developer,
-                  d.imgUrl,
-                  d.type,
-                  d.status,
-                  d.description,
-                  d.variations
-                );
-              });
-              this.projectService.loadedModels.next(models);
-              callback(models);
-            });
-        });
-    } catch (error) {
-      this.projectService.loadedModels.next({});
-      callback({});
-    }
-  }
 
   // getPlans(callback: (result: Dict<Plan>) => any) {
   //   try {
@@ -940,26 +895,6 @@ export class LoadService {
     this.projectService.loading.next(false);
 
     return undefined;
-  }
-
-  iconUrlForController(componentType: string, type: string) {
-    switch (componentType) {
-      //@ts-ignore
-      case 'task':
-        switch (type) {
-          default:
-            let id2 = type.split('-')[1];
-            if (id2) {
-              let same =
-                this.projectService.loadedModels.value[id2].models[type];
-              if (same) {
-                return same.imgUrl;
-              }
-            }
-        }
-      default:
-        return `assets/${type}.png`;
-    }
   }
 
   async getExecutable(id: string) {

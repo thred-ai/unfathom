@@ -10,9 +10,6 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Dict, LoadService } from '../load.service';
 import { Developer } from '../models/user/developer.model';
-import { Trigger } from '../models/workflow/trigger.model';
-import { TrainingData } from '../models/workflow/training-data.model';
-import { APIRequest } from '../models/workflow/api-request.model';
 import { Subscription, skip } from 'rxjs';
 import { Executable } from '../models/workflow/executable.model';
 import { TaskTree } from '../models/workflow/task-tree.model';
@@ -45,11 +42,8 @@ export class WorkflowComponent implements OnInit {
   newWorkflow = true;
 
   dev?: Developer;
-  triggers: Dict<Trigger> = {};
 
   workflowIcon?: File;
-  newTrainingData?: TrainingData;
-  newAPIRequest?: APIRequest;
 
   workflow?: Executable;
 
