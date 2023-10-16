@@ -86,7 +86,6 @@ export class WorkflowDesignerComponent
     private designerService: DesignerService,
     private injector: Injector,
     private projectService: ProjectService,
-    private dialog: MatDialog,
     private cdr: ChangeDetectorRef
   ) {}
 

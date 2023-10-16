@@ -31,6 +31,10 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
   totalLength = 0
   totalLoaded = 0
 
+  scripts: any[] = []
+
+
+
   constructor(
     private designerService: DesignerService,
     private projectService: ProjectService,

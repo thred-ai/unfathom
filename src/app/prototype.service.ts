@@ -141,27 +141,6 @@ export class PrototypeService {
         this.engine.runRenderLoop(() => {
           let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
           if (cam) {
-            const angle = BABYLON.Vector3.GetAngleBetweenVectorsOnPlane(
-              cam.getForwardRay().direction,
-              BABYLON.Vector3.Backward(),
-              BABYLON.Vector3.Up()
-            );
-
-            // actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
-            //   new BABYLON.Vector3(1, 0, 0),
-            //   100
-            // );
-
-            if (this.selectedCharacter.value) {
-              let actor = scene.getMeshById(
-                this.selectedCharacter.value
-              ) as BABYLON.Mesh;
-
-              actor.rotationQuaternion = BABYLON.Quaternion.RotationAxis(
-                BABYLON.Vector3.Up(),
-                -angle
-              );
-            }
             scene.render();
           }
         });
@@ -500,7 +479,6 @@ export class PrototypeService {
 
     await Promise.all(
       worldScene.assets.map(async (asset) => {
-
         let fullAsset = this.project?.assets[asset.id];
 
         if (fullAsset) {
@@ -511,10 +489,7 @@ export class PrototypeService {
             '',
             fullAsset.assetUrl,
             scene,
-            (data => {
-              
-
-            }),
+            (data) => {},
             '.glb'
           );
 
@@ -536,6 +511,11 @@ export class PrototypeService {
             asset.spawn.y,
             asset.spawn.z
           );
+
+          // console.log(result.meshes)
+          // let f = await result.meshes[1].material.getActiveTextures()[0].readPixels()
+          // BABYLON.Tools.DumpDataAsync(200, 200, f, 'image/jpeg', "img.jpeg", undefined, false, 1)
+          // console.log()
 
           if (asset.movement.canMount) {
             let box = object.getHierarchyBoundingVectors();
@@ -615,7 +595,9 @@ export class PrototypeService {
     await Promise.all(
       this.characters.map(async (c) => {
         if (c.id != this.selectedCharacter.value) {
-          this.loaded.next(`Downloading "${this.project?.characters[c.id].name}"`);
+          this.loaded.next(
+            `Downloading "${this.project?.characters[c.id].name}"`
+          );
           var avatar2 = this.project?.characters[c.id].assetUrl;
           const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
             '',
@@ -664,6 +646,15 @@ export class PrototypeService {
           GLTFLoaderAnimationStartMode.NONE;
       }
     });
+
+    // const camera = new BABYLON.UniversalCamera(
+    //     'UniversalCamera',
+    //     new BABYLON.Vector3(0, 0, -10),
+    //     scene
+    //   );
+
+    //   // Targets the camera to a particular position. In this case the scene origin
+    //   camera.setTarget(BABYLON.Vector3.Zero());
 
     this.selectedCharacter.subscribe((c) => {
       //
@@ -831,13 +822,19 @@ export class PrototypeService {
       );
 
       camera.maxZ = this.world!.size * 2;
+       
+      camera.lowerRadiusLimit = 0
+      camera.upperRadiusLimit = 0
+      camera.radius = 0//7.5
 
       actor.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
 
       this.cc = new CharacterController(actor, camera, scene, agMap);
+
       this.cc?.setMode(0);
 
       this.cc?.setFaceForward(forward);
+      this.cc?.setTurningOff(false);
 
       this.cc?.setCameraTarget(new BABYLON.Vector3(0, 1.5, 0));
 

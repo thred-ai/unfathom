@@ -6,6 +6,7 @@ import { ShareComponent } from './share/share.component';
 import { PrototypeModuleComponent } from './prototype-module/prototype-module.component';
 
 const routes: Routes = [
+  // { path: 'account', component: AuthComponent, pathMatch: 'full' },
   { path: 'account', component: AuthComponent, pathMatch: 'full' },
 
   {
