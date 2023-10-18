@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Scene } from './models/workflow/scene.model';
-import { Executable } from './models/workflow/executable.model';
 import { CharacterController } from 'babylonjs-charactercontroller';
 import {
   GLTFFileLoader,
@@ -20,21 +19,34 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
   providedIn: 'root',
 })
 export class PrototypeService {
-  selectedCharacter = new BehaviorSubject<string | undefined>(undefined);
+  selectedCharacter = new BehaviorSubject<
+    | {
+        character: Character;
+        spawn: {
+          x: number;
+          y: number;
+          z: number;
+        };
+        direction: {
+          x: number;
+          y: number;
+          z: number;
+        };
+        scale: number;
+      }
+    | undefined
+  >(undefined);
 
-  characters: {
-    spawn: { x: number; y: number; z: number };
-    id: string;
-    currentPos: { x: number; y: number; z: number };
-    scale: number;
-    direction: { x: number; y: number; z: number };
-  }[] = [];
-
-  availableCharacters: Dict<Character> = {};
+  // characters: {
+  //   spawn: { x: number; y: number; z: number };
+  //   character: Character;
+  //   currentPos: { x: number; y: number; z: number };
+  //   scale: number;
+  //   direction: { x: number; y: number; z: number };
+  // }[] = [];
 
   world?: World;
-  scene?: Scene;
-  project?: Executable;
+  project?: any;
   cc?: CharacterController;
 
   engine?: BABYLON.Engine;
@@ -46,33 +58,31 @@ export class PrototypeService {
 
   constructor(private db: AngularFirestore) {}
 
-  init(scene: Scene, project: Executable) {
+  init(world: World, project: any) {
     this.deinit();
 
-    this.scene = scene;
-    this.world = scene.world;
+    this.world = world;
 
     this.project = project;
 
-    if (this.scene) {
-      if (Object.keys(this.scene.characters).length == 0) {
-        console.log('DEFAULT');
-        this.availableCharacters['default'] = new Character(
-          'default',
-          'Default',
-          'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_avatar.glb',
-          '',
-          'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_head.png',
-          '',
-          'other'
-        );
-      } else {
-        this.availableCharacters = this.project.characters ?? {};
-      }
+    if (this.world) {
+      // if (Object.keys(this.world.characters).length == 0) {
+      //   console.log('DEFAULT');
 
-      let char = this.scene.characters[0] ?? {
-        id: 'default',
-        role: 'other',
+      // }
+
+      let character = new Character(
+        'default',
+        'Default',
+        'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_avatar.glb',
+        '',
+        'https://storage.googleapis.com/verticalai.appspot.com/default/avatars/default_head.png',
+        '',
+        'other'
+      );
+
+      let char = this.world.characters[0] ?? {
+        character,
         spawn: {
           x: 200,
           y: 1,
@@ -86,23 +96,23 @@ export class PrototypeService {
         scale: 1,
       };
 
-      this.selectedCharacter.next(char.id);
+      this.selectedCharacter.next(char);
 
-      this.characters = this.scene.characters.map((c) => {
-        return {
-          currentPos: c.spawn,
-          ...c,
-        };
-      });
+      // this.characters = this.world.characters.map((c) => {
+      //   return {
+      //     currentPos: c.spawn,
+      //     ...c,
+      //   };
+      // });
 
-      if (this.characters.length == 0) {
-        this.characters = [
-          {
-            currentPos: char.spawn,
-            ...char,
-          },
-        ];
-      }
+      // if (this.characters.length == 0) {
+      //   this.characters = [
+      //     {
+      //       currentPos: char.spawn,
+      //       ...char,
+      //     },
+      //   ];
+      // }
 
       if (this.world && this.project) {
         this.initWorld();
@@ -117,12 +127,12 @@ export class PrototypeService {
     // Check support
     if (!BABYLON.Engine.isSupported()) {
       window.alert('Browser not supported');
-    } else if (canvas && this.world && this.scene && this.selectedCharacter) {
+    } else if (canvas && this.world && this.world && this.selectedCharacter) {
       // Babylon
       this.engine = new BABYLON.Engine(canvas, true);
 
       //Creating scene
-      let res = await this.createScene2(this.engine, this.world, this.scene);
+      let res = await this.createScene2(this.engine, this.world);
 
       if (res) {
         let scene = res;
@@ -153,16 +163,8 @@ export class PrototypeService {
     }
   }
 
-  async createScene2(engine: BABYLON.Engine, world: World, worldScene: Scene) {
+  async createScene2(engine: BABYLON.Engine, world: World) {
     if (!this.selectedCharacter.value) {
-      return undefined;
-    }
-
-    let sameCharacter = this.characters.find(
-      (c) => c.id == this.selectedCharacter.value
-    );
-
-    if (!sameCharacter) {
       return undefined;
     }
 
@@ -176,8 +178,8 @@ export class PrototypeService {
       skybox = BABYLON.MeshBuilder.CreateSphere(
         'world',
         {
-          diameterX: world.size,
-          diameterZ: world.size,
+          diameterX: world.width,
+          diameterZ: world.height,
           diameterY: world.sky.height,
         },
         scene
@@ -204,8 +206,8 @@ export class PrototypeService {
         'ground',
         world.ground.heightMap,
         {
-          width: world.size,
-          height: world.size,
+          width: world.width,
+          height: world.height,
           subdivisions: world.ground.maxHeight / 20,
           minHeight: world.ground.minHeight,
           maxHeight: world.ground.maxHeight,
@@ -217,8 +219,8 @@ export class PrototypeService {
       var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
 
       var uvScaleConstant = new BABYLON.Vector2(
-        world.size / 166,
-        world.size / 166
+        world.width / 166,
+        world.height / 166
       );
 
       if (world.ground.texture.displacement) {
@@ -284,8 +286,8 @@ export class PrototypeService {
 
       var extraGround = BABYLON.Mesh.CreateGround(
         'extraGround',
-        world.size,
-        world.size,
+        world.width,
+        world.height,
         1,
         scene,
         false
@@ -316,7 +318,7 @@ export class PrototypeService {
         if (world.ground.liquid['water']) {
           var water = BABYLON.MeshBuilder.CreateGround(
             'water',
-            { width: world.size, height: world.size, subdivisions: 32 },
+            { width: world.width, height: world.height, subdivisions: 32 },
             scene
           );
           water.position.y = world.ground.liquid['water'].level;
@@ -383,7 +385,7 @@ export class PrototypeService {
         if (world.ground.liquid['lava']) {
           var lava = BABYLON.MeshBuilder.CreateGround(
             'lava',
-            { width: world.size, height: world.size, subdivisions: 32 },
+            { width: world.width, height: world.height, subdivisions: 32 },
             scene
           );
           lava.position.y = world.ground.liquid['lava'].level;
@@ -413,8 +415,7 @@ export class PrototypeService {
       }
     }
 
-    var avatar =
-      this.availableCharacters[this.selectedCharacter.value].assetUrl;
+    var avatar = this.selectedCharacter.value.character.assetUrl;
 
     // .id == 'TgSTaxx8MZ1PFXVhS8V4'
     //   ? 'assets/mustafarav2.glb'
@@ -441,20 +442,20 @@ export class PrototypeService {
 
     var actor = result.meshes[0] as BABYLON.Mesh;
 
-    actor.id = this.selectedCharacter.value;
+    actor.id = this.selectedCharacter.value.character.id;
 
-    actor.scaling.scaleInPlace(sameCharacter.scale);
+    actor.scaling.scaleInPlace(this.selectedCharacter.value.scale);
     actor.checkCollisions = true;
 
-    actor.position.y = sameCharacter.spawn.y; //world.size / 10 + 20; //35;
+    actor.position.y = this.selectedCharacter.value.spawn.y; //world.size / 10 + 20; //35;
 
-    actor.position.z = sameCharacter.spawn.z; //world.size / 5 - 400;
-    actor.position.x = sameCharacter.spawn.x; //world.size / 10 + 900;
+    actor.position.z = this.selectedCharacter.value.spawn.z; //world.size / 5 - 400;
+    actor.position.x = this.selectedCharacter.value.spawn.x; //world.size / 10 + 900;
 
     actor.rotation = new BABYLON.Vector3(
-      this.toRadians(sameCharacter.direction.x),
-      this.toRadians(sameCharacter.direction.y),
-      this.toRadians(sameCharacter.direction.z)
+      this.toRadians(this.selectedCharacter.value.direction.x),
+      this.toRadians(this.selectedCharacter.value.direction.y),
+      this.toRadians(this.selectedCharacter.value.direction.z)
     );
 
     let animationsDir =
@@ -478,8 +479,8 @@ export class PrototypeService {
     this.loaded.next('Downloading Assets');
 
     await Promise.all(
-      worldScene.assets.map(async (asset) => {
-        let fullAsset = this.project?.assets[asset.id];
+      world.assets.map(async (asset) => {
+        let fullAsset = asset.asset;
 
         if (fullAsset) {
           this.loaded.next(`Downloading "${fullAsset.name}"`);
@@ -496,7 +497,7 @@ export class PrototypeService {
           result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
 
           var object = result.meshes[0] as BABYLON.Mesh;
-          object.id = asset.id;
+          object.id = asset.asset.id;
 
           object.scaling.scaleInPlace(asset.scale);
 
@@ -593,12 +594,12 @@ export class PrototypeService {
     );
 
     await Promise.all(
-      this.characters.map(async (c) => {
-        if (c.id != this.selectedCharacter.value) {
+      this.world.characters.map(async (c) => {
+        if (c.character.id != this.selectedCharacter.value.character.id) {
           this.loaded.next(
-            `Downloading "${this.project?.characters[c.id].name}"`
+            `Downloading "${c.character.name}"`
           );
-          var avatar2 = this.project?.characters[c.id].assetUrl;
+          var avatar2 = c.character.assetUrl;
           const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
             '',
             '',
@@ -609,7 +610,7 @@ export class PrototypeService {
           );
 
           var actor2 = result2.meshes[0] as BABYLON.Mesh;
-          actor2.id = c.id;
+          actor2.id = c.character.id;
 
           actor2.scaling.scaleInPlace(c.scale);
           actor2.checkCollisions = true;
@@ -626,12 +627,12 @@ export class PrototypeService {
             this.toRadians(c.direction.z)
           );
 
-          this.setAnimation(actor2, idle, scene, `default_${c.id}`);
+          this.setAnimation(actor2, idle, scene, `default_${c.character.id}`);
         }
       })
     );
 
-    var generator = new BABYLON.ShadowGenerator(world.size, light);
+    var generator = new BABYLON.ShadowGenerator(world.width, light);
     generator.usePoissonSampling = false;
     // generator.bias = 0.000001;
     generator.useBlurExponentialShadowMap = true;
@@ -659,7 +660,7 @@ export class PrototypeService {
     this.selectedCharacter.subscribe((c) => {
       //
       if (c) {
-        let actorMesh = scene.getMeshById(c) as BABYLON.Mesh;
+        let actorMesh = scene.getMeshById(c.character.id) as BABYLON.Mesh;
 
         if (actorMesh) {
           let idleClone = this.cloneAnimation(
@@ -821,11 +822,11 @@ export class PrototypeService {
         scene
       );
 
-      camera.maxZ = this.world!.size * 2;
-       
-      camera.lowerRadiusLimit = 0
-      camera.upperRadiusLimit = 0
-      camera.radius = 0//7.5
+      camera.maxZ = this.world!.width * 2;
+
+      camera.lowerRadiusLimit = 0;
+      camera.upperRadiusLimit = 0;
+      camera.radius = 0; //7.5
 
       actor.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
 
@@ -913,10 +914,10 @@ export class PrototypeService {
     if (scene && this.selectedCharacter.value) {
       let assetMesh = scene.getMeshById(id) as BABYLON.Mesh;
       let actorMesh = scene.getMeshById(
-        this.selectedCharacter.value
+        this.selectedCharacter.value.character.id
       ) as BABYLON.Mesh;
 
-      let asset = this.scene?.assets.find((a) => a.id == id);
+      let asset = this.world?.assets.find((a) => a.asset.id == id);
 
       if (assetMesh && actorMesh && asset) {
         // actorMesh.setParent(assetMesh, true, true);
@@ -936,12 +937,13 @@ export class PrototypeService {
     }
   }
 
-  selectCharacter(id: string) {
+  selectCharacter(character: string) {
     let scene = this.engine?.scenes[0];
-    if (scene && this.selectedCharacter.value) {
-      let actorMesh = scene.getMeshById(id) as BABYLON.Mesh;
+    let same = this.world.characters.find(c => c.character.id == character)
+    if (scene && this.selectedCharacter.value && same) {
+      let actorMesh = scene.getMeshById(same.character.id) as BABYLON.Mesh;
       let oldActorMesh = scene.getMeshById(
-        this.selectedCharacter.value
+        this.selectedCharacter.value.character.id
       ) as BABYLON.Mesh;
       const anim = scene.getAnimationGroupByName(
         'M_Standing_Idle_Variations_001'
@@ -955,7 +957,7 @@ export class PrototypeService {
         );
       }
       if (actorMesh) {
-        this.selectedCharacter.next(id);
+        this.selectedCharacter.next(same);
       }
     }
   }
@@ -965,14 +967,14 @@ export class PrototypeService {
     if (scene && this.selectedCharacter.value) {
       let assetMesh = scene.getMeshById(id) as BABYLON.Mesh;
       let actorMesh = scene.getMeshById(
-        this.selectedCharacter.value
+        this.selectedCharacter.value.character.id
       ) as BABYLON.Mesh;
 
       if (assetMesh && actorMesh) {
         // assetMesh.removeChild(actorMesh, true);
         // actorMesh.setEnabled(true);
         this.mountedAsset.next(undefined);
-        this.selectCharacter(this.selectedCharacter.value);
+        this.selectCharacter(this.selectedCharacter.value.character.id);
       }
     }
   }

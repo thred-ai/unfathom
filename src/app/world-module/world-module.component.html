@@ -1,12 +1,12 @@
-<div class="w-100 h-100">
-  <div class="w-100 h-100">
-    <div class="w-100 p-3">
-      <div class="w-100 d-flex justify-content-between align-items-center">
-        <div class="primary-text fw-bold" style="font-size: 15px">
+<div class="w-full h-full">
+  <div class="w-full h-full">
+    <div class="w-full p-3">
+      <div class="w-full flex justify-between items-center">
+        <div class="primary-text font-bold" style="font-size: 15px">
           Environment
         </div>
         <button
-          class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2"
+          class="btn bg-orange border-0 rounded font-bold text-white flex justify-center px-3 content-center py-2"
           (click)="save()"
         >
           {{ loading == "" ? "Save" : loading }}
@@ -16,7 +16,7 @@
 
     <mat-tab-group
       #menu
-      class="w-100 h-100"
+      class="w-full h-full"
       dynamicHeight
       [fitInkBarToContent]="true"
       animationDuration="0ms"
@@ -29,10 +29,10 @@
         </ng-template>
         <ng-template matTabContent>
           <div
-            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+            class="h-full flex justify-center items-center flex-col relative"
           >
-            <div class="w-100 h-100 p-3 pb-5" style="overflow-y: scroll">
-              <div class="w-100 pb-3">
+            <div class="w-full h-full p-3 pb-5" style="overflow-y: scroll">
+              <div class="w-full pb-3">
                 <div class="px-1">
                   <verticalai-text-field
                     [title]="'Space Size'"
@@ -45,7 +45,7 @@
                   </verticalai-text-field>
                 </div>
               </div>
-              <div class="w-100 pb-3">
+              <div class="w-full pb-3">
                 <div class="px-1">
                   <verticalai-text-field
                     [title]="'Lighting'"
@@ -58,7 +58,7 @@
                   </verticalai-text-field>
                 </div>
 
-                <!-- <div class="w-100 pb-3 row row-cols-2 justify-content-center g-0">
+                <!-- <div class="w-full pb-3 row row-cols-2 justify-center g-0">
             <div class="px-1">
               <verticalai-text-field
                 [title]="'Size'"
@@ -95,15 +95,15 @@
         </ng-template>
         <ng-template matTabContent>
           <div
-            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+            class="h-full flex justify-center items-center flex-col relative"
           >
             <div
-              class="w-100 h-100 p-3 pb-5"
+              class="w-full h-full p-3 pb-5"
               style="overflow-y: scroll"
               *ngIf="world.ground"
             >
-              <div class="w-100 pb-3">
-                <p class="w-100 mb-3 fw-bold primary-text">
+              <div class="w-full pb-3">
+                <p class="w-full mb-3 font-bold primary-text">
                   {{ toggle.checked ? "Visible" : "Hidden" }}
                 </p>
                 <div class="px-1">
@@ -115,7 +115,7 @@
                 </div>
               </div>
 
-              <div class="w-100 pb-3">
+              <div class="w-full pb-3">
                 <div class="px-1">
                   <verticalai-text-field
                     [title]="'Max Surface Height'"
@@ -129,14 +129,14 @@
                 </div>
               </div>
 
-              <div class="wrap-input1 w-100 py-3 px-0">
-                <p class="w-100 mb-3 primary-text fw-bold">Surface Texture</p>
+              <div class="wrap-input1 w-full py-3 px-0">
+                <p class="w-full mb-3 primary-text font-bold">Surface Texture</p>
 
                 <div
-                  class="w-100 d-flex justify-content-start align-items-center"
+                  class="w-full flex justify-start items-center"
                 >
                   <div
-                    class="w-auto rounded-circle border-table shadow d-flex justify-content-center align-items-center section-background"
+                    class="w-auto rounded-circle border-table shadow flex justify-center items-center section-background"
                     style="
                       object-fit: contain;
                       aspect-ratio: 1;
@@ -145,19 +145,19 @@
                     "
                   >
                     <div
-                      class="m-auto position-relative img-input rounded-circle pic-hover"
+                      class="m-auto relative img-input rounded-circle pic-hover"
                       style="height: 90%; width: 90%; overflow: hidden"
                       role="button"
                       (click)="cImgInput.click()"
                     >
                       <img
-                        class="w-100 h-100 position-absolute"
+                        class="w-full h-full absolute"
                         style="z-index: 50; object-fit: cover"
                         [src]="world.ground.texture.diffuse"
                         id="ground"
                       />
                       <!-- <div
-                              class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                              class="w-full h-full absolute img-input-display bg-orange primary-text"
                               style="z-index: 51; opacity: 0.5"
                             >
                               <mat-icon class="m-auto">upload </mat-icon>
@@ -173,14 +173,14 @@
                 </div>
               </div>
 
-              <div class="wrap-input1 w-100 py-3 px-0">
-                <p class="w-100 mb-3 primary-text fw-bold">Surface Terrain</p>
+              <div class="wrap-input1 w-full py-3 px-0">
+                <p class="w-full mb-3 primary-text font-bold">Surface Terrain</p>
 
                 <div
-                  class="w-100 d-flex justify-content-start align-items-center"
+                  class="w-full flex justify-start items-center"
                 >
                   <div
-                    class="w-auto rounded-circle border-table shadow d-flex justify-content-center align-items-center section-background"
+                    class="w-auto rounded-circle border-table shadow flex justify-center items-center section-background"
                     style="
                       object-fit: contain;
                       aspect-ratio: 1;
@@ -189,19 +189,19 @@
                     "
                   >
                     <div
-                      class="m-auto position-relative img-input rounded-circle pic-hover"
+                      class="m-auto relative img-input rounded-circle pic-hover"
                       style="height: 90%; width: 90%; overflow: hidden"
                       role="button"
                       (click)="xImgInput.click()"
                     >
                       <img
-                        class="w-100 h-100 position-absolute"
+                        class="w-full h-full absolute"
                         style="z-index: 50; object-fit: cover"
                         [src]="world.ground.heightMap"
                         id="map"
                       />
                       <!-- <div
-                              class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                              class="w-full h-full absolute img-input-display bg-orange primary-text"
                               style="z-index: 51; opacity: 0.5"
                             >
                               <mat-icon class="m-auto">upload </mat-icon>
@@ -217,7 +217,7 @@
                 </div>
               </div>
 
-              <div class="w-100 pb-3">
+              <div class="w-full pb-3">
                 <div class="px-1">
                   <verticalai-select-field
                     [title]="'Liquids'"
@@ -248,7 +248,7 @@
                     <ion-label class="h3">Water</ion-label>
                   </ion-item>
                   <div class="ion-padding" slot="content">
-                    <div class="w-100 pb-3">
+                    <div class="w-full pb-3">
                       <div class="px-1">
                         <verticalai-text-field
                           [title]="'Surface Level'"
@@ -275,7 +275,7 @@
                     <ion-label class="h3">Lava</ion-label>
                   </ion-item>
                   <div class="ion-padding" slot="content">
-                    <div class="w-100 pb-3">
+                    <div class="w-full pb-3">
                       <div class="px-1">
                         <verticalai-text-field
                           [title]="'Surface Level'"
@@ -303,15 +303,15 @@
         </ng-template>
         <ng-template matTabContent>
           <div
-            class="h-100 d-flex justify-content-center align-items-center flex-column position-relative"
+            class="h-full flex justify-center items-center flex-col relative"
           >
             <div
-              class="w-100 h-100 p-3 pb-5"
+              class="w-full h-full p-3 pb-5"
               style="overflow-y: scroll"
               *ngIf="world.sky"
             >
-              <div class="w-100 pb-3">
-                <p class="w-100 mb-3 fw-bold primary-text">
+              <div class="w-full pb-3">
+                <p class="w-full mb-3 font-bold primary-text">
                   {{ toggle.checked ? "Visible" : "Hidden" }}
                 </p>
                 <div class="px-1">
@@ -323,7 +323,7 @@
                 </div>
               </div>
 
-              <div class="w-100 pb-3">
+              <div class="w-full pb-3">
                 <div class="px-1">
                   <verticalai-text-field
                     [title]="'Sky Height'"
@@ -337,14 +337,14 @@
                 </div>
               </div>
 
-              <div class="wrap-input1 w-100 py-3 px-0">
-                <p class="w-100 mb-3 primary-text fw-bold">Sky Texture</p>
+              <div class="wrap-input1 w-full py-3 px-0">
+                <p class="w-full mb-3 primary-text font-bold">Sky Texture</p>
 
                 <div
-                  class="w-100 d-flex justify-content-start align-items-center"
+                  class="w-full flex justify-start items-center"
                 >
                   <div
-                    class="w-auto rounded-circle border-table shadow d-flex justify-content-center align-items-center section-background"
+                    class="w-auto rounded-circle border-table shadow flex justify-center items-center section-background"
                     style="
                       object-fit: contain;
                       aspect-ratio: 1;
@@ -353,19 +353,19 @@
                     "
                   >
                     <div
-                      class="m-auto position-relative img-input rounded-circle pic-hover"
+                      class="m-auto relative img-input rounded-circle pic-hover"
                       style="height: 90%; width: 90%; overflow: hidden"
                       role="button"
                       (click)="sImgInput.click()"
                     >
                       <img
-                        class="w-100 h-100 position-absolute"
+                        class="w-full h-full absolute"
                         style="z-index: 50; object-fit: cover"
                         [src]="world.sky.texture.emissive"
                         id="sky"
                       />
                       <!-- <div
-                              class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                              class="w-full h-full absolute img-input-display bg-orange primary-text"
                               style="z-index: 51; opacity: 0.5"
                             >
                               <mat-icon class="m-auto">upload </mat-icon>

@@ -1,30 +1,29 @@
 <div
-  class="w-100 bg-dark"
+  class="w-full bg-dark"
   style="
     height: calc(calc(var(--vh, 1vh) * 100));
   "
 >
   <div
-    class="w-100 h-100 position-relative d-flex flex-column justify-content-center align-items-center"
+    class="w-full h-full relative flex flex-col justify-center items-center"
   >
-  
     <div
-      class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center px-3 py-2 py-md-0"
+      class="absolute w-full h-full flex justify-center items-center px-3 py-2 md:py-0"
     >
       <div
-        class="position-relative w-100 h-100 d-flex justify-content-center align-items-center px-3 py-2 py-md-0"
+        class="relative w-full h-full flex justify-center items-center px-3 py-2 md:py-0"
       >
         <div
-          class="w-100 position-absolute position-md-static d-flex justify-content-center align-content-center px-0 px-md-2"
+          class="w-full sm:absolute md:static flex justify-center content-center px-0 md:px-2"
           style="opacity: 0.5"
         >
           <!-- <div
-            class="rounded-circle mx-0 mx-md-3 layout-container"
+            class="rounded-circle mx-0 md:mx-3 layout-container"
             id="particles-js"
           ></div> -->
         </div>
         <div
-          class="w-100 w-md-auto position-absolute d-flex justify-content-center align-content-center px-3 px-md-2"
+          class="w-full md:w-auto absolute flex justify-center content-center px-3 md:px-2"
           style="z-index: 50"
           *ngIf="show"
         >
@@ -39,24 +38,24 @@
             "
           >
             <div
-              class="big-design-card rounded shadow h-100 w-100 animate__animated animate__fadeIn"
+              class="big-design-card rounded shadow h-full w-full animate__animated animate__fadeIn"
               style="z-index: 50;"
             >
               <ng-container *ngIf="mode == 0">
                 <div
-                  class="w-100 h-100 animate__animated animate__fadeIn"
+                  class="w-full h-full animate__animated animate__fadeIn"
                   style="overflow-y: scroll"
                 >
-                  <div class="w-100 big-design-header">
-                    <h4 class="w-100 text-center text-dark">
+                  <div class="w-full big-design-header">
+                    <h4 class="w-full text-center text-dark">
                       Create an account
                     </h4>
 
                     
                   </div>
 
-                  <div class="w-100 py-4">
-                    <div class="w-100 mb-3">
+                  <div class="w-full py-4">
+                    <div class="w-full mb-3">
                       <verticalai-text-field
                         [title]="'Email'"
                         [value]="signUpForm.controls['email'].value"
@@ -72,7 +71,7 @@
                       </verticalai-text-field>
                     </div>
 
-                    <div class="w-100 mb-3">
+                    <div class="w-full mb-3">
                       <verticalai-text-field
                         [title]="'Password'"
                         [value]="signUpForm.controls['password'].value"
@@ -90,7 +89,7 @@
                       >
                       </verticalai-text-field>
                     </div>
-                    <div class="w-100 mb-3">
+                    <div class="w-full mb-3">
                       <verticalai-text-field
                         [title]="'Confirm Password'"
                         [value]="signUpForm.controls['confirmPass'].value"
@@ -109,9 +108,9 @@
                       </verticalai-text-field>
                     </div>
 
-                    <div class="w-100 py-1 mt-2 px-2" *ngIf="!err">
+                    <div class="w-full py-1 mt-2 px-2" *ngIf="!err">
                       <p
-                        class="w-100 text-center animate__animated animate__fadeIn text-dark  "
+                        class="w-full text-center animate__animated animate__fadeIn text-dark  "
                         style="font-size: small"
                         role="button"
                         (click)="
@@ -119,23 +118,23 @@
                         "
                       >
                         By joining
-                        <b class="fw-bold text-dark">Unfathom</b>, you agree
+                        <b class="font-bold text-dark">Unfathom</b>, you agree
                         to our
                         <b class="text-dark" role="button">Terms of Service</b
                         >.
                       </p>
                     </div>
-                    <div class="w-100 py-1 mt-2 px-2" *ngIf="err">
+                    <div class="w-full py-1 mt-2 px-2" *ngIf="err">
                       <p
-                        class="w-100 text-center text-danger animate__animated animate__fadeIn"
+                        class="w-full text-center text-danger animate__animated animate__fadeIn"
                         style="font-size: small"
                       >
                         {{ err }}
                       </p>
                     </div>
-                    <div class="w-100 py-1 mt-3">
+                    <div class="w-full py-1 mt-3">
                       <button
-                        class="btn bg-orange rounded text-white  px-5 py-3 fw-bold w-100 mt-1"
+                        class="btn bg-orange rounded text-white  px-5 py-3 font-bold w-full mt-1"
                         (click)="continue()"
                         id="continue"
                       >
@@ -149,15 +148,15 @@
                       </button>
                     </div>
 
-                    <div class="w-100 py-1 mt-3 px-2">
+                    <div class="w-full py-1 mt-3 px-2">
                       <p
-                        class="w-100 text-center text-dark  "
+                        class="w-full text-center text-dark  "
                         style="font-size: small"
                         role="button"
                         (click)="mode = 1"
                       >
                         Already have an account?
-                        <b role="button" class="fw-bold text-dark">Sign in</b>.
+                        <b role="button" class="font-bold text-dark">Sign in</b>.
                       </p>
                     </div>
                   </div>
@@ -165,16 +164,16 @@
               </ng-container>
               <ng-container *ngIf="mode == 1">
                 <div
-                  class="w-100 h-100 animate__animated animate__fadeIn"
+                  class="w-full h-full animate__animated animate__fadeIn"
                   style="overflow-y: scroll"
                 >
-                  <div class="w-100 big-design-header">
-                    <h4 class="w-100 text-center text-dark  ">
+                  <div class="w-full big-design-header">
+                    <h4 class="w-full text-center text-dark  ">
                       Sign in to your account
                     </h4>
                   </div>
-                  <div class="w-100 py-4">
-                    <div class="w-100 mb-3">
+                  <div class="w-full py-4">
+                    <div class="w-full mb-3">
                       <verticalai-text-field
                         [title]="'Email'"
                         [value]="signInForm.controls['email'].value"
@@ -189,7 +188,7 @@
                       </verticalai-text-field>
                     </div>
 
-                    <div class="w-100 mb-3">
+                    <div class="w-full mb-3">
                       <verticalai-text-field
                         [title]="'Password'"
                         [value]="signInForm.controls['password'].value"
@@ -207,27 +206,27 @@
                       >
                       </verticalai-text-field>
                     </div>
-                    <div class="w-100 py-1 mt-2 px-2" *ngIf="!err">
-                      <p class="w-100 text-center" style="font-size: small">
+                    <div class="w-full py-1 mt-2 px-2" *ngIf="!err">
+                      <p class="w-full text-center" style="font-size: small">
                         <b
                           role="button"
-                          class="fw-bold text-dark  animate__animated animate__fadeIn"
+                          class="font-bold text-dark  animate__animated animate__fadeIn"
                         >
                           I forgot my password
                         </b>
                       </p>
                     </div>
-                    <div class="w-100 py-1 mt-2 px-2" *ngIf="err">
+                    <div class="w-full py-1 mt-2 px-2" *ngIf="err">
                       <p
-                        class="w-100 text-center text-danger animate__animated animate__fadeIn"
+                        class="w-full text-center text-danger animate__animated animate__fadeIn"
                         style="font-size: small"
                       >
                         {{ err }}
                       </p>
                     </div>
-                    <div class="w-100 py-1 mt-3">
+                    <div class="w-full py-1 mt-3">
                       <button
-                        class="btn bg-orange rounded text-white px-5 py-3 fw-bold w-100 mt-1"
+                        class="btn bg-orange rounded text-white px-5 py-3 font-bold w-full mt-1"
                         (click)="continue()"
                         id="continue"
                       >
@@ -241,15 +240,15 @@
                       </button>
                     </div>
 
-                    <div class="w-100 py-1 mt-3 px-2">
+                    <div class="w-full py-1 mt-3 px-2">
                       <p
-                        class="w-100 text-center text-dark  "
+                        class="w-full text-center text-dark  "
                         style="font-size: small"
                         role="button"
                         (click)="mode = 0"
                       >
                         Don't have an account?
-                        <b role="button" class="fw-bold text-dark">Sign Up</b>.
+                        <b role="button" class="font-bold text-dark">Sign Up</b>.
                       </p>
                     </div>
                   </div>
@@ -261,9 +260,9 @@
       </div>
     </div>
 
-    <div class="rounded-circle icons position-absolute" style="aspect-ratio: 1; height: 80px; bottom: 10px; left: 10px;">
+    <div class="rounded-circle icons absolute" style="aspect-ratio: 1; height: 80px; bottom: 10px; left: 10px;">
       <img
-        class="px-2 h-100 logo"
+        class="px-2 h-full logo"
         style="object-fit: contain"
         [src]="'assets/unfathom_logo.png'"
       />

@@ -1,17 +1,17 @@
 <div
-  class="w-100 h-100 d-flex justify-content-between align-items-center flex-column primary-background p-3 pb-4"
+  class="w-full h-full flex justify-between items-center flex-col primary-background p-3 pb-4"
 >
-  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+  <div class="w-full h-full flex justify-center items-center">
     <div
-      class="primary-background w-100 h-100 m-auto"
+      class="primary-background w-full h-full m-auto"
       style="max-width: 600px"
       *ngIf="workflow"
     >
-      <div class="w-100 h-100" *ngIf="mode == 1 && selectedFile">
-        <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Settings</div>
+      <div class="w-full h-full" *ngIf="mode == 1 && selectedFile">
+        <div class="w-full">
+          <div class="primary-text font-bold mb-3" style="font-size: 15px;">Settings</div>
         </div>
-        <div class="w-100 pb-3">
+        <div class="w-full pb-3">
           <verticalai-text-field
             [title]="'Name'"
             [value]="selectedFile.name"
@@ -31,7 +31,7 @@
             *ngIf="apiKey ?? { id: selectedFile.id, key: '' } as apiKey"
           >
             <div
-              class="w-100 mb-3"
+              class="w-full mb-3"
               *ngIf="
                 selectedFile.properties['type'] == 'model'
                   ? 'Model'
@@ -53,15 +53,15 @@
         </ng-container> -->
       </div>
 
-      <div class="w-100 h-100" *ngIf="mode == 2">
-        <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Project Settings</div>
+      <div class="w-full h-full" *ngIf="mode == 2">
+        <div class="w-full">
+          <div class="primary-text font-bold mb-3" style="font-size: 15px;">Project Settings</div>
 
-          <div class="wrap-input1 w-100 py-3 px-0">
-            <p class="w-100 mb-3 primary-text fw-bold">Project Icon</p>
+          <div class="wrap-input1 w-full py-3 px-0">
+            <p class="w-full mb-3 primary-text font-bold">Project Icon</p>
 
             <div
-              class="w-auto rounded-icon border-table shadow d-flex justify-content-center align-items-center section-background"
+              class="w-auto rounded-icon border-table shadow flex justify-center items-center section-background"
               style="
                 object-fit: contain;
                 aspect-ratio: 1;
@@ -70,19 +70,19 @@
               "
             >
               <div
-                class="m-auto position-relative img-input"
+                class="m-auto relative img-input"
                 style="height: 90%; width: 90%; overflow: hidden"
                 role="button"
                 (click)="appImgInput.click()"
               >
                 <img
-                  class="w-100 h-100 position-absolute"
+                  class="w-full h-full absolute"
                   style="z-index: 50; object-fit: cover"
                   [src]="workflow.displayUrl"
                   id="imgIcon"
                 />
                 <!-- <div
-                  class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                  class="w-full h-full absolute img-input-display bg-orange primary-text"
                   style="z-index: 51; opacity: 0.5"
                 >
                   <mat-icon class="m-auto">upload </mat-icon>
@@ -97,7 +97,7 @@
             </div>
           </div>
 
-          <div class="wrap-input1 w-100 pb-3">
+          <div class="wrap-input1 w-full pb-3">
             <verticalai-text-field
               [title]="'Project Name'"
               [value]="workflow.name"
@@ -110,15 +110,15 @@
         </div>
       </div>
 
-      <div class="w-100 h-100" *ngIf="mode == 4 && dev">
-        <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Settings</div>
+      <div class="w-full h-full" *ngIf="mode == 4 && dev">
+        <div class="w-full">
+          <div class="primary-text font-bold mb-3" style="font-size: 15px;">Settings</div>
 
-          <div class="wrap-input1 w-100 py-3 px-0">
-            <p class="w-100 mb-3 primary-text fw-bold">Profile Image</p>
+          <div class="wrap-input1 w-full py-3 px-0">
+            <p class="w-full mb-3 primary-text font-bold">Profile Image</p>
 
             <div
-              class="w-auto rounded-icon border-table shadow d-flex justify-content-center align-items-center section-background"
+              class="w-auto rounded-icon border-table shadow flex justify-center items-center section-background"
               style="
                 object-fit: contain;
                 aspect-ratio: 1;
@@ -127,19 +127,19 @@
               "
             >
               <div
-                class="m-auto position-relative img-input"
+                class="m-auto relative img-input"
                 style="height: 90%; width: 90%; overflow: hidden"
                 role="button"
                 (click)="appImgInput.click()"
               >
                 <img
-                  class="w-100 h-100 position-absolute"
+                  class="w-full h-full absolute"
                   style="z-index: 50; object-fit: cover"
                   [src]="dev.url"
                   id="imgIcon"
                 />
                 <!-- <div
-                  class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                  class="w-full h-full absolute img-input-display bg-orange primary-text"
                   style="z-index: 51; opacity: 0.5"
                 >
                   <mat-icon class="m-auto">upload </mat-icon>
@@ -154,7 +154,7 @@
             </div>
           </div>
 
-          <div class="wrap-input1 w-100 pb-3">
+          <div class="wrap-input1 w-full pb-3">
             <verticalai-text-field
               [title]="'Name'"
               [value]="dev.name"
@@ -165,7 +165,7 @@
             </verticalai-text-field>
           </div>
 
-          <div class="w-100 pb-3">
+          <div class="w-full pb-3">
             <verticalai-select-field
               [title]="'Workspace Theme'"
               [value]="dev.theme"
@@ -180,13 +180,13 @@
       </div>
 
       <div
-        class="w-100 h-100"
+        class="w-full h-full"
         *ngIf="mode == 3 && newBranch['title'] && selectedFile"
       >
-        <div class="w-100">
-          <div class="primary-text fw-bold mb-3" style="font-size: 15px;">Path Settings</div>
+        <div class="w-full">
+          <div class="primary-text font-bold mb-3" style="font-size: 15px;">Path Settings</div>
 
-          <div class="wrap-input1 w-100 pb-3">
+          <div class="wrap-input1 w-full pb-3">
             <verticalai-text-field
               [title]="'Path Name'"
               [value]="newBranch['title']"
@@ -197,7 +197,7 @@
             </verticalai-text-field>
           </div>
 
-          <div class="wrap-input1 w-100 pb-3">
+          <div class="wrap-input1 w-full pb-3">
             <verticalai-textbox
               [title]="'Description'"
               [value]="newBranch['description']"
@@ -211,7 +211,7 @@
       </div>
 
       <button
-        class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2 mt-4"
+        class="btn bg-orange border-0 rounded font-bold text-white flex justify-center px-3 content-center py-2 mt-4"
         (click)="save()"
       >
         <ng-container *ngIf="loading; else buttonTitles">
@@ -232,18 +232,18 @@
 
       <ng-container *ngIf="mode == 2">
         <div
-          class="w-100 py-2 pt-5 d-flex flex-column justify-content-between align-items-center mt-4"
+          class="w-full py-2 pt-5 flex flex-col justify-between items-center mt-4"
         >
           <i
-            ><span style="font-size: x-small" class="primary-text fw-bold"
+            ><span style="font-size: x-small" class="primary-text font-bold"
               >Danger Zone</span
             ></i
           >
-          <mat-divider class="bg-light my-2 w-100"></mat-divider>
+          <mat-divider class="bg-light my-2 w-full"></mat-divider>
         </div>
 
         <button
-          class="btn bg-transparent shadow-0 text-danger w-100 border-0 rounded fw-bold d-flex justify-content-center px-3 align-content-center py-2 mt-4"
+          class="btn bg-transparent shadow-0 text-danger w-full border-0 rounded font-bold flex justify-center px-3 content-center py-2 mt-4"
           (click)="save('delete')"
         >
           Delete Project

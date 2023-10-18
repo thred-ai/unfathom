@@ -11,10 +11,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Meta, Title } from '@angular/platform-browser';
 import { Developer } from './models/user/developer.model';
-import { Executable } from './models/workflow/executable.model';
 import { Scene } from './models/workflow/scene.model';
 import { SceneLayout } from './models/workflow/scene-layout.model';
-import { DesignerService } from './designer.service';
 import { ThemeService } from './theme.service';
 import { ProjectService } from './project.service';
 import { World } from './models/workflow/world.model';
@@ -52,7 +50,6 @@ export class LoadService {
     private http: HttpClient,
     private metaService: Meta,
     private titleService: Title,
-    private designerService: DesignerService,
     private projectService: ProjectService
   ) {
     this.projectService.saveWorkflow.subscribe(async (workflow) => {
@@ -77,56 +74,6 @@ export class LoadService {
 
   confirmDelete() {
     return confirm('Are you sure you want to delete this component?');
-  }
-
-  openPrototype() {
-    if (this.loadedUser.value) {
-      this.designerService.openPrototype(this.loadedUser.value);
-    }
-  }
-
-  openPrototypeFull(
-    id: string | undefined = this.designerService.openStep?.value?.data
-      ?.ngArguments.scene?.id,
-    workflowId: string | undefined = this.projectService.workflow?.value?.id
-  ) {
-    if (id && workflowId) {
-      window.open(
-        `https://app.unfathom.co/share/${workflowId}/scene/${id}`,
-        '_blank'
-      );
-    }
-  }
-
-  async saveWorld(world: World, id: string) {
-    try {
-      await this.db
-        .doc(`Workflows/${id}/Worlds/${world.id}`)
-        .set(JSON.parse(JSON.stringify(world)), { merge: true });
-
-      // this.projectService.loading.next(false);
-
-      return world;
-    } catch (error) {
-      console.log(error);
-      // this.projectService.loading.next(false);
-
-      return undefined;
-    }
-  }
-
-  getWorld(id: string, worldId: string, callback: (world?: World) => any) {
-    let q = this.db.doc(`Workflows/${id}/Worlds/${worldId}`);
-    q.valueChanges()
-      .pipe(take(1))
-      .subscribe((docs2) => {
-        let docs_2 = this.syncWorld(docs2 as World);
-        if (docs_2) {
-          callback(docs_2);
-        } else {
-          callback(undefined);
-        }
-      });
   }
 
   finishSignUp(
@@ -208,7 +155,6 @@ export class LoadService {
       this.projectService.loading.next(false);
       this.themeService.theme.next('light');
       this.projectService.workflow.next(undefined);
-      this.designerService.initialized = false;
       await this.openAuth('0');
       callback(true);
     } catch (error) {
@@ -233,7 +179,7 @@ export class LoadService {
       );
   }
 
-  async publishSmartUtil(data: Executable) {
+  async publishSmartUtil(data: World) {
     this.projectService.loading.next(true);
 
     try {
@@ -247,7 +193,7 @@ export class LoadService {
 
       uploadData.needsSync = true;
 
-      await this.db.collection(`Workflows`).doc(id).set(uploadData);
+      await this.db.collection(`Worlds`).doc(id).set(uploadData);
       this.projectService.loading.next(false);
 
       return data;
@@ -262,7 +208,7 @@ export class LoadService {
     this.projectService.loading.next(true);
 
     try {
-      let ref = this.storage.ref(`workflows/${id}/icon-${id}.png`);
+      let ref = this.storage.ref(`worlds/${id}/icon-${id}.png`);
       await ref.put(file, { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
 
@@ -280,7 +226,7 @@ export class LoadService {
     this.projectService.loading.next(true);
     try {
       let ref = this.storage.ref(
-        `workflows/${id}/characters/${characterId}/${characterId}.png`
+        `worlds/${id}/characters/${characterId}/${characterId}.png`
       );
       await ref.put(file, { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
@@ -297,7 +243,7 @@ export class LoadService {
     this.projectService.loading.next(true);
     try {
       let ref = this.storage.ref(
-        `workflows/${id}/assets/${assetId}/${assetId}.png`
+        `worlds/${id}/assets/${assetId}/${assetId}.png`
       );
       await ref.putString(file, 'data_url', { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
@@ -314,7 +260,7 @@ export class LoadService {
     this.projectService.loading.next(true);
     try {
       let ref = this.storage.ref(
-        `workflows/${id}/characters/${characterId}/${characterId}.glb`
+        `worlds/${id}/characters/${characterId}/${characterId}.glb`
       );
       await ref.put(file, { cacheControl: 'no-cache' });
       let displayUrl = await ref.getDownloadURL().toPromise();
@@ -327,56 +273,23 @@ export class LoadService {
     return undefined;
   }
 
-  async saveSmartUtil(data: Executable) {
+  async saveSmartUtil(data: World) {
     let id = data.id;
 
     let uid = (await this.currentUser)?.uid;
     this.projectService.loading.next(true);
 
     if (uid) {
-      let scenes = data.sceneLayout.cells;
-
-      await Promise.all(
-        scenes.map(async (scene) => {
-          if (scene.shape == 'scene-node') {
-            await Promise.all(
-              (scene.data.ngArguments.scene as Scene).images.map(
-                async (image, index) => {
-                  let ref = this.storage.ref(
-                    `workflows/${id}/scenes/${scene.id}/img-${index}.png`
-                  );
-                  let im = image.replace(
-                    'data:application/octet-stream;base64,',
-                    ''
-                  );
-                  if (this.isBase64(im)) {
-                    await ref.putString(im, 'base64', {
-                      cacheControl: 'no-cache',
-                    });
-                    let displayUrl = await ref.getDownloadURL().toPromise();
-
-                    scene.data.ngArguments.scene.images[index] = displayUrl;
-                  }
-                }
-              )
-            );
-          }
-        })
-      );
-
+    
       console.log(data);
 
       let uploadData = JSON.parse(JSON.stringify(data));
 
       uploadData.search_name = uploadData.name?.toLowerCase();
 
-      if (uploadData.downloads > 0) {
-        delete uploadData.downloads;
-      }
-
       try {
         await this.db
-          .collection(`Workflows`)
+          .collection(`Worlds`)
           .doc(id)
           .set(uploadData, { merge: true });
 
@@ -397,80 +310,6 @@ export class LoadService {
   }
 
   lastSync: number = 0;
-
-  async saveLayout(data: Executable, clientId: string) {
-    let id = data.id;
-
-    let date = new Date().getTime();
-
-    if (date - this.lastSync > 0) {
-      this.lastSync = date;
-      let uid = (await this.currentUser)?.uid;
-      this.projectService.loading.next(true);
-
-      if (uid) {
-        let scenes = data.sceneLayout.cells;
-
-        await Promise.all(
-          scenes.map(async (scene) => {
-            if (scene.shape == 'scene-node') {
-              await Promise.all(
-                (scene.data.ngArguments.scene as Scene).images.map(
-                  async (image, index) => {
-                    let ref = this.storage.ref(
-                      `workflows/${id}/scenes/${scene.id}/img-${index}.png`
-                    );
-                    let im = image.replace(
-                      'data:application/octet-stream;base64,',
-                      ''
-                    );
-                    if (this.isBase64(im)) {
-                      await ref.putString(im, 'base64', {
-                        cacheControl: 'no-cache',
-                      });
-                      let displayUrl = await ref.getDownloadURL().toPromise();
-
-                      scene.data.ngArguments.scene.images[index] = displayUrl;
-                    }
-                  }
-                )
-              );
-            }
-          })
-        );
-
-        console.log(data);
-
-        let uploadData = JSON.parse(
-          JSON.stringify({
-            modified: date,
-            layout: data.sceneLayout,
-            uid: uid,
-            clientId,
-          })
-        );
-
-        try {
-          await this.db
-            .collection(`Workflows/${id}/Layouts`)
-            .doc()
-            .set(uploadData, { merge: true });
-
-          this.projectService.loading.next(false);
-
-          return data.sceneLayout;
-        } catch (error) {
-          console.log(error);
-          this.projectService.loading.next(false);
-
-          return undefined;
-        }
-      } else {
-        this.projectService.loading.next(false);
-      }
-    }
-    return undefined;
-  }
 
   async saveUserInfo(
     data: Developer,
@@ -560,93 +399,16 @@ export class LoadService {
 
   filteredSearch: BehaviorSubject<any> = new BehaviorSubject([]);
 
-  search(term: string) {
+  getWorlds(ids: string[], callback: (result?: World[]) => any) {
     let sub2 = this.db
-      .collectionGroup(`workflows`, (ref) =>
-        ref
-          .where('search_name', '>=', term)
-          .where('search_name', '<=', term + '\uf8ff')
-          .limit(3)
-      )
-      .valueChanges()
-      .subscribe((docs2) => {
-        sub2.unsubscribe();
-        let returnVal: any[] = [];
-
-        (docs2 as Executable[])?.forEach((d: Executable) => {
-          returnVal.push({
-            name: d.name,
-            type: 1,
-            img: d.displayUrl,
-            id: d.id,
-          });
-        });
-
-        let sub3 = this.db
-          .collectionGroup(`Users`, (ref) =>
-            ref
-              .where('search_name', '>=', term)
-              .where('search_name', '<=', term + '\uf8ff')
-              .limit(3)
-          )
-          .valueChanges()
-          .subscribe((docs3) => {
-            sub3.unsubscribe();
-            (docs3 as any[])?.forEach((d: any) => {
-              returnVal.push({
-                name: d.name,
-                type: 0,
-                img: d.url,
-                id: d.uid,
-              });
-            });
-            this.filteredSearch.next(returnVal);
-          });
-      });
-  }
-
-  getWorkflow(
-    id: string,
-    callback: (result?: Executable) => any,
-    getProfiles = false
-  ) {
-    let sub2 = this.db
-      .collection(`Workflows`, (ref) => ref.where('id', '==', id))
-      .valueChanges()
-      .subscribe((docs2) => {
-        let docs_2 = docs2 as any[];
-
-        let d = docs_2[0];
-
-        if (d) {
-          let util = this.syncWorkflow(d);
-
-          if (getProfiles) {
-            this.getUserInfo(d.creatorId, false, false, (result) => {
-              if (result) {
-                util.creatorName = result.name;
-              }
-              callback(util);
-            });
-          } else {
-            callback(util);
-          }
-        } else {
-          callback(undefined);
-        }
-      });
-  }
-
-  getWorkflows(ids: string[], callback: (result?: Executable[]) => any) {
-    let sub2 = this.db
-      .collection(`Workflows`, (ref) => ref.where('id', 'in', ids))
+      .collection(`Worlds`, (ref) => ref.where('id', 'in', ids))
       .get()
       .toPromise()
       .then((docs3) => {
         if (docs3) {
           let docs = docs3.docs.map((d) => d.data());
 
-          let result: Executable[] = [];
+          let result: World[] = [];
 
           // docs.forEach((d) => {
           //   let util = this.syncWorkflow(d);
@@ -693,64 +455,14 @@ export class LoadService {
   //   }
   // }
 
-  getNewWorkflows(callback: (result: Executable[]) => any) {
-    this.db
-      .collectionGroup('Workflows', (ref) =>
-        ref.where('status', '==', 0).orderBy('created', 'desc')
-      )
-      .valueChanges()
-      .subscribe((docs) => {
-        let docs_2 = (docs as any[]) ?? [];
-        callback(docs_2);
-      });
-  }
-
-  getPopularWorkflows(callback: (result: Executable[]) => any) {
-    this.db
-      .collectionGroup('Workflows', (ref) =>
-        ref.where('status', '==', 0).orderBy('views', 'desc')
-      )
-      .valueChanges()
-      .subscribe((docs) => {
-        let docs_2 = (docs as any[]) ?? [];
-        callback(docs_2);
-      });
-  }
-
   get newUtilID() {
     return this.db.createId();
   }
 
-  getFeaturedWorkflow(callback: (result?: Executable) => any) {
-    let sub2 = this.db
-      .collectionGroup(`Engage`)
-      .valueChanges()
-      .subscribe((docs2) => {
-        sub2.unsubscribe();
-
-        let docs_2 = docs2 as any[];
-
-        let d = docs_2[0];
-
-        if (d) {
-          let featured = d['Featured'] as string;
-          this.getWorkflow(
-            featured,
-            (result) => {
-              callback(result);
-            },
-            true
-          );
-        } else {
-          callback(undefined);
-        }
-      });
-  }
-
   getUserInfo(
     uid: string,
-    fetchworkflows = true,
-    fetchOnlyAvailableworkflows = true,
+    fetchworlds = true,
+    fetchOnlyAvailableworlds = true,
     callback: (result?: Developer) => any
   ): void {
     var query = this.db.collection('Users', (ref) =>
@@ -777,14 +489,14 @@ export class LoadService {
 
         // this.checkLoadedUser(developer);
 
-        if (fetchworkflows) {
-          let q = this.db.collection(`Workflows`);
+        if (fetchworlds) {
+          let q = this.db.collection(`Worlds`);
 
-          if (fetchOnlyAvailableworkflows) {
-            q = this.db.collection(`Workflows`, (ref) =>
+          if (fetchOnlyAvailableworlds) {
+            q = this.db.collection(`Worlds`, (ref) =>
               ref
                 .where('status', '==', 0)
-                .where('creatorId', '==', uid)
+                .where('uid', '==', uid)
                 .orderBy('created', 'asc')
             );
           }
@@ -793,7 +505,7 @@ export class LoadService {
             if (this.loadedUser.value) {
               developer = this.loadedUser.value;
             }
-            let docs_2 = (docs2 as Executable[]).map((workflow) => {
+            let docs_2 = (docs2 as World[]).map((workflow) => {
               // workflow.layout = this.sampleFlow
               return this.syncWorkflow(workflow);
             });
@@ -817,45 +529,10 @@ export class LoadService {
 
   projectSub?: Subscription;
 
-  getLayout(
-    id: string,
-    clientId: string,
-    callback: (layout?: SceneLayout) => any
-  ) {
-    this.projectSub?.unsubscribe();
-    let q = this.db.collection(`Workflows/${id}/Layouts`, (ref) =>
-      ref.orderBy('modified', 'desc').limit(1)
-    );
-    this.projectSub = q.valueChanges().subscribe((docs2) => {
-      let docs_2 = (
-        docs2 as {
-          modified: number;
-          layout: SceneLayout;
-          uid: string;
-          clientId: string;
-        }[]
-      )[0];
-      if (docs_2 && docs_2.layout) {
-        if (docs_2.clientId != clientId) {
-          docs_2.layout.cells.forEach((cell) => {
-            if (cell.data?.ngArguments?.scene) {
-              cell.data.ngArguments.scene = this.syncScene(
-                cell.data.ngArguments.scene
-              );
-            }
-          });
-          callback(docs_2.layout);
-        }
-      } else {
-        callback(undefined);
-      }
-    });
-  }
-
   async updateBlockImage(id: string, imgId: string, file?: File) {
     if (file) {
       try {
-        let ref = this.storage.ref(`workflows/${id}/img-${imgId}.png`);
+        let ref = this.storage.ref(`worlds/${id}/img-${imgId}.png`);
 
         await ref.put(file, { cacheControl: 'no-cache' });
         let displayUrl = await ref.getDownloadURL().toPromise();
@@ -866,7 +543,7 @@ export class LoadService {
       }
     } else {
       try {
-        // let ref = this.storage.ref(`workflows/${id}/img-${imgId}.png`);
+        // let ref = this.storage.ref(`worlds/${id}/img-${imgId}.png`);
 
         // await ref.delete().toPromise();
         return undefined;
@@ -881,7 +558,7 @@ export class LoadService {
 
     if (file) {
       try {
-        let ref = this.storage.ref(`workflows/${id}/app-${imgId}.png`);
+        let ref = this.storage.ref(`worlds/${id}/app-${imgId}.png`);
 
         await ref.put(file, { cacheControl: 'no-cache' });
         let displayUrl = await ref.getDownloadURL().toPromise();
@@ -897,10 +574,10 @@ export class LoadService {
     return undefined;
   }
 
-  async getExecutable(id: string) {
-    let url = await new Promise<Executable | undefined>((resolve, reject) => {
+  async getWorld(id: string) {
+    let url = await new Promise<World | undefined>((resolve, reject) => {
       this.functions
-        .httpsCallable('getExecutable')({ id })
+        .httpsCallable('getWorld')({ id })
         .pipe(first())
         .subscribe(
           async (resp) => {
@@ -938,11 +615,11 @@ export class LoadService {
     return world;
   }
 
-  async saveCode(id: string, uid: string, codeId: string, file: Executable) {
+  async saveCode(id: string, uid: string, codeId: string, file: World) {
     this.projectService.loading.next(true);
 
     // await this.db
-    //   .collection(`Users/${uid}/workflows/${id}/source`)
+    //   .collection(`Users/${uid}/worlds/${id}/source`)
     //   .doc(codeId)
     //   .set(file.agents[codeId]);
 
@@ -950,17 +627,17 @@ export class LoadService {
   }
 
   async getCode(
-    app: Executable,
+    app: World,
     uid: string,
-    callback: (file: Executable) => any
+    callback: (file: World) => any
   ) {
     this.projectService.loading.next(true);
 
     // this.db
-    //   .collection(`Users/${uid}/workflows/${app.id}/source`)
+    //   .collection(`Users/${uid}/worlds/${app.id}/source`)
     //   .valueChanges()
     //   .subscribe((docs) => {
-    //     var exec = new Executable(app.name, app.id);
+    //     var exec = new World(app.name, app.id);
 
     //     docs.forEach((d) => {
     //       const docData = d as Agent;
@@ -974,14 +651,14 @@ export class LoadService {
     this.projectService.loading.next(false);
   }
 
-  async uploadExecutable(id: string, file: Executable) {
+  async uploadWorld(id: string, file: World) {
     this.projectService.loading.next(true);
 
     var uploadData = JSON.parse(JSON.stringify(file));
 
     let url = await new Promise<string | undefined>((resolve, reject) => {
       this.functions
-        .httpsCallable('uploadExecutable')({ id, uploadData })
+        .httpsCallable('uploadWorld')({ id, uploadData })
         .pipe(first())
         .subscribe(
           async (resp) => {
@@ -1170,7 +847,7 @@ export class LoadService {
 
   async changeLayout(
     layout: any,
-    workflow: Executable,
+    workflow: World,
     step = 1,
     callback: (layout: any) => any
   ) {
@@ -1208,7 +885,7 @@ export class LoadService {
 
   async addLayout(
     layout: any,
-    workflow: Executable,
+    workflow: World,
     callback: (layout: any) => any
   ) {
     try {
@@ -1293,61 +970,26 @@ export class LoadService {
   }
 
   syncWorkflow(workflow: any) {
-    return new Executable(
+    return new World(
+      workflow.uid,
       workflow.id,
-      workflow.creatorId,
-      workflow.created,
-      workflow.modified,
-      workflow.creatorName,
-      workflow.displayUrl,
       workflow.name,
-      workflow.rating,
-      workflow.downloads,
-      workflow.status,
-      workflow.installWebhook,
-      workflow.whitelist,
-      workflow.sceneLayout,
+      workflow.width,
+      workflow.height,
       workflow.characters,
       workflow.assets,
-      workflow.textures,
-      workflow.tracking,
-      workflow.url,
-      workflow.apiKey,
-      workflow.plan,
-      workflow.executableUrl
+      workflow.lightingIntensity,
+      workflow.created,
+      workflow.modified,
+      workflow.sky,
+      workflow.ground,
+      workflow.status,
     );
   }
 
-  syncScene(scene: any) {
-    return new Scene(
-      scene.id,
-      scene.name,
-      scene.description,
-      scene.images,
-      scene.notes,
-      scene.type,
-      scene.characters,
-      scene.assets,
-      this.syncWorld(scene.world)
-    );
-  }
 
-  syncWorld(world: any) {
-    if (world) {
-      return new World(
-        world.id,
-        world.size,
-        world.lightingIntensity,
-        world.sky,
-        world.ground
-      );
-    } else {
-      return undefined;
-    }
-  }
-
-  getPrototype(workflowId: string, callback: (exec: Executable) => any) {
-    let q = this.db.collection(`Workflows`).doc(workflowId);
+  getPrototype(workflowId: string, callback: (exec: World) => any) {
+    let q = this.db.collection(`Worlds`).doc(workflowId);
 
     console.log(workflowId);
     q.valueChanges().subscribe((docs2) => {

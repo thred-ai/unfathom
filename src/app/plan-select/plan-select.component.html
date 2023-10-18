@@ -1,14 +1,14 @@
 <div
-  class="w-100 h-100 d-flex justify-content-between flex-column align-content-center secondary-background "
+  class="w-full h-full flex justify-between flex-col content-center secondary-background "
   style="overflow: hidden"
 >
   <div
-    class="px-2 w-100 d-flex justify-content-between align-items-center secondary-background  border-bottom"
+    class="px-2 w-full flex justify-between items-center secondary-background  border-bottom"
     style="height: 70px"
   >
-    <div class="d-flex justify-content-center align-items-center my-auto">
+    <div class="flex justify-center items-center my-auto">
       <p
-        class="btn bg-transparent rounded-pill fw-bold primary-text  border-0 d-flex justify-content-between align-content-center px-2 py-2 my-auto"
+        class="btn bg-transparent rounded-pill font-bold primary-text  border-0 flex justify-between content-center px-2 py-2 my-auto"
         (click)="close()"
       >
         <mat-icon class="me-0" style="aspect-ratio: 1"> close </mat-icon>
@@ -17,7 +17,7 @@
   </div>
 
   <div
-    class="w-100 h-100 d-flex flex-column justify-content-start align-items-center p-2"
+    class="w-full h-full flex flex-col justify-start items-center p-2"
     style="overflow-y: scroll"
   >
     <ng-container *ngIf="needsBilling; else hasBilling">
@@ -30,13 +30,13 @@
     </ng-container>
     <ng-template #hasBilling>
       <div
-        class="d-flex justify-content-center align-items-center flex-column px-2"
+        class="flex justify-center items-center flex-col px-2"
         style="width: 100%; max-width: 800px"
         *ngIf="activePlan != undefined && plans != {}"
       >
-        <p class="w-100 my-3 primary-text  fw-bold">Choose a Plan</p>
+        <p class="w-full my-3 primary-text  font-bold">Choose a Plan</p>
 
-        <mat-accordion class="example-headers-align w-100" multi>
+        <mat-accordion class="example-headers-align w-full" multi>
           <mat-expansion-panel
             [hideToggle]="true"
             [expanded]="
@@ -49,7 +49,7 @@
             class="px-0 bg-theme"
           >
             <mat-expansion-panel-header>
-              <mat-panel-title class="fw-bold w-100 text-start text-truncate">
+              <mat-panel-title class="font-bold w-full text-start text-truncate">
                 <app-status [plan]="plan.value"> </app-status>
 
                 <mat-icon class="secondary-text">expand_more</mat-icon>
@@ -59,7 +59,7 @@
             <div class="primary-text  ">Invocations: {{ plan.value.requests }}</div>
             <br />
             <div
-              class="d-block d-md-flex justify-content-between align-content-center"
+              class="block d-mflex justify-between content-center"
             >
               <div
                 class="secondary-text text-start text-truncate my-auto"
@@ -69,7 +69,7 @@
                 {{ plan.value.overageUnit }} additional invocations/mo.
               </div>
               <button
-                class="ms-md-2 mt-3 mt-md-0 d-flex justify-content-center align-items-center btn border-0 bg-orange rounded fw-bold primary-text  px-3 py-2 my-auto"
+                class="md:ms-2 mt-3 md:mt-0 flex justify-center items-center btn border-0 bg-orange rounded font-bold primary-text  px-3 py-2 my-auto"
                 style="font-size: small"
                 (click)="
                   loadingIndex == i || activePlan == plan.value.id
@@ -92,7 +92,7 @@
                 ></span>
                 <ng-container *ngIf="activePlan == plan.value.id && loadingIndex != i">
                   <div
-                    class="ms-2 my-auto d-flex justify-content-center align-items-center"
+                    class="ms-2 my-auto flex justify-center items-center"
                     style="aspect-ratio: 1"
                   >
                     <mat-icon class="primary-text  m-auto" inline

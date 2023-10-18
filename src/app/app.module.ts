@@ -88,11 +88,9 @@ import { CastPipe } from './cast.pipe';
 import { LayoutSliderComponent } from './layout-slider/layout-slider.component';
 import { WorkflowStatusPipe } from './workflow-status.pipe';
 import { IonicModule } from '@ionic/angular';
-import { WorkflowDesignerComponent } from './workflow-designer/workflow-designer.component';
 import { SelectFieldComponent } from './select-field/select-field.component';
 import { TextFieldComponent } from './text-field/text-field.component';
 import { DictToArrPipe } from './dict-to-arr.pipe';
-import { WorkflowComponent } from './workflow/workflow.component';
 import { SafeImgUrlPipe } from './safe-img-url.pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { TextboxComponent } from './textbox/textbox.component';
@@ -103,35 +101,22 @@ import { ApiUrlPipe } from './api-url.pipe';
 // import { CodeEditorModule } from '@ngstack/code-editor';
 import { RawEditFilterPipe } from './raw-edit-filter.pipe';
 // import { CodeEditorComponent } from './code-editor/code-editor.component';
-import { WorkflowInfoComponent } from './workflow-info/workflow-info.component';
 import { PlanSelectComponent } from './plan-select/plan-select.component';
 import { NgxStripeModule } from 'ngx-stripe';
 import { BillingComponent } from './billing/billing.component';
 import { MatCardModule } from '@angular/material/card';
-import { ApiTesterComponent } from './api-tester/api-tester.component';
-import { WorkflowCodeComponent } from './workflow-code/workflow-code.component';
 import { AngularSplitModule } from 'angular-split';
 import { TrimPipe } from './trim.pipe';
-import { TaskIconPipe } from './task-icon.pipe';
 import { GlobalEditorInitDirective } from './global-editor-init.directive';
-import { TerminalComponent } from './terminal/terminal.component';
-import { FileSidebarComponent } from './file-sidebar/file-sidebar.component';
-import { CodePaneComponent } from './code-pane/code-pane.component';
-import { IconSidebarComponent } from './icon-sidebar/icon-sidebar.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import { FilenameFormatPipe } from './filename-format.pipe';
-import { StorageComponent } from './storage/storage.component';
 import { NgClickOutsideDirective } from 'ng-click-outside2';
 import { TooltipComponent } from './tooltip/tooltip.component';
-import { ComingSoonComponent } from './coming-soon/coming-soon.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TextAreaRenderPipe } from './text-area-render.pipe';
 import { MatDividerModule } from '@angular/material/divider';
 import { ResizableModule } from 'angular-resizable-element';
-import { SceneComponent } from './scene/scene.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { NodeComponent } from './node/node.component';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { WorldDesignerComponent } from './world-designer/world-designer.component';
 import { CharacterModuleComponent } from './character-module/character-module.component';
@@ -141,20 +126,18 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { AssetModuleComponent } from './asset-module/asset-module.component';
 import { AssetsModuleComponent } from './assets-module/assets-module.component';
 import { CharacterEditModuleComponent } from './character-edit-module/character-edit-module.component';
-import { ExtendedMenuComponent } from './extended-menu/extended-menu.component';
-import { WorldEditComponent } from './world-edit/world-edit.component';
-import { SkyEditComponent } from './sky-edit/sky-edit.component';
-import { GroundEditComponent } from './ground-edit/ground-edit.component';
 import { WorldModuleComponent } from './world-module/world-module.component';
-import { TextureUploadComponent } from './texture-upload/texture-upload.component';
-import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
-import { ImageModuleComponent } from './image-module/image-module.component';
 import { CharacterViewModuleComponent } from './character-view-module/character-view-module.component';
 import { AssetViewModuleComponent } from './asset-view-module/asset-view-module.component';
-import { ImagesModuleComponent } from './images-module/images-module.component';
 import { ShareComponent } from './share/share.component';
 import { PrototypeModuleComponent } from './prototype-module/prototype-module.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { DesignerComponent } from './designer/designer.component';
+import { WorldViewerComponent } from './world-viewer/world-viewer.component';
+import { NgIconsModule } from '@ng-icons/core';
+import { heroUsers, heroShare, heroArrowUpTray } from '@ng-icons/heroicons/outline';
+import { featherAirplay } from '@ng-icons/feather-icons';
+import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -175,11 +158,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MergeObjPipe,
     LayoutSliderComponent,
     WorkflowStatusPipe,
-    WorkflowDesignerComponent,
     SelectFieldComponent,
     TextFieldComponent,
     DictToArrPipe,
-    WorkflowComponent,
     SafeImgUrlPipe,
     LoaderComponent,
     TextboxComponent,
@@ -188,26 +169,13 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     ApiUrlPipe,
     RawEditFilterPipe,
     // CodeEditorComponent,
-    WorkflowInfoComponent,
     PlanSelectComponent,
     BillingComponent,
-    ApiTesterComponent,
-    WorkflowCodeComponent,
     TrimPipe,
-    TaskIconPipe,
     GlobalEditorInitDirective,
-    TerminalComponent,
-    FileSidebarComponent,
-    CodePaneComponent,
-    IconSidebarComponent,
-    FilenameFormatPipe,
-    StorageComponent,
     TooltipComponent,
-    ComingSoonComponent,
     SettingsComponent,
     TextAreaRenderPipe,
-    SceneComponent,
-    NodeComponent,
     WorldDesignerComponent,
     CharacterModuleComponent,
     ModelViewerComponent,
@@ -216,24 +184,20 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     AssetModuleComponent,
     AssetsModuleComponent,
     CharacterEditModuleComponent,
-    ExtendedMenuComponent,
-    WorldEditComponent,
-    SkyEditComponent,
-    GroundEditComponent,
     WorldModuleComponent,
-    TextureUploadComponent,
-    MenuSidebarComponent,
-    ImageModuleComponent,
     CharacterViewModuleComponent,
     AssetViewModuleComponent,
-    ImagesModuleComponent,
     ShareComponent,
     PrototypeModuleComponent,
+    DesignerComponent,
+    WorldViewerComponent,
+    MenuSidebarComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    NgIconsModule.withIcons({ featherAirplay, heroUsers, heroShare, heroArrowUpTray }),
     AppRoutingModule,
     MatTooltipModule,
     BrowserAnimationsModule,

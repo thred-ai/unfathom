@@ -1,14 +1,14 @@
 <div
-  class="w-100 h-100 d-flex justify-content-between flex-column align-content-center bg-theme"
+  class="w-full h-full flex justify-between flex-col content-center bg-theme"
   style="overflow: hidden"
 >
   <div
-    class="px-2 w-100 d-flex justify-content-between align-items-center primary-background border-bottom"
+    class="px-2 w-full flex justify-between items-center primary-background border-bottom"
     style="height: 70px"
   >
-    <div class="d-flex justify-content-center align-items-center my-auto">
+    <div class="flex justify-center items-center my-auto">
       <p
-        class="btn bg-transparent rounded-pill fw-bold primary-text  border-0 d-flex justify-content-between align-content-center px-2 py-2 my-auto"
+        class="btn bg-transparent rounded-pill font-bold primary-text  border-0 flex justify-between content-center px-2 py-2 my-auto"
         (click)="close()"
       >
         <mat-icon class="me-0" style="aspect-ratio: 1"> close </mat-icon>
@@ -17,7 +17,7 @@
   </div>
 
   <div
-    class="w-100 h-100 d-flex flex-column justify-content-start align-items-center p-2 secondary-background "
+    class="w-full h-full flex flex-col justify-start items-center p-2 secondary-background "
     style="overflow-y: scroll"
   >
     <app-billing

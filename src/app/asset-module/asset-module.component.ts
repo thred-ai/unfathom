@@ -9,8 +9,6 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Dict, LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
-import { DesignerService } from '../designer.service';
 import { Scene } from '../models/workflow/scene.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
@@ -22,7 +20,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./asset-module.component.scss'],
 })
 export class AssetModuleComponent implements OnInit {
-  workflow?: Executable;
+  workflow?: any;
   asset?: ModelAsset;
   assetDetails?: Dict<any>;
   scene?: Scene;
@@ -36,7 +34,6 @@ export class AssetModuleComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private loadService: LoadService,
-    private designerService: DesignerService
   ) {}
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
@@ -70,23 +67,23 @@ export class AssetModuleComponent implements OnInit {
     field: string,
     subField?: string
   ) {
-    let cell = this.designerService.graph?.getCellById(id);
+    // let cell = this.designerService.graph?.getCellById(id);
 
-    if (cell && this.scene) {
-      var finalField = this.scene.assets.find((c) => c.id == assetId) as any;
+    // if (cell && this.scene) {
+    //   var finalField = this.scene.assets.find((c) => c.id == assetId) as any;
 
-      if (subField) {
-        finalField[field][subField] = value;
-      } else {
-        finalField[field] = value;
-      }
+    //   if (subField) {
+    //     finalField[field][subField] = value;
+    //   } else {
+    //     finalField[field] = value;
+    //   }
 
-      cell.setData({
-        ngArguments: {
-          scene: this.scene,
-        },
-      });
-    }
+    //   cell.setData({
+    //     ngArguments: {
+    //       scene: this.scene,
+    //     },
+    //   });
+    // }
   }
 
   movementTypes = [

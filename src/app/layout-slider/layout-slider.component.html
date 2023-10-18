@@ -1,11 +1,11 @@
-<div class="w-100 px-0 m-0" *ngIf="simplify; else full">
+<div class="w-full px-0 m-0" *ngIf="simplify; else full">
   <ng-container *ngTemplateOutlet="input"></ng-container>
 </div>
 
 <ng-template #full>
-  <div class="wrap-input1 w-100 pt-3 m-0">
-    <p class="w-100 mb-0 fw-bold" [style.color]="textColor">{{ title }}: {{value / step}}</p>
-    <div class="px-0 w-100 mb-0 py-0">
+  <div class="wrap-input1 w-full pt-3 m-0">
+    <p class="w-full mb-0 font-bold" [style.color]="textColor">{{ title }}: {{value / step}}</p>
+    <div class="px-0 w-full mb-0 py-0">
       <ng-container *ngTemplateOutlet="input"></ng-container>
     </div>
   </div>
@@ -13,7 +13,7 @@
 
 <ng-template #input>
   <ion-range
-    class="w-100"
+    class="w-full"
     [style.--pin-background]="knobColor"
     [style.--pin-color]="knobTextColor"
     [style.--knob-background]="knobColor"

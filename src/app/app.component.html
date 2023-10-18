@@ -1,20 +1,20 @@
 <ng-container *ngIf="'light' as mode">
   <!-- <div
-    class="w-100 border-table-bottom secondary-background "
+    class="w-full border-table-bottom secondary-background "
     style="height: 70px; position: fixed; z-index: 50; top: 0"
     id="top-bar"
     *ngIf="!(location.path() | isRoute : ['dashboard'])"
   >
     <div
-      class="w-100 h-100 justify-content-between align-items-center d-flex"
+      class="w-full h-full justify-between items-center flex"
       *ngIf="display"
     >
       <div
-        class="d-flex justify-content-center justify-content-md-start align-items-center h-100 w-100 w-md-auto"
+        class="flex justify-center justify-md-start items-center h-full w-full w-md-auto"
       >
-        <div class="my-1 mx-0 mx-md-4 h-100 py-1">
+        <div class="my-1 mx-0 md:mx-4 h-full py-1">
           <img
-            class="h-100 w-auto p-2 p-md-3"
+            class="h-full w-auto p-2 md:p-3"
             [src]="'assets/vertical_ai_logo_' + mode + '.svg'"
             style="object-fit: contain"
             role="button"
@@ -22,7 +22,7 @@
           />
         </div>
         <div
-          class="h-100 d-none d-md-flex justify-content-start align-items-center"
+          class="h-full d-none d-mflex justify-start items-center"
         >
           <span
             class="text-{{ mode }} mx-4"
@@ -41,17 +41,17 @@
         </div>
       </div>
       <div
-        class="d-flex justify-content-end align-items-center h-100 me-3 mx-md-4"
+        class="flex justify-end items-center h-full me-3 md:mx-4"
       >
         <div
-          class="w-100 h-100 d-none d-md-flex justify-content-end align-items-center"
+          class="w-full h-full d-none d-mflex justify-end items-center"
         >
           <div
-            class="d-flex justify-content-end align-items-center"
+            class="flex justify-end items-center"
             style="height: 40px"
           >
             <div
-              class="d-flex justify-content-between align-items-center h-100"
+              class="flex justify-between items-center h-full"
               role="button"
               [mdbPopover]="template"
               placement="bottom"
@@ -60,7 +60,7 @@
               #profileToggle
               *ngIf="isBrowser() && (location.path() | isRoute : ['dashboard'])"
             >
-              <span class="fw-bold mx-2 text-{{ mode }} px-2 d-none d-md-block">
+              <span class="font-bold mx-2 text-{{ mode }} px-2 d-none d-mblock">
                 {{
                   localStorage && localStorage["name"]
                     ? localStorage["name"]
@@ -68,7 +68,7 @@
                 }}
               </span>
               <div
-                class="rounded-circle h-100 icons bg-pink"
+                class="rounded-circle h-full icons bg-pink"
                 style="
                   border-style: solid;
                   border-width: 0.2rem;
@@ -81,7 +81,7 @@
                     localStorage!['url'] != null &&
                     localStorage!['url'] != undefined
                   "
-                  class="h-100 p-0 m-auto rounded-circle"
+                  class="h-full p-0 m-auto rounded-circle"
                   style="object-fit: contain; aspect-ratio: 1"
                   [src]="localStorage!['url']"
                 />
@@ -94,7 +94,7 @@
                   >
                     <div class="big-design-header" style="height: 40px">
                       <mat-icon
-                        class="fw-bold primary-text  "
+                        class="font-bold primary-text  "
                         role="button"
                         (click)="profileToggle.click()"
                       >
@@ -116,13 +116,13 @@
                           localStorage!['url'] != null &&
                           localStorage!['url'] != undefined
                         "
-                        class="h-100 p-0 m-auto rounded-circle"
+                        class="h-full p-0 m-auto rounded-circle"
                         style="object-fit: contain; aspect-ratio: 1"
                         [src]="localStorage!['url']"
                       />
                     </div>
                     <span
-                      class="fw-bolder text-{{ mode }} px-2 d-none d-md-block"
+                      class="font-bolder text-{{ mode }} px-2 d-none d-mblock"
                       style="font-size: medium"
                     >
                       {{
@@ -132,7 +132,7 @@
                       }}
                     </span>
                     <b
-                      class="fw-bold mb-4 primary-text  text-center"
+                      class="font-bold mb-4 primary-text  text-center"
                       style="font-size: small"
                       >{{
                         localStorage!["email"] != null
@@ -141,10 +141,10 @@
                       }}</b
                     >
                     <br />
-                    <div class="w-100 text-start mt-3">
+                    <div class="w-full text-start mt-3">
                       <a
                         role="button"
-                        class="w-100 btn primary-text  secondary-background px-1 py-2 fw-bold rounded"
+                        class="w-full btn primary-text  secondary-background px-1 py-2 font-bold rounded"
                         style="font-size: small"
                         (click)="editProfile()"
                         *ngIf="localStorage!['email'] != null"
@@ -153,7 +153,7 @@
                       </a>
                       <a
                         role="button"
-                        class="w-100 btn primary-background primary-text  px-1 py-2 mt-2 fw-bold rounded"
+                        class="w-full btn primary-background primary-text  px-1 py-2 mt-2 font-bold rounded"
                         style="font-size: small"
                         (click)="signOut()"
                         *ngIf="localStorage!['email'] != null"
@@ -171,7 +171,7 @@
     </div>
   </div> -->
   <div
-    class="w-100 bar-{{ mode }} layout-container-grow-{{
+    class="w-full bar-{{ mode }} layout-container-grow-{{
       (location.path() | isRoute : ['dashboard']) ? 'full' : ''
     }}"
   >

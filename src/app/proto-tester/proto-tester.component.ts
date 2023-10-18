@@ -2,11 +2,9 @@ import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
-import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
 import { World } from '../models/workflow/world.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
-import { DesignerService } from '../designer.service';
 import { ThemeService } from '../theme.service';
 import * as interact from 'interactjs';
 import { PrototypeService } from '../prototype.service';
@@ -19,8 +17,6 @@ import { PrototypeService } from '../prototype.service';
 })
 export class ProtoTesterComponent implements OnInit {
   world?: World;
-  scene?: Scene;
-  project?: Executable;
   theme?: 'light' | 'dark' = 'light';
 
   mountableAssets: string[] = [];
@@ -36,7 +32,6 @@ export class ProtoTesterComponent implements OnInit {
     public dialogRef: MatDialogRef<ProtoTesterComponent>,
     private cdr: ChangeDetectorRef,
     private projectService: ProjectService,
-    private designService: DesignerService,
     private themeService: ThemeService,
     private prototypeService: PrototypeService
   ) {}
@@ -52,12 +47,11 @@ export class ProtoTesterComponent implements OnInit {
   }
 
   openPrototypeFull(
-    id: string | undefined = this.scene?.id,
-    workflowId: string | undefined = this.project?.id
+    workflowId: string | undefined = this.world?.id
   ) {
-    if (id && workflowId) {
+    if (workflowId) {
       window.open(
-        `https://app.unfathom.co/share/${workflowId}/scene/${id}`,
+        `https://app.unfathom.co/share/${workflowId}`,
         '_blank'
       );
     }
@@ -65,18 +59,11 @@ export class ProtoTesterComponent implements OnInit {
 
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
-      this.project = w;
-      this.restart();
-      this.cdr.detectChanges();
-    });
-
-    this.designService.openStep.subscribe((s) => {
-      this.scene = s?.data?.ngArguments?.scene as Scene;
-      this.world = this.scene?.world;
+      this.world = w;
       console.log(this.world);
-      this.mountableAssets = this.scene?.assets
+      this.mountableAssets = this.world?.assets
         .filter((a) => a.movement.canMount)
-        .map((x) => x.id);
+        .map((x) => x.asset.id);
       this.restart();
       this.cdr.detectChanges();
     });
@@ -86,7 +73,7 @@ export class ProtoTesterComponent implements OnInit {
     });
 
     this.prototypeService.selectedCharacter.subscribe((character) => {
-      this.selectedCharacter = character;
+      this.selectedCharacter = character.character.id;
     });
 
     this.themeService.theme.subscribe((theme) => {

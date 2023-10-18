@@ -1,18 +1,18 @@
-<div class="w-100 h-100 px-0">
-  <form class="w-100" [formGroup]="billingForm" novalidate>
-    <div class="big-design-header px-0 w-100" mat-dialog-title>
-      <p class="w-100 my-3 primary-text  fw-bold" style="font-size: medium">
+<div class="w-full h-full px-0">
+  <form class="w-full" [formGroup]="billingForm" novalidate>
+    <div class="big-design-header px-0 w-full" mat-dialog-title>
+      <p class="w-full my-3 primary-text  font-bold" style="font-size: medium">
         Billing
       </p>
     </div>
-      <div class=" pb-0 w-100 mx-0">
-        <div class="w-100">
+      <div class=" pb-0 w-full mx-0">
+        <div class="w-full">
           <!-- Item-->
-          <mat-card class="shipping-card mt-0 w-100 bg-theme"> 
+          <mat-card class="shipping-card mt-0 w-full bg-theme"> 
             <mat-card-content>
               <div class="row">
                 <div class="col px-3">
-                  <mat-form-field class="w-100 my-2 secondary-background " appearance="fill">
+                  <mat-form-field class="w-full my-2 secondary-background " appearance="fill">
                     <mat-label class="secondary-text">Cardholder Name</mat-label>
                     <input
                       class="primary-text  "
@@ -29,7 +29,7 @@
                   </mat-form-field>
                 </div>
                 <div class="col px-3">
-                  <mat-form-field class="w-100 my-2 secondary-background " appearance="fill">
+                  <mat-form-field class="w-full my-2 secondary-background " appearance="fill">
                     <mat-label class="secondary-text">Company (Optional)</mat-label>
                     <input
                       class="primary-text  "
@@ -56,15 +56,15 @@
         </div>
       </div>
 
-      <div class=" pb-0 mb-0 w-100 mx-0">
-        <div class="w-100">
+      <div class=" pb-0 mb-0 w-full mx-0">
+        <div class="w-full">
           <!-- Item-->
-          <mat-card class="shipping-card mt-0 w-100 mx-0 bg-theme">
+          <mat-card class="shipping-card mt-0 w-full mx-0 bg-theme">
             <mat-card-header> </mat-card-header>
             <mat-card-content>
               <div class="row mb-0">
                 <div class="col px-3">
-                  <mat-form-field class="w-100 mt-2 mb-0 secondary-background " appearance="fill">
+                  <mat-form-field class="w-full mt-2 mb-0 secondary-background " appearance="fill">
                     <mat-label class="secondary-text">Address</mat-label>
                     <input
                       class="primary-text  "
@@ -94,7 +94,7 @@
               </div>
               <div class="row" *ngIf="hasUnitNumber">
                 <div class="col px-3">
-                  <mat-form-field class="w-100 my-2 secondary-background " appearance="fill">
+                  <mat-form-field class="w-full my-2 secondary-background " appearance="fill">
                     <mat-label class="secondary-text">Address 2</mat-label>
                     <textarea
                       class="primary-text  "
@@ -107,7 +107,7 @@
               <!-- <div class="row">
                 <div class="col px-3">
                   <mat-form-field
-                    class="w-100 my-2 primary-text  secondary-background "
+                    class="w-full my-2 primary-text  secondary-background "
                     appearance="fill"
                   >
                     <mat-select
@@ -140,7 +140,7 @@
                   </mat-form-field>
                 </div>
                 <div class="col px-3">
-                  <mat-form-field class="w-100 my-2 secondary-background " appearance="fill">
+                  <mat-form-field class="w-full my-2 secondary-background " appearance="fill">
                     <input class="primary-text  " matInput formControlName="city" />
                     <mat-label class="secondary-text">City</mat-label>
                     <mat-error
@@ -151,7 +151,7 @@
                   </mat-form-field>
                 </div>
                 <div class="col px-3">
-                  <mat-form-field class="w-100 my-2 secondary-background " appearance="fill">
+                  <mat-form-field class="w-full my-2 secondary-background " appearance="fill">
                     <mat-select formControlName="state">
                       <mat-select-trigger class="primary-text  ">
                         {{ billingForm.controls["state"].value }}
@@ -175,7 +175,7 @@
               </div> -->
               <div class="row">
                 <div class="col px-3">
-                  <mat-form-field class="w-100 my-2 secondary-background " appearance="fill">
+                  <mat-form-field class="w-full my-2 secondary-background " appearance="fill">
                     <input
                       class="primary-text  "
                       matInput

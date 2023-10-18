@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Dict, LoadService } from '../load.service';
 import { Plan } from '../models/workflow/plan.model';
-import { Executable } from '../models/workflow/executable.model';
 
 @Component({
   selector: 'app-plan-select',

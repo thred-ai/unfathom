@@ -1,9 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Character } from '../models/workflow/character.model';
 import { LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
 import { ProjectService } from '../project.service';
-import { DesignerService } from '../designer.service';
 import { Scene } from '../models/workflow/scene.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
@@ -17,10 +15,9 @@ export class CharacterViewModuleComponent implements OnInit {
   constructor(
     private loadService: LoadService,
     private projectService: ProjectService,
-    private designerService: DesignerService
   ) {}
 
-  workflow?: Executable;
+  workflow?: any;
 
   characters: Character[] = []
 
@@ -39,7 +36,7 @@ export class CharacterViewModuleComponent implements OnInit {
       if (w) {
         this.workflow = w;
 
-        this.characters = Object.values(w.characters) ?? [];
+        // this.characters = Object.values(w.characters) ?? [];
       }
     });
 

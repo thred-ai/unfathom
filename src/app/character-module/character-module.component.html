@@ -1,24 +1,24 @@
-<div class="w-100 h-100">
-  <div class="w-100 h-100">
-    <div class="w-100 p-3">
-      <div class="w-100 d-flex justify-content-between align-items-center">
-        <div class="primary-text fw-bold" style="font-size: 15px">
+<div class="w-full h-full">
+  <div class="w-full h-full">
+    <div class="w-full p-3">
+      <div class="w-full flex justify-between items-center">
+        <div class="primary-text font-bold" style="font-size: 15px">
           Character
         </div>
         <button
-          class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2"
+          class="btn bg-orange border-0 rounded font-bold text-white flex justify-center px-3 content-center py-2"
         (click)="save()"
           >
           Save
         </button>
       </div>
     </div>
-    <div class="w-100 h-100 p-3" *ngIf="workflow && character">
-      <div class="wrap-input1 w-100 py-3 px-0">
-        <p class="w-100 mb-3 primary-text fw-bold">Character Icon</p>
+    <div class="w-full h-full p-3" *ngIf="workflow && character">
+      <div class="wrap-input1 w-full py-3 px-0">
+        <p class="w-full mb-3 primary-text font-bold">Character Icon</p>
 
         <div
-          class="w-auto rounded-circle border-table shadow d-flex justify-content-center align-items-center section-background"
+          class="w-auto rounded-circle border-table shadow flex justify-center items-center section-background"
           style="
             object-fit: contain;
             aspect-ratio: 1;
@@ -27,19 +27,19 @@
           "
         >
           <div
-            class="m-auto position-relative img-input rounded-circle pic-hover"
+            class="m-auto relative img-input rounded-circle pic-hover"
             style="height: 90%; width: 90%; overflow: hidden"
             role="button"
             (click)="cImgInput.click()"
           >
             <img
-              class="w-100 h-100 position-absolute"
+              class="w-full h-full absolute"
               style="z-index: 50; object-fit: cover"
               [src]="character.img"
               id="imgIcon"
             />
             <!-- <div
-                  class="w-100 h-100 position-absolute img-input-display bg-orange primary-text"
+                  class="w-full h-full absolute img-input-display bg-orange primary-text"
                   style="z-index: 51; opacity: 0.5"
                 >
                   <mat-icon class="m-auto">upload </mat-icon>
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <div class="w-100 pb-3">
+      <div class="w-full pb-3">
         <verticalai-text-field
           [title]="'Name'"
           [value]="character.name"
@@ -64,7 +64,7 @@
         </verticalai-text-field>
       </div>
 
-      <div class="w-100 pb-3">
+      <div class="w-full pb-3">
         <verticalai-textbox
           [title]="'Background'"
           [value]="character.background"
@@ -74,7 +74,7 @@
         </verticalai-textbox>
       </div>
 
-      <div class="w-100 pb-3">
+      <div class="w-full pb-3">
         <verticalai-textbox
           [title]="'Personality'"
           [value]="character.personality"
@@ -84,9 +84,9 @@
         </verticalai-textbox>
       </div>
 
-      <div class="w-100 pb-3">
+      <div class="w-full pb-3">
         <!-- <ngx-dropzone
-              class="w-100 h-100"
+              class="w-full h-full"
               style="border-color: #2852ea"
               (change)="dropped($event)"
               *ngIf="newAsset"
@@ -102,14 +102,14 @@
               </ngx-dropzone-label>
             </ngx-dropzone> -->
 
-        <div class="w-100 h-100 py-3">
-          <p class="w-100 mb-3 primary-text fw-bold">Character Asset (.glb)</p>
+        <div class="w-full h-full py-3">
+          <p class="w-full mb-3 primary-text font-bold">Character Asset (.glb)</p>
 
           <div
-            class="w-100 secondary-background rounded position-relative"
+            class="w-full secondary-background rounded relative"
             style="height: 250px"
           >
-            <div class="w-100 h-100 position-absolute">
+            <div class="w-full h-full absolute">
               <app-model-viewer
                 *ngIf="fileDisplay; else noFile"
                 [camera]="true"
@@ -122,7 +122,7 @@
               </app-model-viewer>
               <ng-template #noFile>
                 <div
-                  class="d-flex justify-content-center align-items-center w-100 h-100"
+                  class="flex justify-center items-center w-full h-full"
                 >
                   <span
                     class="m-auto primary-text h5"
@@ -135,11 +135,11 @@
             </div>
 
             <div
-              class="position-absolute"
+              class="absolute"
               style="z-index: 1; right: 10px; bottom: 10px"
             >
               <button
-                class="mb-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
+                class="mb-2 btn bg-orange border-0 rounded font-bold text-white flex justify-center px-2 content-center py-2"
                 (click)="fileDisplay = undefined"
                 [matTooltip]="'Remove'"
                 *ngIf="fileDisplay"
@@ -147,7 +147,7 @@
                 <mat-icon> delete </mat-icon>
               </button>
               <button
-                class="mt-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
+                class="mt-2 btn bg-orange border-0 rounded font-bold text-white flex justify-center px-2 content-center py-2"
                 [matTooltip]="'Upload New'"
                 (click)="aImgInput.click()"
               >
@@ -164,7 +164,7 @@
           </div>
         </div>
         <!-- <ngx-dropzone
-                class="w-100 h-100 bg-transparent border-0"
+                class="w-full h-full bg-transparent border-0"
                 style="z-index: 1000; pointer-events: none"
                 (change)="dropped($event)"
                 [multiple]="false"
@@ -174,7 +174,7 @@
               </ngx-dropzone> -->
         <!-- <div
                     *ngIf="!data.asset"
-                    class="position-absolute d-flex justify-content-end align-items-center flex-column"
+                    class="absolute flex justify-end items-center flex-col"
                     style="right: 10px; top: 10px; bottom: 10px; z-index: 1001"
                   >
                     <a

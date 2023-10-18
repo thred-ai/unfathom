@@ -9,7 +9,6 @@ import {
 import { FormBuilder, FormControl } from '@angular/forms';
 
 import { Dict, LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
 import { Character } from '../models/workflow/character.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';

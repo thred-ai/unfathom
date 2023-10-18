@@ -11,7 +11,6 @@ import {
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
 import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
@@ -22,7 +21,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./assets-module.component.scss'],
 })
 export class AssetsModuleComponent implements OnInit {
-  workflow?: Executable;
+  workflow?: any;
   asset?: ModelAsset;
   newAsset?: File;
 
@@ -64,7 +63,7 @@ export class AssetsModuleComponent implements OnInit {
   async save(action = 'save') {
     let asset = this.newAsset as File;
 
-    let workflow = this.workflow as Executable;
+    let workflow = this.workflow as any;
     let assets = this.asset as ModelAsset;
 
     this.loading = 'Saving Asset';

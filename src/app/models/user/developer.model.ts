@@ -1,4 +1,4 @@
-import { Executable } from "../workflow/executable.model";
+import { World } from "../workflow/world.model";
 
 export class Developer {
   name!: string;
@@ -6,7 +6,7 @@ export class Developer {
   url!: string;
   date!: number;
   email!: string;
-  utils: Executable[];
+  utils: World[];
   theme: 'light' | 'dark' | 'auto'
 
   constructor(
@@ -15,7 +15,7 @@ export class Developer {
     date: number,
     url: string,
     email: string,
-    utils?: Executable[],
+    utils?: World[],
     theme?: 'light' | 'dark' | 'auto'
   ) {
     this.name = name ?? 'New';

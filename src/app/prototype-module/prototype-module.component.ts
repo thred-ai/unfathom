@@ -1,8 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Executable } from '../models/workflow/executable.model';
 import { World } from '../models/workflow/world.model';
 import { Scene } from '../models/workflow/scene.model';
-import { DesignerService } from '../designer.service';
 import { ProjectService } from '../project.service';
 import { PrototypeService } from '../prototype.service';
 import { ThemeService } from '../theme.service';
@@ -19,7 +17,6 @@ import { Meta } from '@angular/platform-browser';
 export class PrototypeModuleComponent implements OnInit {
   world?: World;
   scene?: Scene;
-  project?: Executable;
 
   theme?: 'light' | 'dark' = 'light';
 
@@ -59,16 +56,11 @@ export class PrototypeModuleComponent implements OnInit {
 
     this.route.params.subscribe(async (params) => {
       let proj = params['id'] as string;
-      let file = params['scene'] as string;
 
       // if (!this.scene || (this.scene && this.scene.id != file)) {
       this.loadService.getPrototype(proj, (exec) => {
         if (exec) {
-          this.project = exec;
-          this.scene = exec.sceneLayout.cells.find(
-            (c) => (c.data?.ngArguments?.scene as Scene)?.id == file
-          )?.data?.ngArguments?.scene as Scene;
-          this.world = this.scene?.world;
+          this.world = exec;
           this.mountableAssets = this.scene?.assets
             .filter((a) => a.movement.canMount)
             .map((x) => x.id);
@@ -97,7 +89,7 @@ export class PrototypeModuleComponent implements OnInit {
     });
 
     this.prototypeService.selectedCharacter.subscribe((character) => {
-      this.selectedCharacter = character;
+      this.selectedCharacter = character.character.id;
     });
 
     // this.themeService.theme.subscribe((theme) => {

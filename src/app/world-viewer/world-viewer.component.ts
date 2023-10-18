@@ -1,28 +1,16 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { World } from '../models/workflow/world.model';
-import * as BABYLON from 'babylonjs';
-import * as MATERIALS from 'babylonjs-materials';
-import { CharacterController } from 'babylonjs-charactercontroller';
-import 'babylonjs-loaders';
-import {
-  GLTFFileLoader,
-  GLTFLoaderAnimationStartMode,
-} from 'babylonjs-loaders';
-import { Scene } from '../models/workflow/scene.model';
-import { LiquidType } from '../models/workflow/liquid-type.enum';
-import { Character } from '../models/workflow/character.model';
 import { ProjectService } from '../project.service';
-import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { PrototypeService } from '../prototype.service';
+import { DesignService } from '../design.service';
 
-@AutoUnsubscribe
 @Component({
-  selector: 'app-world-designer',
-  templateUrl: './world-designer.component.html',
-  styleUrls: ['./world-designer.component.scss'],
+  selector: 'app-world-viewer',
+  templateUrl: './world-viewer.component.html',
+  styleUrls: ['./world-viewer.component.scss']
 })
-export class WorldDesignerComponent implements OnInit, OnDestroy {
-  
+export class WorldViewerComponent implements OnInit {
+
   @Input() project?: World;
 
   totalLength = 0
@@ -31,7 +19,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
   constructor(
     private projectService: ProjectService,
-    private prototypeService: PrototypeService
+    private designService: DesignService
   ) {}
 
   ngOnInit(): void {
@@ -55,12 +43,12 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
     // });
 
     if (this.project) {
-      this.prototypeService.loaded.next(this.loaded);
+      this.designService.loaded.next(this.loaded);
       setTimeout(() => {
-        this.prototypeService.init(this.project!, this.project!);
+        this.designService.init(this.project!);
       }, 100);
 
-      this.prototypeService?.loaded.subscribe((loaded) => {
+      this.designService?.loaded.subscribe((loaded) => {
         this.loaded = loaded;
       });
     }
@@ -78,6 +66,7 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
   @Input() theme!: 'light' | 'dark';
 
   ngOnDestroy(): void {
-    this.prototypeService.deinit();
+    this.designService.deinit();
   }
+
 }

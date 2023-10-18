@@ -2,14 +2,13 @@ export const environment = {
   production: true,
 
   firebase: {
-    apiKey: "AIzaSyBHkdo3IOxbeulGLd_uDFDJHO8ECQyi_5A",
-    authDomain: "verticalai.firebaseapp.com",
-    databaseURL: "https://verticalai-default-rtdb.firebaseio.com",
-    projectId: "verticalai",
-    storageBucket: "verticalai.appspot.com",
-    messagingSenderId: "465638272101",
-    appId: "1:465638272101:web:fc3cce2f7c80d27c65ea8c",
-    measurementId: "G-5DE3SFV3K5",
+    apiKey: 'AIzaSyCYp6F96DxVHrxztffyZJEq9Z_CfHCyxyk',
+    authDomain: 'unfathom-ai.firebaseapp.com',
+    projectId: 'unfathom-ai',
+    storageBucket: 'unfathom-ai.appspot.com',
+    messagingSenderId: '924536857699',
+    appId: '1:924536857699:web:f25176cfdf8782d45c0456',
+    measurementId: 'G-LM2EXWLM31',
     enablePersistence: true,
   },
 };

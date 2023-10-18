@@ -1,23 +1,23 @@
-<div class="w-100 h-100">
-  <div class="w-100 h-100">
-    <div class="w-100 p-3">
-      <div class="w-100 d-flex justify-content-between align-items-center">
-        <div class="primary-text fw-bold" style="font-size: 15px">
+<div class="w-full h-full">
+  <div class="w-full h-full">
+    <div class="w-full p-3">
+      <div class="w-full flex justify-between items-center">
+        <div class="primary-text font-bold" style="font-size: 15px">
           {{ asset?.name ?? "Asset" }}
         </div>
         <button
-          class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2"
+          class="btn bg-orange border-0 rounded font-bold text-white flex justify-center px-3 content-center py-2"
           (click)="save()"
         >
           Save
         </button>
       </div>
     </div>
-    <div class="w-100 h-100 p-3" *ngIf="workflow && asset && assetDetails">
-      <div class="w-100 pb-3">
-        <p class="w-100 mb-3 primary-text fw-bold">Position</p>
+    <div class="w-full h-full p-3" *ngIf="workflow && asset && assetDetails">
+      <div class="w-full pb-3">
+        <p class="w-full mb-3 primary-text font-bold">Position</p>
 
-        <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
+        <div class="w-full pb-3 row row-cols-3 justify-center g-0">
           <div class="col px-1">
             <verticalai-text-field
               [title]="'X'"
@@ -54,10 +54,10 @@
         </div>
       </div>
 
-      <div class="w-100 pb-3">
-        <p class="w-100 mb-3 primary-text fw-bold">Direction (°)</p>
+      <div class="w-full pb-3">
+        <p class="w-full mb-3 primary-text font-bold">Direction (°)</p>
 
-        <div class="w-100 pb-3 row row-cols-3 justify-content-center g-0">
+        <div class="w-full pb-3 row row-cols-3 justify-center g-0">
           <div class="col px-1">
             <verticalai-text-field
               [title]="'X'"
@@ -94,7 +94,7 @@
         </div>
       </div>
       <!-- 
-  <div class="w-100 pb-3">
+  <div class="w-full pb-3">
     <verticalai-layout-slider
       [value]="(assetDetails['scale'] ?? 1) * 100"
       [title]="'Scale'"
@@ -107,7 +107,7 @@
     </verticalai-layout-slider>
   </div> -->
 
-      <div class="w-100 pb-3">
+      <div class="w-full pb-3">
         <verticalai-text-field
           [title]="'Scale'"
           [type]="'number'"
@@ -119,8 +119,8 @@
         </verticalai-text-field>
       </div>
 
-      <div class="w-100 pb-3">
-        <div class="w-100 pb-3">
+      <div class="w-full pb-3">
+        <div class="w-full pb-3">
           <verticalai-select-field
             [title]="'Movement'"
             [value]="assetDetails['movement']['canMount'] ?? false"
@@ -134,12 +134,12 @@
       </div>
 
       <div
-        class="w-100 pb-3"
+        class="w-full pb-3"
         *ngIf="assetDetails['movement']['canMount'] ?? true"
       >
-        <p class="w-100 mb-3 primary-text fw-bold">Physics</p>
+        <p class="w-full mb-3 primary-text font-bold">Physics</p>
 
-        <div class="w-100 pb-3 row row-cols-2 justify-content-center g-0">
+        <div class="w-full pb-3 row row-cols-2 justify-center g-0">
           <div class="col px-1">
             <verticalai-text-field
               [title]="'Speed (m/s)'"

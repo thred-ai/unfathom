@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Dict } from './load.service';
-import { Executable } from './models/workflow/executable.model';
+import { World } from './models/workflow/world.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +9,8 @@ import { Executable } from './models/workflow/executable.model';
 export class ProjectService {
 
   loading = new BehaviorSubject<boolean>(false);
-  workflow = new BehaviorSubject<Executable | undefined>(undefined);
-  saveWorkflow = new BehaviorSubject<Executable | undefined>(undefined);
+  workflow = new BehaviorSubject<World | undefined>(undefined);
+  saveWorkflow = new BehaviorSubject<World | undefined>(undefined);
 
 
   save(workflow = this.workflow.value){

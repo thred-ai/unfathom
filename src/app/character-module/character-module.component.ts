@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
 import { Character } from '../models/workflow/character.model';
 import { Scene } from 'babylonjs';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
@@ -22,7 +21,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./character-module.component.scss'],
 })
 export class CharacterModuleComponent implements OnInit, AfterViewInit {
-  workflow?: Executable;
+  workflow?: any;
   character?: Character;
   newImg?: File;
   newAsset?: File;
@@ -76,7 +75,7 @@ export class CharacterModuleComponent implements OnInit, AfterViewInit {
     let img = this.newImg as File;
     let asset = this.newAsset as File;
 
-    let workflow = this.workflow as Executable;
+    let workflow = this.workflow as any;
     let character = this.character as Character;
 
     if (img && workflow && character) {

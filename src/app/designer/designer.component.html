@@ -1,0 +1,32 @@
+<div
+  class="layout-container-full animate__animated animate__fadeIn primary-background flex flex-col"
+>
+  <div
+    class="w-full h-[55px] border-table-bottom bg-gradient-to-r from-cyan-300 to-indigo-500 shadow-sm flex justify-center items-center p-2"
+  >
+    <div class="w-full h-full flex justify-between">
+      <img class="h-full" [src]="'assets/logo_full.png'" />
+
+      <!--  -->
+      <button
+        class="btn rounded-full bg-cyan-50 text-slate-950 flex justify-between items-center"
+      >
+        <ng-icon
+          class="font-bold me-2"
+          name="heroArrowUpTray"
+          [strokeWidth]="2.2"
+        >
+        </ng-icon>
+
+        Share
+      </button>
+    </div>
+  </div>
+  <div class="h-full w-full flex justify-between" *ngIf="world">
+    <app-menu-sidebar></app-menu-sidebar>
+    <div class="h-100 border-table-right w-[500px] secondary-background-dark"></div>
+    <div class="h-full w-full">
+      <app-world-viewer *ngIf="world" [project]="world"></app-world-viewer>
+    </div>
+  </div>
+</div>

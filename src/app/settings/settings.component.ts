@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { Dict, LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Developer } from '../models/user/developer.model';
 import { Scene } from '../models/workflow/scene.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
+import { World } from '../models/workflow/world.model';
 
 @AutoUnsubscribe
 @Component({
@@ -13,7 +13,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
-  workflow?: Executable;
+  workflow?: World;
   // openLayouts = ['g-comp', 'general', 'config'];
 
   //

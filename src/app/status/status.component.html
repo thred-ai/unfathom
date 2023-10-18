@@ -1,16 +1,20 @@
 <p
-  class="big-design-status primary-text  my-auto shadow"
+  class="big-design-status primary-text my-auto shadow"
   role="button"
   [mdbPopover]="template"
   placement="bottom"
   trigger="hover"
-  [style.background-image]="plan?.backgroundColor ?? 'linear-gradient(to right, #000, #3D3D3D)'"
+  [style.background-image]="
+    plan?.backgroundColor ?? 'linear-gradient(to right, #000, #3D3D3D)'
+  "
 >
   {{ plan?.name ?? "Testing" }}
 </p>
 
 <ng-template #template>
   <div class="popover-body-padding bg-theme">
-    <b class="mb-4 fw-normal primary-text  "> {{ plan ? (plan.name + ' Plan') : "Test Mode" }}</b>
+    <b class="mb-4 fw-normal primary-text">
+      {{ plan ? plan.name + " Plan" : "Test Mode" }}</b
+    >
   </div>
 </ng-template>

@@ -8,10 +8,8 @@ import {
   Output,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DesignerService } from '../designer.service';
 import { Dict, LoadService } from '../load.service';
 import { Character } from '../models/workflow/character.model';
-import { Executable } from '../models/workflow/executable.model';
 import { Scene } from '../models/workflow/scene.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
@@ -22,7 +20,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./character-edit-module.component.scss'],
 })
 export class CharacterEditModuleComponent implements OnInit {
-  workflow?: Executable;
+  workflow?: any;
   character?: Character;
   characterDetails?: Dict<any>;
   scene?: Scene;
@@ -36,7 +34,6 @@ export class CharacterEditModuleComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private loadService: LoadService,
-    private designerService: DesignerService
   ) {}
 
   async fileChangeEvent(event: any, type = 1): Promise<void> {
@@ -70,29 +67,29 @@ export class CharacterEditModuleComponent implements OnInit {
     field: string,
     subField?: string
   ) {
-    let cell = this.designerService.graph?.getCellById(id);
+    // let cell = this.designerService.graph?.getCellById(id);
 
-    if (cell && this.scene) {
-      var finalField = this.scene.characters.find(
-        (c) => c.id == characterId
-      ) as any;
+    // if (cell && this.scene) {
+    //   var finalField = this.scene.characters.find(
+    //     (c) => c.id == characterId
+    //   ) as any;
 
-      if (subField) {
-        finalField[field][subField] = value;
-      } else {
-        finalField[field] = value;
-      }
+    //   if (subField) {
+    //     finalField[field][subField] = value;
+    //   } else {
+    //     finalField[field] = value;
+    //   }
 
-      cell.setData({
-        ngArguments: {
-          scene: this.scene,
-        },
-      });
+    //   cell.setData({
+    //     ngArguments: {
+    //       scene: this.scene,
+    //     },
+    //   });
 
-      // setTimeout(() => {
+    //   // setTimeout(() => {
         
-      // }, 1);
-    }
+    //   // }, 1);
+    // }
   }
 
   save(){

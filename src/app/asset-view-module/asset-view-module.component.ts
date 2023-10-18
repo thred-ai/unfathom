@@ -1,12 +1,11 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Character } from '../models/workflow/character.model';
-import { Executable } from '../models/workflow/executable.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { Scene } from '../models/workflow/scene.model';
-import { DesignerService } from '../designer.service';
 import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
+import { World } from '../models/workflow/world.model';
 
 @AutoUnsubscribe
 @Component({
@@ -15,14 +14,13 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./asset-view-module.component.scss'],
 })
 export class AssetViewModuleComponent implements OnInit {
-  workflow?: Executable;
+  workflow?: any;
 
   assets: ModelAsset[] = [];
 
   constructor(
     private loadService: LoadService,
     private projectService: ProjectService,
-    private designerService: DesignerService
   ) {}
 
   @Output() openMenu = new EventEmitter<{
@@ -34,13 +32,13 @@ export class AssetViewModuleComponent implements OnInit {
   @Output() close = new EventEmitter<any>();
 
   ngOnInit(): void {
-    this.projectService.workflow.subscribe((w) => {
-      if (w) {
-        this.workflow = w;
+    // this.projectService.workflow.subscribe((w) => {
+    //   if (w) {
+    //     this.workflow = w;
 
-        this.assets = Object.values(w.assets) ?? [];
-      }
-    });
+    //     this.assets = Object.values(w.assets) ?? [];
+    //   }
+    // });
   }
 
   editAsset(

@@ -1,17 +1,18 @@
 <div
-  class="w-100 h-100 d-flex justify-content-between align-content-start"
+  class="w-full h-full flex justify-between content-start"
   style="overflow-y: hidden"
 >
   <!-- <ng-container *ngIf="!openWorldScene"> -->
   <div
-    class="primary-background h-100 d-flex justify-content-between align-items-center flex-column border-table-right"
-    style="width: 57px !important"
+    class="secondary-background-{{
+      theme
+    }} h-full w-[57px] flex justify-between items-center flex-col border-table-right-{{
+      theme
+    }}"
   >
-    <div
-      class="w-100 h-100 d-flex justify-content-start align-items-center flex-column"
-    >
+    <div class="w-full h-full flex justify-start items-center flex-col">
       <!-- <div
-        class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
+        class="h-full proj mt-0 flex justify-center items-center"
         style="aspect-ratio: 1"
         role="button"
         [matTooltip]="'Center Align'"
@@ -19,7 +20,7 @@
         (click)="(null)"
       >
         <div
-          class="mx-2 primary-text fw-bold d-flex justify-content-center align-items-center"
+          class="mx-2 primary-text fw-bold flex justify-center items-center"
           style="aspect-ratio: 1"
           role="button"
         >
@@ -27,7 +28,7 @@
         </div>
       </div> -->
       <!-- <div
-        class="h-100 proj mt-0 d-flex justify-content-center align-items-center"
+        class="h-full proj mt-0 flex justify-center items-center"
         style="aspect-ratio: 1"
         role="button"
         [matTooltip]="'Toggle Grid'"
@@ -35,7 +36,7 @@
         (click)="showGrid = !showingGrid"
       >
         <div
-          class="mx-2 primary-text fw-bold d-flex justify-content-center align-items-center"
+          class="mx-2 primary-text fw-bold flex justify-center items-center"
           style="aspect-ratio: 1"
           role="button"
         >
@@ -44,41 +45,35 @@
       </div> -->
 
       <div
-        class="w-100 proj{{
+        class="w-full proj{{
           mode == 'scenes' ? '-select' : ''
-        }} ms-0 py-3 d-flex justify-content-center align-items-center"
+        }} ms-0 py-3 flex justify-center items-center primary-text-{{ theme }}"
         [matTooltip]="'Scenes'"
         [matTooltipPosition]="'right'"
         role="button"
         (click)="changeMode('scenes')"
       >
-        <div
-          class="w-100 d-flex justify-content-center align-items-center"
-          #folderToggle
-        >
-          <div
-            class="d-flex justify-content-center align-items-center"
-            role="button"
-          >
+        <div class="w-full flex justify-center items-center" #folderToggle>
+          <div class="flex justify-center items-center" role="button">
             <mat-icon>view_stream</mat-icon>
           </div>
         </div>
       </div>
       <!-- <div
-        class="w-100 proj{{
+        class="w-full proj{{
           mode == 'textures' ? '-select' : ''
-        }}  ms-0 py-3 d-flex justify-content-center align-items-center"
+        }}  ms-0 py-3 flex justify-center items-center"
         [matTooltip]="'Textures'"
         [matTooltipPosition]="'right'"
         role="button"
         (click)="changeMode('textures')"
       >
         <div
-          class="w-100 d-flex justify-content-center align-items-center"
+          class="w-full flex justify-center items-center"
           #folderToggle
         >
           <div
-            class="d-flex justify-content-center align-items-center"
+            class="flex justify-center items-center"
             role="button"
           >
             <mat-icon>image</mat-icon>
@@ -87,44 +82,32 @@
       </div> -->
 
       <div
-        class="w-100 proj{{
+        class="w-full proj{{
           mode == 'characters' ? '-select' : ''
-        }}  ms-0 py-3 d-flex justify-content-center align-items-center"
+        }}  ms-0 py-3 flex justify-center items-center primary-text-{{ theme }}"
         [matTooltip]="'Characters'"
         [matTooltipPosition]="'right'"
         role="button"
         (click)="changeMode('characters')"
       >
-        <div
-          class="w-100 d-flex justify-content-center align-items-center"
-          #folderToggle
-        >
-          <div
-            class="d-flex justify-content-center align-items-center"
-            role="button"
-          >
+        <div class="w-full flex justify-center items-center" #folderToggle>
+          <div class="flex justify-center items-center" role="button">
             <mat-icon>accessibility_new</mat-icon>
           </div>
         </div>
       </div>
 
       <div
-        class="w-100 proj{{
+        class="w-full proj{{
           mode == 'assets' ? '-select' : ''
-        }}  ms-0 py-3 d-flex justify-content-center align-items-center"
+        }}  ms-0 py-3 flex justify-center items-center primary-text-{{ theme }}"
         [matTooltip]="'3D Assets'"
         [matTooltipPosition]="'right'"
         role="button"
         (click)="changeMode('assets')"
       >
-        <div
-          class="w-100 d-flex justify-content-center align-items-center"
-          #folderToggle
-        >
-          <div
-            class="d-flex justify-content-center align-items-center"
-            role="button"
-          >
+        <div class="w-full flex justify-center items-center" #folderToggle>
+          <div class="flex justify-center items-center" role="button">
             <mat-icon>apartment</mat-icon>
           </div>
         </div>
@@ -132,9 +115,9 @@
     </div>
   </div>
 
-  <ng-container *ngIf="mode != 'none'">
+  <!-- <ng-container *ngIf="mode != 'none'">
     <div
-      class="primary-background h-100 border-table-right"
+      class="primary-background h-full border-table-right"
       style="width: 250px !important"
     >
       <app-file-sidebar [models]="items" *ngIf="mode == 'scenes'">
@@ -160,7 +143,7 @@
     </div>
 
     <div
-      class="h-100 border-table-right primary-background"
+      class="h-full border-table-right primary-background"
       style="width: 400px !important; overflow-x: hidden; flex-shrink: 0"
       *ngIf="selectedData"
     >
@@ -171,5 +154,5 @@
       >
       </app-extended-menu>
     </div>
-  </ng-container>
+  </ng-container> -->
 </div>

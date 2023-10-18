@@ -1,13 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { World } from '../models/workflow/world.model';
-import { DesignerService } from '../designer.service';
 import { Scene } from '../models/workflow/scene.model';
 import { Liquid } from '../models/workflow/liquid.model';
 import { Texture } from '../models/workflow/texture.model';
 import { LiquidType } from '../models/workflow/liquid-type.enum';
 import { PrototypeService } from '../prototype.service';
 import { Dict, LoadService } from '../load.service';
-import { Executable } from '../models/workflow/executable.model';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
@@ -23,10 +21,9 @@ export class WorldModuleComponent implements OnInit {
 
   world?: World;
   scene?: Scene;
-  project?: Executable;
+  project?: any;
 
   constructor(
-    private designService: DesignerService,
     private prototypeService: PrototypeService,
     private projectService: ProjectService,
     private loadService: LoadService
@@ -71,12 +68,14 @@ export class WorldModuleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.designService.openStep.subscribe((s) => {
-      this.scene = s?.data.ngArguments?.scene as Scene;
+    // this.designService.openStep.subscribe((s) => {
+    //   this.scene = s?.data.ngArguments?.scene as Scene;
 
-      this.world = this.scene?.world as World;
-      this.worldLiquids = Object.keys(this.world?.ground?.liquid ?? {}) ?? [];
-    });
+    //   this.world = this.scene?.world as World;
+    // });
+
+    this.worldLiquids = Object.keys(this.world?.ground?.liquid ?? {}) ?? [];
+
 
     this.projectService.workflow.subscribe((w) => {
       this.project = w;
@@ -91,7 +90,7 @@ export class WorldModuleComponent implements OnInit {
       if (this.newImages['ground']) {
         let url = await this.loadService.saveImg(
           this.newImages['ground'],
-          `workflows/${this.project?.id}/scenes/${this.scene.id}/ground/ground_diffuse.png`
+          `worlds/${this.project?.id}/scenes/${this.scene.id}/ground/ground_diffuse.png`
         );
         if (url){
           this.world.ground.texture.diffuse = url
@@ -101,7 +100,7 @@ export class WorldModuleComponent implements OnInit {
       if (this.newImages['map']) {
         let url = await this.loadService.saveImg(
           this.newImages['map'],
-          `workflows/${this.project?.id}/scenes/${this.scene.id}/heightMap.png`
+          `worlds/${this.project?.id}/scenes/${this.scene.id}/heightMap.png`
         );
         if (url){
           this.world.ground.heightMap = url
@@ -111,7 +110,7 @@ export class WorldModuleComponent implements OnInit {
       if (this.newImages['sky']) {
         let url = await this.loadService.saveImg(
           this.newImages['sky'],
-          `workflows/${this.project?.id}/scenes/${this.scene.id}/skybox.png`
+          `worlds/${this.project?.id}/scenes/${this.scene.id}/skybox.png`
         );
         if (url){
           this.world.sky.texture.emissive = url
@@ -119,7 +118,6 @@ export class WorldModuleComponent implements OnInit {
       }
 
       this.scene.world = this.world;
-      this.designService.setScene(this.scene, this.scene.id);
 
       this.loading = ""
       this.changed.emit();

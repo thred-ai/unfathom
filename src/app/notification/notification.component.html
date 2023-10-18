@@ -1,8 +1,8 @@
 <div class="big-design-card bg-{{ iconColor }} p-0 m-0 rounded-pill">
   <div class="big-design-notif-flex text-dark rounded-pill">
-    <div class="h-100 d-flex justify-content-start align-items-center">
+    <div class="h-full flex justify-start items-center">
       <div
-        class="bg-white rounded-circle shadow d-flex justify-content-center align-items-center p-1"
+        class="bg-white rounded-circle shadow flex justify-center items-center p-1"
         style="aspect-ratio: 1; overflow: hidden; height: 47.5px"
         role="button"
         [mdbPopover]="template"
@@ -11,7 +11,7 @@
         id="kicon"
       >
         <div
-          class="bg-orange rounded-circle w-100 h-100 d-flex justify-content-center align-content-center p-0 notif-icon"
+          class="bg-orange rounded-circle w-full h-full flex justify-center content-center p-0 notif-icon"
         >
           <mat-icon class="primary-text  m-auto" style="font-size: 25px">
             {{ icon }}
@@ -32,14 +32,14 @@
 
       <ng-template #template>
         <div class="popover-body-padding bg-theme">
-            <b class="fw-bolder mb-4 text-light-success">{{title}}</b>
+            <b class="font-bolder mb-4 text-light-success">{{title}}</b>
             <br />
             {{subtitle}}
-          <!-- <div class="w-100 h-100 mt-3">
+          <!-- <div class="w-full h-full mt-3">
             <button
               (click)="remove(address, result == 'y')"
               id="removeBtn"
-              class="w-100 btn primary-background primary-text  fw-bold rounded-10 px-4 py-2"
+              class="w-full btn primary-background primary-text  font-bold rounded-10 px-4 py-2"
             >
               Remove
             </button>
@@ -47,7 +47,7 @@
         </div>
       </ng-template>
     </div>
-    <div *ngIf="canClose" class="h-100">
+    <div *ngIf="canClose" class="h-full">
       <a
         role="button"
         class="big-design-notif-button"

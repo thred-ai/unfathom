@@ -1,21 +1,21 @@
-<div class="w-100 h-100">
-  <div class="w-100 h-100">
-    <div class="w-100 p-3">
-      <div class="w-100 d-flex justify-content-between align-items-center">
-        <div class="primary-text fw-bold" style="font-size: 15px">
+<div class="w-full h-full">
+  <div class="w-full h-full">
+    <div class="w-full p-3">
+      <div class="w-full flex justify-between items-center">
+        <div class="primary-text font-bold" style="font-size: 15px">
           Asset
         </div>
         <button
-          class="btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-3 align-content-center py-2"
+          class="btn bg-orange border-0 rounded font-bold text-white flex justify-center px-3 content-center py-2"
           (click)="save()"
           >
           Save
         </button>
       </div>
     </div>
-    <div class="w-100 h-100 p-3" *ngIf="workflow && asset">
-      <div class="primary-background w-100 h-100 m-auto">
-        <div class="w-100 pb-3">
+    <div class="w-full h-full p-3" *ngIf="workflow && asset">
+      <div class="primary-background w-full h-full m-auto">
+        <div class="w-full pb-3">
           <verticalai-text-field
             [title]="'Name'"
             [value]="asset.name"
@@ -25,15 +25,15 @@
           </verticalai-text-field>
         </div>
 
-        <div class="w-100 h-100 pb-3">
-          <div class="w-100 h-100 py-3">
-            <p class="w-100 mb-3 primary-text fw-bold">Asset File (.glb)</p>
+        <div class="w-full h-full pb-3">
+          <div class="w-full h-full py-3">
+            <p class="w-full mb-3 primary-text font-bold">Asset File (.glb)</p>
 
             <div
-              class="w-100 secondary-background rounded position-relative"
+              class="w-full secondary-background rounded relative"
               style="height: 250px"
             >
-              <div class="w-100 h-100 position-absolute">
+              <div class="w-full h-full absolute">
                 <app-model-viewer
                   #modelViewer
                   *ngIf="fileDisplay; else noFile"
@@ -47,7 +47,7 @@
                 </app-model-viewer>
                 <ng-template #noFile>
                   <div
-                    class="d-flex justify-content-center align-items-center w-100 h-100"
+                    class="flex justify-center items-center w-full h-full"
                   >
                     <span
                       class="m-auto primary-text h5"
@@ -60,11 +60,11 @@
               </div>
 
               <div
-                class="position-absolute"
+                class="absolute"
                 style="z-index: 1; right: 10px; bottom: 10px"
               >
                 <button
-                  class="mb-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
+                  class="mb-2 btn bg-orange border-0 rounded font-bold text-white flex justify-center px-2 content-center py-2"
                   (click)="fileDisplay = undefined"
                   [matTooltip]="'Remove'"
                   *ngIf="fileDisplay"
@@ -72,7 +72,7 @@
                   <mat-icon> delete </mat-icon>
                 </button>
                 <button
-                  class="mt-2 btn bg-orange border-0 rounded fw-bold text-white d-flex justify-content-center px-2 align-content-center py-2"
+                  class="mt-2 btn bg-orange border-0 rounded font-bold text-white flex justify-center px-2 content-center py-2"
                   [matTooltip]="'Upload New'"
                   (click)="aImgInput.click()"
                 >
@@ -89,7 +89,7 @@
             </div>
           </div>
           <!-- <ngx-dropzone
-                class="w-100 h-100 bg-transparent border-0"
+                class="w-full h-full bg-transparent border-0"
                 style="z-index: 1000; pointer-events: none"
                 (change)="dropped($event)"
                 [multiple]="false"
@@ -99,7 +99,7 @@
               </ngx-dropzone> -->
           <!-- <div
                     *ngIf="!data.asset"
-                    class="position-absolute d-flex justify-content-end align-items-center flex-column"
+                    class="absolute flex justify-end items-center flex-col"
                     style="right: 10px; top: 10px; bottom: 10px; z-index: 1001"
                   >
                     <a

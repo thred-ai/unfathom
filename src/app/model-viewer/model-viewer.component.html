@@ -1,8 +1,8 @@
-<div class="w-100 h-100 position-relative d-flex justify-content-center align-items-center">
+<div class="w-full h-full relative flex justify-center items-center">
   <model-viewer
     *ngIf="model"
     [attr.camera-controls]="camera"
-    class="h-100 mx-auto"
+    class="h-full mx-auto"
     style="aspect-ratio: 1 !important;"
     [attr.src]="model"
     [attr.autoplay]="animate"
@@ -18,32 +18,32 @@
   >
   </model-viewer>
   <div
-    class="position-absolute w-100 h-100"
+    class="absolute w-full h-full"
     *ngIf="!obj.detail.visible"
     style="z-index: 1000"
   >
     <div
-      class="w-100 h-100 position-relative d-flex justify-content-center align-items-center flex-column"
+      class="w-full h-full relative flex justify-center items-center flex-col"
     >
-      <img class="w-100 h-100 position-absolute" [src]="poster" />
+      <img class="w-full h-full absolute" [src]="poster" />
       <div
-        class="position-absolute d-flex justify-content-center align-items-center flex-column w-100 h-100 bg-white"
+        class="absolute flex justify-center items-center flex-col w-full h-full bg-white"
       >
         <!-- <img
         loading="lazy"
-        class="h-100 w-100"
+        class="h-full w-full"
         [useSrcset]="true"
         [defaultImage]="'/assets/default.png'"
         [lazyLoad]="img"
       /> -->
 
-        <div class="position-absolute big-design-spinner">
+        <div class="absolute big-design-spinner">
           <div></div>
           <div></div>
           <div></div>
           <div></div>
         </div>
-        <div class="position-absolute big-design-input-subtitle">
+        <div class="absolute big-design-input-subtitle">
           {{ pro | number : "1.0-0" }}
         </div>
       </div>

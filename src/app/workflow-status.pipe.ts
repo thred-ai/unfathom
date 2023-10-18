@@ -1,11 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Executable } from './models/workflow/executable.model';
+import { World } from './models/workflow/world.model';
 
 @Pipe({
   name: 'workflowStatus',
 })
 export class WorkflowStatusPipe implements PipeTransform {
-  transform(value: Executable[], status: number[]): Executable[] {
+  transform(value: World[], status: number[]): World[] {
     return value.filter((v) => {
       return status.find((s) => s == v.status) != undefined;
     });

@@ -1,9 +1,9 @@
-<div class="w-100 h-100 p-3" style="overflow-y: scroll">
-  <div class="w-100 pb-3">
+<div class="w-full h-full p-3" style="overflow-y: scroll">
+  <div class="w-full pb-3">
     <div
-      class="w-100 d-flex justify-content-between align-content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+      class="w-full flex justify-between content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
     >
-      <p class="w-100 fw-bold my-auto">Project Characters</p>
+      <p class="w-full font-bold my-auto">Project Characters</p>
       <mat-icon
         class="m-auto primary-text"
         role="button"
@@ -13,26 +13,26 @@
       </mat-icon>
     </div>
 
-    <div class="row row-cols-2 justify-content-start g-0">
+    <div class="row row-cols-2 justify-start g-0">
       <div
         *ngFor="let character of characters ?? []; index as i"
-        class="col p-1 position-relative"
+        class="col p-1 relative"
         style="aspect-ratio: 0.75"
       >
         <div
-          class="d-flex justify-content-between align-items-center flex-column border-table rounded secondary-background shadow-hover"
+          class="flex justify-between items-center flex-col border-table rounded secondary-background shadow-hover"
           style="overflow: hidden"
           role="button"
           (click)="editCharacter(character)"
         >
           <img
-            class="w-100 h-100"
+            class="w-full h-full"
             style="object-fit: cover; aspect-ratio: 1"
             [src]="character.img"
           />
 
           <div
-            class="w-100 primary-background py-2 d-flex justify-content-center align-items-center"
+            class="w-full primary-background py-2 flex justify-center items-center"
           >
             <p
               class="mx-auto primary-text text-truncate text-center"
@@ -44,13 +44,13 @@
         </div>
 
         <div
-          class="rounded-circle bg-orange position-absolute"
+          class="rounded-circle bg-orange absolute"
           style="z-index: 1; right: 0; top: 0; aspect-ratio: 1 !important"
           role="button"
           (click)="removeCharacterWorkflow(character.id)"
         >
           <mat-icon
-            class="w-100 h-100 primary-text-dark d-flex justify-content-center align-items-center p-1"
+            class="w-full h-full primary-text-dark flex justify-center items-center p-1"
             style="font-size: small"
           >
             close
