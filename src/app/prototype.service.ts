@@ -32,7 +32,11 @@ export class PrototypeService {
           y: number;
           z: number;
         };
-        scale: number;
+        scale: {
+          x: number;
+          y: number;
+          z: number;
+        };
       }
     | undefined
   >(undefined);
@@ -93,7 +97,11 @@ export class PrototypeService {
           y: 0,
           z: 0,
         },
-        scale: 1,
+        scale: {
+          x: 1,
+          y: 1,
+          z: 1,
+        },
       };
 
       this.selectedCharacter.next(char);
@@ -444,7 +452,10 @@ export class PrototypeService {
 
     actor.id = this.selectedCharacter.value.character.id;
 
-    actor.scaling.scaleInPlace(this.selectedCharacter.value.scale);
+    actor.scaling.x = this.selectedCharacter.value.scale.x;
+    actor.scaling.y = this.selectedCharacter.value.scale.y;
+    actor.scaling.z = this.selectedCharacter.value.scale.z;
+
     actor.checkCollisions = true;
 
     actor.position.y = this.selectedCharacter.value.spawn.y; //world.size / 10 + 20; //35;
@@ -499,7 +510,9 @@ export class PrototypeService {
           var object = result.meshes[0] as BABYLON.Mesh;
           object.id = asset.asset.id;
 
-          object.scaling.scaleInPlace(asset.scale);
+          object.scaling.x = asset.scale.x;
+          object.scaling.y = asset.scale.y;
+          object.scaling.z = asset.scale.z;
 
           object.rotation = new BABYLON.Vector3(
             this.toRadians(asset.direction.x),
@@ -596,9 +609,7 @@ export class PrototypeService {
     await Promise.all(
       this.world.characters.map(async (c) => {
         if (c.character.id != this.selectedCharacter.value.character.id) {
-          this.loaded.next(
-            `Downloading "${c.character.name}"`
-          );
+          this.loaded.next(`Downloading "${c.character.name}"`);
           var avatar2 = c.character.assetUrl;
           const result2 = await BABYLON.SceneLoader.ImportMeshAsync(
             '',
@@ -612,7 +623,9 @@ export class PrototypeService {
           var actor2 = result2.meshes[0] as BABYLON.Mesh;
           actor2.id = c.character.id;
 
-          actor2.scaling.scaleInPlace(c.scale);
+          actor2.scaling.x = c.scale.x;
+          actor2.scaling.y = c.scale.y;
+          actor2.scaling.z = c.scale.z;
           actor2.checkCollisions = true;
 
           actor2.position = new BABYLON.Vector3(
@@ -939,7 +952,7 @@ export class PrototypeService {
 
   selectCharacter(character: string) {
     let scene = this.engine?.scenes[0];
-    let same = this.world.characters.find(c => c.character.id == character)
+    let same = this.world.characters.find((c) => c.character.id == character);
     if (scene && this.selectedCharacter.value && same) {
       let actorMesh = scene.getMeshById(same.character.id) as BABYLON.Mesh;
       let oldActorMesh = scene.getMeshById(

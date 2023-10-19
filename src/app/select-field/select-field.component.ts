@@ -20,6 +20,15 @@ export class SelectFieldComponent implements OnInit {
   @Output() changed = new EventEmitter<any>();
   @Output() refresh = new EventEmitter<any>();
 
+  @Input() set theme(value: string | undefined){
+    if (value && this.textColor == "var(--primaryTextColor)"){
+      this.textColor = `var(--${value}--primaryTextColor)`;
+    }
+    if (value && this.bgColor == "var(--secondaryBackgroundColor)"){
+      this.bgColor = `var(--${value}--secondaryBackgroundColor)`;
+    }
+  };
+
   change(event: any){
     this.changed.emit(event)
   }

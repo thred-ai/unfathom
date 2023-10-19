@@ -23,7 +23,7 @@ export class World {
     character: Character;
     spawn: { x: number; y: number; z: number };
     direction: { x: number; y: number; z: number };
-    scale: number;
+    scale: { x: number; y: number; z: number };
   }[];
 
   assets!: {
@@ -31,7 +31,7 @@ export class World {
     movement: AssetMovement;
     spawn: { x: number; y: number; z: number };
     direction: { x: number; y: number; z: number };
-    scale: number;
+    scale: { x: number; y: number; z: number };
   }[];
 
   constructor(
@@ -44,14 +44,14 @@ export class World {
       character: Character;
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
-      scale: number;
+      scale: { x: number; y: number; z: number };
     }[] = [],
     assets: {
       asset: ModelAsset;
       movement: AssetMovement;
       spawn: { x: number; y: number; z: number };
       direction: { x: number; y: number; z: number };
-      scale: number;
+      scale: { x: number; y: number; z: number };
     }[] = [],
     lightingIntensity: number = 0.8,
     created: number = new Date().getTime(),

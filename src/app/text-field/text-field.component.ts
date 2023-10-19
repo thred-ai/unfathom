@@ -24,6 +24,14 @@ export class TextFieldComponent implements OnInit {
   @Input() textColor: string = 'var(--primaryTextColor)';
   @Input() bgColor: string = 'var(--secondaryBackgroundColor)';
   @Input() clickable: boolean = false;
+  @Input() set theme(value: string | undefined){
+    if (value && this.textColor == "var(--primaryTextColor)"){
+      this.textColor = `var(--${value}--primaryTextColor)`;
+    }
+    if (value && this.bgColor == "var(--secondaryBackgroundColor)"){
+      this.bgColor = `var(--${value}--secondaryBackgroundColor)`;
+    }
+  };
 
   @Output() changed = new EventEmitter<any>();
   @Output() btnClicked = new EventEmitter<any>();

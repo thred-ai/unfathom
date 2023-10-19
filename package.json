@@ -55,6 +55,7 @@
     "@google/model-viewer": "^1.12.0",
     "@ionic/angular": "^6.7.1",
     "@ionic/cli": "^7.1.1",
+    "@ng-icons/bootstrap-icons": "^25.4.0",
     "@ng-icons/core": "^25.4.0",
     "@ng-icons/feather-icons": "^25.4.0",
     "@ng-icons/heroicons": "^25.4.0",

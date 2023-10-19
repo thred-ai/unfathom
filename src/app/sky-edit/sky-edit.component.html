@@ -1,0 +1,92 @@
+<div
+  class="w-full h-full p-3 pb-5 primary-background-light"
+  style="overflow-y: scroll"
+  *ngIf="world.sky"
+>
+  <!-- <div class="w-full pb-3">
+  <p class="w-full mb-3 font-medium primary-text">
+    {{ toggle.checked ? "Visible" : "Hidden" }}
+  </p>
+  <div class="px-1">
+    <mat-slide-toggle
+      #toggle
+      [checked]="!world.sky.hidden"
+      (change)="world.sky.hidden = !$event.checked"
+    ></mat-slide-toggle>
+  </div>
+</div> -->
+
+  <div class="wrap-input1 w-full py-3 px-0">
+ 
+
+    <div class="w-full pb-3">
+      <div class="px-1">
+        <verticalai-text-field
+          [title]="'Size'"
+          [type]="'number'"
+          [range]="{ min: 10, max: 100000 }"
+          [value]="world.width"
+          [theme]="'light'"
+          [placeholder]="'Size'"
+          (changed)="world.size = $event; save()"
+        >
+        </verticalai-text-field>
+      </div>
+    </div>
+    <div class="w-full pb-3">
+      <div class="px-1">
+        <verticalai-text-field
+          [title]="'Sunlight'"
+          [type]="'number'"
+          [theme]="'light'"
+          [range]="{ min: 0, max: 5 }"
+          [value]="world.lightingIntensity"
+          [placeholder]="'Sunlight'"
+          (changed)="world.lightingIntensity = $event; save()"
+        >
+        </verticalai-text-field>
+      </div>
+
+      <!-- <div class="w-full pb-3 row row-cols-2 justify-center g-0">
+<div class="px-1">
+  <verticalai-text-field
+    [title]="'Size'"
+    [type]="'number'"
+    [range]="{ min: 10, max: 100000 }"
+    [value]="world.size"
+    [placeholder]="'Direction (X)'"
+    (changed)="world.size = $event"
+  >
+  </verticalai-text-field>
+</div>
+<div class="col px-1">
+  <verticalai-text-field
+    [title]="'Height'"
+    [type]="'number'"
+    [range]="{ min: 10, max: 100000 }"
+    [value]="world.sky.height"
+    [placeholder]="'Direction (Y)'"
+    (changed)="world.sky.height = $event"
+  >
+  </verticalai-text-field>
+</div>
+</div> -->
+    </div>
+
+    <div class="w-full pb-3">
+        <div class="px-1">
+          <verticalai-select-field
+            [title]="'Liquid'"
+            [value]="world.ground.liquid.id"
+            [data]="liquids"
+            [theme]="'light'"
+            [valueField]="'id'"
+            [displayField]="'name'"
+            [placeholder]="'No Liquid'"
+            (changed)="selectLiquids($event); save()"
+          >
+          </verticalai-select-field>
+        </div>
+      </div>
+  </div>
+</div>

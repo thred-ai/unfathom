@@ -24,6 +24,6 @@ export class Developer {
     this.date = date ?? 3;
     this.url = url;
     this.email = email;
-    this.theme = theme ?? 'auto'
+    this.theme = theme ?? 'dark'
   }
 }

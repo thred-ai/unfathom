@@ -4,7 +4,7 @@
 
 <ng-template #full>
   <div class="wrap-input1 w-full pt-3 m-0">
-    <p class="w-full mb-3 font-bold" [style.color]="textColor">{{ title }}</p>
+    <p class="w-full mb-2 font-medium text-xs" [style.color]="textColor">{{ title }}</p>
     <div class="px-0 w-full">
       <ng-container *ngTemplateOutlet="input"></ng-container>
     </div>
@@ -25,7 +25,7 @@
     (click)="clickable ? btnClicked.emit() : null"
   >
     <ion-input
-      class="text-truncate"
+      class="text-truncate text-xs"
       *ngIf="type == 'number'; else textField"
       fill="solid"
       [ngModel]="value"

@@ -8,29 +8,48 @@ import { DesignerComponent } from './designer/designer.component';
 
 const routes: Routes = [
   // { path: 'account', component: AuthComponent, pathMatch: 'full' },
-  { path: 'account', component: AuthComponent, pathMatch: 'full' },
+  {
+    path: 'account',
+    component: AuthComponent,
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'always',
+  },
 
   {
     path: 'dashboard/:user',
     component: DashboardComponent,
     pathMatch: 'full',
+    runGuardsAndResolvers: 'always',
   },
   {
     path: 'share/:id/scene/:scene',
     component: PrototypeModuleComponent,
     pathMatch: 'full',
+    runGuardsAndResolvers: 'always',
   },
   {
     path: 'design/:id',
     component: DesignerComponent,
     pathMatch: 'full',
+    runGuardsAndResolvers: 'always',
+    
   },
-  { path: '', redirectTo: '/account', pathMatch: 'full' },
-  { path: ':any', redirectTo: '/account', pathMatch: 'full' },
+  {
+    path: '',
+    redirectTo: '/account',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'always',
+  },
+  {
+    path: ':any',
+    redirectTo: '/account',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'always',
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

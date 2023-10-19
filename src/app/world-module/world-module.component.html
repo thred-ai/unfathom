@@ -1,18 +1,5 @@
 <div class="w-full h-full">
   <div class="w-full h-full">
-    <div class="w-full p-3">
-      <div class="w-full flex justify-between items-center">
-        <div class="primary-text font-bold" style="font-size: 15px">
-          Environment
-        </div>
-        <button
-          class="btn bg-orange border-0 rounded font-bold text-white flex justify-center px-3 content-center py-2"
-          (click)="save()"
-        >
-          {{ loading == "" ? "Save" : loading }}
-        </button>
-      </div>
-    </div>
 
     <mat-tab-group
       #menu
@@ -24,74 +11,20 @@
     >
       <mat-tab class="tab">
         <ng-template mat-tab-label>
-          <span class="primary-text me-3"> Space </span>
-          <mat-icon class="primary-text"> aspect_ratio </mat-icon>
+          <span class="primary-text"> Space </span>
         </ng-template>
         <ng-template matTabContent>
           <div
             class="h-full flex justify-center items-center flex-col relative"
           >
-            <div class="w-full h-full p-3 pb-5" style="overflow-y: scroll">
-              <div class="w-full pb-3">
-                <div class="px-1">
-                  <verticalai-text-field
-                    [title]="'Space Size'"
-                    [type]="'number'"
-                    [range]="{ min: 10, max: 100000 }"
-                    [value]="world.size"
-                    [placeholder]="'Space Size'"
-                    (changed)="world.size = $event"
-                  >
-                  </verticalai-text-field>
-                </div>
-              </div>
-              <div class="w-full pb-3">
-                <div class="px-1">
-                  <verticalai-text-field
-                    [title]="'Lighting'"
-                    [type]="'number'"
-                    [range]="{ min: 0, max: 5 }"
-                    [value]="world.lightingIntensity"
-                    [placeholder]="'Lighting'"
-                    (changed)="world.lightingIntensity = $event"
-                  >
-                  </verticalai-text-field>
-                </div>
-
-                <!-- <div class="w-full pb-3 row row-cols-2 justify-center g-0">
-            <div class="px-1">
-              <verticalai-text-field
-                [title]="'Size'"
-                [type]="'number'"
-                [range]="{ min: 10, max: 100000 }"
-                [value]="world.size"
-                [placeholder]="'Direction (X)'"
-                (changed)="world.size = $event"
-              >
-              </verticalai-text-field>
-            </div>
-            <div class="col px-1">
-              <verticalai-text-field
-                [title]="'Height'"
-                [type]="'number'"
-                [range]="{ min: 10, max: 100000 }"
-                [value]="world.sky.height"
-                [placeholder]="'Direction (Y)'"
-                (changed)="world.sky.height = $event"
-              >
-              </verticalai-text-field>
-            </div>
-          </div> -->
-              </div>
-            </div>
+           
           </div>
         </ng-template>
       </mat-tab>
 
       <mat-tab class="tab">
         <ng-template mat-tab-label>
-          <span class="primary-text me-3"> Ground </span>
-          <mat-icon class="primary-text"> grass </mat-icon>
+          <span class="primary-text"> Surface </span>
         </ng-template>
         <ng-template matTabContent>
           <div
@@ -102,8 +35,8 @@
               style="overflow-y: scroll"
               *ngIf="world.ground"
             >
-              <div class="w-full pb-3">
-                <p class="w-full mb-3 font-bold primary-text">
+              <!-- <div class="w-full pb-3">
+                <p class="w-full mb-3 font-medium primary-text">
                   {{ toggle.checked ? "Visible" : "Hidden" }}
                 </p>
                 <div class="px-1">
@@ -113,30 +46,16 @@
                     (change)="world.ground.hidden = !$event.checked"
                   ></mat-slide-toggle>
                 </div>
-              </div>
-
-              <div class="w-full pb-3">
-                <div class="px-1">
-                  <verticalai-text-field
-                    [title]="'Max Surface Height'"
-                    [type]="'number'"
-                    [range]="{ min: 10, max: 100000 }"
-                    [value]="world.ground.maxHeight"
-                    [placeholder]="'Max Surface Height'"
-                    (changed)="world.ground.maxHeight = $event"
-                  >
-                  </verticalai-text-field>
-                </div>
-              </div>
+              </div> -->
 
               <div class="wrap-input1 w-full py-3 px-0">
-                <p class="w-full mb-3 primary-text font-bold">Surface Texture</p>
+                <p class="w-full mb-3 primary-text font-medium">Texture</p>
 
                 <div
                   class="w-full flex justify-start items-center"
                 >
                   <div
-                    class="w-auto rounded-circle border-table shadow flex justify-center items-center section-background"
+                    class="w-auto rounded-full border-table shadow flex justify-center items-center section-background"
                     style="
                       object-fit: contain;
                       aspect-ratio: 1;
@@ -145,7 +64,7 @@
                     "
                   >
                     <div
-                      class="m-auto relative img-input rounded-circle pic-hover"
+                      class="m-auto relative img-input rounded-full pic-hover"
                       style="height: 90%; width: 90%; overflow: hidden"
                       role="button"
                       (click)="cImgInput.click()"
@@ -174,13 +93,13 @@
               </div>
 
               <div class="wrap-input1 w-full py-3 px-0">
-                <p class="w-full mb-3 primary-text font-bold">Surface Terrain</p>
+                <p class="w-full mb-3 primary-text font-medium">Terrain</p>
 
                 <div
                   class="w-full flex justify-start items-center"
                 >
                   <div
-                    class="w-auto rounded-circle border-table shadow flex justify-center items-center section-background"
+                    class="w-auto rounded-full border-table shadow flex justify-center items-center section-background"
                     style="
                       object-fit: contain;
                       aspect-ratio: 1;
@@ -189,7 +108,7 @@
                     "
                   >
                     <div
-                      class="m-auto relative img-input rounded-circle pic-hover"
+                      class="m-auto relative img-input rounded-full pic-hover"
                       style="height: 90%; width: 90%; overflow: hidden"
                       role="button"
                       (click)="xImgInput.click()"
@@ -217,80 +136,9 @@
                 </div>
               </div>
 
-              <div class="w-full pb-3">
-                <div class="px-1">
-                  <verticalai-select-field
-                    [title]="'Liquids'"
-                    [multiple]="true"
-                    [value]="worldLiquids"
-                    [data]="liquids"
-                    [valueField]="'id'"
-                    [displayField]="'name'"
-                    [placeholder]="'No Liquid'"
-                    (changed)="selectLiquids($event)"
-                  >
-                  </verticalai-select-field>
-                </div>
-              </div>
+              
 
-              <ion-accordion-group
-                class="example-headers-align bg-transparent animate__animated animate__fadeIn"
-                [multiple]="false"
-                (ionChange)="(null)"
-                id="accordion"
-              >
-                <ion-accordion
-                  class="bg-transparent"
-                  [value]="'water'"
-                  *ngIf="world.ground.liquid['water']"
-                >
-                  <ion-item slot="header" class="primary-text">
-                    <ion-label class="h3">Water</ion-label>
-                  </ion-item>
-                  <div class="ion-padding" slot="content">
-                    <div class="w-full pb-3">
-                      <div class="px-1">
-                        <verticalai-text-field
-                          [title]="'Surface Level'"
-                          [type]="'number'"
-                          [range]="{ min: 10, max: 100000 }"
-                          [value]="world.ground.liquid['water'].level"
-                          [placeholder]="'Surface Level'"
-                          (changed)="
-                            world.ground.liquid['water'].level = $event
-                          "
-                        >
-                        </verticalai-text-field>
-                      </div>
-                    </div>
-                  </div>
-                </ion-accordion>
-
-                <ion-accordion
-                  class="bg-transparent"
-                  [value]="'lava'"
-                  *ngIf="world.ground.liquid['lava']"
-                >
-                  <ion-item slot="header" class="primary-text">
-                    <ion-label class="h3">Lava</ion-label>
-                  </ion-item>
-                  <div class="ion-padding" slot="content">
-                    <div class="w-full pb-3">
-                      <div class="px-1">
-                        <verticalai-text-field
-                          [title]="'Surface Level'"
-                          [type]="'number'"
-                          [range]="{ min: 10, max: 100000 }"
-                          [value]="world.ground.liquid['lava'].level"
-                          [placeholder]="'Surface Level'"
-                          (changed)="world.ground.liquid['lava'].level = $event"
-                        >
-                        </verticalai-text-field>
-                      </div>
-                    </div>
-                  </div>
-                </ion-accordion>
-              </ion-accordion-group>
+            
             </div>
           </div>
         </ng-template>
@@ -298,8 +146,7 @@
 
       <mat-tab class="tab">
         <ng-template mat-tab-label>
-          <span class="primary-text me-3"> Sky </span>
-          <mat-icon class="primary-text"> light_mode </mat-icon>
+          <span class="primary-text"> Sky </span>
         </ng-template>
         <ng-template matTabContent>
           <div
@@ -310,8 +157,8 @@
               style="overflow-y: scroll"
               *ngIf="world.sky"
             >
-              <div class="w-full pb-3">
-                <p class="w-full mb-3 font-bold primary-text">
+              <!-- <div class="w-full pb-3">
+                <p class="w-full mb-3 font-medium primary-text">
                   {{ toggle.checked ? "Visible" : "Hidden" }}
                 </p>
                 <div class="px-1">
@@ -321,7 +168,7 @@
                     (change)="world.sky.hidden = !$event.checked"
                   ></mat-slide-toggle>
                 </div>
-              </div>
+              </div> -->
 
               <div class="w-full pb-3">
                 <div class="px-1">
@@ -338,13 +185,13 @@
               </div>
 
               <div class="wrap-input1 w-full py-3 px-0">
-                <p class="w-full mb-3 primary-text font-bold">Sky Texture</p>
+                <p class="w-full mb-3 primary-text font-medium">Sky Texture</p>
 
                 <div
                   class="w-full flex justify-start items-center"
                 >
                   <div
-                    class="w-auto rounded-circle border-table shadow flex justify-center items-center section-background"
+                    class="w-auto rounded-full border-table shadow flex justify-center items-center section-background"
                     style="
                       object-fit: contain;
                       aspect-ratio: 1;
@@ -353,7 +200,7 @@
                     "
                   >
                     <div
-                      class="m-auto relative img-input rounded-circle pic-hover"
+                      class="m-auto relative img-input rounded-full pic-hover"
                       style="height: 90%; width: 90%; overflow: hidden"
                       role="button"
                       (click)="sImgInput.click()"

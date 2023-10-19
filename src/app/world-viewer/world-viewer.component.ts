@@ -7,15 +7,11 @@ import { DesignService } from '../design.service';
 @Component({
   selector: 'app-world-viewer',
   templateUrl: './world-viewer.component.html',
-  styleUrls: ['./world-viewer.component.scss']
+  styleUrls: ['./world-viewer.component.scss'],
 })
 export class WorldViewerComponent implements OnInit {
-
-  @Input() project?: World;
-
-  totalLength = 0
-  totalLoaded = 0
-
+  totalLength = 0;
+  totalLoaded = 0;
 
   constructor(
     private projectService: ProjectService,
@@ -42,16 +38,14 @@ export class WorldViewerComponent implements OnInit {
 
     // });
 
-    if (this.project) {
-      this.designService.loaded.next(this.loaded);
-      setTimeout(() => {
-        this.designService.init(this.project!);
-      }, 100);
+    this.designService.loaded.next(this.loaded);
 
-      this.designService?.loaded.subscribe((loaded) => {
-        this.loaded = loaded;
-      });
-    }
+    this.designService?.loaded.subscribe((loaded) => {
+      console.log(loaded)
+      this.loaded = loaded;
+    });
+
+    this.designService.initWorld()
 
     // this.designerService?.openStep.subscribe((scene) => {
     //   this.scene = scene?.data?.ngArguments?.scene as Scene;
@@ -68,5 +62,4 @@ export class WorldViewerComponent implements OnInit {
   ngOnDestroy(): void {
     this.designService.deinit();
   }
-
 }

@@ -14,6 +14,7 @@ import { Dict } from './load.service';
 import { Character } from './models/workflow/character.model';
 import { Texture } from './models/workflow/texture.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { ProjectService } from './project.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,11 +24,26 @@ export class DesignService {
 
   engine?: BABYLON.Engine;
 
+  gizmoManager?: BABYLON.GizmoManager;
+
   loaded = new BehaviorSubject<string>('');
 
-  constructor(private db: AngularFirestore) {}
+  selected = new BehaviorSubject<string | undefined>(undefined);
 
-  init(world: World) {
+  constructor(
+    private db: AngularFirestore,
+    private projectService: ProjectService
+  ) {
+    projectService.workflow.subscribe((w) => {
+      if (w) {
+        this.world = w;
+      } else {
+        this.deinit();
+      }
+    });
+  }
+
+  private init(world: World = this.world) {
     this.deinit();
 
     this.world = world;
@@ -65,6 +81,9 @@ export class DesignService {
 
     // const gl = new BABYLON.GlowLayer('glow', scene);
 
+    const gl = new BABYLON.GlowLayer('glow', scene);
+    gl.intensity = 0.5;
+
     var camera = new BABYLON.ArcRotateCamera(
       'Camera',
       0,
@@ -73,7 +92,7 @@ export class DesignService {
       BABYLON.Vector3.Zero(),
       scene
     );
-    camera.setPosition(new BABYLON.Vector3(0, this.world.sky.height / 4, 0));
+    camera.setPosition(new BABYLON.Vector3(0, (world.height * 2) / 4, 0));
 
     camera.maxZ = this.world!.width * 2;
 
@@ -81,7 +100,7 @@ export class DesignService {
 
     if (world.sky && !world.sky.hidden) {
       skybox = BABYLON.MeshBuilder.CreateSphere(
-        'world',
+        'sky',
         {
           diameterX: world.width * 2,
           diameterZ: world.height * 2,
@@ -90,7 +109,7 @@ export class DesignService {
         scene
       );
 
-      skybox.isPickable = false
+      skybox.isPickable = true;
 
       skybox.scaling = new BABYLON.Vector3(-1, -1, -1);
 
@@ -123,7 +142,7 @@ export class DesignService {
         scene
       );
 
-      ground.isPickable = false;
+      ground.isPickable = true;
 
       var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
 
@@ -202,19 +221,21 @@ export class DesignService {
         false
       );
 
-      extraGround.isPickable = false
+      extraGround.isPickable = true;
 
       var extraGroundMaterial = new BABYLON.StandardMaterial(
         'extraGround',
         scene
       );
 
-      if (world.ground.texture.diffuse) {
-        extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
-          world.ground.texture.diffuse,
-          scene
-        );
-      }
+      extraGroundMaterial.alpha = 0.0;
+
+      // if (world.ground.texture.diffuse) {
+      //   extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
+      //     world.ground.texture.diffuse,
+      //     scene
+      //   );
+      // }
 
       extraGround.position.y = -2.05;
 
@@ -226,7 +247,7 @@ export class DesignService {
       if (world.ground.liquid) {
         BABYLON.Engine.ShadersRepository = '';
 
-        if (world.ground.liquid['water']) {
+        if (world.ground.liquid.liquid == LiquidType.water) {
           var water = BABYLON.MeshBuilder.CreateGround(
             'water',
             {
@@ -236,16 +257,17 @@ export class DesignService {
             },
             scene
           );
-          water.position.y = world.ground.liquid['water'].level;
+          water.position.y = world.ground.liquid.level;
 
           var waterMaterial = new MATERIALS.WaterMaterial(
             'water_material',
             scene
           );
+          water.isPickable = true;
 
-          if (world.ground.liquid['water'].texture.bump) {
+          if (world.ground.liquid.texture.bump) {
             waterMaterial.bumpTexture = new BABYLON.Texture(
-              world.ground.liquid['water'].texture.bump,
+              world.ground.liquid.texture.bump,
               scene
             ); // Set the bump texture
           }
@@ -297,32 +319,29 @@ export class DesignService {
           // );
         }
 
-        if (world.ground.liquid['lava']) {
+        if (world.ground.liquid.liquid == LiquidType.lava) {
           var lava = BABYLON.MeshBuilder.CreateGround(
             'lava',
             {
-              width: world.width * 2,
-              height: world.height * 2,
+              width: world.width,
+              height: world.height,
               subdivisions: 32,
             },
             scene
           );
-          lava.position.y = world.ground.liquid['lava'].level;
-          lava.isPickable = false;
+          lava.position.y = world.ground.liquid.level;
 
-          var lavaMaterial = new MATERIALS.LavaMaterial(
-            'water_material',
-            scene
-          );
+          var lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
+          lava.isPickable = true;
 
           lavaMaterial.noiseTexture = new BABYLON.Texture(
             'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
             scene
           );
 
-          if (world.ground.liquid['lava'].texture.diffuse) {
+          if (world.ground.liquid.texture.diffuse) {
             lavaMaterial.diffuseTexture = new BABYLON.Texture(
-              world.ground.liquid['lava'].texture.diffuse,
+              world.ground.liquid.texture.diffuse,
               scene
             );
           }
@@ -379,7 +398,9 @@ export class DesignService {
         object.id = asset.asset.id;
         object.isPickable = true;
 
-        object.scaling.scaleInPlace(asset.scale);
+        object.scaling.x = asset.scale.x;
+        object.scaling.y = asset.scale.y;
+        object.scaling.z = asset.scale.z;
 
         object.rotation = new BABYLON.Vector3(
           this.toRadians(asset.direction.x),
@@ -416,27 +437,55 @@ export class DesignService {
 
     var hl = new BABYLON.HighlightLayer('hl1', scene);
 
-    let gizmoManager = new BABYLON.GizmoManager(scene, 1);
-    gizmoManager.positionGizmoEnabled = true;
+    hl.addExcludedMesh(extraGround);
+
+    this.gizmoManager = new BABYLON.GizmoManager(scene, 1);
+    this.selectTool("move")
+    this.gizmoManager.boundingBoxGizmoEnabled = true
+    this.gizmoManager.gizmos.boundingBoxGizmo.setColor(BABYLON.Color3.Green())
+
+    this.gizmoManager.boundingBoxDragBehavior.onDragObservable.add((event) => {
+      console.log("drag");
+    });
+
+    this.gizmoManager.gizmos.positionGizmo.onDragEndObservable.add(event => {
+
+    })
+
     // gizmoManager.rotationGizmoEnabled = true;
     // gizmoManager.scaleGizmoEnabled = true;
+    this.gizmoManager.usePointerToAttachGizmos = false;
     // gizmoManager.boundingBoxGizmoEnabled = true;
 
-    scene.onPointerDown = function (evt, pickResult) {
+    scene.onPointerDown = (evt, pickResult) => {
       // We try to pick an object
       var object = pickResult.pickedMesh as BABYLON.Mesh;
       console.log(object);
       hl.removeAllMeshes();
-      gizmoManager.attachToMesh(null);
+      this.gizmoManager.attachToMesh(null);
+      if (object.id == 'extraGround') {
+        this.selected.next(undefined);
+        return;
+      }
       if (pickResult.hit && object) {
-       
-        hl.addMesh(object, BABYLON.Color3.Green());
-        hl.blurHorizontalSize = 0.05
-        hl.blurVerticalSize = 0.05
+        this.selected.next(object.id);
+  
+        var omitList = ['sky', 'ground', 'water', 'lava'];
 
-        gizmoManager.attachToMesh(object);
+        console.log(omitList.includes(object.id));
+
+        if (omitList.includes(object.id)) {
+          hl.addMesh(object, BABYLON.Color3.Green());
+          hl.blurHorizontalSize = 1;
+          hl.blurVerticalSize = 1;
+          return;
+        }
+       
+
+        this.gizmoManager.attachToMesh(object);
       }
     };
+
     await Promise.all(
       this.world.characters.map(async (c) => {
         this.loaded.next(`Downloading "${c.character.name}"`);
@@ -453,7 +502,10 @@ export class DesignService {
         var actor2 = result2.meshes[0] as BABYLON.Mesh;
         actor2.id = c.character.id;
 
-        actor2.scaling.scaleInPlace(c.scale);
+        actor2.scaling.x = c.scale.x;
+        actor2.scaling.y = c.scale.y;
+        actor2.scaling.z = c.scale.z;
+
         actor2.checkCollisions = true;
 
         actor2.position = new BABYLON.Vector3(c.spawn.x, c.spawn.y, c.spawn.z);
@@ -595,6 +647,38 @@ export class DesignService {
     });
   }
 
+  selectTool(tool: string) {
+    switch (tool) {
+      case 'rotate':
+        this.gizmoManager.rotationGizmoEnabled = true;
+        this.gizmoManager.positionGizmoEnabled = false;
+        this.gizmoManager.scaleGizmoEnabled = false;
+
+        if (this.gizmoManager.gizmos.rotationGizmo) {
+          this.gizmoManager.gizmos.rotationGizmo.updateGizmoRotationToMatchAttachedMesh =
+            false;
+        }
+
+        return;
+      case 'move':
+        this.gizmoManager.positionGizmoEnabled = true;
+        this.gizmoManager.rotationGizmoEnabled = false;
+        this.gizmoManager.scaleGizmoEnabled = false;
+
+        return;
+      case 'scale':
+        this.gizmoManager.scaleGizmoEnabled = true;
+        this.gizmoManager.positionGizmoEnabled = false;
+        this.gizmoManager.rotationGizmoEnabled = false;
+
+        this.gizmoManager.gizmos.scaleGizmo.sensitivity = 3;
+
+        
+
+        return;
+    }
+  }
+
   toRadians = (degrees: number) => {
     return (degrees * Math.PI) / 180;
   };
@@ -668,5 +752,6 @@ export class DesignService {
 
     this.engine?.dispose();
     this.engine = undefined;
+    this.gizmoManager = undefined;
   }
 }

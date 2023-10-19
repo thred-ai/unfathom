@@ -6,9 +6,7 @@
   <div
     class="secondary-background-{{
       theme
-    }} h-full w-[57px] flex justify-between items-center flex-col border-table-right-{{
-      theme
-    }}"
+    }} h-full w-[75px] flex justify-between items-center flex-col"
   >
     <div class="w-full h-full flex justify-start items-center flex-col">
       <!-- <div
@@ -46,17 +44,31 @@
 
       <div
         class="w-full proj{{
-          mode == 'scenes' ? '-select' : ''
-        }} ms-0 py-3 flex justify-center items-center primary-text-{{ theme }}"
-        [matTooltip]="'Scenes'"
+          mode == 'design' ? '-select' : ''
+        }} ms-0 py-3 flex justify-center items-center text-slate-300 aspect-square"
+        [matTooltip]="'Design'"
         [matTooltipPosition]="'right'"
         role="button"
-        (click)="changeMode('scenes')"
+        (click)="changeMode('design')"
       >
-        <div class="w-full flex justify-center items-center" #folderToggle>
-          <div class="flex justify-center items-center" role="button">
-            <mat-icon>view_stream</mat-icon>
+        <div
+          class="w-full flex justify-center items-center flex-col"
+          #folderToggle
+        >
+          <div
+            class="flex justify-center items-center text-[24px]"
+            role="button"
+          >
+            <ng-icon
+              class="font-bold"
+              name="heroGlobeAmericas"
+              [strokeWidth]="2.2"
+            >
+            </ng-icon>
           </div>
+          <span class="w-full text-center text-[10px] mt-1 font-medium">
+            Design
+          </span>
         </div>
       </div>
       <!-- <div
@@ -83,33 +95,57 @@
 
       <div
         class="w-full proj{{
-          mode == 'characters' ? '-select' : ''
-        }}  ms-0 py-3 flex justify-center items-center primary-text-{{ theme }}"
-        [matTooltip]="'Characters'"
+          mode == 'elements' ? '-select' : ''
+        }}  ms-0 py-3 flex justify-center items-center text-slate-300 aspect-square"
+        [matTooltip]="'Elements'"
         [matTooltipPosition]="'right'"
         role="button"
-        (click)="changeMode('characters')"
+        (click)="changeMode('elements')"
       >
-        <div class="w-full flex justify-center items-center" #folderToggle>
-          <div class="flex justify-center items-center" role="button">
-            <mat-icon>accessibility_new</mat-icon>
+        <div
+          class="w-full flex justify-center items-center flex-col"
+          #folderToggle
+        >
+          <div
+            class="flex justify-center items-center text-[24px]"
+            role="button"
+          >
+            <ng-icon class="font-bold" name="heroCube" [strokeWidth]="2.2">
+            </ng-icon>
           </div>
+          <span class="w-full text-center text-[10px] mt-1 font-medium">
+            Elements
+          </span>
         </div>
       </div>
 
       <div
         class="w-full proj{{
-          mode == 'assets' ? '-select' : ''
-        }}  ms-0 py-3 flex justify-center items-center primary-text-{{ theme }}"
-        [matTooltip]="'3D Assets'"
+          mode == 'uploads' ? '-select' : ''
+        }} ms-0 py-3 flex justify-center items-center text-slate-300 aspect-square"
+        [matTooltip]="'Uploads'"
         [matTooltipPosition]="'right'"
         role="button"
-        (click)="changeMode('assets')"
+        (click)="changeMode('uploads')"
       >
-        <div class="w-full flex justify-center items-center" #folderToggle>
-          <div class="flex justify-center items-center" role="button">
-            <mat-icon>apartment</mat-icon>
+        <div
+          class="w-full flex justify-center items-center flex-col"
+          #folderToggle
+        >
+          <div
+            class="flex justify-center items-center text-[24px]"
+            role="button"
+          >
+            <ng-icon
+              class="font-bold"
+              name="heroCloudArrowUp"
+              [strokeWidth]="2.2"
+            >
+            </ng-icon>
           </div>
+          <span class="w-full text-center text-[10px] mt-1 font-medium">
+            Uploads
+          </span>
         </div>
       </div>
     </div>

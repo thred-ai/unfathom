@@ -16,12 +16,9 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./world-module.component.scss'],
 })
 export class WorldModuleComponent implements OnInit {
-  @Input() data: any;
   @Output() changed = new EventEmitter<any>();
 
   world?: World;
-  scene?: Scene;
-  project?: any;
 
   constructor(
     private prototypeService: PrototypeService,
@@ -29,68 +26,31 @@ export class WorldModuleComponent implements OnInit {
     private loadService: LoadService
   ) {}
 
-  liquids = [
-    {
-      id: 'lava',
-      name: 'Lava',
-    },
-    {
-      id: 'water',
-      name: 'Water',
-    },
-  ];
+  
 
   newImages: Dict<File> = {};
 
-  worldLiquids: string[] = [];
 
   loading = ""
 
-  selectLiquids(liquids: string[]) {
-    if (this.world && this.scene && this.world.ground) {
-      console.log(liquids);
-      Object.keys(this.world.ground.liquid).forEach((liquid) => {
-        if (!liquids.includes(liquid)) {
-          delete this.world?.ground?.liquid[liquid];
-        }
-      });
-      liquids.forEach((liquid) => {
-        if (!this.world!.ground!.liquid[liquid]) {
-          let liquidType = LiquidType[`${liquid as 'lava' | 'water'}`];
-          this.world!.ground!.liquid[liquid] = new Liquid(
-            this.prototypeService.generateLiquidTexture(liquidType),
-            liquidType,
-            1
-          );
-        }
-      });
-    }
-  }
+  
 
   ngOnInit(): void {
-    // this.designService.openStep.subscribe((s) => {
-    //   this.scene = s?.data.ngArguments?.scene as Scene;
-
-    //   this.world = this.scene?.world as World;
-    // });
-
-    this.worldLiquids = Object.keys(this.world?.ground?.liquid ?? {}) ?? [];
-
 
     this.projectService.workflow.subscribe((w) => {
-      this.project = w;
+      this.world = w;
     });
   }
 
   async save() {
     this.loading = "Saving"
-    if (this.world && this.scene && this.world.ground && this.world.sky && this.project) {
+    if (this.world && this.world.ground && this.world.sky) {
 
       this.loading = "Uploading Textures"
       if (this.newImages['ground']) {
         let url = await this.loadService.saveImg(
           this.newImages['ground'],
-          `worlds/${this.project?.id}/scenes/${this.scene.id}/ground/ground_diffuse.png`
+          `worlds/${this.world?.id}/ground/ground_diffuse.png`
         );
         if (url){
           this.world.ground.texture.diffuse = url
@@ -100,7 +60,7 @@ export class WorldModuleComponent implements OnInit {
       if (this.newImages['map']) {
         let url = await this.loadService.saveImg(
           this.newImages['map'],
-          `worlds/${this.project?.id}/scenes/${this.scene.id}/heightMap.png`
+          `worlds/${this.world?.id}/ground/heightMap.png`
         );
         if (url){
           this.world.ground.heightMap = url
@@ -110,14 +70,12 @@ export class WorldModuleComponent implements OnInit {
       if (this.newImages['sky']) {
         let url = await this.loadService.saveImg(
           this.newImages['sky'],
-          `worlds/${this.project?.id}/scenes/${this.scene.id}/skybox.png`
+          `worlds/${this.world?.id}/sky/skybox.png`
         );
         if (url){
           this.world.sky.texture.emissive = url
         }
       }
-
-      this.scene.world = this.world;
 
       this.loading = ""
       this.changed.emit();

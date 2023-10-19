@@ -10,6 +10,7 @@ import { Subscription } from '../models/workflow/subscription.model';
 import { ThemeService } from '../theme.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
+import { ProjectService } from '../project.service';
 
 @AutoUnsubscribe
 @Component({
@@ -93,7 +94,8 @@ export class DashboardComponent implements OnInit {
     private loadService: LoadService,
     private themeService: ThemeService,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private projectService: ProjectService
   ) {
     (<any>window).openCard = this.openCard.bind(this);
   }
@@ -153,6 +155,9 @@ export class DashboardComponent implements OnInit {
   async ngOnInit() {
     
     this.getProfile();
+
+    this.projectService.workflow.next(undefined)
+    
       // this.loadStats((await this.loadService.currentUser)?.uid);
 
       this.loadService.loadedUser.subscribe((dev) => {

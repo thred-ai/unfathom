@@ -5,7 +5,7 @@ import { Texture } from './texture.model';
 export class Ground {
   heightMap!: string;
   texture!: Texture;
-  liquid!: Dict<Liquid>
+  liquid!: Liquid
   maxHeight!: number;
   minHeight!: number;
   hidden!: boolean
@@ -13,7 +13,7 @@ export class Ground {
   constructor(
     heightMap: string,
     texture: Texture,
-    liquid: Dict<Liquid> = {},
+    liquid?: Liquid,
     maxHeight: number = 0,
     minHeight: number = 0,
     hidden: boolean = false

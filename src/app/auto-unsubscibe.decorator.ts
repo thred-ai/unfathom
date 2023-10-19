@@ -1,3 +1,5 @@
+import { DesignerComponent } from "./designer/designer.component";
+
 export function AutoUnsubscribe(constructor: any) {
   const original = constructor.prototype.ngOnDestroy;
 

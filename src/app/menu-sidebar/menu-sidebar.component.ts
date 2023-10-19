@@ -37,11 +37,10 @@ export class MenuSidebarComponent implements OnInit {
 
   @Input() theme: 'light' | 'dark' = 'dark';
 
-  mode: string = 'none'
+  @Input() mode?: string
+  selected?: string
 
-  // @Output() publish = new EventEmitter<Executable>();
-
-  selectedStep?: Cell.Properties;
+  @Output() modeChanged = new EventEmitter<string>();
 
   selectedData?: { data: any; callback: ((data: any) => any) | undefined };
 
@@ -66,6 +65,10 @@ export class MenuSidebarComponent implements OnInit {
       }
     });
 
+    this.designerService.selected.subscribe(s => {
+      this.selected = s
+    })
+
   }
 
 
@@ -78,6 +81,7 @@ export class MenuSidebarComponent implements OnInit {
     }
     
     this.mode = id
+    this.modeChanged.emit(id)
   }
 
   openMenu(comp: string, data: any, callback?: (data: any) => any) {

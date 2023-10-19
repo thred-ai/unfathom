@@ -131,13 +131,36 @@ import { CharacterViewModuleComponent } from './character-view-module/character-
 import { AssetViewModuleComponent } from './asset-view-module/asset-view-module.component';
 import { ShareComponent } from './share/share.component';
 import { PrototypeModuleComponent } from './prototype-module/prototype-module.component';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DesignerComponent } from './designer/designer.component';
 import { WorldViewerComponent } from './world-viewer/world-viewer.component';
 import { NgIconsModule } from '@ng-icons/core';
-import { heroUsers, heroShare, heroArrowUpTray } from '@ng-icons/heroicons/outline';
+import {
+  heroUsers,
+  heroShare,
+  heroArrowUpTray,
+  heroCube,
+  heroCloudArrowUp,
+  heroGlobeAmericas,
+  heroChevronLeft,
+} from '@ng-icons/heroicons/outline';
+
+import {
+  bootstrapArrowsFullscreen,
+  bootstrapArrowsMove,
+  bootstrapArrowRepeat,
+} from '@ng-icons/bootstrap-icons';
+
 import { featherAirplay } from '@ng-icons/feather-icons';
 import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
+import { GroundEditComponent } from './ground-edit/ground-edit.component';
+import { SkyEditComponent } from './sky-edit/sky-edit.component';
+import { LiquidEditComponent } from './liquid-edit/liquid-edit.component';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { LoadService } from './load.service';
+import { EmulatorService } from './emulator.service';
+import { FindStringPipe } from './find-string.pipe';
 
 @NgModule({
   declarations: [
@@ -191,13 +214,29 @@ import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
     PrototypeModuleComponent,
     DesignerComponent,
     WorldViewerComponent,
-    MenuSidebarComponent
+    MenuSidebarComponent,
+    GroundEditComponent,
+    SkyEditComponent,
+    LiquidEditComponent,
+    FindStringPipe,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
-    NgIconsModule.withIcons({ featherAirplay, heroUsers, heroShare, heroArrowUpTray }),
+    NgIconsModule.withIcons({
+      featherAirplay,
+      heroUsers,
+      heroShare,
+      heroArrowUpTray,
+      heroCube,
+      heroCloudArrowUp,
+      heroGlobeAmericas,
+      heroChevronLeft,
+      bootstrapArrowsFullscreen,
+      bootstrapArrowsMove,
+      bootstrapArrowRepeat,
+    }),
     AppRoutingModule,
     MatTooltipModule,
     BrowserAnimationsModule,
@@ -276,17 +315,17 @@ import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
 })
 export class AppModule {
   constructor(
-    router: Router,
-    functions: AngularFireFunctions,
-    private firestore: AngularFirestore,
+    private router: Router,
     private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private emulatorService: EmulatorService
   ) {
-    // functions.useEmulator('localhost', 5001)
-    // firestore.firestore.useEmulator('localhost', 9000)
+    this.emulatorService.initEmulator();
     this.matIconRegistry.addSvgIcon(
       `unfathom_icon`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/unfathom_icon.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        '../assets/unfathom_icon.svg'
+      )
     );
   }
 }

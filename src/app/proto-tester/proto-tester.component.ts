@@ -77,7 +77,7 @@ export class ProtoTesterComponent implements OnInit {
     });
 
     this.themeService.theme.subscribe((theme) => {
-      this.theme = theme ?? 'light';
+      this.theme = theme ?? 'dark';
       this.cdr.detectChanges();
     });
 

@@ -12,6 +12,8 @@ import { Dict, LoadService } from '../load.service';
 import { Scene } from '../models/workflow/scene.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
+import { World } from '../models/workflow/world.model';
+import { ProjectService } from '../project.service';
 
 @AutoUnsubscribe
 @Component({
@@ -20,45 +22,19 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./asset-module.component.scss'],
 })
 export class AssetModuleComponent implements OnInit {
-  workflow?: any;
-  asset?: ModelAsset;
+
+  // asset?: ModelAsset;
   assetDetails?: Dict<any>;
-  scene?: Scene;
-
-  fileDisplay?: string;
-
-  @Input() data: any = {};
+  world?: World;
 
   @Output() changed = new EventEmitter<any>();
+  @Input() assetId?: string
 
   constructor(
     private cdr: ChangeDetectorRef,
     private loadService: LoadService,
+    private projectService: ProjectService
   ) {}
-
-  async fileChangeEvent(event: any, type = 1): Promise<void> {
-    let file = event.target.files[0];
-
-    let buffer = await file.arrayBuffer();
-
-    var blob = new Blob([buffer]);
-
-    var reader = new FileReader();
-    reader.onload = (event: any) => {
-      var base64 = event.target.result;
-
-      if (type == 1) {
-        let imgIcon = document.getElementById('imgIcon') as HTMLImageElement;
-        imgIcon!.src = base64;
-        // this.newImg = file;
-      } else if (type == 2) {
-        // this.newAsset = file;
-        this.fileDisplay = base64;
-      }
-    };
-
-    reader.readAsDataURL(blob);
-  }
 
   updateCellAsset(
     id: string,
@@ -97,56 +73,58 @@ export class AssetModuleComponent implements OnInit {
     },
   ];
 
-  async save(action = 'save') {
-    // let img = this.newImg as File;
-    // let asset = this.newAsset as File;
-
-    // this.loading = "Saving"
-
-    // if (img && workflow && asset) {
-    //   let url = await this.loadService.uploadAssetImg(
-    //     img,
-    //     workflow.id,
-    //     asset.id
-    //   );
-
-    //   if (url) {
-    //     asset.img = url;
-    //   }
-    // }
-
-    // if (asset && workflow && asset) {
-    //   this.loading = "Uploading Assets"
-    //   let url = await this.loadService.uploadAssetAsset(
-    //     asset,
-    //     workflow.id,
-    //     asset.id
-    //   );
-
-    //   if (url) {
-    //     asset.assetUrl = url;
-    //   }
-    // }
-
-    // this.dialogRef.close({
-    //   workflow: this.workflow,
-    //   action,
-    //   asset: this.asset,
-    //   assetDetails: this.assetDetails
-    // });'
-
-    this.changed.emit({
-      workflow: this.workflow,
-      action,
-      asset: this.asset,
-      assetDetails: this.assetDetails,
-    });
+  save(){
+    this.projectService.saveWorkflow.next(this.world)
   }
 
+  // async save(action = 'save') {
+  //   // let img = this.newImg as File;
+  //   // let asset = this.newAsset as File;
+
+  //   // this.loading = "Saving"
+
+  //   // if (img && workflow && asset) {
+  //   //   let url = await this.loadService.uploadAssetImg(
+  //   //     img,
+  //   //     workflow.id,
+  //   //     asset.id
+  //   //   );
+
+  //   //   if (url) {
+  //   //     asset.img = url;
+  //   //   }
+  //   // }
+
+  //   // if (asset && workflow && asset) {
+  //   //   this.loading = "Uploading Assets"
+  //   //   let url = await this.loadService.uploadAssetAsset(
+  //   //     asset,
+  //   //     workflow.id,
+  //   //     asset.id
+  //   //   );
+
+  //   //   if (url) {
+  //   //     asset.assetUrl = url;
+  //   //   }
+  //   // }
+
+  //   // this.dialogRef.close({
+  //   //   workflow: this.workflow,
+  //   //   action,
+  //   //   asset: this.asset,
+  //   //   assetDetails: this.assetDetails
+  //   // });'
+
+  //   this.changed.emit({
+  //     action,
+  //     assetDetails: this.assetDetails,
+  //   });
+  // }
+
   ngOnInit(): void {
-    this.workflow = this.data.workflow;
-    this.asset = this.data.asset;
-    this.assetDetails = this.data.assetDetails;
-    this.fileDisplay = this.data.asset?.assetUrl;
+    this.projectService.workflow.subscribe((w) => {
+      this.world = w;
+      this.assetDetails = this.world.assets?.find(a => a.asset.id == this.assetId);
+    });
   }
 }
