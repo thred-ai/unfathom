@@ -14,6 +14,7 @@ import { Dict } from './load.service';
 import { Character } from './models/workflow/character.model';
 import { Texture } from './models/workflow/texture.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { EmulatorService } from './emulator.service';
 
 @Injectable({
   providedIn: 'root',
@@ -60,7 +61,10 @@ export class PrototypeService {
 
   mountedAsset = new BehaviorSubject<string | undefined>(undefined);
 
-  constructor(private db: AngularFirestore) {}
+  constructor(
+    private db: AngularFirestore,
+    private emulatorService: EmulatorService
+  ) {}
 
   init(world: World, project: any) {
     this.deinit();
@@ -404,7 +408,9 @@ export class PrototypeService {
           );
 
           lavaMaterial.noiseTexture = new BABYLON.Texture(
-            'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
+            this.emulatorService.isEmulator
+              ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/lava_cloud.png?alt=media'
+              : 'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
             scene
           );
 
@@ -995,15 +1001,18 @@ export class PrototypeService {
   generateLiquidTexture(type: LiquidType) {
     if (type == LiquidType.lava) {
       let tex = new Texture('lava');
-      tex.diffuse =
-        'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
+      tex.diffuse = this.emulatorService.isEmulator
+        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/lava_lavatile.jpg?alt=media'
+        : 'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
       return tex;
     } else {
       let tex = new Texture('water');
-      tex.bump =
-        'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
-      tex.diffuse =
-        'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
+      tex.bump = this.emulatorService.isEmulator
+        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/bump2.png?alt=media'
+        : 'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
+      tex.diffuse = this.emulatorService.isEmulator
+        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/bump2.png?alt=media'
+        : 'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
       return tex;
     }
   }

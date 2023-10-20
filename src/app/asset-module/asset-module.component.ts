@@ -123,6 +123,7 @@ export class AssetModuleComponent implements OnInit {
 
   ngOnInit(): void {
     this.projectService.workflow.subscribe((w) => {
+      console.log(w)
       this.world = w;
       this.assetDetails = this.world.assets?.find(a => a.asset.id == this.assetId);
     });

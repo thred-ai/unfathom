@@ -15,6 +15,7 @@ import { Character } from './models/workflow/character.model';
 import { Texture } from './models/workflow/texture.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProjectService } from './project.service';
+import { EmulatorService } from './emulator.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,11 +33,13 @@ export class DesignService {
 
   constructor(
     private db: AngularFirestore,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private emulatorService: EmulatorService
   ) {
     projectService.workflow.subscribe((w) => {
       if (w) {
         this.world = w;
+        this.syncMeshIncoming()
       } else {
         this.deinit();
       }
@@ -335,7 +338,9 @@ export class DesignService {
           lava.isPickable = true;
 
           lavaMaterial.noiseTexture = new BABYLON.Texture(
-            'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
+            this.emulatorService.isEmulator
+              ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/lava_cloud.png?alt=media'
+              : 'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
             scene
           );
 
@@ -439,18 +444,42 @@ export class DesignService {
 
     hl.addExcludedMesh(extraGround);
 
-    this.gizmoManager = new BABYLON.GizmoManager(scene, 1);
-    this.selectTool("move")
-    this.gizmoManager.boundingBoxGizmoEnabled = true
-    this.gizmoManager.gizmos.boundingBoxGizmo.setColor(BABYLON.Color3.Green())
+    this.gizmoManager = new BABYLON.GizmoManager(scene);
+    // this.gizmoManager.boundingBoxGizmoEnabled = true;
+    this.gizmoManager.rotationGizmoEnabled = true;
+    this.gizmoManager.scaleGizmoEnabled = true;
+    this.gizmoManager.positionGizmoEnabled = true;
 
-    this.gizmoManager.boundingBoxDragBehavior.onDragObservable.add((event) => {
-      console.log("drag");
+    // this.gizmoManager.boundingBoxDragBehavior.init()
+
+    // this.gizmoManager.gizmos.boundingBoxGizmo.setColor(BABYLON.Color3.Green());
+
+    this.gizmoManager.gizmos.positionGizmo.onDragEndObservable.add(() => {
+      // console.log(event.);
+      this.syncMesh();
     });
 
-    this.gizmoManager.gizmos.positionGizmo.onDragEndObservable.add(event => {
+    this.gizmoManager.gizmos.rotationGizmo.onDragEndObservable.add(() => {
+      // console.log(event.);
+      this.syncMesh();
+    });
 
-    })
+    this.gizmoManager.gizmos.scaleGizmo.onDragEndObservable.add(() => {
+      // console.log(event.);
+      this.syncMesh();
+    });
+
+    // this.gizmoManager.gizmos.positionGizmo.xGizmo.dragBehavior.onDragEndObservable.add(
+    //   (event) => {}
+    // );
+
+    // this.gizmoManager.gizmos.rotationGizmo.onDragEndObservable.add(
+    //   (event) => {}
+    // );
+
+    // this.gizmoManager.gizmos.scaleGizmo.onDragEndObservable.add((event) => {});
+
+    this.selectTool('move');
 
     // gizmoManager.rotationGizmoEnabled = true;
     // gizmoManager.scaleGizmoEnabled = true;
@@ -469,18 +498,18 @@ export class DesignService {
       }
       if (pickResult.hit && object) {
         this.selected.next(object.id);
-  
+
         var omitList = ['sky', 'ground', 'water', 'lava'];
 
         console.log(omitList.includes(object.id));
 
+        hl.addMesh(object, BABYLON.Color3.Green());
+        hl.blurHorizontalSize = 1;
+        hl.blurVerticalSize = 1;
+
         if (omitList.includes(object.id)) {
-          hl.addMesh(object, BABYLON.Color3.Green());
-          hl.blurHorizontalSize = 1;
-          hl.blurVerticalSize = 1;
           return;
         }
-       
 
         this.gizmoManager.attachToMesh(object);
       }
@@ -647,6 +676,68 @@ export class DesignService {
     });
   }
 
+  syncMeshIncoming() {
+    let world = this.world;
+
+    //add more sync elements of scene later
+
+    //dp this for characters too
+    if (world && this.engine) {
+      this.world.assets.map((w) => {
+        let mesh = this.engine.scenes[0]?.getMeshById(w.asset.id);
+
+        if (mesh) {
+          mesh.position.x = w.spawn.x;
+          mesh.position.y = w.spawn.y;
+          mesh.position.z = w.spawn.z;
+
+          mesh.scaling.x = w.scale.x;
+          mesh.scaling.y = w.scale.y;
+          mesh.scaling.z = w.scale.z;
+
+          mesh.rotation.x = w.direction.x;
+          mesh.rotation.y = w.direction.y;
+          mesh.rotation.z = w.direction.z;
+        } else {
+          //add mesh to scene
+        }
+      });
+
+      //do check for meshes in scene that are not in 'world' object
+    }
+
+    //do sync for ground, sky, and liquids
+  }
+
+  syncMesh() {
+    let assetId = this.selected.value as string;
+
+    if (assetId) {
+      let mesh = this.engine.scenes[0]?.getMeshById(assetId);
+      let position = mesh.position;
+      let rotation = mesh.rotation;
+      let scale = mesh.scaling;
+
+      let same = this.world.assets.find((a) => a.asset.id == assetId);
+      console.log(same);
+      if (same && this.world) {
+        same.spawn.x = position.x;
+        same.spawn.y = position.y;
+        same.spawn.z = position.z;
+
+        same.scale.x = scale.x;
+        same.scale.y = scale.y;
+        same.scale.z = scale.z;
+
+        same.direction.x = rotation.x;
+        same.direction.y = rotation.y;
+        same.direction.z = rotation.z;
+
+        this.projectService.save(this.world);
+      }
+    }
+  }
+
   selectTool(tool: string) {
     switch (tool) {
       case 'rotate':
@@ -672,8 +763,6 @@ export class DesignService {
         this.gizmoManager.rotationGizmoEnabled = false;
 
         this.gizmoManager.gizmos.scaleGizmo.sensitivity = 3;
-
-        
 
         return;
     }
@@ -731,15 +820,18 @@ export class DesignService {
   generateLiquidTexture(type: LiquidType) {
     if (type == LiquidType.lava) {
       let tex = new Texture('lava');
-      tex.diffuse =
-        'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
+      tex.diffuse = this.emulatorService.isEmulator
+        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/lava_lavatile.jpg?alt=media'
+        : 'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
       return tex;
     } else {
       let tex = new Texture('water');
-      tex.bump =
-        'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
-      tex.diffuse =
-        'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
+      tex.bump = this.emulatorService.isEmulator
+        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/bump2.png?alt=media'
+        : 'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
+      tex.diffuse = this.emulatorService.isEmulator
+        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/bump2.png?alt=media'
+        : 'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
       return tex;
     }
   }

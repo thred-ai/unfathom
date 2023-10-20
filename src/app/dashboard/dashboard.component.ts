@@ -75,16 +75,6 @@ export class DashboardComponent implements OnInit {
       if (uid) {
         this.loadService.getUserInfo(uid, true, true, (dev) => {
         });
-        this.loadService.loadedUser.subscribe((l) => {
-          if (l) {
-            this.dev = l;
-
-            console.log(l)
-
-            // let world = new World(l.id)
-            // this.loadService.saveSmartUtil(world)
-          }
-        });
       } else {
       }
     });
@@ -157,7 +147,7 @@ export class DashboardComponent implements OnInit {
     this.getProfile();
 
     this.projectService.workflow.next(undefined)
-    
+
       // this.loadStats((await this.loadService.currentUser)?.uid);
 
       this.loadService.loadedUser.subscribe((dev) => {
