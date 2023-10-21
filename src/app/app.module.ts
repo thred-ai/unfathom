@@ -161,6 +161,9 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { LoadService } from './load.service';
 import { EmulatorService } from './emulator.service';
 import { FindStringPipe } from './find-string.pipe';
+import { UploadsComponent } from './uploads/uploads.component';
+import { DesignComponent } from './design/design.component';
+import { ElementsComponent } from './elements/elements.component';
 
 @NgModule({
   declarations: [
@@ -219,6 +222,9 @@ import { FindStringPipe } from './find-string.pipe';
     SkyEditComponent,
     LiquidEditComponent,
     FindStringPipe,
+    UploadsComponent,
+    DesignComponent,
+    ElementsComponent,
   ],
   imports: [
     CommonModule,
@@ -320,7 +326,7 @@ export class AppModule {
     private domSanitizer: DomSanitizer,
     private emulatorService: EmulatorService
   ) {
-    this.emulatorService.initEmulator();
+    // this.emulatorService.initEmulator();
     this.matIconRegistry.addSvgIcon(
       `unfathom_icon`,
       this.domSanitizer.bypassSecurityTrustResourceUrl(

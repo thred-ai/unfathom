@@ -46,93 +46,114 @@
         openBar ? 'flex' : 'hidden'
       }} justify-between items-center"
     >
-      <div class="h-full w-full">
-        <!-- <app-world-module (changed)="changed.emit($event)">
-          </app-world-module> -->
+      <ng-container
+        *ngIf="
+          mode == 'design' || mode == 'uploads' || mode == 'elements';
+          else submenu
+        "
+      >
+        <div class="h-full w-full primary-background-dark overflow-scroll">
+          <app-design *ngIf="mode == 'design'"> </app-design>
+          <app-uploads *ngIf="mode == 'uploads'"> </app-uploads>
+          <app-elements *ngIf="mode == 'elements'"> </app-elements>
+        </div>
 
-        <ng-container *ngIf="mode == 'position' && selected">
-          <ng-container
-            *ngIf="selected | findString : editableMeshes; else dynamicMenu"
+        <div class="h-full flex flex-col justify-center primary-text-dark">
+          <ng-icon
+            class="font-bold my-auto"
+            name="heroChevronLeft"
+            [strokeWidth]="2.2"
+            role="button"
+            (click)="
+              openBar = false; mode = undefined; sidebar.mode = undefined
+            "
           >
-            <ng-container *ngIf="selected == 'design'"> </ng-container>
+          </ng-icon>
+        </div>
+      </ng-container>
 
-            <app-sky-edit *ngIf="selected == 'sky'"></app-sky-edit>
-            <app-liquid-edit
-              *ngIf="selected == 'lava' || selected == 'water'"
-            ></app-liquid-edit>
-            <app-ground-edit *ngIf="selected == 'ground'"></app-ground-edit>
+      <ng-template #submenu>
+        <div class="h-full w-full primary-background-light overflow-scroll">
+          <!-- <app-world-module (changed)="changed.emit($event)">
+            </app-world-module> -->
+
+          <ng-container *ngIf="mode == 'position'">
+            <div class="w-100 p-3 primary-background-light">
+              <p class="text-black font-medium">Arrange</p>
+            </div>
+
+            <ng-container *ngIf="selected; else noSelect">
+              <ng-container
+                *ngIf="selected | findString : editableMeshes; else dynamicMenu"
+              >
+                <app-sky-edit *ngIf="selected == 'sky'"></app-sky-edit>
+                <app-liquid-edit
+                  *ngIf="selected == 'lava' || selected == 'water'"
+                ></app-liquid-edit>
+                <app-ground-edit *ngIf="selected == 'ground'"></app-ground-edit>
+              </ng-container>
+
+              <ng-template #dynamicMenu>
+                <app-asset-module [assetId]="selected"></app-asset-module>
+              </ng-template>
+            </ng-container>
+
+            <ng-template #noSelect>
+              <app-sky-edit></app-sky-edit>
+            </ng-template>
           </ng-container>
 
-          <ng-template #dynamicMenu>
-            <app-asset-module [assetId]="selected"></app-asset-module>
-          </ng-template>
-        </ng-container>
-
-        <ng-container *ngIf="mode == 'edit' && selected">
-          textures
-          <!-- <app-asset-module [assetId]="selected"></app-asset-module> -->
-        </ng-container>
-      </div>
-      <div
-        class="h-full flex flex-col justify-center primary-text-dark"
-        *ngIf="mode == 'design' || mode == 'uploads' || mode == 'elements'"
-      >
-        <ng-icon
-          class="font-bold my-auto"
-          name="heroChevronLeft"
-          [strokeWidth]="2.2"
-          role="button"
-          (click)="openBar = false; mode = undefined; sidebar.mode = undefined"
-        >
-        </ng-icon>
-      </div>
+          <ng-container *ngIf="mode == 'edit' && selected">
+            textures
+            <!-- <app-asset-module [assetId]="selected"></app-asset-module> -->
+          </ng-container>
+        </div>
+      </ng-template>
     </div>
     <div class="h-full w-full">
       <div
         class="w-full shadow h-[50px] primary-background-light flex justify-start items-center p-1 px-2"
       >
-        <div
-          class="bg-transparent flex justify-between items-center"
-          *ngIf="selected"
-        >
+        <div class="bg-transparent flex justify-between items-center">
+          <ng-container *ngIf="selected">
+            <button
+              class="btn rounded hover:bg-slate-200 {{
+                mode == 'edit' ? 'bg-slate-200' : 'bg-transparent'
+              }} text-black flex justify-between items-center me-2"
+              *ngIf="selected | findString : editableMeshes; else meshtools"
+              (click)="mode == 'edit' ? (mode = 'design') : (mode = 'edit')"
+            >
+              Edit mesh
+            </button>
+
+            <ng-template #meshtools>
+              <div
+                class="rounded-full overflow-hidden border-table-light flex justify-between items-center space-x-1 p-1 me-2"
+              >
+                <button
+                  class="btn p-2 h-100 {{
+                    selectedTool == tool.id
+                      ? 'bg-indigo-500 text-white'
+                      : 'bg-transparent text-black hover:bg-indigo-300 hover:text-white'
+                  }} flex justify-between items-center rounded-full"
+                  *ngFor="let tool of tools"
+                  (click)="selectTool(tool.id)"
+                >
+                  <ng-icon
+                    class="font-bold"
+                    [name]="tool.icon"
+                    [strokeWidth]="2.2"
+                  >
+                  </ng-icon>
+                </button>
+              </div>
+            </ng-template>
+          </ng-container>
+
           <button
             class="btn rounded hover:bg-slate-200 {{
-              mode == 'edit' ? 'bg-slate-200' : 'bg-transparent'
-            }} text-black flex justify-between items-center"
-            *ngIf="selected | findString : editableMeshes; else meshtools"
-            (click)="mode == 'edit' ? (mode = 'design') : (mode = 'edit')"
-          >
-            Edit mesh
-          </button>
-
-          <ng-template #meshtools>
-            <div
-              class="rounded-full overflow-hidden border-table-light flex justify-between items-center space-x-1 p-1"
-            >
-              <button
-                class="btn p-2 h-100 {{
-                  selectedTool == tool.id
-                    ? 'bg-indigo-500 text-white'
-                    : 'bg-transparent text-black hover:bg-indigo-300 hover:text-white'
-                }} flex justify-between items-center rounded-full"
-                *ngFor="let tool of tools"
-                (click)="selectTool(tool.id)"
-              >
-                <ng-icon
-                  class="font-bold"
-                  [name]="tool.icon"
-                  [strokeWidth]="2.2"
-                >
-                </ng-icon>
-              </button>
-            </div>
-          </ng-template>
-
-          <button
-            class="ms-2 btn rounded hover:bg-slate-200 {{
               mode == 'position' ? 'bg-slate-200' : 'bg-transparent'
             }} text-black flex justify-between items-center"
-            *ngIf="selected"
             (click)="
               mode == 'position' ? (mode = 'design') : (mode = 'position')
             "

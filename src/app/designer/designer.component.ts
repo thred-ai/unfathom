@@ -82,6 +82,7 @@ export class DesignerComponent implements OnInit {
         return;
       }
       this.selected = s;
+    
     });
   }
 }

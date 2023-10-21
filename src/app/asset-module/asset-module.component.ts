@@ -126,6 +126,8 @@ export class AssetModuleComponent implements OnInit {
       console.log(w)
       this.world = w;
       this.assetDetails = this.world.assets?.find(a => a.asset.id == this.assetId);
+      this.cdr.detectChanges()
+      console.log(this.assetDetails)
     });
   }
 }
