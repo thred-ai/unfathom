@@ -39,7 +39,7 @@ export class DesignService {
     projectService.workflow.subscribe((w) => {
       if (w) {
         this.world = w;
-        this.syncMeshIncoming()
+        this.syncMeshIncoming();
       } else {
         this.deinit();
       }
@@ -131,89 +131,9 @@ export class DesignService {
     }
 
     if (world.ground && !world.ground.hidden) {
-      var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
-        'ground',
-        world.ground.heightMap,
-        {
-          width: world.width,
-          height: world.height,
-          subdivisions: world.ground.maxHeight / 20,
-          minHeight: world.ground.minHeight,
-          maxHeight: world.ground.maxHeight,
-          updatable: true,
-        },
-        scene
-      );
+      let ground = this.createGround(world, scene);
 
-      ground.isPickable = true;
-
-      var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
-
-      var uvScaleConstant = new BABYLON.Vector2(
-        world.width / 166,
-        world.height / 166
-      );
-
-      if (world.ground.texture.displacement) {
-        ground.applyDisplacementMap(
-          world.ground.texture.displacement,
-          world.ground.minHeight,
-          world.ground.maxHeight,
-          undefined,
-          undefined,
-          uvScaleConstant,
-          true
-        );
-      }
-
-      if (world.ground.texture.diffuse) {
-        let groundTexture = new BABYLON.Texture(
-          world.ground.texture.diffuse,
-          scene
-        );
-        groundTexture.uScale = uvScaleConstant.x;
-        groundTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.diffuseTexture = groundTexture;
-      }
-
-      if (world.ground.texture.bump) {
-        let groundBumpTexture = new BABYLON.Texture(
-          world.ground.texture.bump,
-          scene
-        );
-        groundBumpTexture.uScale = uvScaleConstant.x;
-        groundBumpTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.bumpTexture = groundBumpTexture;
-      }
-
-      if (world.ground.texture.ambient) {
-        let groundAmbientTexture = new BABYLON.Texture(
-          world.ground.texture.ambient,
-          scene
-        );
-        groundAmbientTexture.uScale = uvScaleConstant.x;
-        groundAmbientTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.ambientTexture = groundAmbientTexture;
-      }
-
-      if (world.ground.texture.specular) {
-        let groundSpecularTexture = new BABYLON.Texture(
-          world.ground.texture.specular,
-          scene
-        );
-        groundSpecularTexture.uScale = uvScaleConstant.x;
-        groundSpecularTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.specularTexture = groundSpecularTexture;
-      }
-
-      groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-      ground.position.y = -2.0;
-      ground.material = groundMaterial;
-      ground.receiveShadows = true;
+      // this.doDownloadMesh("mesh", ground)
 
       var extraGround = BABYLON.Mesh.CreateGround(
         'extraGround',
@@ -244,7 +164,6 @@ export class DesignService {
 
       extraGround.material = extraGroundMaterial;
 
-      ground.checkCollisions = true;
       extraGround.checkCollisions = true;
 
       if (world.ground.liquid) {
@@ -641,9 +560,9 @@ export class DesignService {
 
     // Once the scene is loaded, we register a render loop to render it
     this.engine.runRenderLoop(() => {
-      if (ground.isReady && ground.subMeshes?.length == 1) {
-        ground.subdivide(20); // Subdivide to optimize picking
-      }
+      // if (ground.isReady && ground.subMeshes?.length == 1) {
+      //   ground.subdivide(20); // Subdivide to optimize picking
+      // }
 
       // Camera
       if (camera.beta < 0.1) camera.beta = 0.1;
@@ -676,15 +595,176 @@ export class DesignService {
     });
   }
 
+
+
+doDownload(filename: string, scene: BABYLON.Scene) {
+  // if (objectUrl) {
+  //   window.URL.revokeObjectURL(objectUrl);
+  // }
+
+  const serializedScene = BABYLON.SceneSerializer.Serialize(scene);
+
+  const strScene = JSON.stringify(serializedScene);
+
+  if (filename.toLowerCase().lastIndexOf(".babylon") !== filename.length - 8 || filename.length < 9) {
+    filename += ".babylon";
+  }
+
+  const blob = new Blob([strScene], { type: "octet/stream" });
+
+  // turn blob into an object URL; saved as a member, so can be cleaned out later
+  let objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
+
+  const link = window.document.createElement("a");
+  link.href = objectUrl;
+  link.download = filename;
+  const click = document.createEvent("MouseEvents");
+  click.initEvent("click", true, false);
+  link.dispatchEvent(click);
+}
+
+doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
+  // if (objectUrl) {
+  //   window.URL.revokeObjectURL(objectUrl);
+  // }
+
+  const serializedMesh = BABYLON.SceneSerializer.SerializeMesh(mesh);
+
+  const strMesh = JSON.stringify(serializedMesh);
+
+  if (filename.toLowerCase().lastIndexOf(".babylon") !== filename.length - 8 || filename.length < 9) {
+    filename += ".babylon";
+  }
+
+  const blob = new Blob([strMesh], { type: "octet/stream" });
+
+  // turn blob into an object URL; saved as a member, so can be cleaned out later
+  let objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
+
+  const link = window.document.createElement("a");
+  link.href = objectUrl;
+  link.download = filename;
+  const click = document.createEvent("MouseEvents");
+  click.initEvent("click", true, false);
+  link.dispatchEvent(click);
+}
+
+
+
+
+
+
+  createGround(world: World, scene: BABYLON.Scene) {
+    var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
+      world.ground.texture.id,
+      world.ground.heightMap,
+      {
+        width: world.width,
+        height: world.width,
+        subdivisions: world.width / 50,
+        minHeight: world.ground.minHeight,
+        maxHeight: world.ground.maxHeight,
+        updatable: true,
+      },
+      scene
+    );
+
+    ground.isPickable = true;
+    ground.checkCollisions = true;
+    ground.id = 'ground'
+
+    let groundMaterial = this.createGroundMaterial(world, ground, scene);
+
+    ground.position.y = -2.0;
+    ground.material = groundMaterial;
+    ground.receiveShadows = true;
+
+    return ground;
+  }
+
+  createGroundMaterial(
+    world: World,
+    ground: BABYLON.Mesh,
+    scene: BABYLON.Scene
+  ) {
+    var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
+
+    var uvScaleConstant = new BABYLON.Vector2(
+      world.width / 166,
+      world.height / 166
+    );
+
+    if (world.ground.texture.displacement) {
+      ground.applyDisplacementMap(
+        world.ground.texture.displacement,
+        world.ground.minHeight,
+        world.ground.maxHeight,
+        undefined,
+        undefined,
+        uvScaleConstant,
+        true
+      );
+    }
+
+    if (world.ground.texture.diffuse) {
+      let groundTexture = new BABYLON.Texture(
+        world.ground.texture.diffuse,
+        scene
+      );
+      groundTexture.uScale = uvScaleConstant.x;
+      groundTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.diffuseTexture = groundTexture;
+    }
+
+    if (world.ground.texture.bump) {
+      let groundBumpTexture = new BABYLON.Texture(
+        world.ground.texture.bump,
+        scene
+      );
+      groundBumpTexture.uScale = uvScaleConstant.x;
+      groundBumpTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.bumpTexture = groundBumpTexture;
+    }
+
+    if (world.ground.texture.ambient) {
+      let groundAmbientTexture = new BABYLON.Texture(
+        world.ground.texture.ambient,
+        scene
+      );
+      groundAmbientTexture.uScale = uvScaleConstant.x;
+      groundAmbientTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.ambientTexture = groundAmbientTexture;
+    }
+
+    if (world.ground.texture.specular) {
+      let groundSpecularTexture = new BABYLON.Texture(
+        world.ground.texture.specular,
+        scene
+      );
+      groundSpecularTexture.uScale = uvScaleConstant.x;
+      groundSpecularTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.specularTexture = groundSpecularTexture;
+    }
+
+    groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+
+    return groundMaterial;
+  }
+
   syncMeshIncoming() {
     let world = this.world;
 
     //add more sync elements of scene later
 
-    //dp this for characters too
-    if (world && this.engine) {
+    //duplicate this for characters too
+    let scene = this.engine?.scenes[0];
+    if (world && this.engine && scene) {
       this.world.assets.map((w) => {
-        let mesh = this.engine.scenes[0]?.getMeshById(w.asset.id);
+        let mesh = scene?.getMeshById(w.asset.id);
 
         if (mesh) {
           mesh.position.x = w.spawn.x;
@@ -704,9 +784,17 @@ export class DesignService {
       });
 
       //do check for meshes in scene that are not in 'world' object
-    }
 
-    //do sync for ground, sky, and liquids
+      //do sync for ground, sky, and liquids
+
+      if (world.ground) {
+        let ground = scene.getMeshById('ground') as BABYLON.GroundMesh;
+        if (world.ground.texture.id != ground.name){
+          ground.dispose()
+          this.createGround(world, scene);
+        }
+      }
+    }
   }
 
   syncMesh() {
