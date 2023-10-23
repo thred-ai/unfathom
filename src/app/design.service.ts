@@ -241,6 +241,7 @@ export class DesignService {
           // );
         }
 
+
         if (world.ground.liquid.liquid == LiquidType.lava) {
           var lava = BABYLON.MeshBuilder.CreateGround(
             'lava',
@@ -253,7 +254,7 @@ export class DesignService {
           );
           lava.position.y = world.ground.liquid.level;
 
-          var lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
+          let lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
           lava.isPickable = true;
 
           lavaMaterial.noiseTexture = new BABYLON.Texture(
@@ -306,6 +307,29 @@ export class DesignService {
         );
 
         result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
+
+        if (asset.asset.id == 'castle') {
+          let d = result.meshes[result.meshes.length - 1];
+          let mat = new BABYLON.StandardMaterial('fount', scene);
+
+          mat.diffuseTexture = new BABYLON.Texture(
+            world.ground.liquid.texture.diffuse,
+            scene
+          );
+          mat.emissiveTexture = new BABYLON.Texture(
+            world.ground.liquid.texture.diffuse,
+            scene
+          );
+
+          
+        
+
+          scene.beforeRender = () => {
+            (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
+          };
+
+          d.material = mat;
+        }
 
         // result.meshes.forEach(mesh => hl.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
         var object = BABYLON.Mesh.MergeMeshes(
@@ -595,64 +619,63 @@ export class DesignService {
     });
   }
 
+  doDownload(filename: string, scene: BABYLON.Scene) {
+    // if (objectUrl) {
+    //   window.URL.revokeObjectURL(objectUrl);
+    // }
 
+    const serializedScene = BABYLON.SceneSerializer.Serialize(scene);
 
-doDownload(filename: string, scene: BABYLON.Scene) {
-  // if (objectUrl) {
-  //   window.URL.revokeObjectURL(objectUrl);
-  // }
+    const strScene = JSON.stringify(serializedScene);
 
-  const serializedScene = BABYLON.SceneSerializer.Serialize(scene);
+    if (
+      filename.toLowerCase().lastIndexOf('.babylon') !== filename.length - 8 ||
+      filename.length < 9
+    ) {
+      filename += '.babylon';
+    }
 
-  const strScene = JSON.stringify(serializedScene);
+    const blob = new Blob([strScene], { type: 'octet/stream' });
 
-  if (filename.toLowerCase().lastIndexOf(".babylon") !== filename.length - 8 || filename.length < 9) {
-    filename += ".babylon";
+    // turn blob into an object URL; saved as a member, so can be cleaned out later
+    let objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
+
+    const link = window.document.createElement('a');
+    link.href = objectUrl;
+    link.download = filename;
+    const click = document.createEvent('MouseEvents');
+    click.initEvent('click', true, false);
+    link.dispatchEvent(click);
   }
 
-  const blob = new Blob([strScene], { type: "octet/stream" });
+  doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
+    // if (objectUrl) {
+    //   window.URL.revokeObjectURL(objectUrl);
+    // }
 
-  // turn blob into an object URL; saved as a member, so can be cleaned out later
-  let objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
+    const serializedMesh = BABYLON.SceneSerializer.SerializeMesh(mesh);
 
-  const link = window.document.createElement("a");
-  link.href = objectUrl;
-  link.download = filename;
-  const click = document.createEvent("MouseEvents");
-  click.initEvent("click", true, false);
-  link.dispatchEvent(click);
-}
+    const strMesh = JSON.stringify(serializedMesh);
 
-doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
-  // if (objectUrl) {
-  //   window.URL.revokeObjectURL(objectUrl);
-  // }
+    if (
+      filename.toLowerCase().lastIndexOf('.babylon') !== filename.length - 8 ||
+      filename.length < 9
+    ) {
+      filename += '.babylon';
+    }
 
-  const serializedMesh = BABYLON.SceneSerializer.SerializeMesh(mesh);
+    const blob = new Blob([strMesh], { type: 'octet/stream' });
 
-  const strMesh = JSON.stringify(serializedMesh);
+    // turn blob into an object URL; saved as a member, so can be cleaned out later
+    let objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
 
-  if (filename.toLowerCase().lastIndexOf(".babylon") !== filename.length - 8 || filename.length < 9) {
-    filename += ".babylon";
+    const link = window.document.createElement('a');
+    link.href = objectUrl;
+    link.download = filename;
+    const click = document.createEvent('MouseEvents');
+    click.initEvent('click', true, false);
+    link.dispatchEvent(click);
   }
-
-  const blob = new Blob([strMesh], { type: "octet/stream" });
-
-  // turn blob into an object URL; saved as a member, so can be cleaned out later
-  let objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
-
-  const link = window.document.createElement("a");
-  link.href = objectUrl;
-  link.download = filename;
-  const click = document.createEvent("MouseEvents");
-  click.initEvent("click", true, false);
-  link.dispatchEvent(click);
-}
-
-
-
-
-
 
   createGround(world: World, scene: BABYLON.Scene) {
     var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
@@ -671,7 +694,7 @@ doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
 
     ground.isPickable = true;
     ground.checkCollisions = true;
-    ground.id = 'ground'
+    ground.id = 'ground';
 
     let groundMaterial = this.createGroundMaterial(world, ground, scene);
 
@@ -775,9 +798,9 @@ doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
           mesh.scaling.y = w.scale.y;
           mesh.scaling.z = w.scale.z;
 
-          mesh.rotation.x = w.direction.x;
-          mesh.rotation.y = w.direction.y;
-          mesh.rotation.z = w.direction.z;
+          mesh.rotation.x = this.toRadians(w.direction.x);
+          mesh.rotation.y = this.toRadians(w.direction.y);
+          mesh.rotation.z = this.toRadians(w.direction.z);
         } else {
           //add mesh to scene
         }
@@ -789,8 +812,8 @@ doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
 
       if (world.ground) {
         let ground = scene.getMeshById('ground') as BABYLON.GroundMesh;
-        if (world.ground.texture.id != ground.name){
-          ground.dispose()
+        if (world.ground.texture.id != ground.name) {
+          ground.dispose();
           this.createGround(world, scene);
         }
       }
@@ -817,9 +840,9 @@ doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
         same.scale.y = scale.y;
         same.scale.z = scale.z;
 
-        same.direction.x = rotation.x;
-        same.direction.y = rotation.y;
-        same.direction.z = rotation.z;
+        same.direction.x = this.toDegrees(rotation.x);
+        same.direction.y = this.toDegrees(rotation.y);
+        same.direction.z = this.toDegrees(rotation.z);
 
         this.projectService.save(this.world);
       }
@@ -858,6 +881,10 @@ doDownloadMesh(filename: string, mesh: BABYLON.Mesh) {
 
   toRadians = (degrees: number) => {
     return (degrees * Math.PI) / 180;
+  };
+
+  toDegrees = (radians: number) => {
+    return radians * (180 / Math.PI);
   };
 
   setAnimation(
