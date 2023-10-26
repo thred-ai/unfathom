@@ -48,7 +48,7 @@
         <!-- [matMenuTriggerFor]="mainMenu" -->
 
           <mat-icon [svgIcon]="'unfathom_icon'"></mat-icon>
-          <mat-icon
+          <!-- <mat-icon
             class="my-auto"
             style="
               height: 14px;
@@ -56,7 +56,7 @@
               width: 14px !important;
             "
             >expand_more</mat-icon
-          >
+          > -->
         </div>
       </div>
     </div>
@@ -71,10 +71,10 @@
           role="button"
           *ngIf="world"
         >
-          <!-- <span class="secondary-text">Project</span>
+          <!-- <span class="secondary-text">world</span>
     
             <mat-icon> arrow_right_alt </mat-icon> -->
-          <img
+          <!-- <img
             class="border-table-dark me-2"
             style="
               height: 22.5px;
@@ -82,12 +82,12 @@
               width: 22.5px !important;
               object-fit: cover;
             "
-            [src]="project.displayUrl"
-          />
+            [src]="world.displayUrl"
+          /> -->
           <div
             class="primary-text-dark flex justify-center items-center"
           >
-            {{ project.name }}
+            {{ world.name }}
             <ng-container *ngIf="scene">
               <span class="secondary-text-dark mx-2" style="font-size: 20px"
                 >/</span
@@ -102,20 +102,19 @@
 
   <div
     class="w-full h-full renderer primary-background-dark"
-    *ngIf="scene && world && theme"
+    *ngIf="world && theme"
   >
     <app-world-designer
       *ngIf="visible"
       [theme]="'dark'"
       [world]="world"
       [scene]="scene"
-      [project]="project"
     ></app-world-designer>
   </div>
 </div>
 <!-- 
 <mat-menu #mainMenu="matMenu" class="secondary-background-dark">
-  <div style="min-width: 250px; max-height: 700px" *ngIf="project">
+  <div style="min-width: 250px; max-height: 700px" *ngIf="world">
     <button mat-menu-item class="proj toolButton" (click)="restart()">
       <mat-icon
         class="my-auto me-2 flex justify-center items-center"
@@ -130,7 +129,7 @@
         mat-menu-item
         class="proj toolButton"
         [disabled]="mountableAssets.length == 0"
-        [matMenuTriggerFor]="projects"
+        [matMenuTriggerFor]="worlds"
       >
         <mat-icon
           class="my-auto me-2 flex justify-center items-center"
@@ -152,7 +151,7 @@
           style="font-size: 16px"
           >accessibility</mat-icon
         >
-        {{ project.characters[selectedCharacter]?.name ?? "No Character" }}
+        {{ world.characters[selectedCharacter]?.name ?? "No Character" }}
       </button>
     </ng-container>
 
@@ -168,7 +167,7 @@
           style="font-size: 16px"
           >man</mat-icon
         >
-        Dismount "{{ project.assets[mountedAsset].name }}"
+        Dismount "{{ world.assets[mountedAsset].name }}"
       </button>
     </ng-template>
 
@@ -183,8 +182,8 @@
   </div>
 </mat-menu>
 
-<mat-menu #projects="matMenu" class="secondary-background-dark">
-  <ng-container *ngIf="project && scene && scene.assets">
+<mat-menu #worlds="matMenu" class="secondary-background-dark">
+  <ng-container *ngIf="world && scene && scene.assets">
     <div
       class="secondary-background-dark text-start rounded flex justify-center items-center flex-col"
       id="profile-menu"
@@ -210,8 +209,8 @@
             <img
               class="rounded-icon me-4 border-table-dark"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
-              [src]="project.assets[n].img"
-            />{{ project.assets[n].name }}
+              [src]="world.assets[n].img"
+            />{{ world.assets[n].name }}
           </button>
 
         </div>
@@ -221,7 +220,7 @@
 </mat-menu>
 
 <mat-menu #characters="matMenu" class="secondary-background-dark">
-  <ng-container *ngIf="project && scene && scene.characters">
+  <ng-container *ngIf="world && scene && scene.characters">
     <div
       class="secondary-background-dark text-start rounded flex justify-center items-center flex-col"
       id="profile-menu"
@@ -247,8 +246,8 @@
             <img
               class="rounded-icon me-4 border-table-dark"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
-              [src]="project.characters[n.id].img"
-            />{{ project.characters[n.id].name }}
+              [src]="world.characters[n.id].img"
+            />{{ world.characters[n.id].name }}
           </button>
 
         </div>
@@ -258,7 +257,7 @@
 </mat-menu>
 
 <mat-menu #goto="matMenu" class="secondary-background-dark">
-  <ng-container *ngIf="project && scene && scene.assets && scene.characters">
+  <ng-container *ngIf="world && scene && scene.assets && scene.characters">
     <div
       class="secondary-background-dark text-start rounded flex justify-center items-center flex-col"
       id="profile-menu"
@@ -292,8 +291,8 @@
             <img
               class="rounded-icon me-4 border-table-dark"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
-              [src]="project.characters[n.id].img"
-            />{{ project.characters[n.id].name }}
+              [src]="world.characters[n.id].img"
+            />{{ world.characters[n.id].name }}
           </button>
         </div>
       </div>
@@ -317,8 +316,8 @@
             <img
               class="rounded-icon me-4 border-table-dark"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
-              [src]="project.assets[n.id].img"
-            />{{ project.assets[n.id].name }}
+              [src]="world.assets[n.id].img"
+            />{{ world.assets[n.id].name }}
           </button>
         </div>
       </div>

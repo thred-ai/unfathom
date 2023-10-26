@@ -1,10 +1,9 @@
 import { Ground } from './ground.model';
 import { Sky } from './sky.model';
 import * as uuid from 'uuid';
-import { AssetMovement } from './asset-movement.model';
 import { Texture } from './texture.model';
-import { ModelAsset } from './model-asset.model';
-import { Character } from './character.model';
+import { SceneAsset } from './scene-asset.model';
+import { SceneCharacter } from './scene-character.model';
 
 export class World {
   width!: number;
@@ -19,20 +18,9 @@ export class World {
   modified!: number;
   status!: number;
 
-  characters!: {
-    character: Character;
-    spawn: { x: number; y: number; z: number };
-    direction: { x: number; y: number; z: number };
-    scale: { x: number; y: number; z: number };
-  }[];
+  characters!: SceneCharacter[];
 
-  assets!: {
-    asset: ModelAsset;
-    movement: AssetMovement;
-    spawn: { x: number; y: number; z: number };
-    direction: { x: number; y: number; z: number };
-    scale: { x: number; y: number; z: number };
-  }[];
+  assets!: SceneAsset[];
 
   constructor(
     uid: string,
@@ -40,19 +28,8 @@ export class World {
     name: string = 'My New World',
     width: number = 1000,
     height: number = 1000,
-    characters: {
-      character: Character;
-      spawn: { x: number; y: number; z: number };
-      direction: { x: number; y: number; z: number };
-      scale: { x: number; y: number; z: number };
-    }[] = [],
-    assets: {
-      asset: ModelAsset;
-      movement: AssetMovement;
-      spawn: { x: number; y: number; z: number };
-      direction: { x: number; y: number; z: number };
-      scale: { x: number; y: number; z: number };
-    }[] = [],
+    characters: SceneCharacter[] = [],
+    assets: SceneAsset[] = [],
     lightingIntensity: number = 0.8,
     created: number = new Date().getTime(),
     modified: number = new Date().getTime(),

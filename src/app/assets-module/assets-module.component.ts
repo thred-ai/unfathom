@@ -21,6 +21,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./assets-module.component.scss'],
 })
 export class AssetsModuleComponent implements OnInit {
+
   workflow?: any;
   asset?: ModelAsset;
   newAsset?: File;
@@ -70,21 +71,21 @@ export class AssetsModuleComponent implements OnInit {
 
     if (asset && workflow && assets) {
       this.loading = 'Uploading Assets';
-      if ((!assets.img || assets.img == '') && this.modelViewer) {
-        let i = this.modelViewer.screenshot();
+      // if ((!assets.img || assets.img == '') && this.modelViewer) {
+      //   let i = this.modelViewer.screenshot();
 
-        if (i) {
-          let url = await this.loadService.uploadAssetImg(
-            i,
-            workflow.id,
-            assets.id
-          );
+      //   if (i) {
+      //     let url = await this.loadService.uploadAssetImg(
+      //       i,
+      //       workflow.id,
+      //       assets.id
+      //     );
 
-          if (url) {
-            assets.img = url;
-          }
-        }
-      }
+      //     if (url) {
+      //       assets.img = url;
+      //     }
+      //   }
+      // }
       let url = await this.loadService.uploadCharacterAsset(
         asset,
         workflow.id,

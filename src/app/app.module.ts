@@ -149,6 +149,8 @@ import {
   bootstrapArrowsFullscreen,
   bootstrapArrowsMove,
   bootstrapArrowRepeat,
+  bootstrapBoundingBox,
+  bootstrapBoundingBoxCircles,
 } from '@ng-icons/bootstrap-icons';
 
 import { featherAirplay } from '@ng-icons/feather-icons';
@@ -242,6 +244,8 @@ import { ElementsComponent } from './elements/elements.component';
       bootstrapArrowsFullscreen,
       bootstrapArrowsMove,
       bootstrapArrowRepeat,
+      bootstrapBoundingBox,
+      bootstrapBoundingBoxCircles,
     }),
     AppRoutingModule,
     MatTooltipModule,

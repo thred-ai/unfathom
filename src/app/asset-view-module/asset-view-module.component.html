@@ -1,32 +1,56 @@
 <div class="w-full h-full p-3" style="overflow-y: scroll">
   <div class="w-full pb-3">
     <div
-      class="w-full flex justify-between content-center pb-3 mb-3 mt-4 primary-text border-table-bottom"
+      class="w-full flex justify-between content-center pb-3 mb-3 mt-4 primary-text border-table-bottom-dark"
+      *ngIf="mode == 'uploads'"
     >
-      <p class="w-full font-bold my-auto">Project 3D Assets</p>
-      <mat-icon class="m-auto primary-text" role="button" (click)="editAsset()">
-        add
-      </mat-icon>
+      <button
+        class="btn rounded bg-purple-500 py-3 w-full text-white flex justify-center text-center items-center"
+        (click)="aImgInput.click()"
+      >
+        Upload Files
+      </button>
+      <input
+        #aImgInput
+        type="file"
+        (change)="fileChangeEvent($event, 1)"
+        style="display: none"
+      />
     </div>
 
-    <div class="w-full row row-cols-2 justify-start g-0">
+    <div class="w-full grid grid-cols-2 justify-start g-0">
       <div
         *ngFor="let asset of assets ?? []; index as i"
         class="col p-1 relative"
-        style="aspect-ratio: 0.75"
+        style="aspect-ratio: 1"
       >
         <div
-          class="flex justify-between items-center flex-col border-table rounded secondary-background shadow-hover"
+          class="flex justify-between items-center flex-col bg-transparent shadow-hover"
           style="overflow: hidden"
           role="button"
-          (click)="editAsset(asset)"
+          (click)="addMeshToScene(asset)"
         >
-          <img
+          <!-- <img
             class="w-full h-full"
             style="object-fit: cover; aspect-ratio: 1"
             [src]="asset.img"
-          />
+          /> -->
 
+          <div class="w-full aspect-square pointer-events-none">
+            <app-model-viewer
+              #modelViewer
+              [camera]="true"
+              [model]="asset.assetUrl"
+              [animate]="true"
+              [prompt]="false"
+              [poster]="'/assets/default.png'"
+              [id]="'viewer'"
+              [ar]="false"
+            >
+            </app-model-viewer>
+          </div>
+
+          <!-- 
           <div
             class="w-full primary-background py-2 flex justify-center items-center"
           >
@@ -36,10 +60,10 @@
             >
               {{ asset.name }}
             </p>
-          </div>
+          </div> -->
         </div>
 
-        <div
+        <!-- <div
           class="rounded-full bg-orange absolute"
           style="z-index: 1; right: 0; top: 0; aspect-ratio: 1 !important"
           role="button"
@@ -51,7 +75,7 @@
           >
             close
           </mat-icon>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

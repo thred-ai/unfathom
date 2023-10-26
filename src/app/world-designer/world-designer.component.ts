@@ -23,7 +23,7 @@ import { PrototypeService } from '../prototype.service';
 })
 export class WorldDesignerComponent implements OnInit, OnDestroy {
   
-  @Input() project?: World;
+  @Input() world?: World;
 
   totalLength = 0
   totalLoaded = 0
@@ -54,10 +54,10 @@ export class WorldDesignerComponent implements OnInit, OnDestroy {
 
     // });
 
-    if (this.project) {
+    if (this.world) {
       this.prototypeService.loaded.next(this.loaded);
       setTimeout(() => {
-        this.prototypeService.init(this.project!, this.project!);
+        this.prototypeService.init(this.world);
       }, 100);
 
       this.prototypeService?.loaded.subscribe((loaded) => {

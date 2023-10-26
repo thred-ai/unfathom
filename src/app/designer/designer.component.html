@@ -1,5 +1,5 @@
 <div
-  class="layout-container-full animate__animated animate__fadeIn primary-background flex flex-col"
+  class="layout-container-full animate__animated animate__fadeIn primary-background flex flex-col justify-between items-center"
 >
   <div
     class="w-full h-[55px] shrink-0 py-2 pe-2 bg-gradient-to-r from-cyan-300 to-indigo-500 shadow-sm flex justify-center items-center"
@@ -35,6 +35,7 @@
       </button>
     </div>
   </div>
+  
   <div class="h-full w-full flex justify-between" *ngIf="world">
     <app-menu-sidebar
       #sidebar
@@ -43,7 +44,7 @@
     ></app-menu-sidebar>
     <div
       class="h-full w-[500px] primary-background-dark {{
-        openBar ? 'flex' : 'hidden'
+        open ? 'flex' : 'hidden'
       }} justify-between items-center"
     >
       <ng-container
@@ -94,7 +95,7 @@
               </ng-container>
 
               <ng-template #dynamicMenu>
-                <app-asset-module [assetId]="selected"></app-asset-module>
+                <app-asset-module></app-asset-module>
               </ng-template>
             </ng-container>
 
@@ -110,9 +111,9 @@
         </div>
       </ng-template>
     </div>
-    <div class="h-full w-full">
+    <div class="h-full w-full flex flex-col justify-between items-center">
       <div
-        class="w-full shadow h-[50px] primary-background-light flex justify-start items-center p-1 px-2"
+        class="w-full shadow h-[50px] primary-background-light flex shrink-0 justify-start items-center p-1 px-2"
       >
         <div class="bg-transparent flex justify-between items-center">
           <ng-container *ngIf="selected">
@@ -121,7 +122,7 @@
                 mode == 'edit' ? 'bg-slate-200' : 'bg-transparent'
               }} text-black flex justify-between items-center me-2"
               *ngIf="selected | findString : editableMeshes; else meshtools"
-              (click)="mode == 'edit' ? (mode = 'design') : (mode = 'edit')"
+              (click)="mode == 'edit' ? (mode = defaultMode) : (mode = 'edit')"
             >
               Edit mesh
             </button>
@@ -155,7 +156,7 @@
               mode == 'position' ? 'bg-slate-200' : 'bg-transparent'
             }} text-black flex justify-between items-center"
             (click)="
-              mode == 'position' ? (mode = 'design') : (mode = 'position')
+              mode == 'position' ? (mode = defaultMode) : (mode = 'position')
             "
           >
             <!-- <ng-icon
@@ -169,7 +170,14 @@
           </button>
         </div>
       </div>
-      <app-world-viewer *ngIf="world" [project]="world"></app-world-viewer>
+
+      <div class="w-full h-full relative flex flex-col justify-between items-center">
+
+        <div class="w-full h-full">
+            <app-world-viewer *ngIf="world" [project]="world"></app-world-viewer>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>

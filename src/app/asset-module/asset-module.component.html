@@ -99,7 +99,7 @@
           <verticalai-text-field
             [title]="'Scale X'"
             [type]="'number'"
-            [range]="{ min: 1, max: 500 }"
+            [range]="{ min: 1, max: 100000 }"
             [value]="assetDetails['scale'].x"
             [placeholder]="'Scale (X)'"
             (changed)="assetDetails['scale'].x = $event; save()"
@@ -110,7 +110,7 @@
           <verticalai-text-field
             [title]="'Scale Y'"
             [type]="'number'"
-            [range]="{ min: 1, max: 500 }"
+            [range]="{ min: 1, max: 100000 }"
             [value]="assetDetails['scale'].y"
             [placeholder]="'Scale (Y)'"
             (changed)="assetDetails['scale'].y = $event; save()"
@@ -121,7 +121,7 @@
           <verticalai-text-field
             [title]="'Scale Z'"
             [type]="'number'"
-            [range]="{ min: 1, max: 500 }"
+            [range]="{ min: 1, max: 100000 }"
             [value]="assetDetails['scale'].z"
             [placeholder]="'Scale (Z)'"
             (changed)="assetDetails['scale'].z = $event; save()"

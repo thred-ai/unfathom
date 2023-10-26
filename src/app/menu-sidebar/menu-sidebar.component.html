@@ -45,12 +45,13 @@
       <div
         class="w-full proj{{
           mode == 'design' ? '-select' : ''
-        }} ms-0 py-3 flex justify-center items-center text-slate-300 aspect-square"
-        [matTooltip]="'Design'"
+        }} ms-0 py-3 flex justify-center items-center text-slate-300 aspect-square opacity-50"
+        [matTooltip]="'Default Templates coming soon!'"
         [matTooltipPosition]="'right'"
-        role="button"
-        (click)="changeMode('design')"
+        role="button"        
       >
+      <!-- (click)="changeMode('design')" -->
+
         <div
           class="w-full flex justify-center items-center flex-col"
           #folderToggle
@@ -100,8 +101,10 @@
         [matTooltip]="'Elements'"
         [matTooltipPosition]="'right'"
         role="button"
-        (click)="changeMode('elements')"
+        (click)="null"
       >
+      <!-- changeMode('elements') -->
+
         <div
           class="w-full flex justify-center items-center flex-col"
           #folderToggle

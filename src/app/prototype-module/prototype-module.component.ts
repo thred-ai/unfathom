@@ -16,7 +16,6 @@ import { Meta } from '@angular/platform-browser';
 })
 export class PrototypeModuleComponent implements OnInit {
   world?: World;
-  scene?: Scene;
 
   theme?: 'light' | 'dark' = 'light';
 
@@ -61,9 +60,9 @@ export class PrototypeModuleComponent implements OnInit {
       this.loadService.getPrototype(proj, (exec) => {
         if (exec) {
           this.world = exec;
-          this.mountableAssets = this.scene?.assets
+          this.mountableAssets = this.world?.assets
             .filter((a) => a.movement.canMount)
-            .map((x) => x.id);
+            .map((x) => x.asset.id);
           this.restart();
         }
       });
@@ -89,6 +88,7 @@ export class PrototypeModuleComponent implements OnInit {
     });
 
     this.prototypeService.selectedCharacter.subscribe((character) => {
+      if (character)
       this.selectedCharacter = character.character.id;
     });
 

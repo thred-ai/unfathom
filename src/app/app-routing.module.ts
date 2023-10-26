@@ -22,7 +22,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
   },
   {
-    path: 'share/:id/scene/:scene',
+    path: 'share/:id',
     component: PrototypeModuleComponent,
     pathMatch: 'full',
     runGuardsAndResolvers: 'always',

@@ -16,6 +16,7 @@ import { SceneLayout } from './models/workflow/scene-layout.model';
 import { ThemeService } from './theme.service';
 import { ProjectService } from './project.service';
 import { World } from './models/workflow/world.model';
+import { ModelAsset } from './models/workflow/model-asset.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -280,7 +281,6 @@ export class LoadService {
     this.projectService.loading.next(true);
 
     if (uid) {
-    
       console.log(data);
 
       let uploadData = JSON.parse(JSON.stringify(data));
@@ -423,8 +423,6 @@ export class LoadService {
       });
   }
 
-
-
   // getPlans(callback: (result: Dict<Plan>) => any) {
   //   try {
   //     let models: Dict<Plan> = {};
@@ -457,6 +455,53 @@ export class LoadService {
 
   get newUtilID() {
     return this.db.createId();
+  }
+
+  getModels(
+    callback: (models: ModelAsset[]) => any,
+    uid: string = this.loadedUser.value?.id
+  ) {
+    // var query = this.db.collection('Elements')
+    var query = this.db.collection('Users').doc(uid).collection('Models');
+
+    query.valueChanges().subscribe(async (docs) => {
+      let models =
+        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'])) ??
+        [];
+
+      callback(models);
+    });
+  }
+
+  async saveModels(model: ModelAsset, uid: string = this.loadedUser.value?.id) {
+    var query = this.db
+      .collection('Users')
+      .doc(uid)
+      .collection('Models')
+      .doc(model.id);
+
+    // var query = this.db.collection('Elements')
+    // .doc(model.id);
+
+    await query.set(JSON.parse(JSON.stringify(model)), { merge: true });
+  }
+
+  async saveElements(model: ModelAsset) {
+    var query = this.db.collection('Elements').doc(model.id);
+
+    await query.set(JSON.parse(JSON.stringify(model)), { merge: true });
+  }
+
+  getElements(callback: (models: ModelAsset[]) => any) {
+    var query = this.db.collection('Elements');
+
+    query.valueChanges().subscribe(async (docs) => {
+      let models =
+        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'])) ??
+        [];
+
+      callback(models);
+    });
   }
 
   getUserInfo(
@@ -518,6 +563,7 @@ export class LoadService {
             s.unsubscribe();
           });
         } else {
+          this.checkLoadedUser(developer);
           callback(developer);
         }
       } else {
@@ -626,11 +672,7 @@ export class LoadService {
     this.projectService.loading.next(false);
   }
 
-  async getCode(
-    app: World,
-    uid: string,
-    callback: (file: World) => any
-  ) {
+  async getCode(app: World, uid: string, callback: (file: World) => any) {
     this.projectService.loading.next(true);
 
     // this.db
@@ -983,10 +1025,9 @@ export class LoadService {
       workflow.modified,
       workflow.sky,
       workflow.ground,
-      workflow.status,
+      workflow.status
     );
   }
-
 
   getPrototype(workflowId: string, callback: (exec: World) => any) {
     let q = this.db.collection(`Worlds`).doc(workflowId);

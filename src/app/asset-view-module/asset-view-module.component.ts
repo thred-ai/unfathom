@@ -1,4 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Character } from '../models/workflow/character.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { Scene } from '../models/workflow/scene.model';
@@ -6,6 +13,9 @@ import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
+import { SceneAsset } from '../models/workflow/scene-asset.model';
+import { DesignService } from '../design.service';
+import { ArcRotateCamera } from 'babylonjs';
 
 @AutoUnsubscribe
 @Component({
@@ -14,108 +24,96 @@ import { World } from '../models/workflow/world.model';
   styleUrls: ['./asset-view-module.component.scss'],
 })
 export class AssetViewModuleComponent implements OnInit {
-  workflow?: any;
-
   assets: ModelAsset[] = [];
+
+  @Input() mode: 'elements' | 'uploads' = 'elements';
 
   constructor(
     private loadService: LoadService,
     private projectService: ProjectService,
+    private designService: DesignService,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  @Output() openMenu = new EventEmitter<{
-    comp: string;
-    data: any;
-    callback: ((data: any) => any) | undefined;
-  }>();
-
-  @Output() close = new EventEmitter<any>();
-
   ngOnInit(): void {
-    // this.projectService.workflow.subscribe((w) => {
-    //   if (w) {
-    //     this.workflow = w;
-
-    //     this.assets = Object.values(w.assets) ?? [];
-    //   }
-    // });
-  }
-
-  editAsset(
-    asset: ModelAsset = new ModelAsset(
-      'New Asset',
-      this.loadService.newUtilID,
-      undefined,
-      undefined,
-      'static'
-    )
-  ) {
-    this.openMenu.emit({
-      comp: 'asset-module',
-      data: {
-        asset,
-        workflow: this.workflow,
-      },
-      callback: (data) => {
-        if (data && data != '' && data != '0') {
-          let asset = data.asset as ModelAsset;
-
-          this.workflow!.assets[asset.id] = asset;
-
-          this.projectService.save(this.workflow);
-
-          setTimeout(() => {
-            this.close.emit()
-          }, 100);
-
-          // this.workflowChanged.emit(this.workflow);
+    this.loadService.loadedUser.subscribe((l) => {
+      if (l) {
+        if (this.mode == 'uploads'){
+          this.loadService.getModels((models) => {
+            this.assets = models.reverse();
+          }, l.id);
         }
-      },
-    });
-
-    // let ref = this.dialog.open(AssetsModuleComponent, {
-    //   width: 'calc(var(--vh, 1vh) * 70)',
-    //   maxWidth: '650px',
-    //   maxHeight: 'calc(var(--vh, 1vh) * 100)',
-    //   panelClass: 'app-full-bleed-dialog',
-
-    //   data: {
-    //     asset,
-    //     workflow: this.workflow,
-    //   },
-    // });
-
-    // ref.afterClosed().subscribe(async (val) => {
-    //   if (val && val != '' && val != '0' && val.workflow) {
-    //     let asset = val.asset as ModelAsset;
-
-    //     if (val.action == 'delete') {
-    //       // character.status = 1;
-    //       return;
-    //     }
-
-    //     this.workflow!.assets[asset.id] = asset;
-
-    //     this.projectService.workflow.next(this.workflow);
-
-    //     this.workflowChanged.emit(this.workflow);
-    //   }
-    // });
-  }
-
-  removeAssetWorkflow(id: string) {
-    this.workflow?.sceneLayout?.cells.forEach((c) => {
-      let scene = c.data?.ngArguments?.scene as Scene;
-
-      if (scene) {
-        scene.assets = scene.assets.filter((x) => x.id != id);
+        else{
+          this.loadService.getElements((models) => {
+            this.assets = models.reverse();
+          });
+        }
       }
     });
+  }
 
-    delete this.workflow?.assets[id];
+  addMeshToScene(asset: ModelAsset) {
+    let scene = this.designService.engine?.scenes[0];
+    let cam = scene?.activeCamera as ArcRotateCamera;
+    console.log("joi")
+    if (scene && cam) {
+      let newAsset = JSON.parse(JSON.stringify(asset)) as ModelAsset;
+      let loc = cam.getFrontPosition(1);
+      newAsset.id = this.loadService.newUtilID;
+      let sceneAsset = new SceneAsset(newAsset, {
+        x: loc.x,
+        y: loc.y,
+        z: loc.z,
+      });
+      // sceneAsset.scale = {
+      //   x: 2,
+      //   y: 2,
+      //   z: 2
+      // }
+      this.designService.addMeshToScene(sceneAsset);
+    }
+  }
 
-    this.projectService.workflow.next(this.workflow);
+  async fileChangeEvent(event: any, type = 1): Promise<void> {
+    let file = event.target.files[0] as File;
 
-    // this.workflowChanged.emit(this.workflow);
+    let buffer = await file.arrayBuffer();
+
+    var blob = new Blob([buffer]);
+
+    var reader = new FileReader();
+    reader.onload = async (event: any) => {
+      var base64 = event.target.result;
+      if (type == 1) {
+        // this.newAsset = file;
+
+        let asset = new ModelAsset(
+          file.name,
+          `${new Date().getTime()}`,
+          base64
+        );
+
+        this.assets.unshift(asset);
+
+        this.cdr.detectChanges();
+
+        let url = await this.loadService.saveImg(
+          file,
+          `users/${this.loadService.loadedUser!.value.id}/models/${
+            asset.id
+          }.glb`
+        );
+
+        asset.assetUrl = url;
+
+        await this.save(asset);
+      }
+    };
+
+    reader.readAsDataURL(blob);
+  }
+
+  async save(modelAsset: ModelAsset) {
+    await this.loadService.saveModels(modelAsset);
   }
 }

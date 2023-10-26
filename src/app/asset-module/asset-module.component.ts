@@ -14,6 +14,7 @@ import { ModelAsset } from '../models/workflow/model-asset.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
 import { ProjectService } from '../project.service';
+import { DesignService } from '../design.service';
 
 @AutoUnsubscribe
 @Component({
@@ -28,12 +29,12 @@ export class AssetModuleComponent implements OnInit {
   world?: World;
 
   @Output() changed = new EventEmitter<any>();
-  @Input() assetId?: string
 
   constructor(
     private cdr: ChangeDetectorRef,
     private loadService: LoadService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private designService: DesignService
   ) {}
 
   updateCellAsset(
@@ -125,9 +126,12 @@ export class AssetModuleComponent implements OnInit {
     this.projectService.workflow.subscribe((w) => {
       console.log(w)
       this.world = w;
-      this.assetDetails = this.world.assets?.find(a => a.asset.id == this.assetId);
+      this.designService.selected.subscribe((s) => {
+        if (s){
+          this.assetDetails = this.world.assets?.find(a => a.asset.id == s);
+        }
+      })
       this.cdr.detectChanges()
-      console.log(this.assetDetails)
     });
   }
 }

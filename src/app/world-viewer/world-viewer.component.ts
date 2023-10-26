@@ -45,7 +45,7 @@ export class WorldViewerComponent implements OnInit {
       this.loaded = loaded;
     });
 
-    this.designService.initWorld()
+    this.designService.init()
 
     // this.designerService?.openStep.subscribe((scene) => {
     //   this.scene = scene?.data?.ngArguments?.scene as Scene;

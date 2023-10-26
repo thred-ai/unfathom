@@ -197,20 +197,20 @@ mat-icon {
 .big-design-spinner {
   display: inline-block;
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
 }
 
 .big-design-spinner div {
   box-sizing: border-box;
   display: block;
   position: absolute;
-  width: 69.5px;
-  height: 69.5px;
-  margin: 6.95px;
-  border: 6.95px solid rgb(236, 238, 245);
+  width: 49.5px;
+  height: 49.5px;
+  margin: 4px;
+  border: 4px solid rgb(236, 238, 245);
   border-radius: 50%;
-  border-color: rgb(60, 100, 244) transparent transparent transparent;
+  border-color: var(--dark--primaryBackgroundColor) transparent transparent transparent;
 }
 
 .big-design-spinner div:nth-child(1) {
@@ -578,8 +578,8 @@ ion-select {
 }
 
 .layout-container-full {
-  height: calc(calc(var(--vh, 1vh) * 100));
-  width: 100vw;
+  height: calc(calc(var(--vh, 1vh) * 100)) !important;
+  width: 100vw !important;
 }
 
 .mat-expansion-panel-header-description,

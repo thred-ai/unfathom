@@ -10,12 +10,11 @@ import { World } from './models/workflow/world.model';
 import * as BABYLON from 'babylonjs';
 import * as MATERIALS from 'babylonjs-materials';
 import { BehaviorSubject } from 'rxjs';
-import { Dict } from './load.service';
-import { Character } from './models/workflow/character.model';
 import { Texture } from './models/workflow/texture.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProjectService } from './project.service';
 import { EmulatorService } from './emulator.service';
+import { SceneAsset } from './models/workflow/scene-asset.model';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +29,8 @@ export class DesignService {
   loaded = new BehaviorSubject<string>('');
 
   selected = new BehaviorSubject<string | undefined>(undefined);
+
+  assets: BABYLON.Mesh[] = [];
 
   constructor(
     private db: AngularFirestore,
@@ -46,7 +47,7 @@ export class DesignService {
     });
   }
 
-  private init(world: World = this.world) {
+  init(world: World = this.world) {
     this.deinit();
 
     this.world = world;
@@ -74,9 +75,33 @@ export class DesignService {
 
       // Resize
       window.addEventListener('resize', () => {
-        this.engine?.resize();
+        this.resize();
       });
     }
+  }
+
+  resize() {
+    this.engine?.resize();
+  }
+
+  async addMeshToScene(asset: SceneAsset) {
+    this.world.assets.push(asset);
+    await this.importMeshToScene(asset, this.engine?.scenes[0]);
+
+    console.log("moi")
+    this.projectService.save(this.world);
+
+    setTimeout(() => {
+      let mesh = this.engine.scenes[0]?.getMeshById(asset.asset.id);
+
+      // if (mesh) {
+      //   this.engine.scenes[0]?.onPointerDown(
+      //     {} as any,
+      //     { pickedMesh: mesh } as any,
+      //     BABYLON.PointerEventTypes.POINTERDOWN
+      //   );
+      // }
+    }, 1000);
   }
 
   async createScene2(engine: BABYLON.Engine, world: World) {
@@ -241,7 +266,6 @@ export class DesignService {
           // );
         }
 
-
         if (world.ground.liquid.liquid == LiquidType.lava) {
           var lava = BABYLON.MeshBuilder.CreateGround(
             'lava',
@@ -296,90 +320,7 @@ export class DesignService {
     await Promise.all(
       world.assets.map(async (asset) => {
         this.loaded.next(`Downloading "${asset.asset.name}"`);
-
-        const result = await BABYLON.SceneLoader.ImportMeshAsync(
-          '',
-          '',
-          asset.asset.assetUrl,
-          scene,
-          (data) => {},
-          '.glb'
-        );
-
-        result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
-
-        if (asset.asset.id == 'castle') {
-          let d = result.meshes[result.meshes.length - 1];
-          let mat = new BABYLON.StandardMaterial('fount', scene);
-
-          mat.diffuseTexture = new BABYLON.Texture(
-            world.ground.liquid.texture.diffuse,
-            scene
-          );
-          mat.emissiveTexture = new BABYLON.Texture(
-            world.ground.liquid.texture.diffuse,
-            scene
-          );
-
-          
-        
-
-          scene.beforeRender = () => {
-            (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
-          };
-
-          d.material = mat;
-        }
-
-        // result.meshes.forEach(mesh => hl.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
-        var object = BABYLON.Mesh.MergeMeshes(
-          (result.meshes as BABYLON.Mesh[]).slice(1, result.meshes.length),
-          true,
-          false,
-          undefined,
-          false,
-          true
-        );
-
-        console.log(result.meshes);
-
-        object.id = asset.asset.id;
-        object.isPickable = true;
-
-        object.scaling.x = asset.scale.x;
-        object.scaling.y = asset.scale.y;
-        object.scaling.z = asset.scale.z;
-
-        object.rotation = new BABYLON.Vector3(
-          this.toRadians(asset.direction.x),
-          this.toRadians(asset.direction.y),
-          this.toRadians(asset.direction.z)
-        );
-
-        object.position = new BABYLON.Vector3(
-          asset.spawn.x,
-          asset.spawn.y,
-          asset.spawn.z
-        );
-
-        // var boundingBox =
-        //   BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(object);
-        // boundingBox.name = asset.asset.name;
-
-        // console.log(result.meshes)
-        // let f = await result.meshes[1].material.getActiveTextures()[0].readPixels()
-        // BABYLON.Tools.DumpDataAsync(200, 200, f, 'image/jpeg', "img.jpeg", undefined, false, 1)
-        // console.log()
-
-        if (asset.movement.canMount) {
-          let box = object.getHierarchyBoundingVectors();
-
-          object.ellipsoidOffset = new BABYLON.Vector3(
-            0,
-            -(box.max.y - box.min.y),
-            0
-          );
-        }
+        await this.importMeshToScene(asset, scene);
       })
     );
 
@@ -388,27 +329,50 @@ export class DesignService {
     hl.addExcludedMesh(extraGround);
 
     this.gizmoManager = new BABYLON.GizmoManager(scene);
-    // this.gizmoManager.boundingBoxGizmoEnabled = true;
+    this.gizmoManager.boundingBoxGizmoEnabled = true;
     this.gizmoManager.rotationGizmoEnabled = true;
     this.gizmoManager.scaleGizmoEnabled = true;
     this.gizmoManager.positionGizmoEnabled = true;
 
     // this.gizmoManager.boundingBoxDragBehavior.init()
 
-    // this.gizmoManager.gizmos.boundingBoxGizmo.setColor(BABYLON.Color3.Green());
+    this.gizmoManager.gizmos.boundingBoxGizmo.onScaleBoxDragEndObservable.add(
+      () => {
+        this.updateGizmoSize();
+        this.syncMesh();
+      }
+    );
+
+    this.gizmoManager.gizmos.boundingBoxGizmo.onRotationSphereDragEndObservable.add(
+      () => {
+        this.syncMesh();
+      }
+    );
+
+    this.gizmoManager.boundingBoxDragBehavior.onPositionChangedObservable.add(
+      () => {
+        if (
+          !this.gizmoManager.boundingBoxDragBehavior?.onDragEndObservable.hasObservers()
+        ) {
+          this.gizmoManager.boundingBoxDragBehavior?.onDragEndObservable.add(
+            () => {
+              console.log('elo');
+              this.syncMesh();
+            }
+          );
+        }
+      }
+    );
 
     this.gizmoManager.gizmos.positionGizmo.onDragEndObservable.add(() => {
-      // console.log(event.);
       this.syncMesh();
     });
 
     this.gizmoManager.gizmos.rotationGizmo.onDragEndObservable.add(() => {
-      // console.log(event.);
       this.syncMesh();
     });
 
     this.gizmoManager.gizmos.scaleGizmo.onDragEndObservable.add(() => {
-      // console.log(event.);
       this.syncMesh();
     });
 
@@ -422,7 +386,7 @@ export class DesignService {
 
     // this.gizmoManager.gizmos.scaleGizmo.onDragEndObservable.add((event) => {});
 
-    this.selectTool('move');
+    this.selectTool('box');
 
     // gizmoManager.rotationGizmoEnabled = true;
     // gizmoManager.scaleGizmoEnabled = true;
@@ -432,26 +396,29 @@ export class DesignService {
     scene.onPointerDown = (evt, pickResult) => {
       // We try to pick an object
       var object = pickResult.pickedMesh as BABYLON.Mesh;
-      console.log(object);
+
       hl.removeAllMeshes();
       this.gizmoManager.attachToMesh(null);
       if (object.id == 'extraGround') {
         this.selected.next(undefined);
         return;
       }
-      if (pickResult.hit && object) {
-        this.selected.next(object.id);
 
+      if (pickResult.hit && object) {
         var omitList = ['sky', 'ground', 'water', 'lava'];
 
-        console.log(omitList.includes(object.id));
+        this.selected.next(object.id);
 
-        hl.addMesh(object, BABYLON.Color3.Green());
-        hl.blurHorizontalSize = 1;
-        hl.blurVerticalSize = 1;
+        if (this.gizmoManager?.boundingBoxGizmoEnabled){
+          this.updateGizmoSize();
+        }
 
         if (omitList.includes(object.id)) {
+          hl.addMesh(object, BABYLON.Color3.Green());
+          hl.blurHorizontalSize = 1;
+          hl.blurVerticalSize = 1;
           return;
+        } else {
         }
 
         this.gizmoManager.attachToMesh(object);
@@ -593,7 +560,8 @@ export class DesignService {
       else if (camera.beta > (Math.PI / 2) * 0.92)
         camera.beta = (Math.PI / 2) * 0.92;
 
-      if (camera.radius > world.width / 1.3) camera.radius = world.width / 1.3;
+      if (camera.radius > world.width / 1.05)
+        camera.radius = world.width / 1.05;
 
       if (camera.radius < 5) camera.radius = 5;
 
@@ -617,6 +585,113 @@ export class DesignService {
         this.engine?.resize();
       }, 1);
     });
+  }
+
+  updateGizmoSize(meshId = this.selected.value) {
+    let sameMesh = this.engine?.scenes[0].getMeshById(meshId) as BABYLON.Mesh;
+    if (sameMesh && meshId && meshId == sameMesh.id) {
+      let box = sameMesh.getBoundingInfo().boundingBox;
+
+      let ratio = 0.05;
+
+      let size =
+        Math.abs(box.maximum.x - box.minimum.x) * sameMesh.scaling.x * ratio;
+
+      this.gizmoManager.gizmos.boundingBoxGizmo.rotationSphereSize = size;
+      this.gizmoManager.gizmos.boundingBoxGizmo.scaleBoxSize = size;
+    }
+  }
+
+  async importMeshToScene(
+    asset: SceneAsset,
+    scene: BABYLON.Scene,
+    world = this.world
+  ) {
+    const result = await BABYLON.SceneLoader.ImportMeshAsync(
+      '',
+      '',
+      asset.asset.assetUrl,
+      scene,
+      (data) => {},
+      '.glb'
+    );
+
+    result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
+
+    var object = BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
+      result.meshes[0] as BABYLON.Mesh
+    );
+
+    if (asset.asset.id == 'castle') {
+      let d = result.meshes.find((m) => m.id == 'LAVAFALL');
+      let mat = new BABYLON.StandardMaterial('fount', scene);
+
+      mat.diffuseTexture = new BABYLON.Texture(
+        world.ground.liquid.texture.diffuse,
+        scene
+      );
+      mat.emissiveTexture = new BABYLON.Texture(
+        world.ground.liquid.texture.diffuse,
+        scene
+      );
+
+      scene.beforeRender = () => {
+        (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
+      };
+
+      d.material = mat;
+    }
+
+    // result.meshes.forEach(mesh => hl.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
+    // var object = result.meshes[0]
+
+    // BABYLON.Mesh.MergeMeshes(
+    //   (result.meshes as BABYLON.Mesh[]).slice(1, result.meshes.length),
+    //   true,
+    //   false,
+    //   undefined,
+    //   false,
+    //   true
+    // );
+
+    object.id = asset.asset.id;
+
+    // object.isPickable = true;
+
+    object.scaling.x = asset.scale.x;
+    object.scaling.y = asset.scale.y;
+    object.scaling.z = asset.scale.z;
+
+    object.rotation = new BABYLON.Vector3(
+      this.toRadians(asset.direction.x),
+      this.toRadians(asset.direction.y),
+      this.toRadians(asset.direction.z)
+    );
+
+    object.position = new BABYLON.Vector3(
+      asset.spawn.x,
+      asset.spawn.y,
+      asset.spawn.z
+    );
+
+    // var boundingBox =
+    //   BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(object);
+    // boundingBox.name = asset.asset.name;
+
+    // console.log(result.meshes)
+    // let f = await result.meshes[1].material.getActiveTextures()[0].readPixels()
+    // BABYLON.Tools.DumpDataAsync(200, 200, f, 'image/jpeg', "img.jpeg", undefined, false, 1)
+    // console.log()
+
+    if (asset.movement.canMount) {
+      let box = object.getHierarchyBoundingVectors();
+
+      object.ellipsoidOffset = new BABYLON.Vector3(
+        0,
+        -(box.max.y - box.min.y),
+        0
+      );
+    }
   }
 
   doDownload(filename: string, scene: BABYLON.Scene) {
@@ -684,7 +759,7 @@ export class DesignService {
       {
         width: world.width,
         height: world.width,
-        subdivisions: world.width / 50,
+        subdivisions: world.width * 0.005,
         minHeight: world.ground.minHeight,
         maxHeight: world.ground.maxHeight,
         updatable: true,
@@ -786,7 +861,7 @@ export class DesignService {
     //duplicate this for characters too
     let scene = this.engine?.scenes[0];
     if (world && this.engine && scene) {
-      this.world.assets.map((w) => {
+      this.world.assets.map(async (w) => {
         let mesh = scene?.getMeshById(w.asset.id);
 
         if (mesh) {
@@ -802,9 +877,12 @@ export class DesignService {
           mesh.rotation.y = this.toRadians(w.direction.y);
           mesh.rotation.z = this.toRadians(w.direction.z);
         } else {
+          await this.importMeshToScene(w, scene);
           //add mesh to scene
         }
       });
+
+      scene.meshes;
 
       //do check for meshes in scene that are not in 'world' object
 
@@ -830,7 +908,6 @@ export class DesignService {
       let scale = mesh.scaling;
 
       let same = this.world.assets.find((a) => a.asset.id == assetId);
-      console.log(same);
       if (same && this.world) {
         same.spawn.x = position.x;
         same.spawn.y = position.y;
@@ -855,26 +932,36 @@ export class DesignService {
         this.gizmoManager.rotationGizmoEnabled = true;
         this.gizmoManager.positionGizmoEnabled = false;
         this.gizmoManager.scaleGizmoEnabled = false;
-
+        this.gizmoManager.boundingBoxGizmoEnabled = false;
         if (this.gizmoManager.gizmos.rotationGizmo) {
           this.gizmoManager.gizmos.rotationGizmo.updateGizmoRotationToMatchAttachedMesh =
             false;
         }
-
         return;
       case 'move':
         this.gizmoManager.positionGizmoEnabled = true;
         this.gizmoManager.rotationGizmoEnabled = false;
         this.gizmoManager.scaleGizmoEnabled = false;
-
+        this.gizmoManager.boundingBoxGizmoEnabled = false;
         return;
       case 'scale':
         this.gizmoManager.scaleGizmoEnabled = true;
         this.gizmoManager.positionGizmoEnabled = false;
         this.gizmoManager.rotationGizmoEnabled = false;
-
         this.gizmoManager.gizmos.scaleGizmo.sensitivity = 3;
-
+        this.gizmoManager.boundingBoxGizmoEnabled = false;
+        return;
+      case 'box':
+        this.gizmoManager.boundingBoxGizmoEnabled = true;
+        this.gizmoManager.scaleGizmoEnabled = false;
+        this.gizmoManager.positionGizmoEnabled = false;
+        this.gizmoManager.rotationGizmoEnabled = false;
+        if (this.gizmoManager.boundingBoxGizmoEnabled) {
+          this.gizmoManager.boundingBoxDragBehavior.rotateDraggedObject = false;
+          this.gizmoManager.gizmos.boundingBoxGizmo.setColor(
+            BABYLON.Color3.Green()
+          );
+        }
         return;
     }
   }

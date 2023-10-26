@@ -16,6 +16,7 @@ export class ModelViewerComponent implements OnInit {
   @Input() id?: string = 'model';
   @Input() poster?: string;
   @Input() ios_model?: string;
+  @Input() prompt?: boolean = true;
 
   obj?: any = {
     detail: {
@@ -27,7 +28,7 @@ export class ModelViewerComponent implements OnInit {
     let screenshot = (
       document.getElementById('viewer') as HTMLCanvasElement
     )?.toDataURL('image/png');
-    return screenshot
+    return screenshot;
   }
 
   pro = 0;
@@ -44,6 +45,6 @@ export class ModelViewerComponent implements OnInit {
   constructor(public cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    (window as any).screenshot = this.screenshot
+    (window as any).screenshot = this.screenshot;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { World } from '../models/workflow/world.model';
 import { ProjectService } from '../project.service';
@@ -7,6 +7,7 @@ import { ThemeService } from '../theme.service';
 import { DesignService } from '../design.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { FindStringPipe } from '../find-string.pipe';
+import { Developer } from '../models/user/developer.model';
 
 @AutoUnsubscribe
 @Component({
@@ -20,14 +21,21 @@ export class DesignerComponent implements OnInit {
     private projectService: ProjectService,
     private loadService: LoadService,
     private designerService: DesignService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   world?: World;
+  dev?: Developer;
 
   editableMeshes = ['world', 'sky', 'ground', 'lava', 'water'];
 
   tools = [
+    {
+      id: 'box',
+      name: 'Bounding Box',
+      icon: 'bootstrapBoundingBox',
+    },
     {
       id: 'move',
       name: 'Move',
@@ -45,7 +53,7 @@ export class DesignerComponent implements OnInit {
     },
   ];
 
-  selectedTool = 'move';
+  selectedTool = 'box';
 
   selectTool(tool: string) {
     this.selectedTool = tool;
@@ -53,10 +61,21 @@ export class DesignerComponent implements OnInit {
     this.designerService.selectTool(tool);
   }
 
-  openBar = true;
+  open = true;
+
+
+  set openBar(value: boolean){
+    this.open = value
+    this.cdr.detectChanges()
+    this.designerService.resize()
+  }
+
+
   selected?: string;
 
-  mode?: string = 'design';
+  defaultMode = 'elements'; //'design'
+
+  mode?: string = this.defaultMode;
 
   ngOnInit(): void {
     console.log('OIII');
@@ -68,21 +87,31 @@ export class DesignerComponent implements OnInit {
         this.projectService.workflow.subscribe((w) => {
           this.world = w;
         });
+
+        this.loadService.loadedUser.subscribe((l) => {
+          this.dev = l;
+        });
         this.loadService.getPrototype(proj, (world) => {
           console.log(world);
           this.projectService.workflow.next(world);
         });
+
+        let user = await this.loadService.currentUser;
+        if (user.uid) {
+          this.loadService.getUserInfo(user.uid, false, false, (dev) => {});
+        }
       }
     });
 
     this.designerService.selected.subscribe((s) => {
       let pipe = new FindStringPipe();
       if (this.mode == 'edit' && !pipe.transform(s, this.editableMeshes)) {
-        this.mode = 'design';
+        this.mode = this.defaultMode;
         return;
       }
       this.selected = s;
-    
+      console.log(s)
+      this.cdr.detectChanges()
     });
   }
 }
