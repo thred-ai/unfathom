@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Character } from '../models/workflow/character.model';
 import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
-import { Scene } from '../models/workflow/scene.model';
+
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
 @AutoUnsubscribe
@@ -110,19 +110,19 @@ export class CharacterViewModuleComponent implements OnInit {
 
 
   removeCharacterWorkflow(id: string) {
-    this.workflow?.sceneLayout?.cells.forEach((c) => {
-      let scene = c.data?.ngArguments?.scene as Scene;
+    // this.workflow?.sceneLayout?.cells.forEach((c) => {
+    //   let scene = c.data?.ngArguments?.scene as Scene;
 
-      if (scene) {
-        scene.characters = scene.characters.filter((x) => x.id != id);
-      }
-    });
+    //   if (scene) {
+    //     scene.characters = scene.characters.filter((x) => x.id != id);
+    //   }
+    // });
 
-    delete this.workflow?.characters[id];
+    // delete this.workflow?.characters[id];
 
-    this.projectService.workflow.next(this.workflow);
+    // this.projectService.workflow.next(this.workflow);
 
-    this.close.emit()
+    // this.close.emit()
     // this.workflowChanged.emit(this.workflow);
   }
 }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { World } from '../models/workflow/world.model';
-import { Scene } from '../models/workflow/scene.model';
+
 import { Liquid } from '../models/workflow/liquid.model';
 import { Texture } from '../models/workflow/texture.model';
 import { LiquidType } from '../models/workflow/liquid-type.enum';

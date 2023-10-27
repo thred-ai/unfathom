@@ -17,7 +17,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { InViewportModule } from 'ng-in-viewport';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import {
@@ -109,7 +108,6 @@ import { AngularSplitModule } from 'angular-split';
 import { TrimPipe } from './trim.pipe';
 import { GlobalEditorInitDirective } from './global-editor-init.directive';
 import { MatMenuModule } from '@angular/material/menu';
-import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { NgClickOutsideDirective } from 'ng-click-outside2';
 import { TooltipComponent } from './tooltip/tooltip.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -302,7 +300,6 @@ import { ElementsComponent } from './elements/elements.component';
     IonicModule,
     ClipboardModule,
     AngularSplitModule,
-    CodemirrorModule,
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
     // CodeEditorModule.forRoot(),
     IonicModule.forRoot(),

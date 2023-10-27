@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Dict, LoadService } from '../load.service';
-import { Scene } from '../models/workflow/scene.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';

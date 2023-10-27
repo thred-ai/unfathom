@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Character } from '../models/workflow/character.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
-import { Scene } from '../models/workflow/scene.model';
+
 import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';

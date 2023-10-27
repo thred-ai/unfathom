@@ -1,16 +1,13 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Cell, Graph } from '@antv/x6';
-import { Dnd } from '@antv/x6-plugin-dnd';
 import { AppComponent } from '../app.component';
 import { LoadService, Dict } from '../load.service';
 import { Developer } from '../models/user/developer.model';
 import { Ground } from '../models/workflow/ground.model';
-import { SceneDefinition } from '../models/workflow/scene-definition.model';
 import { Sky } from '../models/workflow/sky.model';
 import { ProjectService } from '../project.service';
 import { ThemeService } from '../theme.service';
 import { Texture } from '../models/workflow/texture.model';
-import { Scene } from '../models/workflow/scene.model';
+
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { DesignService } from '../design.service';
 import { World } from '../models/workflow/world.model';

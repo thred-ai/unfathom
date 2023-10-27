@@ -10,7 +10,7 @@ import {
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Dict, LoadService } from '../load.service';
 import { Character } from '../models/workflow/character.model';
-import { Scene } from '../models/workflow/scene.model';
+
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
 @AutoUnsubscribe
@@ -23,7 +23,6 @@ export class CharacterEditModuleComponent implements OnInit {
   workflow?: any;
   character?: Character;
   characterDetails?: Dict<any>;
-  scene?: Scene;
 
   fileDisplay?: string;
 

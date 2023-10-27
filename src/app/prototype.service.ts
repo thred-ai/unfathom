@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Scene } from './models/workflow/scene.model';
 import { CharacterController } from 'babylonjs-charactercontroller';
 import {
   GLTFFileLoader,

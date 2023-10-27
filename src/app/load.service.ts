@@ -11,8 +11,6 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Meta, Title } from '@angular/platform-browser';
 import { Developer } from './models/user/developer.model';
-import { Scene } from './models/workflow/scene.model';
-import { SceneLayout } from './models/workflow/scene-layout.model';
 import { ThemeService } from './theme.service';
 import { ProjectService } from './project.service';
 import { World } from './models/workflow/world.model';

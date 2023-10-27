@@ -8,7 +8,7 @@ import {
   GLTFFileLoader,
   GLTFLoaderAnimationStartMode,
 } from 'babylonjs-loaders';
-import { Scene } from '../models/workflow/scene.model';
+
 import { LiquidType } from '../models/workflow/liquid-type.enum';
 import { Character } from '../models/workflow/character.model';
 import { ProjectService } from '../project.service';

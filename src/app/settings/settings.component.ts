@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { Dict, LoadService } from '../load.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Developer } from '../models/user/developer.model';
-import { Scene } from '../models/workflow/scene.model';
+
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
 
@@ -35,7 +35,7 @@ export class SettingsComponent implements OnInit {
   // @Output() iconChanged = new EventEmitter<File>();
   // @Output() apiKeyChanged = new EventEmitter<Key>();
 
-  selectedFile?: Scene;
+  selectedFile?: any;
   dev?: Developer;
   newImg?: File;
 

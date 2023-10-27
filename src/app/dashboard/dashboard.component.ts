@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { DateRange } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
-import { isPlatformBrowser } from 'ng-in-viewport';
 import { Dict, LoadService } from '../load.service';
 import { Developer } from '../models/user/developer.model';
 import { PlanSelectComponent } from '../plan-select/plan-select.component';
@@ -91,7 +90,7 @@ export class DashboardComponent implements OnInit {
   }
 
   scrollToLocation(val?: any) {
-    if (val && isPlatformBrowser()) {
+    if (val) {
       let loc = val;
       let coords = loc.coords;
 

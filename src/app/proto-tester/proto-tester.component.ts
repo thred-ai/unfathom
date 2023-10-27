@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
-import { Scene } from '../models/workflow/scene.model';
+
 import { World } from '../models/workflow/world.model';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { ThemeService } from '../theme.service';

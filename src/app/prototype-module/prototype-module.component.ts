@@ -1,11 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { World } from '../models/workflow/world.model';
-import { Scene } from '../models/workflow/scene.model';
 import { ProjectService } from '../project.service';
 import { PrototypeService } from '../prototype.service';
 import { ThemeService } from '../theme.service';
 import { ActivatedRoute } from '@angular/router';
-import { Cell } from '@antv/x6';
 import { LoadService } from '../load.service';
 import { Meta } from '@angular/platform-browser';
 
