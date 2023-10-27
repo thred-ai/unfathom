@@ -1,4 +1,12 @@
 model-viewer {
-  --progress-bar-color: transparent;
   --poster-color: transparent;
+}
+
+model-viewer::part(default-progress-bar) {
+  bottom: 0;
+  top: auto;
+  width: 90% !important;
+  left: 5%;
+  background-image: linear-gradient(to right, #67e8f9, #6366f1) !important;
+  border-radius: 500px;
 }

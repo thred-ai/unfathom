@@ -957,6 +957,7 @@ export class DesignService {
         this.gizmoManager.positionGizmoEnabled = false;
         this.gizmoManager.rotationGizmoEnabled = false;
         if (this.gizmoManager.boundingBoxGizmoEnabled) {
+          this.gizmoManager.gizmos.boundingBoxGizmo.scaleDragSpeed = 2
           this.gizmoManager.boundingBoxDragBehavior.rotateDraggedObject = false;
           this.gizmoManager.gizmos.boundingBoxGizmo.setColor(
             BABYLON.Color3.Green()

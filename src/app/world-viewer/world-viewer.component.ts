@@ -14,7 +14,6 @@ export class WorldViewerComponent implements OnInit {
   totalLoaded = 0;
 
   constructor(
-    private projectService: ProjectService,
     private designService: DesignService
   ) {}
 

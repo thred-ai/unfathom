@@ -16,6 +16,7 @@ import { World } from '../models/workflow/world.model';
 import { SceneAsset } from '../models/workflow/scene-asset.model';
 import { DesignService } from '../design.service';
 import { ArcRotateCamera } from 'babylonjs';
+import "babylonjs-viewer";
 
 @AutoUnsubscribe
 @Component({

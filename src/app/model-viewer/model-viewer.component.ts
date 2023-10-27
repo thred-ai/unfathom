@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
 @AutoUnsubscribe
@@ -17,6 +17,9 @@ export class ModelViewerComponent implements OnInit {
   @Input() poster?: string;
   @Input() ios_model?: string;
   @Input() prompt?: boolean = true;
+  @Input() loaderColor: string = 'transparent';
+
+  @Output() finishedLoading = new EventEmitter<any>();
 
   obj?: any = {
     detail: {
@@ -40,6 +43,11 @@ export class ModelViewerComponent implements OnInit {
 
   progress(event: any) {
     this.pro = (event.detail.totalProgress ?? 0) * 100;
+    if (this.pro == 100){
+      setTimeout(() => {
+        this.finishedLoading.emit()
+      }, 500);
+    }
   }
 
   constructor(public cdr: ChangeDetectorRef) {}

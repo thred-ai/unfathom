@@ -20,7 +20,7 @@
   </model-viewer>
   <div
     class="absolute w-full h-full"
-    *ngIf="!obj.detail.visible"
+    *ngIf="!obj.detail.visible && loaderColor == 'transparent'"
     style="z-index: 1000"
   >
     <div

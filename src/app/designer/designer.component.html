@@ -1,5 +1,5 @@
 <div
-  class="layout-container-full animate__animated animate__fadeIn primary-background flex flex-col justify-between items-center"
+  class="layout-container-full animate__animated animate__fadeIn primary-background flex flex-col items-center"
 >
   <div
     class="w-full h-[55px] shrink-0 py-2 pe-2 bg-gradient-to-r from-cyan-300 to-indigo-500 shadow-sm flex justify-center items-center"
@@ -36,7 +36,7 @@
     </div>
   </div>
   
-  <div class="h-full w-full flex justify-between" *ngIf="world">
+  <div class="layout-container flex justify-between shrink" *ngIf="world">
     <app-menu-sidebar
       #sidebar
       [mode]="mode"
@@ -159,13 +159,6 @@
               mode == 'position' ? (mode = defaultMode) : (mode = 'position')
             "
           >
-            <!-- <ng-icon
-            class="font-bold me-2"
-            name="heroArrowUpTray"
-            [strokeWidth]="2.2"
-          >
-          </ng-icon> -->
-
             Position
           </button>
         </div>

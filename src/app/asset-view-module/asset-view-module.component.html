@@ -1,5 +1,5 @@
-<div class="w-full h-full p-3" style="overflow-y: scroll">
-  <div class="w-full pb-3">
+<div class="w-full h-full p-3 h-full">
+  <div class="w-full pb-3 h-full flex flex-col justify-between items-center">
     <div
       class="w-full flex justify-between content-center pb-3 mb-3 mt-4 primary-text border-table-bottom-dark"
       *ngIf="mode == 'uploads'"
@@ -18,64 +18,66 @@
       />
     </div>
 
-    <div class="w-full grid grid-cols-2 justify-start g-0">
-      <div
-        *ngFor="let asset of assets ?? []; index as i"
-        class="col p-1 relative"
-        style="aspect-ratio: 1"
-      >
+    <div class="w-full h-full" style="overflow-y: scroll">
+      <div class="w-full grid grid-cols-2 justify-start g-0">
         <div
-          class="flex justify-between items-center flex-col bg-transparent shadow-hover"
-          style="overflow: hidden"
-          role="button"
-          (click)="addMeshToScene(asset)"
+          *ngFor="let asset of assets ?? []; index as i"
+          class="col p-1 relative"
+          style="aspect-ratio: 1"
         >
-          <!-- <img
-            class="w-full h-full"
-            style="object-fit: cover; aspect-ratio: 1"
-            [src]="asset.img"
-          /> -->
+          <div
+            class="flex justify-between items-center flex-col bg-transparent shadow-hover"
+            style="overflow: hidden"
+            role="button"
+            (click)="addMeshToScene(asset)"
+          >
+            <!-- <img
+              class="w-full h-full"
+              style="object-fit: cover; aspect-ratio: 1"
+              [src]="asset.img"
+            /> -->
 
-          <div class="w-full aspect-square pointer-events-none">
-            <app-model-viewer
-              #modelViewer
-              [camera]="true"
-              [model]="asset.assetUrl"
-              [animate]="true"
-              [prompt]="false"
-              [poster]="'/assets/default.png'"
-              [id]="'viewer'"
-              [ar]="false"
+            <div class="w-full aspect-square pointer-events-none">
+              <app-model-viewer
+                [camera]="true"
+                [model]="asset.assetUrl"
+                [animate]="true"
+                [prompt]="false"
+                [poster]="'/assets/default.png'"
+                [id]="'viewer'"
+                [ar]="false"
+                [loaderColor]="'blue'"
+              >
+              </app-model-viewer>
+            </div>
+
+            <!-- 
+            <div
+              class="w-full primary-background py-2 flex justify-center items-center"
             >
-            </app-model-viewer>
+              <p
+                class="mx-auto primary-text text-truncate text-center"
+                style="width: 70px"
+              >
+                {{ asset.name }}
+              </p>
+            </div> -->
           </div>
 
-          <!-- 
-          <div
-            class="w-full primary-background py-2 flex justify-center items-center"
+          <!-- <div
+            class="rounded-full bg-orange absolute"
+            style="z-index: 1; right: 0; top: 0; aspect-ratio: 1 !important"
+            role="button"
+            (click)="removeAssetWorkflow(asset.id)"
           >
-            <p
-              class="mx-auto primary-text text-truncate text-center"
-              style="width: 70px"
+            <mat-icon
+              class="w-full h-full primary-text-dark flex justify-center items-center p-1"
+              style="font-size: small"
             >
-              {{ asset.name }}
-            </p>
+              close
+            </mat-icon>
           </div> -->
         </div>
-
-        <!-- <div
-          class="rounded-full bg-orange absolute"
-          style="z-index: 1; right: 0; top: 0; aspect-ratio: 1 !important"
-          role="button"
-          (click)="removeAssetWorkflow(asset.id)"
-        >
-          <mat-icon
-            class="w-full h-full primary-text-dark flex justify-center items-center p-1"
-            style="font-size: small"
-          >
-            close
-          </mat-icon>
-        </div> -->
       </div>
     </div>
   </div>
