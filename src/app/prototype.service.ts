@@ -76,9 +76,9 @@ export class PrototypeService {
             // x: 15000,
             // y: 250,
             // z: 200,
-            x: -15745.2421875,
-            y: 11152.5830078125,
-            z: -2961.7587890625,
+            x: 100,
+            y: 100,
+            z: 100,
           },
           {
             x: 0,
@@ -499,16 +499,15 @@ export class PrototypeService {
           '.glb'
         );
 
-        // result.meshes.forEach((mesh) => {
-        //   if (mesh.id == 'LAVAFALL'){
-        //     return
-        //   }
-        //   (mesh as BABYLON.Mesh)?.flipFaces(true)
-        // });
+        result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
+
+        var object =
+          BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
+            result.meshes[0] as BABYLON.Mesh
+          );
 
         if (asset.asset.id == 'castle') {
-          console.log(result.meshes);
-          let d = result.meshes.find((m) => m.id == 'LAVAFALL') as BABYLON.Mesh;
+          let d = result.meshes.find((m) => m.id == 'LAVAFALL');
           let mat = new BABYLON.StandardMaterial('fount', scene);
 
           mat.diffuseTexture = new BABYLON.Texture(
@@ -526,18 +525,6 @@ export class PrototypeService {
 
           d.material = mat;
         }
-
-        // result.meshes.forEach(mesh => hl.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
-        var object = BABYLON.Mesh.MergeMeshes(
-          (result.meshes as BABYLON.Mesh[]).slice(1, result.meshes.length),
-          true,
-          false,
-          undefined,
-          false,
-          true
-        );
-
-        console.log(result.meshes);
 
         object.id = asset.asset.id;
 

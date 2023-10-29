@@ -75,6 +75,18 @@ export class LoadService {
     return confirm('Are you sure you want to delete this component?');
   }
 
+  newWorld() {
+    if (this.loadedUser.value.id) {
+      let world = new World(
+        this.loadedUser.value.id,
+        this.newUtilID,
+        'My New World'
+      );
+      return world;
+    }
+    return undefined;
+  }
+
   finishSignUp(
     email: string,
     password: string,

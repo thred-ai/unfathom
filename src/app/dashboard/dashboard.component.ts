@@ -10,6 +10,7 @@ import { ThemeService } from '../theme.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
 import { ProjectService } from '../project.service';
+import { NavigationService } from '../navigation.service';
 
 @AutoUnsubscribe
 @Component({
@@ -72,8 +73,7 @@ export class DashboardComponent implements OnInit {
       let uid = user?.uid;
 
       if (uid) {
-        this.loadService.getUserInfo(uid, true, true, (dev) => {
-        });
+        this.loadService.getUserInfo(uid, true, true, (dev) => {});
       } else {
       }
     });
@@ -84,7 +84,8 @@ export class DashboardComponent implements OnInit {
     private themeService: ThemeService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private navService: NavigationService
   ) {
     (<any>window).openCard = this.openCard.bind(this);
   }
@@ -101,6 +102,17 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  async newDesign() {
+    if (this.dev) {
+      let world = this.loadService.newWorld();
+
+      if (world) {
+        this.dev.utils.push(world)
+        await this.loadService.saveSmartUtil(world)
+        this.navService.redirectTo(`/design/${world.id}`)
+      }
+    }
+  }
 
   openPlans(activePlan: string, index: number) {
     // let ref = this.dialog.open(PlanSelectComponent, {
@@ -108,13 +120,11 @@ export class DashboardComponent implements OnInit {
     //   width: 'calc(var(--vh, 1vh) * 70)',
     //   maxWidth: '100vw',
     //   panelClass: 'app-full-bleed-dialog',
-
     //   data: {
     //     activePlan,
     //     modelId: this.dev!.utils![index].id,
     //   },
     // });
-
     // ref.afterClosed().subscribe((value) => {
     //   if (value && value != '' && this.dev?.utils) {
     //     this.dev.utils[index].plan = value as Subscription;
@@ -142,34 +152,33 @@ export class DashboardComponent implements OnInit {
   @Input() dev?: Developer = undefined;
 
   async ngOnInit() {
-    
     this.getProfile();
 
-    this.projectService.workflow.next(undefined)
+    this.projectService.workflow.next(undefined);
 
-      // this.loadStats((await this.loadService.currentUser)?.uid);
+    // this.loadStats((await this.loadService.currentUser)?.uid);
 
-      this.loadService.loadedUser.subscribe((dev) => {
-        if (dev) {
-          // if (dev?.theme == 'auto') {
-          //   if (
-          //     window.matchMedia &&
-          //     window.matchMedia('(prefers-color-scheme: dark)').matches
-          //   ) {
-          //     // dark mode
-          //     this.themeService.activeTheme = 'dark';
-          //   } else {
-          //     this.themeService.activeTheme = 'light';
-          //   }
-          // } else {
-          //   this.themeService.activeTheme = dev.theme;
-          // }
+    this.loadService.loadedUser.subscribe((dev) => {
+      if (dev) {
+        // if (dev?.theme == 'auto') {
+        //   if (
+        //     window.matchMedia &&
+        //     window.matchMedia('(prefers-color-scheme: dark)').matches
+        //   ) {
+        //     // dark mode
+        //     this.themeService.activeTheme = 'dark';
+        //   } else {
+        //     this.themeService.activeTheme = 'light';
+        //   }
+        // } else {
+        //   this.themeService.activeTheme = dev.theme;
+        // }
 
-          this.themeService.activeTheme = 'light'
+        this.themeService.activeTheme = 'light';
 
-          this.dev = dev ?? undefined;
-        }
-      });
+        this.dev = dev ?? undefined;
+      }
+    });
 
     this.themeService.theme.subscribe((theme) => {
       this.theme = theme;
@@ -196,5 +205,4 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
-
 }
