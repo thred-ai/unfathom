@@ -41,7 +41,7 @@ export class SkyEditComponent implements OnInit {
         delete this.world?.ground?.liquid;
       }
       let liquidType = LiquidType[`${liquid as 'lava' | 'water'}`];
-      if (this.world!.ground!.liquid.liquid != liquidType) {
+      if (this.world!.ground!.liquid?.liquid != liquidType) {
         this.world!.ground!.liquid = new Liquid(
           this.prototypeService.generateLiquidTexture(liquidType),
           liquidType,
