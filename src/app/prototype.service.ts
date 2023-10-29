@@ -767,8 +767,8 @@ export class PrototypeService {
           camera.beta = (Math.PI / 2) * 0.92;
         }
 
-        if (camera.radius > 50)
-          camera.radius = 50;
+        if (camera.radius > 20)
+          camera.radius = 20;
 
         if (camera.radius < 0) camera.radius = 0;
 

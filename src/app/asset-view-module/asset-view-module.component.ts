@@ -38,12 +38,11 @@ export class AssetViewModuleComponent implements OnInit {
   ngOnInit(): void {
     this.loadService.loadedUser.subscribe((l) => {
       if (l) {
-        if (this.mode == 'uploads'){
+        if (this.mode == 'uploads') {
           this.loadService.getModels((models) => {
             this.assets = models.reverse();
           }, l.id);
-        }
-        else{
+        } else {
           this.loadService.getElements((models) => {
             this.assets = models.reverse();
           });
@@ -55,7 +54,7 @@ export class AssetViewModuleComponent implements OnInit {
   addMeshToScene(asset: ModelAsset) {
     let scene = this.designService.engine?.scenes[0];
     let cam = scene?.activeCamera as ArcRotateCamera;
-    console.log("joi")
+    console.log('joi');
     if (scene && cam) {
       let newAsset = JSON.parse(JSON.stringify(asset)) as ModelAsset;
       let loc = cam.getFrontPosition(1);
@@ -65,6 +64,11 @@ export class AssetViewModuleComponent implements OnInit {
         y: loc.y,
         z: loc.z,
       });
+
+      sceneAsset.scale.x = NaN;
+      sceneAsset.scale.y = NaN;
+      sceneAsset.scale.z = NaN;
+
       // sceneAsset.scale = {
       //   x: 2,
       //   y: 2,

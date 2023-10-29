@@ -84,10 +84,11 @@ export class DesignService {
   }
 
   async addMeshToScene(asset: SceneAsset) {
-    this.world.assets.push(asset);
-    await this.importMeshToScene(asset, this.engine?.scenes[0]);
+    let newAsset = await this.importMeshToScene(asset, this.engine?.scenes[0]);
 
-    console.log("moi")
+    this.world.assets.push(newAsset);
+
+    console.log('moi');
     this.projectService.save(this.world);
 
     setTimeout(() => {
@@ -408,17 +409,18 @@ export class DesignService {
 
         this.selected.next(object.id);
 
-        if (this.gizmoManager?.boundingBoxGizmoEnabled){
+        if (this.gizmoManager?.boundingBoxGizmoEnabled) {
           this.updateGizmoSize();
-        };
+        }
 
         if (omitList.includes(object.id)) {
-          hl.addMesh(object, BABYLON.Color3.Green());
+          hl.addMesh(object, new BABYLON.Color3(0.4, 0.91, 0.97));
           hl.blurHorizontalSize = 1;
           hl.blurVerticalSize = 1;
           return;
         } else {
         }
+        // 0.4, 0.91, 0.97
 
         this.gizmoManager.attachToMesh(object);
       }
@@ -595,7 +597,7 @@ export class DesignService {
 
       let size =
         Math.abs(box.maximum.x - box.minimum.x) * sameMesh.scaling.x * ratio;
-
+      // this.gizmoManager.gizmos.boundingBoxGizmo.fixedDragMeshBoundsSize = true
       this.gizmoManager.gizmos.boundingBoxGizmo.rotationSphereSize = size;
       this.gizmoManager.gizmos.boundingBoxGizmo.scaleBoxSize = size;
     }
@@ -606,6 +608,8 @@ export class DesignService {
     scene: BABYLON.Scene,
     world = this.world
   ) {
+    let newAsset = JSON.parse(JSON.stringify(asset)) as SceneAsset;
+
     const result = await BABYLON.SceneLoader.ImportMeshAsync(
       '',
       '',
@@ -615,11 +619,20 @@ export class DesignService {
       '.glb'
     );
 
-    result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
+    console.log('BOUND');
 
     var object = BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
       result.meshes[0] as BABYLON.Mesh
     );
+
+    result.meshes.forEach((mesh) => {
+      mesh.checkCollisions = true;
+    });
+
+    // result.meshes[0].setBoundingInfo(object.getBoundingInfo())
+
+    // console.log("OBJECT")
+    // console.log(object.getRawBoundingInfo().boundingBox)
 
     if (asset.asset.id == 'castle') {
       let d = result.meshes.find((m) => m.id == 'LAVAFALL');
@@ -657,9 +670,22 @@ export class DesignService {
 
     // object.isPickable = true;
 
-    object.scaling.x = asset.scale.x;
-    object.scaling.y = asset.scale.y;
-    object.scaling.z = asset.scale.z;
+    let vectors = result.meshes[0].getHierarchyBoundingVectors();
+
+    // new BABYLON.BoundingInfo(vectors.min, vectors.max)
+
+    let width = vectors.max.x - vectors.min.x;
+    let height = vectors.max.y - vectors.min.y;
+
+    let ratio = height / width;
+
+    object.scaling.x = !Number.isNaN(asset.scale.x) ? asset.scale.x : 1;
+    object.scaling.y = !Number.isNaN(asset.scale.y) ? asset.scale.y : 1 * ratio;
+    object.scaling.z = !Number.isNaN(asset.scale.z) ? asset.scale.z : 1;
+
+    newAsset.scale.x = object.scaling.x;
+    newAsset.scale.y = object.scaling.y;
+    newAsset.scale.z = object.scaling.z;
 
     object.rotation = new BABYLON.Vector3(
       this.toRadians(asset.direction.x),
@@ -691,6 +717,8 @@ export class DesignService {
         0
       );
     }
+
+    return newAsset;
   }
 
   doDownload(filename: string, scene: BABYLON.Scene) {
@@ -956,11 +984,12 @@ export class DesignService {
         this.gizmoManager.positionGizmoEnabled = false;
         this.gizmoManager.rotationGizmoEnabled = false;
         if (this.gizmoManager.boundingBoxGizmoEnabled) {
-          this.gizmoManager.gizmos.boundingBoxGizmo.scaleDragSpeed = 2
+          this.gizmoManager.gizmos.boundingBoxGizmo.scaleDragSpeed = 2;
           this.gizmoManager.boundingBoxDragBehavior.rotateDraggedObject = false;
           this.gizmoManager.gizmos.boundingBoxGizmo.setColor(
-            BABYLON.Color3.Green()
+            new BABYLON.Color3(0.4, 0.91, 0.97)
           );
+          // 99 102 241
         }
         return;
     }
