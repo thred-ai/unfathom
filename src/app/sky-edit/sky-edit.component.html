@@ -1,7 +1,7 @@
 <div
   class="w-full h-full p-3 pb-5 primary-background-light"
   style="overflow-y: scroll"
-  *ngIf="world.sky"
+  *ngIf="world.sky && world.ground"
 >
   <!-- <div class="w-full pb-3">
   <p class="w-full mb-3 font-medium primary-text">
@@ -77,13 +77,13 @@
         <div class="px-1">
           <verticalai-select-field
             [title]="'Liquid'"
-            [value]="world.ground.liquid?.id"
+            [value]="world.ground.liquid?.texture?.id"
             [data]="liquids"
             [theme]="'light'"
             [valueField]="'id'"
             [displayField]="'name'"
             [placeholder]="'No Liquid'"
-            (changed)="selectLiquids($event); save()"
+            (changed)="selectLiquids($event)"
           >
           </verticalai-select-field>
         </div>

@@ -197,8 +197,8 @@ export class DesignService {
           var water = BABYLON.MeshBuilder.CreateGround(
             'water',
             {
-              width: world.width * 2,
-              height: world.height * 2,
+              width: world.width,
+              height: world.height,
               subdivisions: 32,
             },
             scene
@@ -398,19 +398,19 @@ export class DesignService {
 
       hl.removeAllMeshes();
       this.gizmoManager.attachToMesh(null);
-      if (object.id == 'extraGround') {
+      if (object.id == 'extraGround' || object.id == 'sky') {
         this.selected.next(undefined);
         return;
       }
 
       if (pickResult.hit && object) {
-        var omitList = ['sky', 'ground', 'water', 'lava'];
+        var omitList = ['ground', 'water', 'lava'];
 
         this.selected.next(object.id);
 
         if (this.gizmoManager?.boundingBoxGizmoEnabled){
           this.updateGizmoSize();
-        }
+        };
 
         if (omitList.includes(object.id)) {
           hl.addMesh(object, BABYLON.Color3.Green());

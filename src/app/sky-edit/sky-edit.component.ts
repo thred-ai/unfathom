@@ -33,22 +33,31 @@ export class SkyEditComponent implements OnInit {
       id: 'water',
       name: 'Water',
     },
+    {
+      id: 'none',
+      name: 'No Liquid',
+    },
   ];
 
   selectLiquids(liquid: string) {
     if (this.world && this.world.ground) {
       if (liquid == 'none') {
-        delete this.world?.ground?.liquid;
-      }
-      let liquidType = LiquidType[`${liquid as 'lava' | 'water'}`];
-      if (this.world!.ground!.liquid?.liquid != liquidType) {
-        this.world!.ground!.liquid = new Liquid(
-          this.prototypeService.generateLiquidTexture(liquidType),
-          liquidType,
-          1
-        );
+        console.log('no liq');
+        console.log(liquid);
+        this.world.ground.liquid = undefined;
+        console.log(this.world)
+      } else {
+        let liquidType = LiquidType[`${liquid as 'lava' | 'water'}`];
+        if (this.world!.ground!.liquid?.liquid != liquidType) {
+          this.world!.ground!.liquid = new Liquid(
+            this.prototypeService.generateLiquidTexture(liquidType),
+            liquidType,
+            1
+          );
+        }
       }
     }
+    this.save()
   }
 
   save() {

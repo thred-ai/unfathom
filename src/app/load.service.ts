@@ -198,6 +198,8 @@ export class LoadService {
 
       let uploadData = JSON.parse(JSON.stringify(data));
 
+      console.log(uploadData)
+
       if (uploadData.downloads > 0) {
         delete uploadData.downloads;
       }
