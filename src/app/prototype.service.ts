@@ -131,25 +131,8 @@ export class PrototypeService {
       let res = await this.createScene2(this.engine, this.world);
 
       if (res) {
-        let scene = res;
-
         this.engine.enableOfflineSupport = false;
         this.loaded.next('Launching Scene');
-
-        scene.whenReadyAsync(true).then(() => {
-          this.loaded.next('');
-          setTimeout(() => {
-            this.engine?.resize();
-          }, 1);
-        });
-
-        // Once the scene is loaded, we register a render loop to render it
-        this.engine.runRenderLoop(() => {
-          let cam = scene.activeCamera as BABYLON.ArcRotateCamera;
-          if (cam) {
-            scene.render();
-          }
-        });
 
         // Resize
         window.addEventListener('resize', () => {
@@ -692,7 +675,7 @@ export class PrototypeService {
             agMap,
             undefined,
             undefined,
-            false
+            true
           );
         }
       }
@@ -766,7 +749,44 @@ export class PrototypeService {
 
     // const gl2 = new BABYLON.GlowLayer('bolt', scene);
 
-    return scene;
+    engine.runRenderLoop(() => {
+      // if (ground.isReady && ground.subMeshes?.length == 1) {
+      //   ground.subdivide(20); // Subdivide to optimize picking
+      // }
+
+      // Camera
+
+      let camera = scene.activeCamera as BABYLON.ArcRotateCamera;
+
+      if (camera) {
+        if (camera.beta < 0.1) camera.beta = 0.1;
+
+        if (camera.radius > 1){
+          console.log(camera.radius)
+          if (camera.beta > (Math.PI / 2) * 0.92)
+          camera.beta = (Math.PI / 2) * 0.92;
+        }
+
+        if (camera.radius > 50)
+          camera.radius = 50;
+
+        if (camera.radius < 0) camera.radius = 0;
+
+        scene.render();
+      }
+
+      // Render scene
+
+      // Animations
+      skybox.rotation.y += 0.0001 * scene.getAnimationRatio();
+    });
+
+    scene.whenReadyAsync(true).then(() => {
+      this.loaded.next('');
+      setTimeout(() => {
+        engine?.resize();
+      }, 1);
+    });
   }
 
   initializeCharacterController(
