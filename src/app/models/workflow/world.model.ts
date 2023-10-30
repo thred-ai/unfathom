@@ -21,6 +21,7 @@ export class World {
   characters!: SceneCharacter[];
 
   assets!: SceneAsset[];
+  locked!: boolean
 
   constructor(
     uid: string,
@@ -53,7 +54,8 @@ export class World {
       undefined,
       1
     ),
-    status: number = 0
+    status: number = 0,
+    locked: boolean = false
   ) {
     this.uid = uid;
     this.width = width;
@@ -68,5 +70,6 @@ export class World {
     this.created = created;
     this.modified = modified;
     this.status = status;
+    this.locked = locked
   }
 }

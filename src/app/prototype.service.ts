@@ -367,6 +367,8 @@ export class PrototypeService {
         }
 
         if (world.ground.liquid.liquid == LiquidType.lava) {
+   
+
           var lava = BABYLON.MeshBuilder.CreateGround(
             'lava',
             {
@@ -399,6 +401,8 @@ export class PrototypeService {
           lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
           lavaMaterial.unlit = true;
           lava.material = lavaMaterial;
+
+    
         }
       }
     }

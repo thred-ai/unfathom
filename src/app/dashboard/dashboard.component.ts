@@ -107,9 +107,9 @@ export class DashboardComponent implements OnInit {
       let world = this.loadService.newWorld();
 
       if (world) {
-        this.dev.utils.push(world)
-        await this.loadService.saveSmartUtil(world)
-        this.navService.redirectTo(`/design/${world.id}`)
+        this.worlds.push(world);
+        await this.loadService.saveSmartUtil(world);
+        this.navService.redirectTo(`/design/${world.id}`);
       }
     }
   }
@@ -140,7 +140,7 @@ export class DashboardComponent implements OnInit {
   openCard(coords: Dict<any>) {
     coords['time'] = new Date(coords['time']);
 
-    let a = this.dev?.utils?.find((app) => app.id == coords['docId']);
+    let a = this.worlds?.find((app) => app.id == coords['docId']);
 
     if (a) {
       coords['app'] = a;
@@ -149,12 +149,14 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  @Input() dev?: Developer = undefined;
+  dev?: Developer = undefined;
+  worlds?: World[] = [];
 
   async ngOnInit() {
-    this.getProfile();
-
     this.projectService.workflow.next(undefined);
+
+    console.log('ois');
+    this.getProfile();
 
     // this.loadStats((await this.loadService.currentUser)?.uid);
 
@@ -173,11 +175,33 @@ export class DashboardComponent implements OnInit {
         // } else {
         //   this.themeService.activeTheme = dev.theme;
         // }
-
-        this.themeService.activeTheme = 'light';
-
-        this.dev = dev ?? undefined;
+        this.loadService.fetchWorlds(dev.id);
       }
+      this.themeService.activeTheme = 'light';
+
+      this.dev = dev ?? undefined;
+      this.cdr.detectChanges();
+    });
+
+    this.loadService.loadedProducts.subscribe((worlds) => {
+      console.log(worlds)
+      if (worlds) {
+        // if (dev?.theme == 'auto') {
+        //   if (
+        //     window.matchMedia &&
+        //     window.matchMedia('(prefers-color-scheme: dark)').matches
+        //   ) {
+        //     // dark mode
+        //     this.themeService.activeTheme = 'dark';
+        //   } else {
+        //     this.themeService.activeTheme = 'light';
+        //   }
+        // } else {
+        //   this.themeService.activeTheme = dev.theme;
+        // }
+      }
+      this.worlds = worlds ?? [];
+      this.cdr.detectChanges();
     });
 
     this.themeService.theme.subscribe((theme) => {

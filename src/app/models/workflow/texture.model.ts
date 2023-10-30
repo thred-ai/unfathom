@@ -1,5 +1,7 @@
+import { Dict } from 'src/app/load.service';
+
 export class Texture {
-  id!: string
+  id!: string;
   ambient?: string;
   diffuse?: string;
   bump?: string;
@@ -9,7 +11,8 @@ export class Texture {
   opacity?: string;
   refraction?: string;
   reflection?: string;
-  displacement?: string
+  displacement?: string;
+  noise?: string;
 
   constructor(
     id: string,
@@ -22,9 +25,10 @@ export class Texture {
     opacity?: string,
     refraction?: string,
     reflection?: string,
-    displacement?: string
+    displacement?: string,
+    noise?: string
   ) {
-    this.id = id
+    this.id = id;
     this.ambient = ambient;
     this.diffuse = diffuse;
     this.bump = bump;
@@ -34,6 +38,7 @@ export class Texture {
     this.opacity = opacity;
     this.refraction = refraction;
     this.reflection = reflection;
-    this.displacement = displacement
+    this.displacement = displacement;
+    this.noise = noise;
   }
 }

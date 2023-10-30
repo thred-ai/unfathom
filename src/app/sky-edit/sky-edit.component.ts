@@ -45,19 +45,19 @@ export class SkyEditComponent implements OnInit {
         console.log('no liq');
         console.log(liquid);
         this.world.ground.liquid = undefined;
-        console.log(this.world)
+        console.log(this.world);
       } else {
         let liquidType = LiquidType[`${liquid as 'lava' | 'water'}`];
         if (this.world!.ground!.liquid?.liquid != liquidType) {
           this.world!.ground!.liquid = new Liquid(
             this.prototypeService.generateLiquidTexture(liquidType),
             liquidType,
-            1
+            this.world!.ground!.liquid?.level ?? 1
           );
         }
       }
     }
-    this.save()
+    this.save();
   }
 
   save() {

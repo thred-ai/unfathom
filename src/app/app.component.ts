@@ -26,7 +26,7 @@ export class AppComponent {
   mode = 0;
   localStorage?: Storage;
 
-  window = window
+  window = window;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -50,9 +50,7 @@ export class AppComponent {
 
   sendToChildEmitter = new EventEmitter();
 
-
-
-  editBilling(){
+  editBilling() {
     this.dialog.open(SharedDialogComponent, {
       height: 'calc(var(--vh, 1vh) * 70)',
       width: 'calc(var(--vh, 1vh) * 70)',
@@ -60,15 +58,12 @@ export class AppComponent {
       panelClass: 'app-full-bleed-dialog',
 
       data: {
-        mode: 0
+        mode: 0,
       },
     });
   }
 
-
   @ViewChild('drawer') public sidenav?: MatSidenav;
-
-
 
   viewProfile() {
     this.loadService.currentUser.then((user) => {
@@ -95,15 +90,18 @@ export class AppComponent {
   }
 
   async onActivate(event: any) {
-    let component = event as AuthComponent;
+    let component = event;
     if (component && component.isAuth) {
       let user = await this.loadService.currentUser;
-      component.show = !user
+      component.show = !user;
 
       if (user) {
         this.loadService.openDash(user.uid);
       }
-      
+    } else {
+      console.log('RESET');
+      this.loadService.reset()
+      // this.loadService.loadedProducts.next([]);
     }
 
     if (isPlatformBrowser(this.platformID)) {

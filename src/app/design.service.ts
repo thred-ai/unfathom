@@ -14,6 +14,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProjectService } from './project.service';
 import { EmulatorService } from './emulator.service';
 import { SceneAsset } from './models/workflow/scene-asset.model';
+import { AnimatedGifTexture } from './babylon-extenstions/animatedGifTexture';
 
 @Injectable({
   providedIn: 'root',
@@ -494,7 +495,6 @@ export class DesignService {
           {
             width: world.width,
             height: world.height,
-            subdivisions: 32,
           },
           scene
         );
@@ -504,7 +504,7 @@ export class DesignService {
           'water_material',
           scene
         );
-        water.isPickable = true;
+        water.isPickable = !world.locked;
 
         if (world.ground.liquid.texture.bump) {
           waterMaterial.bumpTexture = new BABYLON.Texture(
@@ -567,14 +567,14 @@ export class DesignService {
           {
             width: world.width,
             height: world.height,
-            subdivisions: 32,
           },
           scene
         );
+
         lava.position.y = world.ground.liquid.level;
 
         let lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
-        lava.isPickable = true;
+        lava.isPickable = !world.locked;
 
         lavaMaterial.noiseTexture = new BABYLON.Texture(
           this.emulatorService.isEmulator
@@ -639,6 +639,8 @@ export class DesignService {
       mesh.checkCollisions = true;
     });
 
+    object.isPickable = !world.locked;
+
     // result.meshes[0].setBoundingInfo(object.getBoundingInfo())
 
     // console.log("OBJECT")
@@ -648,16 +650,50 @@ export class DesignService {
       let d = result.meshes.find((m) => m.id == 'LAVAFALL');
       let mat = new BABYLON.StandardMaterial('fount', scene);
 
-      let tex = this.generateLiquidTexture(LiquidType.lava);
+      //let tex = this.generateLiquidTexture(LiquidType.lava);
 
-      mat.diffuseTexture = new BABYLON.Texture(tex.diffuse, scene);
-      mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
+      let tex = new AnimatedGifTexture('/assets/lava.gif', this.engine);
 
-      scene.beforeRender = () => {
-        (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
-      };
+      mat.diffuseTexture = tex;
+      mat.emissiveTexture = tex;
+
+      mat.disableLighting = true;
+
+      (mat.diffuseTexture as BABYLON.Texture).uScale = 0.5;
+      (mat.diffuseTexture as BABYLON.Texture).vScale = 0.5;
+      (mat.emissiveTexture as BABYLON.Texture).uScale = 0.5;
+      (mat.emissiveTexture as BABYLON.Texture).vScale = 0.5;
+
+      // mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
+
+      // scene.beforeRender = () => {
+      //   (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
+      // };
 
       d.material = mat;
+    }
+
+    if (asset.asset.id == 'cube') {
+      let tex = new AnimatedGifTexture('/assets/lava2.gif', this.engine);
+
+      let mat = new BABYLON.StandardMaterial('fount2', scene);
+
+      //let tex = this.generateLiquidTexture(LiquidType.lava);
+
+      mat.diffuseTexture = tex;
+      mat.emissiveTexture = tex;
+
+      // (mat.diffuseTexture as BABYLON.Texture).uScale = uvScaleConstant.x;
+      //   (mat.diffuseTexture as BABYLON.Texture).vScale = uvScaleConstant.y;
+      //   (mat.emissiveTexture as BABYLON.Texture).uScale = uvScaleConstant.x;
+      //   (mat.emissiveTexture as BABYLON.Texture).vScale = uvScaleConstant.y;
+
+      mat.disableLighting = true;
+
+      let c = result.meshes[1]; //BABYLON.CreateBox("lava", {size: world.width, height: 2}, scene)
+      // c.subdivide(world.width / 20)
+      c.material = mat;
+      // console.log(result.meshes)
     }
 
     // result.meshes.forEach(mesh => hl.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
@@ -674,7 +710,7 @@ export class DesignService {
 
     object.id = asset.asset.id;
 
-    // object.isPickable = true;
+    // object.isPickable = !world.locked;;
 
     let vectors = result.meshes[0].getHierarchyBoundingVectors();
 
@@ -800,7 +836,7 @@ export class DesignService {
       scene
     );
 
-    ground.isPickable = true;
+    ground.isPickable = !world.locked;
     ground.checkCollisions = true;
     ground.id = 'ground';
 
@@ -909,13 +945,18 @@ export class DesignService {
           mesh.rotation.x = this.toRadians(w.direction.x);
           mesh.rotation.y = this.toRadians(w.direction.y);
           mesh.rotation.z = this.toRadians(w.direction.z);
+          mesh.isPickable = !world.locked;
+
+          if (world.locked){
+            this.gizmoManager.attachToMesh(null);
+          }
         } else {
           await this.importMeshToScene(w, scene);
           //add mesh to scene
         }
       });
 
-      scene.meshes;
+      // scene.meshes;
 
       //do check for meshes in scene that are not in 'world' object
 

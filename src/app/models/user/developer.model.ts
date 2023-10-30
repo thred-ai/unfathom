@@ -6,7 +6,6 @@ export class Developer {
   url!: string;
   date!: number;
   email!: string;
-  utils: World[];
   theme: 'light' | 'dark' | 'auto'
 
   constructor(
@@ -15,12 +14,10 @@ export class Developer {
     date: number,
     url: string,
     email: string,
-    utils?: World[],
     theme?: 'light' | 'dark' | 'auto'
   ) {
     this.name = name ?? 'New';
     this.id = id;
-    this.utils = utils ?? [];
     this.date = date ?? 3;
     this.url = url;
     this.email = email;

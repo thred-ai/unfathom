@@ -141,6 +141,8 @@ import {
   heroCloudArrowUp,
   heroGlobeAmericas,
   heroChevronLeft,
+  heroLockClosed,
+  heroLockOpen,
 } from '@ng-icons/heroicons/outline';
 
 import {
@@ -244,6 +246,8 @@ import { ElementsComponent } from './elements/elements.component';
       bootstrapArrowRepeat,
       bootstrapBoundingBox,
       bootstrapBoundingBoxCircles,
+      heroLockClosed,
+      heroLockOpen,
     }),
     AppRoutingModule,
     MatTooltipModule,

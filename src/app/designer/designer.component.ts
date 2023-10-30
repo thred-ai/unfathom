@@ -22,7 +22,7 @@ export class DesignerComponent implements OnInit {
     private loadService: LoadService,
     private designerService: DesignService,
     private themeService: ThemeService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   world?: World;
@@ -63,13 +63,11 @@ export class DesignerComponent implements OnInit {
 
   open = true;
 
-
-  set openBar(value: boolean){
-    this.open = value
-    this.cdr.detectChanges()
-    this.designerService.resize()
+  set openBar(value: boolean) {
+    this.open = value;
+    this.cdr.detectChanges();
+    this.designerService.resize();
   }
-
 
   selected?: string;
 
@@ -91,6 +89,7 @@ export class DesignerComponent implements OnInit {
         this.loadService.loadedUser.subscribe((l) => {
           this.dev = l;
         });
+
         this.loadService.getPrototype(proj, (world) => {
           console.log(world);
           this.projectService.workflow.next(world);
@@ -110,8 +109,12 @@ export class DesignerComponent implements OnInit {
         return;
       }
       this.selected = s;
-      console.log(s)
-      this.cdr.detectChanges()
+      console.log(s);
+      this.cdr.detectChanges();
     });
+  }
+
+  save() {
+    this.projectService.save(this.world);
   }
 }

@@ -15,6 +15,7 @@ import { ThemeService } from './theme.service';
 import { ProjectService } from './project.service';
 import { World } from './models/workflow/world.model';
 import { ModelAsset } from './models/workflow/model-asset.model';
+import { DesignService } from './design.service';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -49,13 +50,14 @@ export class LoadService {
     private http: HttpClient,
     private metaService: Meta,
     private titleService: Title,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private designService: DesignService
   ) {
     this.projectService.saveWorkflow.subscribe(async (workflow) => {
       if (workflow) {
         this.projectService.workflow.next(workflow);
 
-        console.log(workflow)
+        console.log(workflow);
         let result = await this.saveSmartUtil(workflow);
 
         if (result) {
@@ -123,6 +125,7 @@ export class LoadService {
   }
 
   loadedUser = new BehaviorSubject<Developer | undefined>(undefined);
+  loadedProducts = new BehaviorSubject<World[]>([]);
 
   finishPassReset(
     email: string,
@@ -199,7 +202,7 @@ export class LoadService {
 
       let uploadData = JSON.parse(JSON.stringify(data));
 
-      console.log(uploadData)
+      console.log(uploadData);
 
       if (uploadData.downloads > 0) {
         delete uploadData.downloads;
@@ -299,7 +302,7 @@ export class LoadService {
       let uploadData = JSON.parse(JSON.stringify(data));
 
       uploadData.search_name = uploadData.name?.toLowerCase();
-      console.log("STARTING SAVE")
+      console.log('STARTING SAVE');
 
       try {
         await this.db
@@ -309,12 +312,12 @@ export class LoadService {
 
         this.projectService.loading.next(false);
 
-        console.log("SAVED")
+        console.log('SAVED');
         console.log(uploadData);
 
         return uploadData;
       } catch (error) {
-        console.log("FAILED SAVE")
+        console.log('FAILED SAVE');
         console.log(error);
         this.projectService.loading.next(false);
 
@@ -548,45 +551,51 @@ export class LoadService {
           localStorage['name'] = name;
           localStorage['email'] = email;
         }
-        let developer = new Developer(name, uid, joined, url, email, [], theme);
+        let developer = new Developer(name, uid, joined, url, email, theme);
 
         // this.checkLoadedUser(developer);
 
-        if (fetchworlds) {
-          let q = this.db.collection(`Worlds`);
-
-          if (fetchOnlyAvailableworlds) {
-            q = this.db.collection(`Worlds`, (ref) =>
-              ref
-                .where('status', '==', 0)
-                .where('uid', '==', uid)
-                .orderBy('created', 'asc')
-            );
-          }
-
-          let s = q.valueChanges().subscribe((docs2) => {
-            if (this.loadedUser.value) {
-              developer = this.loadedUser.value;
-            }
-            let docs_2 = (docs2 as World[]).map((workflow) => {
-              // workflow.layout = this.sampleFlow
-              return this.syncWorkflow(workflow);
-            });
-
-            developer.utils = docs_2;
-
-            this.checkLoadedUser(developer);
-
-            callback(developer);
-            s.unsubscribe();
-          });
-        } else {
-          this.checkLoadedUser(developer);
-          callback(developer);
-        }
+        this.checkLoadedUser(developer);
+        callback(developer);
       } else {
         this.checkLoadedUser(null);
         callback(undefined);
+      }
+    });
+  }
+
+  fetchWorlds(uid: string, worldIds: string[] = [], fetchOnce = true) {
+    console.log(uid);
+    let q = this.db.collection(`Worlds`, (ref) =>
+      ref
+        .where('status', '==', 0)
+        .where('uid', '==', uid)
+        .orderBy('created', 'asc')
+    );
+
+    if (worldIds.length > 0) {
+      //   q = this.db.collection(`Worlds`, (ref) =>
+      //   ref
+      //     .where('status', '==', 0)
+      //     .where('uid', '==', uid)
+      //     .where
+      //     .orderBy('created', 'asc')
+      // );
+    }
+
+    let s = q.valueChanges().subscribe((docs2) => {
+      let docs_2 = (docs2 as World[]).map((workflow) => {
+        // workflow.layout = this.sampleFlow
+        return this.syncWorkflow(workflow);
+      });
+
+      console.log(docs_2);
+      console.log(docs2);
+
+      this.loadedProducts.next(docs_2);
+
+      if (fetchOnce) {
+        s.unsubscribe();
       }
     });
   }
@@ -1043,18 +1052,27 @@ export class LoadService {
       workflow.modified,
       workflow.sky,
       workflow.ground,
-      workflow.status
+      workflow.status,
+      workflow.locked
     );
   }
+
+  worldSub?: Subscription;
 
   getPrototype(workflowId: string, callback: (exec: World) => any) {
     let q = this.db.collection(`Worlds`).doc(workflowId);
 
     console.log(workflowId);
-    q.valueChanges().subscribe((docs2) => {
+    this.worldSub = q.valueChanges().subscribe((docs2) => {
       let w = this.syncWorkflow(docs2);
       callback(w);
-      // s.unsubscribe();
     });
+  }
+
+  reset() {
+    this.worldSub?.unsubscribe();
+    this.loadedUser.next(undefined)
+    this.loadedProducts.next([])
+    this.designService.deinit();
   }
 }

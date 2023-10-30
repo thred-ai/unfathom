@@ -3,7 +3,7 @@
 >
   <div
     class="h-full w-full flex flex-row justify-between items-center"
-    *ngIf="dev?.utils; else loader"
+    *ngIf="dev && worlds; else loader"
   >
     <!-- <app-workflow></app-workflow> -->
 
@@ -28,7 +28,7 @@
         >
           <div
             class="overflow-hidden cursor-pointer"
-            *ngFor="let world of dev.utils ?? []"
+            *ngFor="let world of worlds ?? []"
             [routerLink]="['/design/' + world.id]"
           >
             <div
