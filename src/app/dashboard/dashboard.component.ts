@@ -107,8 +107,8 @@ export class DashboardComponent implements OnInit {
       let world = this.loadService.newWorld();
 
       if (world) {
-        this.worlds.push(world);
         await this.loadService.saveSmartUtil(world);
+
         this.navService.redirectTo(`/design/${world.id}`);
       }
     }

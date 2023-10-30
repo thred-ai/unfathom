@@ -8,8 +8,12 @@ export class NavigationService {
   constructor(private router: Router) {}
 
   redirectTo(uri: string) {
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate([uri]);
-    });
+    // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    //   console.log("oi f")
+    //   this.router.navigate([uri]);
+    // });
+
+    this.router.navigate([uri]);
+
   }
 }
