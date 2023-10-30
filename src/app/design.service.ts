@@ -216,9 +216,9 @@ export class DesignService {
       })
     );
 
-    var hl = new BABYLON.HighlightLayer('hl1', scene);
+    this.hl = new BABYLON.HighlightLayer('hl1', scene);
 
-    hl.addExcludedMesh(extraGround);
+    this.hl?.addExcludedMesh(extraGround);
 
     this.gizmoManager = new BABYLON.GizmoManager(scene);
     this.gizmoManager.boundingBoxGizmoEnabled = true;
@@ -289,32 +289,35 @@ export class DesignService {
       // We try to pick an object
       var object = pickResult.pickedMesh as BABYLON.Mesh;
 
-      hl.removeAllMeshes();
-      this.gizmoManager.attachToMesh(null);
-      if (object.id == 'extraGround' || object.id == 'sky') {
-        this.selected.next(undefined);
-        return;
-      }
-
-      if (pickResult.hit && object) {
-        var omitList = ['ground', 'liquid'];
-
-        this.selected.next(object.id);
-
-        if (this.gizmoManager?.boundingBoxGizmoEnabled) {
-          this.updateGizmoSize();
-        }
-
-        if (omitList.includes(object.id)) {
-          hl.addMesh(object, new BABYLON.Color3(0.4, 0.91, 0.97));
-          hl.blurHorizontalSize = 1;
-          hl.blurVerticalSize = 1;
+      if (this.hl) {
+        this.hl?.removeAllMeshes();
+        this.gizmoManager.attachToMesh(null);
+        if (object.id == 'extraGround' || object.id == 'sky') {
+          this.selected.next(undefined);
           return;
-        } else {
         }
-        // 0.4, 0.91, 0.97
 
-        this.gizmoManager.attachToMesh(object);
+        if (pickResult.hit && object) {
+          var omitList = ['ground', 'liquid'];
+
+          this.selected.next(object.id);
+
+          if (this.gizmoManager?.boundingBoxGizmoEnabled) {
+            this.updateGizmoSize();
+          }
+
+          if (omitList.includes(object.id)) {
+            this.hl.addMesh(object, new BABYLON.Color3(0.4, 0.91, 0.97));
+            this.hl.blurHorizontalSize = 1;
+            this.hl.blurVerticalSize = 1;
+
+            return;
+          } else {
+          }
+          // 0.4, 0.91, 0.97
+
+          this.gizmoManager.attachToMesh(object);
+        }
       }
     };
 
@@ -696,7 +699,7 @@ export class DesignService {
       // console.log(result.meshes)
     }
 
-    // result.meshes.forEach(mesh => hl.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
+    // result.meshes.forEach(mesh => hl?.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
     // var object = result.meshes[0]
 
     // BABYLON.Mesh.MergeMeshes(
@@ -922,6 +925,8 @@ export class DesignService {
     return groundMaterial;
   }
 
+  hl?: BABYLON.HighlightLayer;
+
   syncMeshIncoming() {
     let world = this.world;
 
@@ -930,6 +935,19 @@ export class DesignService {
     //duplicate this for characters too
     let scene = this.engine?.scenes[0];
     if (world && this.engine && scene) {
+      if (world.locked) {
+        this.gizmoManager.attachToMesh(null);
+        this.hl?.removeAllMeshes();
+      }
+      let mesh = scene?.getMeshById('ground');
+      let liq = scene?.getMeshById('liquid');
+      if (mesh) {
+        mesh.isPickable = !world.locked;
+      }
+      if (liq) {
+        liq.isPickable = !world.locked;
+      }
+
       this.world.assets.map(async (w) => {
         let mesh = scene?.getMeshById(w.asset.id);
 
@@ -946,10 +964,6 @@ export class DesignService {
           mesh.rotation.y = this.toRadians(w.direction.y);
           mesh.rotation.z = this.toRadians(w.direction.z);
           mesh.isPickable = !world.locked;
-
-          if (world.locked){
-            this.gizmoManager.attachToMesh(null);
-          }
         } else {
           await this.importMeshToScene(w, scene);
           //add mesh to scene
