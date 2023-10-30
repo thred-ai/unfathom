@@ -1,5 +1,4 @@
-<div class="w-full h-full p-3 h-full">
-  <div class="w-full pb-3 h-full flex flex-col justify-between items-center">
+  <div class="w-full p-3 h-full flex flex-col justify-between items-center">
     <div
       class="w-full flex justify-between content-center pb-3 mb-3 mt-4 primary-text border-table-bottom-dark"
       *ngIf="mode == 'uploads'"
@@ -18,7 +17,7 @@
       />
     </div>
 
-    <div class="w-full h-full" style="overflow-y: scroll">
+    <div class="h-full w-full overflow-scroll">
       <div class="w-full grid grid-cols-2 justify-start g-0">
         <div
           *ngFor="let asset of assets ?? []; index as i"
@@ -81,4 +80,3 @@
       </div>
     </div>
   </div>
-</div>

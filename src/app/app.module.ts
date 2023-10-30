@@ -310,7 +310,7 @@ import { ElementsComponent } from './elements/elements.component';
     // Globals,
     // { provide: USE_FUNCTIONS_EMULATOR, useValue: !environment.production ? ['localhost', 5001] : undefined },
     { provide: LOCALE_ID, useValue: 'en-US' },
-    { provide: ANIMATION_MODULE_TYPE, useValue: 'NoopAnimations' },
+    // { provide: ANIMATION_MODULE_TYPE, useValue: 'NoopAnimations' },
     {
       provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
       useClass: DefaultMatCalendarRangeStrategy,

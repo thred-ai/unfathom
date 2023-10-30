@@ -55,6 +55,7 @@ export class LoadService {
       if (workflow) {
         this.projectService.workflow.next(workflow);
 
+        console.log(workflow)
         let result = await this.saveSmartUtil(workflow);
 
         if (result) {
@@ -298,17 +299,22 @@ export class LoadService {
       let uploadData = JSON.parse(JSON.stringify(data));
 
       uploadData.search_name = uploadData.name?.toLowerCase();
+      console.log("STARTING SAVE")
 
       try {
         await this.db
           .collection(`Worlds`)
           .doc(id)
-          .set(uploadData, { merge: true });
+          .set(uploadData, { merge: false });
 
         this.projectService.loading.next(false);
 
+        console.log("SAVED")
+        console.log(uploadData);
+
         return uploadData;
       } catch (error) {
+        console.log("FAILED SAVE")
         console.log(error);
         this.projectService.loading.next(false);
 

@@ -97,33 +97,33 @@
       <div class="w-full grid grid-cols-3 gap-4 grid-flow-row justify-center">
         <div class="col">
           <verticalai-text-field
-            [title]="'Scale X'"
+            [title]="'Length (m)'"
             [type]="'number'"
             [range]="{ min: 1, max: 100000 }"
             [value]="assetDetails['scale'].x"
-            [placeholder]="'Scale (X)'"
+            [placeholder]="'Length (m)'"
             (changed)="assetDetails['scale'].x = $event; save()"
           >
           </verticalai-text-field>
         </div>
         <div class="col">
           <verticalai-text-field
-            [title]="'Scale Y'"
+            [title]="'Height (m)'"
             [type]="'number'"
             [range]="{ min: 1, max: 100000 }"
             [value]="assetDetails['scale'].y"
-            [placeholder]="'Scale (Y)'"
+            [placeholder]="'Height (m)'"
             (changed)="assetDetails['scale'].y = $event; save()"
           >
           </verticalai-text-field>
         </div>
         <div class="col">
           <verticalai-text-field
-            [title]="'Scale Z'"
+            [title]="'Width (m)'"
             [type]="'number'"
             [range]="{ min: 1, max: 100000 }"
             [value]="assetDetails['scale'].z"
-            [placeholder]="'Scale (Z)'"
+            [placeholder]="'Width (m)'"
             (changed)="assetDetails['scale'].z = $event; save()"
           >
           </verticalai-text-field>
@@ -131,7 +131,7 @@
       </div>
     </div>
   </div>
-
+<!-- 
   <div class="w-full p-3 border-table-top-light">
     <div class="w-full">
       <verticalai-select-field
@@ -171,5 +171,5 @@
         </verticalai-text-field>
       </div>
     </div>
-  </div>
+  </div> -->
 </ng-container>

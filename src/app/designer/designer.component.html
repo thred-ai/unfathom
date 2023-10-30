@@ -43,7 +43,7 @@
       (modeChanged)="openBar = true; mode = $event"
     ></app-menu-sidebar>
     <div
-      class="h-full w-[500px] primary-background-dark {{
+      class="h-full w-[330px] shrink-0 primary-background-dark {{
         open ? 'flex' : 'hidden'
       }} justify-between items-center"
     >
@@ -53,7 +53,7 @@
           else submenu
         "
       >
-        <div class="h-full w-full primary-background-dark overflow-scroll">
+        <div class="h-full w-full primary-background-dark">
           <app-design *ngIf="mode == 'design'"> </app-design>
           <app-uploads *ngIf="mode == 'uploads'"> </app-uploads>
           <app-elements *ngIf="mode == 'elements'"> </app-elements>
@@ -89,7 +89,7 @@
               >
                 <app-sky-edit *ngIf="selected == 'sky'"></app-sky-edit>
                 <app-liquid-edit
-                  *ngIf="selected == 'lava' || selected == 'water'"
+                  *ngIf="selected == 'liquid'"
                 ></app-liquid-edit>
                 <app-ground-edit *ngIf="selected == 'ground'"></app-ground-edit>
               </ng-container>
@@ -117,7 +117,7 @@
       >
         <div class="bg-transparent flex justify-between items-center">
           <ng-container *ngIf="selected">
-            <button
+            <!-- <button
               class="btn rounded hover:bg-slate-200 {{
                 mode == 'edit' ? 'bg-slate-200' : 'bg-transparent'
               }} text-black flex justify-between items-center me-2"
@@ -125,7 +125,7 @@
               (click)="mode == 'edit' ? (mode = defaultMode) : (mode = 'edit')"
             >
               Edit mesh
-            </button>
+            </button> -->
 
             <ng-template #meshtools>
               <div

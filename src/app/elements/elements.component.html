@@ -1,1 +1,33 @@
-<app-asset-view-module [mode]="'elements'"></app-asset-view-module>
+<mat-tab-group
+  #menu
+  class="h-full w-full"
+  [fitInkBarToContent]="false"
+  animationDuration="0ms"
+  [(selectedIndex)]="selected"
+>
+  <mat-tab class="tab w-full h-full" *ngFor="let c of categories; index as i">
+    <ng-template mat-tab-label>
+      <span
+        class="font-medium {{
+          selected == i ? 'text-slate-50' : 'text-slate-400'
+        }}"
+      >
+        {{ c.name }}
+      </span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div class="h-full w-full">
+        <ng-container
+          *ngTemplateOutlet="view; context: { $implicit: c.id }"
+        ></ng-container>
+      </div>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+
+<ng-template #view let-mode>
+  <app-asset-view-module
+    *ngIf="mode == 'assets'"
+    [mode]="'elements'"
+  ></app-asset-view-module>
+</ng-template>

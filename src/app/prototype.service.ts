@@ -493,14 +493,10 @@ export class PrototypeService {
           let d = result.meshes.find((m) => m.id == 'LAVAFALL');
           let mat = new BABYLON.StandardMaterial('fount', scene);
 
-          mat.diffuseTexture = new BABYLON.Texture(
-            world.ground.liquid.texture.diffuse,
-            scene
-          );
-          mat.emissiveTexture = new BABYLON.Texture(
-            world.ground.liquid.texture.diffuse,
-            scene
-          );
+          let tex = this.generateLiquidTexture(LiquidType.lava);
+
+          mat.diffuseTexture = new BABYLON.Texture(tex.diffuse, scene);
+          mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
 
           scene.beforeRender = () => {
             (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
@@ -761,14 +757,13 @@ export class PrototypeService {
       if (camera) {
         if (camera.beta < 0.1) camera.beta = 0.1;
 
-        if (camera.radius > 1){
-          console.log(camera.radius)
+        if (camera.radius > 1) {
+          console.log(camera.radius);
           if (camera.beta > (Math.PI / 2) * 0.92)
-          camera.beta = (Math.PI / 2) * 0.92;
+            camera.beta = (Math.PI / 2) * 0.92;
         }
 
-        if (camera.radius > 20)
-          camera.radius = 20;
+        if (camera.radius > 20) camera.radius = 20;
 
         if (camera.radius < 0) camera.radius = 0;
 
