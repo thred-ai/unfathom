@@ -16,7 +16,10 @@
           <img class="h-full" [src]="'assets/logo_full.png'" />
 
           <!-- bg-gradient-to-r from-orange-500 to-purple-500 -->
-          <button class="btn rounded bg-purple-500 primary-text-dark" (click)="newDesign()">
+          <button
+            class="btn rounded bg-purple-500 primary-text-dark"
+            (click)="newDesign()"
+          >
             Create a design
           </button>
         </div>
@@ -26,10 +29,11 @@
         <div
           class="w-full grid grid-cols-2 md:grid-cols-6 gap-4 mt-5 grid-flow-row justify-start"
         >
-          <div
+          <a
             class="overflow-hidden cursor-pointer"
             *ngFor="let world of worlds ?? []"
-            [routerLink]="['/design/' + world.id]"
+            [href]="['/design/' + world.id]"
+            target="_blank"
           >
             <div
               class="overflow-hidden w-full aspect-video rounded-md section-background border-table"
@@ -47,7 +51,7 @@
                 {{ world.name }}
               </p>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>
