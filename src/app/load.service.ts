@@ -83,7 +83,7 @@ export class LoadService {
       let world = new World(
         this.loadedUser.value.id,
         this.newUtilID,
-        'My New World'
+        'My New Design'
       );
       return world;
     }

@@ -27,7 +27,7 @@ export class World {
   constructor(
     uid: string,
     id: string = uuid.v4(),
-    name: string = 'My New World',
+    name: string = 'My New Design',
     width: number = 1000,
     height: number = 1000,
     characters: SceneCharacter[] = [],
