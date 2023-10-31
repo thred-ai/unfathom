@@ -518,7 +518,7 @@ export class LoadService {
 
     query.valueChanges().subscribe(async (docs) => {
       let models =
-        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'])) ??
+        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'], d['img'], d['metadata'])) ??
         [];
 
       callback(models);

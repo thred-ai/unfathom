@@ -117,4 +117,8 @@ export class DesignerComponent implements OnInit {
   save() {
     this.projectService.save(this.world);
   }
+
+  presentScene(){
+    window.open(`https://unfathom.io/share/${this.world.id}`, '_blank');
+  }
 }

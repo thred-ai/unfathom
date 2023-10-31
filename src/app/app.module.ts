@@ -151,6 +151,8 @@ import {
   bootstrapArrowRepeat,
   bootstrapBoundingBox,
   bootstrapBoundingBoxCircles,
+  bootstrapEasel,
+  bootstrapPlayBtnFill
 } from '@ng-icons/bootstrap-icons';
 
 import { featherAirplay } from '@ng-icons/feather-icons';
@@ -248,6 +250,8 @@ import { ElementsComponent } from './elements/elements.component';
       bootstrapBoundingBoxCircles,
       heroLockClosed,
       heroLockOpen,
+      bootstrapEasel,
+      bootstrapPlayBtnFill
     }),
     AppRoutingModule,
     MatTooltipModule,

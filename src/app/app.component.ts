@@ -15,6 +15,8 @@ import { LoadService } from './load.service';
 import { Meta, Title } from '@angular/platform-browser';
 import { Developer } from './models/user/developer.model';
 import { SharedDialogComponent } from './shared-dialog/shared-dialog.component';
+import { ModelAsset } from './models/workflow/model-asset.model';
+import { Texture } from './models/workflow/texture.model';
 
 @Component({
   selector: 'app-root',
@@ -100,7 +102,7 @@ export class AppComponent {
       }
     } else {
       console.log('RESET');
-      this.loadService.reset()
+      this.loadService.reset();
       // this.loadService.loadedProducts.next([]);
     }
 
@@ -150,6 +152,78 @@ export class AppComponent {
         document.documentElement.style.setProperty('--vh', `${vh}px`);
       });
     }
+
+    let id = `${new Date().getTime()}`;
+
+    // let element = new ModelAsset('Lava Plane', id, 'lava_ground', '', {
+    //   customClass: 'LavaMaterial',
+    //   speed: 0.5,
+    //   fogColor: JSON.parse(JSON.stringify(new BABYLON.Color3(1, 0, 0))),
+    //   unlit: true,
+    //   texture: JSON.parse(
+    //     JSON.stringify(
+    //       new Texture(
+    //         'lava',
+    //         'https://firebasestorage.googleapis.com/v0/b/unfathom-ai.appspot.com/o/materials%2Flava%2Flava_lavatile.jpg?alt=media',
+    //         undefined,
+    //         undefined,
+    //         undefined,
+    //         undefined,
+    //         undefined,
+    //         undefined,
+    //         undefined,
+    //         undefined,
+    //         undefined,
+    //         'https://firebasestorage.googleapis.com/v0/b/unfathom-ai.appspot.com/o/materials%2Flava%2Flava_cloud.png?alt=media'
+    //       )
+    //     )
+    //   ),
+    // });
+
+    // let element = new ModelAsset('Water Plane', id, 'water_ground', '', {
+    //   customClass: 'WaterMaterial',
+    //   width: 100,
+    //   height: 100,
+    //   windForce: -15,
+    //   waveHeight: 1.3,
+    //   windDirection: JSON.parse(JSON.stringify(new BABYLON.Vector2(1, 1))),
+    //   waterColor: JSON.parse(JSON.stringify(new BABYLON.Color3(0.1, 0.1, 0.6))),
+    //   colorBlendFactor: 0.3,
+    //   bumpHeight: 0.01,
+    //   waveLength: 0.1,
+    //   reflections: ['sky'],
+    //   refractions: ['ground'],
+    //   texture: JSON.parse(
+    //     JSON.stringify(
+    //       new Texture(
+    //         'water',
+    //         undefined,
+    //         undefined,
+    //         'https://firebasestorage.googleapis.com/v0/b/unfathom-ai.appspot.com/o/materials%2Fwater%2Fbump.png?alt=media'
+    //       )
+    //     )
+    //   ),
+    // });
+
+    // this.loadService.saveElements(element);
+
+    // lavaMaterial.noiseTexture = new BABYLON.Texture(
+    //   this.emulatorService.isEmulator
+    //     ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/lava_cloud.png?alt=media'
+    //     : 'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
+    //   scene
+    // );
+
+    // if (world.ground.liquid.texture.diffuse) {
+    //   lavaMaterial.diffuseTexture = new BABYLON.Texture(
+    //     world.ground.liquid.texture.diffuse,
+    //     scene
+    //   );
+    // }
+
+    // lavaMaterial.speed = 0.5;
+    // lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
+    // lavaMaterial.unlit = true;
   }
 
   updateBar(event: boolean) {

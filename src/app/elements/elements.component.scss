@@ -1,0 +1,12 @@
+:host::ng-deep .mdc-tab {
+  min-width: 48px !important;
+  height: 42.5px !important;
+  padding-left: 7.5px !important;
+  padding-right: 7.5px !important;
+  padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .mat-tab-body-wrapper {
+  flex: 1 1 100%;
+}
+

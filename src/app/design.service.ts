@@ -15,6 +15,8 @@ import { ProjectService } from './project.service';
 import { EmulatorService } from './emulator.service';
 import { SceneAsset } from './models/workflow/scene-asset.model';
 import { AnimatedGifTexture } from './babylon-extenstions/animatedGifTexture';
+import { ModelAsset } from './models/workflow/model-asset.model';
+import * as SERIALIZERS from 'babylonjs-serializers';
 
 @Injectable({
   providedIn: 'root',
@@ -85,24 +87,29 @@ export class DesignService {
   }
 
   async addMeshToScene(asset: SceneAsset) {
-    let newAsset = await this.importMeshToScene(asset, this.engine?.scenes[0]);
+    if (!this.world.locked) {
+      let newAsset = await this.importMeshToScene(
+        asset,
+        this.engine?.scenes[0]
+      );
 
-    this.world.assets.push(newAsset);
+      this.world.assets.push(newAsset);
 
-    console.log('moi');
-    this.projectService.save(this.world);
+      console.log('moi');
+      this.projectService.save(this.world);
 
-    setTimeout(() => {
-      let mesh = this.engine.scenes[0]?.getMeshById(asset.asset.id);
+      setTimeout(() => {
+        let mesh = this.engine.scenes[0]?.getMeshById(asset.asset.id);
 
-      // if (mesh) {
-      //   this.engine.scenes[0]?.onPointerDown(
-      //     {} as any,
-      //     { pickedMesh: mesh } as any,
-      //     BABYLON.PointerEventTypes.POINTERDOWN
-      //   );
-      // }
-    }, 1000);
+        // if (mesh) {
+        //   this.engine.scenes[0]?.onPointerDown(
+        //     {} as any,
+        //     { pickedMesh: mesh } as any,
+        //     BABYLON.PointerEventTypes.POINTERDOWN
+        //   );
+        // }
+      }, 1000);
+    }
   }
 
   async createScene2(engine: BABYLON.Engine, world: World) {
@@ -190,9 +197,7 @@ export class DesignService {
 
       extraGround.material = extraGroundMaterial;
 
-      extraGround.checkCollisions = true;
-
-      this.addLiquids(world, scene, [skybox], [ground, extraGround]);
+      // this.addLiquids(world, scene, [skybox], [ground, extraGround]);
     }
 
     // .id == 'TgSTaxx8MZ1PFXVhS8V4'
@@ -341,8 +346,6 @@ export class DesignService {
         actor2.scaling.y = c.scale.y;
         actor2.scaling.z = c.scale.z;
 
-        actor2.checkCollisions = true;
-
         actor2.position = new BABYLON.Vector3(c.spawn.x, c.spawn.y, c.spawn.z);
 
         actor2.rotation = new BABYLON.Vector3(
@@ -483,122 +486,165 @@ export class DesignService {
     });
   }
 
-  addLiquids(
-    world: World,
-    scene: BABYLON.Scene,
-    reflections: BABYLON.Mesh[] = [],
-    refractions: BABYLON.Mesh[] = []
-  ) {
-    if (world.ground.liquid) {
-      BABYLON.Engine.ShadersRepository = '';
+  addLiquids(asset: ModelAsset, scene: BABYLON.Scene) {
+    // var lava = BABYLON.MeshBuilder.CreateGround(
+    //   asset.id,
+    //   {
+    //     width: asset.metadata['width'],
+    //     height: asset.metadata['height'],
+    //   },
+    //   scene
+    // );
 
-      if (world.ground.liquid.liquid == LiquidType.water) {
-        var water = BABYLON.MeshBuilder.CreateGround(
-          'liquid',
-          {
-            width: world.width,
-            height: world.height,
-          },
-          scene
-        );
-        water.position.y = world.ground.liquid.level;
+    // // water.metadata = {
+    // //   reflections: ['sky', 'ground'],
+    // //   refractions: ['ground'],
+    // // };
 
-        var waterMaterial = new MATERIALS.WaterMaterial(
-          'water_material',
-          scene
-        );
-        water.isPickable = !world.locked;
+    // // let sky = scene.getMeshById('sky') as BABYLON.Mesh;
+    // // let ground = scene.getMeshById('ground') as BABYLON.Mesh;
 
-        if (world.ground.liquid.texture.bump) {
-          waterMaterial.bumpTexture = new BABYLON.Texture(
-            world.ground.liquid.texture.bump,
-            scene
-          ); // Set the bump texture
-        }
+    // // var waterMaterial = new MATERIALS.WaterMaterial('water_material', scene);
 
-        reflections.forEach((mesh) => {
-          waterMaterial.reflectionTexture?.renderList?.push(mesh);
-        });
+    // // console.log(asset)
+    // // if (asset.metadata['texture'].bump) {
+    // //   waterMaterial.bumpTexture = new BABYLON.Texture(
+    // //     asset.metadata['texture'].bump,
+    // //     scene
+    // //   );
+    // //   // Set the bump texture
+    // // }
 
-        refractions.forEach((mesh) => {
-          waterMaterial.refractionTexture?.renderList?.push(mesh);
-        });
+    // // waterMaterial.windForce = -15;
+    // // waterMaterial.waveHeight = 1.3;
+    // // waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
+    // // waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
+    // // waterMaterial.colorBlendFactor = 0.3;
+    // // waterMaterial.bumpHeight = 0.01;
+    // // waterMaterial.waveLength = 0.1;
 
-        waterMaterial.windForce = -15;
-        waterMaterial.waveHeight = 1.3;
-        waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
-        waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
-        waterMaterial.colorBlendFactor = 0.3;
-        waterMaterial.bumpHeight = 0.01;
-        waterMaterial.waveLength = 0.1;
+    // // waterMaterial.reflectionTexture?.renderList?.push(sky);
+    // // waterMaterial.reflectionTexture?.renderList?.push(ground);
+    // // waterMaterial.refractionTexture?.renderList?.push(ground);
 
-        water.material = waterMaterial;
+    // // water.material = waterMaterial;
 
-        // const sound = new BABYLON.Sound(
-        //   'sound',
-        //   'assets/sounds/water.wav',
-        //   scene,
-        //   null,
-        //   {
-        //     loop: true,
-        //     autoplay: true,
-        //     spatialSound: true,
-        //   }
-        // );
+    // // if (world.ground.liquid) {
+    // //   BABYLON.Engine.ShadersRepository = '';
 
-        // const music = new BABYLON.Sound(
-        //   'music',
-        //   'assets/sounds/music2.wav',
-        //   scene,
-        //   null,
-        //   {
-        //     loop: true,
-        //     autoplay: true,
-        //   }
-        // );
+    // //   if (world.ground.liquid.liquid == LiquidType.water) {
+    // //     var water = BABYLON.MeshBuilder.CreateGround(
+    // //       'liquid',
+    // //       {
+    // //         width: world.width,
+    // //         height: world.height,
+    // //       },
+    // //       scene
+    // //     );
+    // //     water.position.y = world.ground.liquid.level;
 
-        // let center = ground.getBoundingInfo().boundingBox.center;
+    // //     var waterMaterial = new MATERIALS.WaterMaterial(
+    // //       'water_material',
+    // //       scene
+    // //     );
+    // //     water.isPickable = !world.locked;
 
-        // sound.setPosition(
-        //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
-        // );
-      }
+    // //     if (world.ground.liquid.texture.bump) {
+    // //       waterMaterial.bumpTexture = new BABYLON.Texture(
+    // //         world.ground.liquid.texture.bump,
+    // //         scene
+    // //       ); // Set the bump texture
+    // //     }
 
-      if (world.ground.liquid.liquid == LiquidType.lava) {
-        var lava = BABYLON.MeshBuilder.CreateGround(
-          'liquid',
-          {
-            width: world.width,
-            height: world.height,
-          },
-          scene
-        );
+    // //     reflections.forEach((mesh) => {
+    // //       waterMaterial.reflectionTexture?.renderList?.push(mesh);
+    // //     });
 
-        lava.position.y = world.ground.liquid.level;
+    // //     refractions.forEach((mesh) => {
+    // //       waterMaterial.refractionTexture?.renderList?.push(mesh);
+    // //     });
 
-        let lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
-        lava.isPickable = !world.locked;
+    // //     waterMaterial.windForce = -15;
+    // //     waterMaterial.waveHeight = 1.3;
+    // //     waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
+    // //     waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
+    // //     waterMaterial.colorBlendFactor = 0.3;
+    // //     waterMaterial.bumpHeight = 0.01;
+    // //     waterMaterial.waveLength = 0.1;
 
-        lavaMaterial.noiseTexture = new BABYLON.Texture(
-          this.emulatorService.isEmulator
-            ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/lava_cloud.png?alt=media'
-            : 'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_cloud.png',
-          scene
-        );
+    // //     water.material = waterMaterial;
 
-        if (world.ground.liquid.texture.diffuse) {
-          lavaMaterial.diffuseTexture = new BABYLON.Texture(
-            world.ground.liquid.texture.diffuse,
-            scene
-          );
-        }
+    // //     // const sound = new BABYLON.Sound(
+    // //     //   'sound',
+    // //     //   'assets/sounds/water.wav',
+    // //     //   scene,
+    // //     //   null,
+    // //     //   {
+    // //     //     loop: true,
+    // //     //     autoplay: true,
+    // //     //     spatialSound: true,
+    // //     //   }
+    // //     // );
 
-        lavaMaterial.speed = 0.5;
-        lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
-        lavaMaterial.unlit = true;
-        lava.material = lavaMaterial;
-      }
-    }
+    // //     // const music = new BABYLON.Sound(
+    // //     //   'music',
+    // //     //   'assets/sounds/music2.wav',
+    // //     //   scene,
+    // //     //   null,
+    // //     //   {
+    // //     //     loop: true,
+    // //     //     autoplay: true,
+    // //     //   }
+    // //     // );
+
+    // //     // let center = ground.getBoundingInfo().boundingBox.center;
+
+    // //     // sound.setPosition(
+    // //     //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
+    // //     // );
+    // //   }
+
+    // //   if (world.ground.liquid.liquid == LiquidType.lava) {
+
+    // //     lava.position.y = world.ground.liquid.level;
+
+    // let lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
+    // //     lava.isPickable = !world.locked;
+
+    // lavaMaterial.noiseTexture = new BABYLON.Texture(
+    //   asset.metadata['texture'].noise,
+    //   scene
+    // );
+    // lavaMaterial.diffuseTexture = new BABYLON.Texture(
+    //   asset.metadata['texture'].diffuse,
+    //   scene
+    // );
+
+    // //     if (world.ground.liquid.texture.diffuse) {
+    // //       lavaMaterial.diffuseTexture = new BABYLON.Texture(
+    // //         world.ground.liquid.texture.diffuse,
+    // //         scene
+    // //       );
+    // //     }
+
+    // lavaMaterial.speed = 0.5;
+    // lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
+    // lavaMaterial.unlit = true;
+    // lava.material = lavaMaterial;
+    // //   }
+    // // }
+
+    // let options = {
+    //   shouldExportNode: function (node) {
+    //     return node === lava;
+    //   },
+    // };
+
+    // SERIALIZERS.GLTF2Export.GLBAsync(scene, asset.assetUrl, options).then(
+    //   (glb) => {
+    //     glb.downloadFiles();
+    //   }
+    // );
   }
 
   updateGizmoSize(meshId = this.selected.value) {
@@ -623,6 +669,13 @@ export class DesignService {
   ) {
     let newAsset = JSON.parse(JSON.stringify(asset)) as SceneAsset;
 
+    if (asset.asset.assetUrl == 'lava_ground') {
+      console.log('LOADSSSS');
+
+      this.addLiquids(asset.asset, scene);
+      return undefined;
+    }
+
     const result = await BABYLON.SceneLoader.ImportMeshAsync(
       '',
       '',
@@ -637,10 +690,6 @@ export class DesignService {
     var object = BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
       result.meshes[0] as BABYLON.Mesh
     );
-
-    result.meshes.forEach((mesh) => {
-      mesh.checkCollisions = true;
-    });
 
     object.isPickable = !world.locked;
 
@@ -840,7 +889,6 @@ export class DesignService {
     );
 
     ground.isPickable = !world.locked;
-    ground.checkCollisions = true;
     ground.id = 'ground';
 
     let groundMaterial = this.createGroundMaterial(world, ground, scene);

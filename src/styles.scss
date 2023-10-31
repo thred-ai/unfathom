@@ -567,6 +567,15 @@ ion-select {
   width: 100vw;
 }
 
+.mat-mdc-tab-header-pagination-chevron{
+  border-color: var(--dark--primaryTextColor) !important;
+}
+
+.mdc-tab-indicator__content--underline{
+  border-color: #6366f1 !important;
+  // background-image: linear-gradient(to right, #67e8f9, #6366f1) !important;
+}
+
 .layout-container-grow {
   min-height: calc(calc(var(--vh, 1vh) * 100) - 70px);
   width: 100vw;

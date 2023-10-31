@@ -12,16 +12,21 @@ export class ElementsComponent implements OnInit {
   categories = [
     {
       id: 'assets',
-      name: 'Assets'
+      name: 'Models'
     },
     {
       id: 'materials',
       name: 'Materials'
     },
     {
+      id: 'substance',
+      name: 'Substances'
+    },
+    {
       id: 'skies',
       name: 'Skies'
     },
+   
   ]
   ngOnInit(): void {
       

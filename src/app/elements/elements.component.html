@@ -1,14 +1,14 @@
 <mat-tab-group
   #menu
-  class="h-full w-full"
-  [fitInkBarToContent]="false"
+  class="h-full w-full pt-1"
+  [fitInkBarToContent]="true"
   animationDuration="0ms"
   [(selectedIndex)]="selected"
 >
   <mat-tab class="tab w-full h-full" *ngFor="let c of categories; index as i">
     <ng-template mat-tab-label>
       <span
-        class="font-medium {{
+        class="font-medium text-[12px] {{
           selected == i ? 'text-slate-50' : 'text-slate-400'
         }}"
       >

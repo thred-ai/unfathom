@@ -21,18 +21,35 @@
       </div>
 
       <!--  -->
-      <button
-        class="btn rounded bg-cyan-50 text-slate-950 flex justify-between items-center"
-      >
-        <ng-icon
-          class="font-bold me-2"
-          name="heroArrowUpTray"
-          [strokeWidth]="2.2"
-        >
-        </ng-icon>
 
-        Share
-      </button>
+      <div class="flex h-full justify-end items-center">
+        <button
+          class="btn rounded bg-indigo-400 text-slate-50 flex justify-between items-center me-2 h-full"
+          (click)="presentScene()"
+        >
+          <ng-icon
+            class="font-bold me-2"
+            name="bootstrapPlayBtnFill"
+            [strokeWidth]="2.2"
+          >
+          </ng-icon>
+
+          Present
+        </button>
+
+        <button
+          class="btn rounded bg-cyan-50 text-slate-950 flex justify-between items-center h-full"
+        >
+          <ng-icon
+            class="font-bold me-2"
+            name="heroArrowUpTray"
+            [strokeWidth]="2.2"
+          >
+          </ng-icon>
+
+          Share
+        </button>
+      </div>
     </div>
   </div>
 
@@ -153,7 +170,7 @@
           </ng-container>
 
           <button
-            class="btn rounded hover:bg-slate-200 {{
+            class="btn rounded font-medium text-sm hover:bg-slate-200 {{
               mode == 'position' ? 'bg-slate-200' : 'bg-transparent'
             }} text-black flex justify-between items-center"
             (click)="
