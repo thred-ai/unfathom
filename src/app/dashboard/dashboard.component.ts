@@ -192,14 +192,17 @@ export class DashboardComponent implements OnInit {
         console.log(doc);
         (window as any).VANTA.WAVES({
           el: doc, // element selector string or DOM object reference
-          color: 0x5588,
+          color: 0x9595a0,
           // color: 0x6366f1,
           // color: 0x67e8f9,
           waveHeight: 20,
-          shininess: 50,
+          shininess: 0,
           waveSpeed: 0.5,
           zoom: 0.75,
         });
+
+
+        
       }
     });
 

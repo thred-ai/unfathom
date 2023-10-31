@@ -205,16 +205,17 @@ export class AuthComponent implements OnInit, OnDestroy {
         let e = document.getElementById('authBackground');
 
         if (e) {
-          (window as any).VANTA.RINGS({
-            el: e,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00
-          })
+          
+        (window as any).VANTA.WAVES({
+          el: e, // element selector string or DOM object reference
+          color: 0x5588,
+          // color: 0x6366f1,
+          // color: 0x67e8f9,
+          waveHeight: 20,
+          shininess: 50,
+          waveSpeed: 0.5,
+          zoom: 0.75,
+        });
         }
       }, 50);
 
