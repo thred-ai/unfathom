@@ -30,4 +30,10 @@
     *ngIf="mode == 'assets'"
     [mode]="'elements'"
   ></app-asset-view-module>
+
+  <app-materials-view-module *ngIf="mode == 'materials'">
+  </app-materials-view-module>
+
+  <app-substance-view-module *ngIf="mode == 'substance'">
+  </app-substance-view-module>
 </ng-template>

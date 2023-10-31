@@ -1,0 +1,64 @@
+<div class="w-full p-3 h-full flex flex-col justify-between items-center">
+  <div class="h-full w-full overflow-scroll">
+    <div class="w-full grid grid-cols-3 justify-start g-0">
+      <div
+        *ngFor="let asset of assets ?? []; index as i"
+        class="col p-1 relative"
+        style="aspect-ratio: 1"
+      >
+        <div
+          class="flex justify-between items-center flex-col bg-transparent shadow-hover"
+          style="overflow: hidden"
+          role="button"
+          (click)="addMeshToScene(asset)"
+        >
+          <!-- <img
+              class="w-full h-full"
+              style="object-fit: cover; aspect-ratio: 1"
+              [src]="asset.img"
+            /> -->
+
+          <div class="w-full aspect-square pointer-events-none bg-red-500">
+            <!-- <app-model-viewer
+              [camera]="true"
+              [model]="asset.assetUrl"
+              [animate]="true"
+              [prompt]="false"
+              [poster]="'/assets/default.png'"
+              [id]="'viewer'"
+              [ar]="false"
+              [loaderColor]="'blue'"
+            >
+            </app-model-viewer> -->
+          </div>
+
+          <!-- 
+            <div
+              class="w-full primary-background py-2 flex justify-center items-center"
+            >
+              <p
+                class="mx-auto primary-text text-truncate text-center"
+                style="width: 70px"
+              >
+                {{ asset.name }}
+              </p>
+            </div> -->
+        </div>
+
+        <!-- <div
+            class="rounded-full bg-orange absolute"
+            style="z-index: 1; right: 0; top: 0; aspect-ratio: 1 !important"
+            role="button"
+            (click)="removeAssetWorkflow(asset.id)"
+          >
+            <mat-icon
+              class="w-full h-full primary-text-dark flex justify-center items-center p-1"
+              style="font-size: small"
+            >
+              close
+            </mat-icon>
+          </div> -->
+      </div>
+    </div>
+  </div>
+</div>

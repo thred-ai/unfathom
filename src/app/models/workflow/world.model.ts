@@ -4,6 +4,7 @@ import * as uuid from 'uuid';
 import { Texture } from './texture.model';
 import { SceneAsset } from './scene-asset.model';
 import { SceneCharacter } from './scene-character.model';
+import { SceneMaterial } from './scene-material.model';
 
 export class World {
   width!: number;
@@ -21,6 +22,8 @@ export class World {
   characters!: SceneCharacter[];
 
   assets!: SceneAsset[];
+  materials!: SceneMaterial[];
+
   locked!: boolean;
   img!: string;
 
@@ -32,6 +35,7 @@ export class World {
     height: number = 1000,
     characters: SceneCharacter[] = [],
     assets: SceneAsset[] = [],
+    materials: SceneMaterial[] = [],
     lightingIntensity: number = 0.8,
     created: number = new Date().getTime(),
     modified: number = new Date().getTime(),
@@ -69,6 +73,7 @@ export class World {
     this.name = name;
     this.characters = characters;
     this.assets = assets;
+    this.materials = materials;
     this.created = created;
     this.modified = modified;
     this.status = status;

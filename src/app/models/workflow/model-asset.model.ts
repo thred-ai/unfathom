@@ -1,12 +1,8 @@
 import { Dict } from 'src/app/load.service';
+import { Asset } from './asset.model';
 
-export class ModelAsset {
-  [x: string]: any;
-  name!: string;
-  id!: string;
+export class ModelAsset extends Asset {
   assetUrl?: string;
-  img?: string;
-  metadata: Dict<any> = {};
 
   constructor(
     name: string,
@@ -15,10 +11,8 @@ export class ModelAsset {
     img?: string,
     metadata: Dict<any> = {}
   ) {
-    this.name = name;
-    this.id = id;
+    super(name, id, img, metadata);
+
     this.assetUrl = assetUrl;
-    this.img = img;
-    this.metadata = metadata;
   }
 }

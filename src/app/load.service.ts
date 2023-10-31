@@ -17,6 +17,7 @@ import { World } from './models/workflow/world.model';
 import { ModelAsset } from './models/workflow/model-asset.model';
 import { DesignService } from './design.service';
 import { Material } from './models/workflow/material.model';
+import { Substance } from './models/workflow/substance.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -581,6 +582,51 @@ export class LoadService {
     await query.set(JSON.parse(JSON.stringify(material)), { merge: true });
   }
 
+  async saveSubstance(material: Substance) {
+    var query = this.db.collection('Substances').doc(material.id);
+
+    await query.set(JSON.parse(JSON.stringify(material)), { merge: true });
+  }
+
+  getMaterials(callback: (models: Material[]) => any) {
+    var query = this.db.collection('Materials');
+
+    query.valueChanges().subscribe(async (docs) => {
+      let models =
+        docs.map(
+          (d) =>
+            new Material(
+              d['id'],
+              d['name'],
+              d['texture'],
+              d['metadata'],
+              d['img']
+            )
+        ) ?? [];
+
+      callback(models);
+    });
+  }
+
+  getSubstances(callback: (models: Substance[]) => any) {
+    var query = this.db.collection('Substances');
+
+    query.valueChanges().subscribe(async (docs) => {
+      let models =
+        docs.map(
+          (d) =>
+            new Substance(
+              d['id'],
+              d['name'],
+              d['texture'],
+              d['metadata'],
+              d['img']
+            )
+        ) ?? [];
+      callback(models);
+    });
+  }
+
   getElements(callback: (models: ModelAsset[]) => any) {
     var query = this.db.collection('Elements');
 
@@ -1118,6 +1164,7 @@ export class LoadService {
       world.height,
       world.characters,
       world.assets,
+      world.materials,
       world.lightingIntensity,
       world.created,
       world.modified,

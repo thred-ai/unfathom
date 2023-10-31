@@ -172,6 +172,8 @@ import { UploadsComponent } from './uploads/uploads.component';
 import { DesignComponent } from './design/design.component';
 import { ElementsComponent } from './elements/elements.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { MaterialsViewModuleComponent } from './materials-view-module/materials-view-module.component';
+import { SubstanceViewModuleComponent } from './substance-view-module/substance-view-module.component';
 
 @NgModule({
   declarations: [
@@ -234,6 +236,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
     DesignComponent,
     ElementsComponent,
     SpinnerComponent,
+    MaterialsViewModuleComponent,
+    SubstanceViewModuleComponent,
   ],
   imports: [
     CommonModule,

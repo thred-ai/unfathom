@@ -99,7 +99,7 @@
           <verticalai-text-field
             [title]="'Length (m)'"
             [type]="'number'"
-            [range]="{ min: 1, max: 100000 }"
+            [range]="{ min: 0.001, max: 100000 }"
             [value]="assetDetails['scale'].x"
             [placeholder]="'Length (m)'"
             (changed)="assetDetails['scale'].x = $event; save()"
@@ -110,7 +110,7 @@
           <verticalai-text-field
             [title]="'Height (m)'"
             [type]="'number'"
-            [range]="{ min: 1, max: 100000 }"
+            [range]="{ min: 0.001, max: 100000 }"
             [value]="assetDetails['scale'].y"
             [placeholder]="'Height (m)'"
             (changed)="assetDetails['scale'].y = $event; save()"
@@ -121,7 +121,7 @@
           <verticalai-text-field
             [title]="'Width (m)'"
             [type]="'number'"
-            [range]="{ min: 1, max: 100000 }"
+            [range]="{ min: 0.001, max: 100000 }"
             [value]="assetDetails['scale'].z"
             [placeholder]="'Width (m)'"
             (changed)="assetDetails['scale'].z = $event; save()"

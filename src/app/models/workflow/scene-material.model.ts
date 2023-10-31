@@ -1,17 +1,15 @@
-import { AssetMovement } from './asset-movement.model';
-import { Asset } from './asset.model';
-import { ModelAsset } from './model-asset.model';
-import { Substance } from './substance.model';
+import { Material } from './material.model';
 
-export class SceneAsset {
-  asset!: Asset;
-  movement!: AssetMovement;
+export class SceneMaterial {
+  material!: Material;
+  meshId?: string;
   spawn!: { x: number; y: number; z: number };
   direction!: { x: number; y: number; z: number };
   scale!: { x: number; y: number; z: number };
 
   constructor(
-    asset: Asset,
+    material: Material,
+    meshId?: string,
     spawn: { x: number; y: number; z: number } = {
       x: 0,
       y: 0,
@@ -26,11 +24,10 @@ export class SceneAsset {
       x: 1,
       y: 1,
       z: 1,
-    },
-    movement: AssetMovement = new AssetMovement(false)
+    }
   ) {
-    this.asset = asset;
-    this.movement = movement;
+    this.material = material;
+    this.meshId = meshId;
     this.spawn = spawn;
     this.direction = direction;
     this.scale = scale;

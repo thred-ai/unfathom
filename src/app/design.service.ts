@@ -17,6 +17,7 @@ import { SceneAsset } from './models/workflow/scene-asset.model';
 import { AnimatedGifTexture } from './babylon-extenstions/animatedGifTexture';
 import { ModelAsset } from './models/workflow/model-asset.model';
 import * as SERIALIZERS from 'babylonjs-serializers';
+import { Substance } from './models/workflow/substance.model';
 
 @Injectable({
   providedIn: 'root',
@@ -488,6 +489,129 @@ export class DesignService {
     });
   }
 
+  createLiquid(
+    substance: Substance,
+    scene: BABYLON.Scene
+  ): BABYLON.GroundMesh | undefined {
+    var asset = BABYLON.MeshBuilder.CreateGround(
+      substance.id,
+      {
+        width: substance.metadata['width'],
+        height: substance.metadata['height'],
+        subdivisions:
+         2,
+      },
+      scene
+    );
+
+    switch (substance.metadata['customClass']) {
+      case 'WaterMaterial':
+        var waterMaterial = new MATERIALS.WaterMaterial(
+          'water_material',
+          scene
+        );
+        if (substance.texture.bump) {
+          waterMaterial.bumpTexture = new BABYLON.Texture(
+            substance.texture.bump,
+            scene
+          );
+        }
+
+        if (substance.metadata['windForce']) {
+          waterMaterial.windForce = substance.metadata['windForce'] as number;
+        }
+
+        if (substance.metadata['waveHeight']) {
+          waterMaterial.waveHeight = substance.metadata['waveHeight'] as number;
+        }
+
+        if (substance.metadata['windDirection']) {
+          waterMaterial.windDirection = substance.metadata[
+            'windDirection'
+          ] as BABYLON.Vector2;
+        }
+
+        if (substance.metadata['waterColor']) {
+          waterMaterial.waterColor = substance.metadata[
+            'waterColor'
+          ] as BABYLON.Color3;
+        }
+
+        if (substance.metadata['colorBlendFactor']) {
+          waterMaterial.colorBlendFactor = substance.metadata[
+            'colorBlendFactor'
+          ] as number;
+        }
+
+        if (substance.metadata['bumpHeight']) {
+          waterMaterial.bumpHeight = substance.metadata['bumpHeight'] as number;
+        }
+
+        if (substance.metadata['waveLength']) {
+          waterMaterial.waveLength = substance.metadata['waveLength'] as number;
+        }
+
+        if (substance.metadata['reflections']) {
+          (substance.metadata['reflections'] as string[]).forEach((id) => {
+            let mesh = scene.getMeshById(id) as BABYLON.Mesh;
+
+            if (mesh) {
+              waterMaterial.reflectionTexture?.renderList?.push(mesh);
+            }
+          });
+        }
+
+        if (substance.metadata['refractions']) {
+          (substance.metadata['refractions'] as string[]).forEach((id) => {
+            let mesh = scene.getMeshById(id) as BABYLON.Mesh;
+
+            if (mesh) {
+              waterMaterial.refractionTexture?.renderList?.push(mesh);
+            }
+          });
+        }
+
+        asset.material = waterMaterial;
+        return asset;
+      case 'LavaMaterial':
+        let lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
+
+        if (substance.texture.noise) {
+          lavaMaterial.noiseTexture = new BABYLON.Texture(
+            substance.texture.noise,
+            scene
+          );
+        }
+
+        if (substance.texture.diffuse) {
+          lavaMaterial.diffuseTexture = new BABYLON.Texture(
+            substance.texture.diffuse,
+            scene
+          );
+        }
+
+        if (substance.metadata['speed']) {
+          lavaMaterial.speed = substance.metadata['speed'] as number;
+        }
+
+        if (substance.metadata['fogColor']) {
+          lavaMaterial.fogColor = substance.metadata[
+            'fogColor'
+          ] as BABYLON.Color3;
+        }
+
+        if (substance.metadata['unlit']) {
+          lavaMaterial.unlit = substance.metadata['unlit'] as boolean;
+        }
+
+        asset.material = lavaMaterial;
+
+        return asset;
+      default:
+        return undefined;
+    }
+  }
+
   addLiquids(asset: ModelAsset, scene: BABYLON.Scene) {
     // var lava = BABYLON.MeshBuilder.CreateGround(
     //   asset.id,
@@ -644,150 +768,79 @@ export class DesignService {
   ) {
     let newAsset = JSON.parse(JSON.stringify(asset)) as SceneAsset;
 
-    if (asset.asset.assetUrl == 'lava_ground') {
-      console.log('LOADSSSS');
+    let importMesh: BABYLON.Mesh | undefined = undefined;
 
-      this.addLiquids(asset.asset, scene);
-      return undefined;
-    }
+    if (asset.asset.metadata && asset.asset.metadata['customClass']) {
+      importMesh = this.createLiquid(asset.asset as Substance, scene);
 
-    const result = await BABYLON.SceneLoader.ImportMeshAsync(
-      '',
-      '',
-      asset.asset.assetUrl,
-      scene,
-      (data) => {},
-      '.glb'
-    );
+      importMesh.scaling.x = asset.scale.x;
+      importMesh.scaling.y = asset.scale.y;
 
-    console.log('BOUND');
-
-    var object = BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
-      result.meshes[0] as BABYLON.Mesh
-    );
-
-    object.isPickable = !world.locked;
-
-    // result.meshes[0].setBoundingInfo(object.getBoundingInfo())
-
-    // console.log("OBJECT")
-    // console.log(object.getRawBoundingInfo().boundingBox)
-
-    if (asset.asset.id == 'castle') {
-      let d = result.meshes.find((m) => m.id == 'LAVAFALL');
-      let mat = new BABYLON.StandardMaterial('fount', scene);
-
-      //let tex = this.generateLiquidTexture(LiquidType.lava);
-
-      let tex = new AnimatedGifTexture('/assets/lava.gif', this.engine);
-
-      mat.diffuseTexture = tex;
-      mat.emissiveTexture = tex;
-
-      mat.disableLighting = true;
-
-      (mat.diffuseTexture as BABYLON.Texture).uScale = 0.5;
-      (mat.diffuseTexture as BABYLON.Texture).vScale = 0.5;
-      (mat.emissiveTexture as BABYLON.Texture).uScale = 0.5;
-      (mat.emissiveTexture as BABYLON.Texture).vScale = 0.5;
-
-      // mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
-
-      // scene.beforeRender = () => {
-      //   (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
-      // };
-
-      d.material = mat;
-    }
-
-    if (asset.asset.id == 'cube') {
-      let tex = new AnimatedGifTexture('/assets/lava2.gif', this.engine);
-
-      let mat = new BABYLON.StandardMaterial('fount2', scene);
-
-      //let tex = this.generateLiquidTexture(LiquidType.lava);
-
-      mat.diffuseTexture = tex;
-      mat.emissiveTexture = tex;
-
-      // (mat.diffuseTexture as BABYLON.Texture).uScale = uvScaleConstant.x;
-      //   (mat.diffuseTexture as BABYLON.Texture).vScale = uvScaleConstant.y;
-      //   (mat.emissiveTexture as BABYLON.Texture).uScale = uvScaleConstant.x;
-      //   (mat.emissiveTexture as BABYLON.Texture).vScale = uvScaleConstant.y;
-
-      mat.disableLighting = true;
-
-      let c = result.meshes[1]; //BABYLON.CreateBox("lava", {size: world.width, height: 2}, scene)
-      // c.subdivide(world.width / 20)
-      c.material = mat;
-      // console.log(result.meshes)
-    }
-
-    // result.meshes.forEach(mesh => hl?.addMesh(mesh as BABYLON.Mesh, BABYLON.Color3.Green()))
-    // var object = result.meshes[0]
-
-    // BABYLON.Mesh.MergeMeshes(
-    //   (result.meshes as BABYLON.Mesh[]).slice(1, result.meshes.length),
-    //   true,
-    //   false,
-    //   undefined,
-    //   false,
-    //   true
-    // );
-
-    object.id = asset.asset.id;
-
-    // object.isPickable = !world.locked;;
-
-    let vectors = result.meshes[0].getHierarchyBoundingVectors();
-
-    // new BABYLON.BoundingInfo(vectors.min, vectors.max)
-
-    let width = vectors.max.x - vectors.min.x;
-    let height = vectors.max.y - vectors.min.y;
-
-    let ratio = height / width;
-
-    object.scaling.x = !Number.isNaN(asset.scale.x) ? asset.scale.x : 1;
-    object.scaling.y = !Number.isNaN(asset.scale.y) ? asset.scale.y : 1 * ratio;
-    object.scaling.z = !Number.isNaN(asset.scale.z) ? asset.scale.z : 1;
-
-    newAsset.scale.x = object.scaling.x;
-    newAsset.scale.y = object.scaling.y;
-    newAsset.scale.z = object.scaling.z;
-
-    object.rotation = new BABYLON.Vector3(
-      this.toRadians(asset.direction.x),
-      this.toRadians(asset.direction.y),
-      this.toRadians(asset.direction.z)
-    );
-
-    object.position = new BABYLON.Vector3(
-      asset.spawn.x,
-      asset.spawn.y,
-      asset.spawn.z
-    );
-
-    // var boundingBox =
-    //   BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(object);
-    // boundingBox.name = asset.asset.name;
-
-    // console.log(result.meshes)
-    // let f = await result.meshes[1].material.getActiveTextures()[0].readPixels()
-    // BABYLON.Tools.DumpDataAsync(200, 200, f, 'image/jpeg', "img.jpeg", undefined, false, 1)
-    // console.log()
-
-    if (asset.movement.canMount) {
-      let box = object.getHierarchyBoundingVectors();
-
-      object.ellipsoidOffset = new BABYLON.Vector3(
-        0,
-        -(box.max.y - box.min.y),
-        0
+      importMesh.scaling.z = asset.scale.z;
+    } else {
+      let result = await BABYLON.SceneLoader.ImportMeshAsync(
+        '',
+        '',
+        (asset.asset as ModelAsset)?.assetUrl,
+        scene,
+        (data) => {},
+        '.glb'
       );
+      importMesh = BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
+        result.meshes[0] as BABYLON.Mesh
+      );
+
+      let vectors = importMesh.getHierarchyBoundingVectors();
+
+      let width = vectors.max.x - vectors.min.x;
+      let height = vectors.max.y - vectors.min.y;
+
+      let ratio = height / width;
+
+      importMesh.scaling.x = !Number.isNaN(asset.scale.x) ? asset.scale.x : 1;
+      importMesh.scaling.y = !Number.isNaN(asset.scale.y)
+        ? asset.scale.y
+        : 1 * ratio;
+      importMesh.scaling.z = !Number.isNaN(asset.scale.z) ? asset.scale.z : 1;
+
+      if (asset.movement.canMount) {
+        let box = importMesh.getHierarchyBoundingVectors();
+
+        importMesh.ellipsoidOffset = new BABYLON.Vector3(
+          0,
+          -(box.max.y - box.min.y),
+          0
+        );
+      }
     }
 
-    return newAsset;
+    if (importMesh) {
+      console.log('BOUND');
+
+      importMesh.isPickable = !world.locked;
+
+      importMesh.id = asset.asset.id;
+
+      newAsset.scale.x = importMesh.scaling.x;
+      newAsset.scale.y = importMesh.scaling.y;
+      newAsset.scale.z = importMesh.scaling.z;
+
+      importMesh.rotation = new BABYLON.Vector3(
+        this.toRadians(asset.direction.x),
+        this.toRadians(asset.direction.y),
+        this.toRadians(asset.direction.z)
+      );
+
+      importMesh.position = new BABYLON.Vector3(
+        asset.spawn.x,
+        asset.spawn.y,
+        asset.spawn.z
+      );
+
+      return newAsset;
+    }
+
+    return undefined;
   }
 
   doDownload(filename: string, scene: BABYLON.Scene) {

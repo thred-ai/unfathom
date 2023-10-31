@@ -473,80 +473,80 @@ export class PrototypeService {
 
     this.loaded.next('Downloading Assets');
 
-    await Promise.all(
-      world.assets.map(async (asset) => {
-        this.loaded.next(`Downloading "${asset.asset.name}"`);
+    // await Promise.all(
+    //   world.assets.map(async (asset) => {
+    //     this.loaded.next(`Downloading "${asset.asset.name}"`);
 
-        const result = await BABYLON.SceneLoader.ImportMeshAsync(
-          '',
-          '',
-          asset.asset.assetUrl,
-          scene,
-          (data) => {},
-          '.glb'
-        );
+    //     const result = await BABYLON.SceneLoader.ImportMeshAsync(
+    //       '',
+    //       '',
+    //       asset.asset.assetUrl,
+    //       scene,
+    //       (data) => {},
+    //       '.glb'
+    //     );
 
-        result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
+    //     result.meshes.forEach((mesh) => (mesh.checkCollisions = true));
 
-        var object =
-          BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
-            result.meshes[0] as BABYLON.Mesh
-          );
+    //     var object =
+    //       BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
+    //         result.meshes[0] as BABYLON.Mesh
+    //       );
 
-        if (asset.asset.id == 'castle') {
-          let d = result.meshes.find((m) => m.id == 'LAVAFALL');
-          let mat = new BABYLON.StandardMaterial('fount', scene);
+    //     if (asset.asset.id == 'castle') {
+    //       let d = result.meshes.find((m) => m.id == 'LAVAFALL');
+    //       let mat = new BABYLON.StandardMaterial('fount', scene);
 
-          let tex = this.generateLiquidTexture(LiquidType.lava);
+    //       let tex = this.generateLiquidTexture(LiquidType.lava);
 
-          mat.diffuseTexture = new BABYLON.Texture(tex.diffuse, scene);
-          mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
+    //       mat.diffuseTexture = new BABYLON.Texture(tex.diffuse, scene);
+    //       mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
 
-          scene.beforeRender = () => {
-            (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
-          };
+    //       scene.beforeRender = () => {
+    //         (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
+    //       };
 
-          d.material = mat;
-        }
+    //       d.material = mat;
+    //     }
 
-        object.id = asset.asset.id;
+    //     object.id = asset.asset.id;
 
-        object.scaling.x = asset.scale.x;
-        object.scaling.y = asset.scale.y;
-        object.scaling.z = asset.scale.z;
+    //     object.scaling.x = asset.scale.x;
+    //     object.scaling.y = asset.scale.y;
+    //     object.scaling.z = asset.scale.z;
 
-        object.rotation = new BABYLON.Vector3(
-          this.toRadians(asset.direction.x),
-          this.toRadians(asset.direction.y),
-          this.toRadians(asset.direction.z)
-        );
+    //     object.rotation = new BABYLON.Vector3(
+    //       this.toRadians(asset.direction.x),
+    //       this.toRadians(asset.direction.y),
+    //       this.toRadians(asset.direction.z)
+    //     );
 
-        object.position = new BABYLON.Vector3(
-          asset.spawn.x,
-          asset.spawn.y,
-          asset.spawn.z
-        );
+    //     object.position = new BABYLON.Vector3(
+    //       asset.spawn.x,
+    //       asset.spawn.y,
+    //       asset.spawn.z
+    //     );
 
-        // var boundingBox =
-        //   BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(object);
-        // boundingBox.name = asset.asset.name;
+    //     // var boundingBox =
+    //     //   BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(object);
+    //     // boundingBox.name = asset.asset.name;
 
-        // console.log(result.meshes)
-        // let f = await result.meshes[1].material.getActiveTextures()[0].readPixels()
-        // BABYLON.Tools.DumpDataAsync(200, 200, f, 'image/jpeg', "img.jpeg", undefined, false, 1)
-        // console.log()
+    //     // console.log(result.meshes)
+    //     // let f = await result.meshes[1].material.getActiveTextures()[0].readPixels()
+    //     // BABYLON.Tools.DumpDataAsync(200, 200, f, 'image/jpeg', "img.jpeg", undefined, false, 1)
+    //     // console.log()
 
-        if (asset.movement.canMount) {
-          let box = object.getHierarchyBoundingVectors();
+    //     if (asset.movement.canMount) {
+    //       let box = object.getHierarchyBoundingVectors();
 
-          object.ellipsoidOffset = new BABYLON.Vector3(
-            0,
-            -(box.max.y - box.min.y),
-            0
-          );
-        }
-      })
-    );
+    //       object.ellipsoidOffset = new BABYLON.Vector3(
+    //         0,
+    //         -(box.max.y - box.min.y),
+    //         0
+    //       );
+    //     }
+    //   })
+    // );
 
     await Promise.all(
       this.world.characters.map(async (c) => {
