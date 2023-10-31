@@ -5,6 +5,7 @@ import { PrototypeService } from '../prototype.service';
 import { LiquidType } from '../models/workflow/liquid-type.enum';
 import { Liquid } from '../models/workflow/liquid.model';
 import { LoadService } from '../load.service';
+import { DesignService } from '../design.service';
 
 @Component({
   selector: 'app-ground-edit',
@@ -15,14 +16,15 @@ export class GroundEditComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private prototypeService: PrototypeService,
-    private loadService: LoadService
+    private loadService: LoadService,
+    private designService: DesignService
   ) {}
 
   world?: World;
 
   save(){
     this.world.ground.texture.id = this.loadService.newUtilID
-    this.projectService.saveWorkflow.next(this.world)
+    this.designService.save(this.world)
   }
 
   ngOnInit(): void {

@@ -567,6 +567,10 @@ ion-select {
   width: 100vw;
 }
 
+*:focus {
+  outline: none;
+}
+
 .mat-mdc-tab-header-pagination-chevron{
   border-color: var(--dark--primaryTextColor) !important;
 }

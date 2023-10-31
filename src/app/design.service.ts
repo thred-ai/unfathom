@@ -70,7 +70,9 @@ export class DesignService {
       window.alert('Browser not supported');
     } else if (canvas && this.world && this.world) {
       // Babylon
-      this.engine = new BABYLON.Engine(canvas, true);
+      this.engine = new BABYLON.Engine(canvas, true, {
+        preserveDrawingBuffer: true,
+      });
 
       //Creating scene
       await this.createScene2(this.engine, this.world);
@@ -96,7 +98,7 @@ export class DesignService {
       this.world.assets.push(newAsset);
 
       console.log('moi');
-      this.projectService.save(this.world);
+      this.save();
 
       setTimeout(() => {
         let mesh = this.engine.scenes[0]?.getMeshById(asset.asset.id);
@@ -495,17 +497,13 @@ export class DesignService {
     //   },
     //   scene
     // );
-
     // // water.metadata = {
     // //   reflections: ['sky', 'ground'],
     // //   refractions: ['ground'],
     // // };
-
     // // let sky = scene.getMeshById('sky') as BABYLON.Mesh;
     // // let ground = scene.getMeshById('ground') as BABYLON.Mesh;
-
     // // var waterMaterial = new MATERIALS.WaterMaterial('water_material', scene);
-
     // // console.log(asset)
     // // if (asset.metadata['texture'].bump) {
     // //   waterMaterial.bumpTexture = new BABYLON.Texture(
@@ -514,7 +512,6 @@ export class DesignService {
     // //   );
     // //   // Set the bump texture
     // // }
-
     // // waterMaterial.windForce = -15;
     // // waterMaterial.waveHeight = 1.3;
     // // waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
@@ -522,16 +519,12 @@ export class DesignService {
     // // waterMaterial.colorBlendFactor = 0.3;
     // // waterMaterial.bumpHeight = 0.01;
     // // waterMaterial.waveLength = 0.1;
-
     // // waterMaterial.reflectionTexture?.renderList?.push(sky);
     // // waterMaterial.reflectionTexture?.renderList?.push(ground);
     // // waterMaterial.refractionTexture?.renderList?.push(ground);
-
     // // water.material = waterMaterial;
-
     // // if (world.ground.liquid) {
     // //   BABYLON.Engine.ShadersRepository = '';
-
     // //   if (world.ground.liquid.liquid == LiquidType.water) {
     // //     var water = BABYLON.MeshBuilder.CreateGround(
     // //       'liquid',
@@ -542,28 +535,23 @@ export class DesignService {
     // //       scene
     // //     );
     // //     water.position.y = world.ground.liquid.level;
-
     // //     var waterMaterial = new MATERIALS.WaterMaterial(
     // //       'water_material',
     // //       scene
     // //     );
     // //     water.isPickable = !world.locked;
-
     // //     if (world.ground.liquid.texture.bump) {
     // //       waterMaterial.bumpTexture = new BABYLON.Texture(
     // //         world.ground.liquid.texture.bump,
     // //         scene
     // //       ); // Set the bump texture
     // //     }
-
     // //     reflections.forEach((mesh) => {
     // //       waterMaterial.reflectionTexture?.renderList?.push(mesh);
     // //     });
-
     // //     refractions.forEach((mesh) => {
     // //       waterMaterial.refractionTexture?.renderList?.push(mesh);
     // //     });
-
     // //     waterMaterial.windForce = -15;
     // //     waterMaterial.waveHeight = 1.3;
     // //     waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
@@ -571,9 +559,7 @@ export class DesignService {
     // //     waterMaterial.colorBlendFactor = 0.3;
     // //     waterMaterial.bumpHeight = 0.01;
     // //     waterMaterial.waveLength = 0.1;
-
     // //     water.material = waterMaterial;
-
     // //     // const sound = new BABYLON.Sound(
     // //     //   'sound',
     // //     //   'assets/sounds/water.wav',
@@ -585,7 +571,6 @@ export class DesignService {
     // //     //     spatialSound: true,
     // //     //   }
     // //     // );
-
     // //     // const music = new BABYLON.Sound(
     // //     //   'music',
     // //     //   'assets/sounds/music2.wav',
@@ -596,21 +581,15 @@ export class DesignService {
     // //     //     autoplay: true,
     // //     //   }
     // //     // );
-
     // //     // let center = ground.getBoundingInfo().boundingBox.center;
-
     // //     // sound.setPosition(
     // //     //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
     // //     // );
     // //   }
-
     // //   if (world.ground.liquid.liquid == LiquidType.lava) {
-
     // //     lava.position.y = world.ground.liquid.level;
-
     // let lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
     // //     lava.isPickable = !world.locked;
-
     // lavaMaterial.noiseTexture = new BABYLON.Texture(
     //   asset.metadata['texture'].noise,
     //   scene
@@ -619,27 +598,23 @@ export class DesignService {
     //   asset.metadata['texture'].diffuse,
     //   scene
     // );
-
     // //     if (world.ground.liquid.texture.diffuse) {
     // //       lavaMaterial.diffuseTexture = new BABYLON.Texture(
     // //         world.ground.liquid.texture.diffuse,
     // //         scene
     // //       );
     // //     }
-
     // lavaMaterial.speed = 0.5;
     // lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
     // lavaMaterial.unlit = true;
     // lava.material = lavaMaterial;
     // //   }
     // // }
-
     // let options = {
     //   shouldExportNode: function (node) {
     //     return node === lava;
     //   },
     // };
-
     // SERIALIZERS.GLTF2Export.GLBAsync(scene, asset.assetUrl, options).then(
     //   (glb) => {
     //     glb.downloadFiles();
@@ -1060,7 +1035,7 @@ export class DesignService {
         same.direction.y = this.toDegrees(rotation.y);
         same.direction.z = this.toDegrees(rotation.z);
 
-        this.projectService.save(this.world);
+        this.save();
       }
     }
   }
@@ -1188,5 +1163,30 @@ export class DesignService {
     this.engine?.dispose();
     this.engine = undefined;
     this.gizmoManager = undefined;
+  }
+
+  async save(world = this.world) {
+    let canvas = document.getElementById('canvas') as HTMLCanvasElement;
+
+    if (
+      this.engine &&
+      this.engine?.scenes[0] &&
+      this.engine?.scenes[0]?.activeCamera &&
+      canvas
+    ) {
+      let aspectRatio = canvas.width / canvas.height;
+      let width = 400;
+      let height = width / aspectRatio;
+
+      let img = await BABYLON.Tools.CreateScreenshotAsync(
+        this.engine,
+        this.engine.scenes[0].activeCamera,
+        { width, height }
+      );
+
+      world.img = img;
+    }
+
+    this.projectService.save(this.world);
   }
 }

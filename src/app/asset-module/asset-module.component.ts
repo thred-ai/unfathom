@@ -74,7 +74,7 @@ export class AssetModuleComponent implements OnInit {
   ];
 
   save(){
-    this.projectService.saveWorkflow.next(this.world)
+    this.designService.save(this.world)
   }
 
   // async save(action = 'save') {

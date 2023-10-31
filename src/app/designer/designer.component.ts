@@ -118,7 +118,7 @@ export class DesignerComponent implements OnInit {
   }
 
   save() {
-    this.projectService.save(this.world);
+    this.designerService.save(this.world);
   }
 
   get worldLink() {

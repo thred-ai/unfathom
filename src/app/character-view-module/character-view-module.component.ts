@@ -4,6 +4,7 @@ import { LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
 
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
+import { DesignService } from '../design.service';
 
 @AutoUnsubscribe
 @Component({
@@ -15,14 +16,15 @@ export class CharacterViewModuleComponent implements OnInit {
   constructor(
     private loadService: LoadService,
     private projectService: ProjectService,
+    private designService: DesignService
   ) {}
 
   workflow?: any;
 
-  characters: Character[] = []
+  characters: Character[] = [];
 
   @Output() openMenu = new EventEmitter<{
-    comp: string,
+    comp: string;
     data: any;
     callback: ((data: any) => any) | undefined;
   }>();
@@ -30,8 +32,6 @@ export class CharacterViewModuleComponent implements OnInit {
   @Output() close = new EventEmitter<any>();
 
   ngOnInit(): void {
-
-
     this.projectService.workflow.subscribe((w) => {
       if (w) {
         this.workflow = w;
@@ -65,13 +65,12 @@ export class CharacterViewModuleComponent implements OnInit {
         if (data && data != '' && data != '0') {
           let character = data.character as Character;
 
-       
           this.workflow!.characters[character.id] = character;
 
-          this.projectService.save(this.workflow)
+          this.designService.save(this.workflow);
 
           setTimeout(() => {
-            this.close.emit()
+            this.close.emit();
           }, 100);
           // this.workflowChanged.emit(this.workflow);
         }
@@ -108,20 +107,15 @@ export class CharacterViewModuleComponent implements OnInit {
     // });
   }
 
-
   removeCharacterWorkflow(id: string) {
     // this.workflow?.sceneLayout?.cells.forEach((c) => {
     //   let scene = c.data?.ngArguments?.scene as Scene;
-
     //   if (scene) {
     //     scene.characters = scene.characters.filter((x) => x.id != id);
     //   }
     // });
-
     // delete this.workflow?.characters[id];
-
     // this.projectService.workflow.next(this.workflow);
-
     // this.close.emit()
     // this.workflowChanged.emit(this.workflow);
   }

@@ -4,6 +4,7 @@ import { World } from '../models/workflow/world.model';
 import { PrototypeService } from '../prototype.service';
 import { LiquidType } from '../models/workflow/liquid-type.enum';
 import { Liquid } from '../models/workflow/liquid.model';
+import { DesignService } from '../design.service';
 
 @Component({
   selector: 'app-sky-edit',
@@ -13,7 +14,8 @@ import { Liquid } from '../models/workflow/liquid.model';
 export class SkyEditComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
-    private prototypeService: PrototypeService
+    private prototypeService: PrototypeService,
+    private designService: DesignService
   ) {}
 
   world?: World;
@@ -61,6 +63,6 @@ export class SkyEditComponent implements OnInit {
   }
 
   save() {
-    this.projectService.saveWorkflow.next(this.world);
+    this.designService.save(this.world);
   }
 }

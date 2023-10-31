@@ -41,6 +41,10 @@ export class DashboardComponent implements OnInit {
 
   theme: 'light' | 'dark' = 'light';
 
+  get activeElement(){
+    return document.activeElement
+  }
+
   viewMapping: { [k: string]: string } = {
     '=0': 'No Active Users',
     '=1': '1 View',
@@ -181,10 +185,26 @@ export class DashboardComponent implements OnInit {
 
       this.dev = dev ?? undefined;
       this.cdr.detectChanges();
+
+      let doc = document.getElementById('background');
+
+      if (doc) {
+        console.log(doc);
+        (window as any).VANTA.WAVES({
+          el: doc, // element selector string or DOM object reference
+          color: 0x5588,
+          // color: 0x6366f1,
+          // color: 0x67e8f9,
+          waveHeight: 20,
+          shininess: 50,
+          waveSpeed: 0.5,
+          zoom: 0.75,
+        });
+      }
     });
 
     this.loadService.loadedProducts.subscribe((worlds) => {
-      console.log(worlds)
+      console.log(worlds);
       if (worlds) {
         // if (dev?.theme == 'auto') {
         //   if (
@@ -229,4 +249,15 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
+
+  save(world: World){
+    this.projectService.saveWorkflow.next(world)
+  }
+
+  saveName(world: World, name: string){
+    world.name = name
+    this.loadService.updateName(world)
+  }
+
+  
 }

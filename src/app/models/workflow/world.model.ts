@@ -21,7 +21,8 @@ export class World {
   characters!: SceneCharacter[];
 
   assets!: SceneAsset[];
-  locked!: boolean
+  locked!: boolean;
+  img!: string;
 
   constructor(
     uid: string,
@@ -55,7 +56,8 @@ export class World {
       1
     ),
     status: number = 0,
-    locked: boolean = false
+    locked: boolean = false,
+    img: string = sky.texture.emissive
   ) {
     this.uid = uid;
     this.width = width;
@@ -70,6 +72,7 @@ export class World {
     this.created = created;
     this.modified = modified;
     this.status = status;
-    this.locked = locked
+    this.locked = locked;
+    this.img = img;
   }
 }

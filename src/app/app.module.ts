@@ -143,6 +143,7 @@ import {
   heroChevronLeft,
   heroLockClosed,
   heroLockOpen,
+  heroPencil
 } from '@ng-icons/heroicons/outline';
 
 import {
@@ -240,6 +241,7 @@ import { ElementsComponent } from './elements/elements.component';
       heroShare,
       heroArrowUpTray,
       heroCube,
+      heroPencil,
       heroCloudArrowUp,
       heroGlobeAmericas,
       heroChevronLeft,

@@ -53,12 +53,12 @@ export class LoadService {
     private projectService: ProjectService,
     private designService: DesignService
   ) {
-    this.projectService.saveWorkflow.subscribe(async (workflow) => {
-      if (workflow) {
-        this.projectService.workflow.next(workflow);
+    this.projectService.saveWorkflow.subscribe(async (world) => {
+      if (world) {
+        this.projectService.workflow.next(world);
 
-        console.log(workflow);
-        let result = await this.saveSmartUtil(workflow);
+        console.log(world);
+        let result = await this.saveSmartUtil(world);
 
         if (result) {
         }
@@ -301,6 +301,18 @@ export class LoadService {
 
       let uploadData = JSON.parse(JSON.stringify(data));
 
+      // if (this.isBase64(data.img)) {
+      //   delete uploadData.img
+      //   let ref = `worlds/${id}/display.png`;
+      //   this.saveImgStringSync(data.img, ref, async (url) => {
+      //     if (url && id) {
+      //       let d = { img: url };
+      //       await this.db.collection(`Worlds`).doc(id).update(d);
+      //     }
+      //   });
+
+      // }
+
       uploadData.search_name = uploadData.name?.toLowerCase();
       console.log('STARTING SAVE');
 
@@ -327,6 +339,27 @@ export class LoadService {
       this.projectService.loading.next(false);
 
       return undefined;
+    }
+  }
+
+  async updateName(data: World) {
+    let id = data.id;
+
+    let uid = (await this.currentUser)?.uid;
+
+    if (uid) {
+      console.log(data);
+
+      let uploadData = {
+        name: data.name,
+        search_name: data.name.toLowerCase(),
+      };
+
+      try {
+        await this.db.collection(`Worlds`).doc(id).update(uploadData);
+      } catch (error) {
+        console.log('FAILED SAVE');
+      }
     }
   }
 
@@ -392,6 +425,34 @@ export class LoadService {
     }
   }
 
+  async saveImgString(img: string, path: string) {
+    try {
+      let ref = this.storage.ref(path);
+      await ref.putString(img, 'data_url', { cacheControl: 'no-cache' });
+      return ref.getDownloadURL().toPromise();
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  saveImgStringSync(
+    img: string,
+    path: string,
+    callback: (url?: string) => any
+  ) {
+    let ref = this.storage.ref(path);
+    ref
+      .putString(img, 'data_url', { cacheControl: 'no-cache' })
+      .then(async (result) => {
+        let url = await result.ref.getDownloadURL();
+        callback(url);
+      })
+      .catch((error) => {
+        callback(undefined);
+      });
+    // ref.getDownloadURL().toPromise();
+  }
+
   async setUserInfoInitial(user: firebase.User) {
     let uid = user.uid;
     let email = user.email;
@@ -432,7 +493,7 @@ export class LoadService {
           let result: World[] = [];
 
           // docs.forEach((d) => {
-          //   let util = this.syncWorkflow(d);
+          //   let util = this.syncWorld(d);
           //   util.layout = this.sampleFlow
           //   console.log(util)
 
@@ -518,8 +579,16 @@ export class LoadService {
 
     query.valueChanges().subscribe(async (docs) => {
       let models =
-        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'], d['img'], d['metadata'])) ??
-        [];
+        docs.map(
+          (d) =>
+            new ModelAsset(
+              d['name'],
+              d['id'],
+              d['assetUrl'],
+              d['img'],
+              d['metadata']
+            )
+        ) ?? [];
 
       callback(models);
     });
@@ -584,9 +653,9 @@ export class LoadService {
     }
 
     let s = q.valueChanges().subscribe((docs2) => {
-      let docs_2 = (docs2 as World[]).map((workflow) => {
-        // workflow.layout = this.sampleFlow
-        return this.syncWorkflow(workflow);
+      let docs_2 = (docs2 as World[]).map((world) => {
+        // world.layout = this.sampleFlow
+        return this.syncWorld(world);
       });
 
       console.log(docs_2);
@@ -665,12 +734,12 @@ export class LoadService {
     return url;
   }
 
-  async generateScene(sceneId: string, workflowId: string, prompt: string) {
+  async generateScene(sceneId: string, worldId: string, prompt: string) {
     let world = await new Promise<World | undefined>((resolve, reject) => {
       this.functions
         .httpsCallable('generateScene', { timeout: 180000 })({
           sceneId,
-          workflowId,
+          worldId,
           input: prompt,
         })
         .pipe(first())
@@ -916,17 +985,17 @@ export class LoadService {
 
   async changeLayout(
     layout: any,
-    workflow: World,
+    world: World,
     step = 1,
     callback: (layout: any) => any
   ) {
     try {
-      if (workflow && layout) {
+      if (world && layout) {
         var data = {
           layoutType: layout.type,
           step,
           layoutId: layout.id,
-          workflowId: workflow.id,
+          worldId: world.id,
         };
 
         if (data) {
@@ -952,16 +1021,12 @@ export class LoadService {
     }
   }
 
-  async addLayout(
-    layout: any,
-    workflow: World,
-    callback: (layout: any) => any
-  ) {
+  async addLayout(layout: any, world: World, callback: (layout: any) => any) {
     try {
-      if (workflow && layout) {
+      if (world && layout) {
         var data = {
           layout: JSON.parse(JSON.stringify(layout)),
-          workflowId: workflow.id,
+          worldId: world.id,
         };
 
         if (data) {
@@ -1038,41 +1103,42 @@ export class LoadService {
     }
   }
 
-  syncWorkflow(workflow: any) {
+  syncWorld(world: any) {
     return new World(
-      workflow.uid,
-      workflow.id,
-      workflow.name,
-      workflow.width,
-      workflow.height,
-      workflow.characters,
-      workflow.assets,
-      workflow.lightingIntensity,
-      workflow.created,
-      workflow.modified,
-      workflow.sky,
-      workflow.ground,
-      workflow.status,
-      workflow.locked
+      world.uid,
+      world.id,
+      world.name,
+      world.width,
+      world.height,
+      world.characters,
+      world.assets,
+      world.lightingIntensity,
+      world.created,
+      world.modified,
+      world.sky,
+      world.ground,
+      world.status,
+      world.locked,
+      world.img
     );
   }
 
   worldSub?: Subscription;
 
-  getPrototype(workflowId: string, callback: (exec: World) => any) {
-    let q = this.db.collection(`Worlds`).doc(workflowId);
+  getPrototype(worldId: string, callback: (exec: World) => any) {
+    let q = this.db.collection(`Worlds`).doc(worldId);
 
-    console.log(workflowId);
+    console.log(worldId);
     this.worldSub = q.valueChanges().subscribe((docs2) => {
-      let w = this.syncWorkflow(docs2);
+      let w = this.syncWorld(docs2);
       callback(w);
     });
   }
 
   reset() {
     this.worldSub?.unsubscribe();
-    this.loadedUser.next(undefined)
-    this.loadedProducts.next([])
+    this.loadedUser.next(undefined);
+    this.loadedProducts.next([]);
     this.designService.deinit();
   }
 }
