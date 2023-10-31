@@ -1,12 +1,9 @@
 <div
-  class="w-full bg-dark"
-  style="
-    height: calc(calc(var(--vh, 1vh) * 100));
-  "
+  class="w-full bg-dark animate__animated animate__fadeIn"
+  style="height: calc(calc(var(--vh, 1vh) * 100))"
+  id="authBackground"
 >
-  <div
-    class="w-full h-full relative flex flex-col justify-center items-center"
-  >
+  <div class="w-full h-full relative flex flex-col justify-center items-center">
     <div
       class="absolute w-full h-full flex justify-center items-center px-3 py-2 md:py-0"
     >
@@ -39,7 +36,7 @@
           >
             <div
               class="big-design-card rounded shadow h-full w-full animate__animated animate__fadeIn"
-              style="z-index: 50;"
+              style="z-index: 50"
             >
               <ng-container *ngIf="mode == 0">
                 <div
@@ -50,8 +47,6 @@
                     <h4 class="w-full text-center text-dark">
                       Create an account
                     </h4>
-
-                    
                   </div>
 
                   <div class="w-full py-4">
@@ -81,7 +76,7 @@
                         [type]="viewPass ? 'text' : 'password'"
                         [btn]="true"
                         [btnColor]="'gray'"
-                        [btnIcon]="viewPass ? 'visibility' : 'visibility_off'"
+                        [btnIcon]="viewPass ? 'heroEye' : 'heroEyeSlash'"
                         (btnClicked)="viewPass = !viewPass"
                         (changed)="
                           signUpForm.controls['password'].setValue($event)
@@ -99,7 +94,7 @@
                         [type]="viewPass ? 'text' : 'password'"
                         [btn]="true"
                         [btnColor]="'gray'"
-                        [btnIcon]="viewPass ? 'visibility' : 'visibility_off'"
+                        [btnIcon]="viewPass ? 'heroEye' : 'heroEyeSlash'"
                         (btnClicked)="viewPass = !viewPass"
                         (changed)="
                           signUpForm.controls['confirmPass'].setValue($event)
@@ -110,7 +105,7 @@
 
                     <div class="w-full py-1 mt-2 px-2" *ngIf="!err">
                       <p
-                        class="w-full text-center animate__animated animate__fadeIn text-dark  "
+                        class="w-full text-center animate__animated animate__fadeIn text-dark"
                         style="font-size: small"
                         role="button"
                         (click)="
@@ -120,8 +115,7 @@
                         By joining
                         <b class="font-bold text-dark">Unfathom</b>, you agree
                         to our
-                        <b class="text-dark" role="button">Terms of Service</b
-                        >.
+                        <b class="text-dark" role="button">Terms of Service</b>.
                       </p>
                     </div>
                     <div class="w-full py-1 mt-2 px-2" *ngIf="err">
@@ -134,29 +128,28 @@
                     </div>
                     <div class="w-full py-1 mt-3">
                       <button
-                        class="btn bg-orange rounded text-white  px-5 py-3 font-bold w-full mt-1"
+                        class="btn bg-violet-600 hover:bg-violet-500 rounded text-white px-5 py-3 font-bold w-full mt-1"
                         (click)="continue()"
                         id="continue"
                       >
                         Continue
-                        <span
-                          *ngIf="loading"
-                          class="spinner-border spinner-border-sm ms-1"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
+
+                        <div class="ms-2" *ngIf="loading">
+                          <app-spinner></app-spinner>
+                        </div>
                       </button>
                     </div>
 
                     <div class="w-full py-1 mt-3 px-2">
                       <p
-                        class="w-full text-center text-dark  "
+                        class="w-full text-center text-dark"
                         style="font-size: small"
                         role="button"
                         (click)="mode = 1"
                       >
                         Already have an account?
-                        <b role="button" class="font-bold text-dark">Sign in</b>.
+                        <b role="button" class="font-bold text-dark">Sign in</b
+                        >.
                       </p>
                     </div>
                   </div>
@@ -168,7 +161,7 @@
                   style="overflow-y: scroll"
                 >
                   <div class="w-full big-design-header">
-                    <h4 class="w-full text-center text-dark  ">
+                    <h4 class="w-full text-center text-dark">
                       Sign in to your account
                     </h4>
                   </div>
@@ -198,7 +191,7 @@
                         [type]="viewPass ? 'text' : 'password'"
                         [btn]="true"
                         [btnColor]="'gray'"
-                        [btnIcon]="viewPass ? 'visibility' : 'visibility_off'"
+                        [btnIcon]="viewPass ? 'heroEye' : 'heroEyeSlash'"
                         (btnClicked)="viewPass = !viewPass"
                         (changed)="
                           signInForm.controls['password'].setValue($event)
@@ -210,7 +203,7 @@
                       <p class="w-full text-center" style="font-size: small">
                         <b
                           role="button"
-                          class="font-bold text-dark  animate__animated animate__fadeIn"
+                          class="font-bold text-dark animate__animated animate__fadeIn"
                         >
                           I forgot my password
                         </b>
@@ -226,29 +219,31 @@
                     </div>
                     <div class="w-full py-1 mt-3">
                       <button
-                        class="btn bg-orange rounded text-white px-5 py-3 font-bold w-full mt-1"
+                        class="btn bg-violet-600 hover:bg-violet-500 rounded text-white px-5 py-3 font-bold w-full mt-1 flex justify-center items-center"
                         (click)="continue()"
                         id="continue"
                       >
                         Continue
-                        <span
-                          *ngIf="loading"
-                          class="spinner-border spinner-border-sm ms-1"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
+                        <!-- <div
+                          class="animate-spin h-[20px] ms-2 aspect-square"
+                        ></div> -->
+
+                        <div class="ms-2" *ngIf="loading">
+                          <app-spinner></app-spinner>
+                        </div>
                       </button>
                     </div>
 
                     <div class="w-full py-1 mt-3 px-2">
                       <p
-                        class="w-full text-center text-dark  "
+                        class="w-full text-center text-dark"
                         style="font-size: small"
                         role="button"
                         (click)="mode = 0"
                       >
                         Don't have an account?
-                        <b role="button" class="font-bold text-dark">Sign Up</b>.
+                        <b role="button" class="font-bold text-dark">Sign Up</b
+                        >.
                       </p>
                     </div>
                   </div>
@@ -260,11 +255,14 @@
       </div>
     </div>
 
-    <div class="rounded-full icons absolute" style="aspect-ratio: 1; height: 80px; bottom: 10px; left: 10px;">
+    <div
+      class="rounded-full icons absolute"
+      style="aspect-ratio: 1; height: 80px; bottom: 10px; left: 10px"
+    >
       <img
         class="px-2 h-full logo"
         style="object-fit: contain"
-        [src]="'assets/unfathom_logo.png'"
+        [src]="'assets/logo_dark.png'"
       />
     </div>
   </div>

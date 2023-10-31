@@ -6,7 +6,11 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { LoadService } from '../load.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 
@@ -19,15 +23,15 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 export class AuthComponent implements OnInit, OnDestroy {
   mode = 0;
   loading = false;
-  isAuth = true
+  isAuth = true;
 
   err?: string;
 
-  show = false
+  show = false;
 
-  window = window
+  window = window;
 
-  viewPass = false
+  viewPass = false;
 
   signUpForm = this.fb.group({
     email: [null, [Validators.required, Validators.email]],
@@ -147,8 +151,6 @@ export class AuthComponent implements OnInit, OnDestroy {
       }
       return { status: false, msg: 'Missing required fields' };
     }
-
-    
   }
 
   private handleSignUp(
@@ -172,7 +174,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     this.loadService.finishSignIn(email, password, (result) => {
       callback(result);
-    });//
+    }); //
   }
 
   private handlePassReset(
@@ -183,13 +185,13 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (isPlatformBrowser(this.platformID)){
+    if (isPlatformBrowser(this.platformID)) {
       window.onclick = null;
     }
   }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformID)){
+    if (isPlatformBrowser(this.platformID)) {
       window.onclick = (e) => {
         if (isPlatformBrowser(this.platformID)) {
           if ((e.target as any).id != 'continue') {
@@ -197,121 +199,140 @@ export class AuthComponent implements OnInit, OnDestroy {
           }
         }
       };
-  //     eval(`$.getScript("https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js", function(){
-  //     particlesJS('particles-js',
-  //     {
-  //       "particles": {
-  //         "number": {
-  //           "value": 100,
-  //           "density": {
-  //             "enable": true,
-  //             "value_area": 600
-  //           }
-  //         },
-  //         "color": {
-  //           "value": "#7F7F7F"
-  //         },
-  //         "shape": {
-  //           "type": "image",
-  //           "stroke": {
-  //             "width": 0,
-  //             "color": "#000000"
-  //           },
-  //           "polygon": {
-  //             "nb_sides": 5
-  //           },
-  //           "image": {
-  //             "width": 300,
-  //             "height": 300,
-  //             "src": "https://uploads-ssl.webflow.com/6426fa89f8155227fce2aee1/64573097d429e359ab92740a_S%20(12).png"
-  //           }
-  //         },
-  //         "opacity": {
-  //           "value": 0.8,
-  //           "random": true,
-  //           "anim": {
-  //             "enable": true,
-  //             "speed": 1,
-  //             "opacity_min": 0.1,
-  //             "sync": false
-  //           }
-  //         },
-  //         "size": {
-  //           "value": 5,
-  //           "random": true,
-  //           "anim": {
-  //             "enable": false,
-  //             "speed": 40,
-  //             "size_min": 0.1,
-  //             "sync": false
-  //           }
-  //         },
-  //         "line_linked": {
-  //           "enable": true,
-  //           "distance": 150,
-  //           "color": "#1F6EF6",
-  //           "opacity": 0.1,
-  //           "width": 1
-  //         },
-  //         "move": {
-  //           "enable": true,
-  //           "speed": 0.5,
-  //           "direction": "none",
-  //           "random": true,
-  //           "straight": false,
-  //           "bounce": true,
-  //           "out_mode": "out",
-  //           "attract": {
-  //             "enable": false,
-  //             "rotateX": 600,
-  //             "rotateY": 1200
-  //           }
-  //         }
-  //       },
-  //       "interactivity": {
-  //         "detect_on": "canvas",
-  //         "events": {
-  //           "onhover": {
-  //             "enable": false,
-  //             "mode": "repulse"
-  //           },
-  //           "onclick": {
-  //             "enable": true,
-  //             "mode": "repulse"
-  //           },
-  //           "resize": true
-  //         },
-  //         "modes": {
-  //           "grab": {
-  //             "distance": 400,
-  //             "line_linked": {
-  //               "opacity": 1
-  //             }
-  //           },
-  //           "bubble": {
-  //             "distance": 400,
-  //             "size": 40,
-  //             "duration": 2,
-  //             "opacity": 8,
-  //             "speed": 3
-  //           },
-  //           "repulse": {
-  //             "distance": 100
-  //           },
-  //           "push": {
-  //             "particles_nb": 4
-  //           },
-  //           "remove": {
-  //             "particles_nb": 2
-  //           }
-  //         }
-  //       },
-  //       "retina_detect": true,
-  //     }
-  //     );
-  
-  // });`)
+
+ 
+      setTimeout(() => {
+        let e = document.getElementById('authBackground');
+
+        if (e) {
+          (window as any).VANTA.RINGS({
+            el: e,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00
+          })
+        }
+      }, 50);
+
+
+      //     eval(`$.getScript("https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js", function(){
+      //     particlesJS('particles-js',
+      //     {
+      //       "particles": {
+      //         "number": {
+      //           "value": 100,
+      //           "density": {
+      //             "enable": true,
+      //             "value_area": 600
+      //           }
+      //         },
+      //         "color": {
+      //           "value": "#7F7F7F"
+      //         },
+      //         "shape": {
+      //           "type": "image",
+      //           "stroke": {
+      //             "width": 0,
+      //             "color": "#000000"
+      //           },
+      //           "polygon": {
+      //             "nb_sides": 5
+      //           },
+      //           "image": {
+      //             "width": 300,
+      //             "height": 300,
+      //             "src": "https://uploads-ssl.webflow.com/6426fa89f8155227fce2aee1/64573097d429e359ab92740a_S%20(12).png"
+      //           }
+      //         },
+      //         "opacity": {
+      //           "value": 0.8,
+      //           "random": true,
+      //           "anim": {
+      //             "enable": true,
+      //             "speed": 1,
+      //             "opacity_min": 0.1,
+      //             "sync": false
+      //           }
+      //         },
+      //         "size": {
+      //           "value": 5,
+      //           "random": true,
+      //           "anim": {
+      //             "enable": false,
+      //             "speed": 40,
+      //             "size_min": 0.1,
+      //             "sync": false
+      //           }
+      //         },
+      //         "line_linked": {
+      //           "enable": true,
+      //           "distance": 150,
+      //           "color": "#1F6EF6",
+      //           "opacity": 0.1,
+      //           "width": 1
+      //         },
+      //         "move": {
+      //           "enable": true,
+      //           "speed": 0.5,
+      //           "direction": "none",
+      //           "random": true,
+      //           "straight": false,
+      //           "bounce": true,
+      //           "out_mode": "out",
+      //           "attract": {
+      //             "enable": false,
+      //             "rotateX": 600,
+      //             "rotateY": 1200
+      //           }
+      //         }
+      //       },
+      //       "interactivity": {
+      //         "detect_on": "canvas",
+      //         "events": {
+      //           "onhover": {
+      //             "enable": false,
+      //             "mode": "repulse"
+      //           },
+      //           "onclick": {
+      //             "enable": true,
+      //             "mode": "repulse"
+      //           },
+      //           "resize": true
+      //         },
+      //         "modes": {
+      //           "grab": {
+      //             "distance": 400,
+      //             "line_linked": {
+      //               "opacity": 1
+      //             }
+      //           },
+      //           "bubble": {
+      //             "distance": 400,
+      //             "size": 40,
+      //             "duration": 2,
+      //             "opacity": 8,
+      //             "speed": 3
+      //           },
+      //           "repulse": {
+      //             "distance": 100
+      //           },
+      //           "push": {
+      //             "particles_nb": 4
+      //           },
+      //           "remove": {
+      //             "particles_nb": 2
+      //           }
+      //         }
+      //       },
+      //       "retina_detect": true,
+      //     }
+      //     );
+
+      // });`)
     }
-    
   }
 }

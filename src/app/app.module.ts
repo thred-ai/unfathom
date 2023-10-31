@@ -143,7 +143,9 @@ import {
   heroChevronLeft,
   heroLockClosed,
   heroLockOpen,
-  heroPencil
+  heroPencil,
+  heroEye,
+  heroEyeSlash
 } from '@ng-icons/heroicons/outline';
 
 import {
@@ -169,6 +171,7 @@ import { FindStringPipe } from './find-string.pipe';
 import { UploadsComponent } from './uploads/uploads.component';
 import { DesignComponent } from './design/design.component';
 import { ElementsComponent } from './elements/elements.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -230,6 +233,7 @@ import { ElementsComponent } from './elements/elements.component';
     UploadsComponent,
     DesignComponent,
     ElementsComponent,
+    SpinnerComponent,
   ],
   imports: [
     CommonModule,
@@ -254,7 +258,9 @@ import { ElementsComponent } from './elements/elements.component';
       heroLockOpen,
       bootstrapEasel,
       bootstrapPlayBtnFill,
-      featherCopy
+      featherCopy,
+      heroEye,
+      heroEyeSlash
     }),
     AppRoutingModule,
     MatTooltipModule,
