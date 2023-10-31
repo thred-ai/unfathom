@@ -16,6 +16,7 @@ import { ProjectService } from './project.service';
 import { World } from './models/workflow/world.model';
 import { ModelAsset } from './models/workflow/model-asset.model';
 import { DesignService } from './design.service';
+import { Material } from './models/workflow/material.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -574,6 +575,12 @@ export class LoadService {
     await query.set(JSON.parse(JSON.stringify(model)), { merge: true });
   }
 
+  async saveMaterials(material: Material) {
+    var query = this.db.collection('Materials').doc(material.id);
+
+    await query.set(JSON.parse(JSON.stringify(material)), { merge: true });
+  }
+
   getElements(callback: (models: ModelAsset[]) => any) {
     var query = this.db.collection('Elements');
 
@@ -589,7 +596,6 @@ export class LoadService {
               d['metadata']
             )
         ) ?? [];
-
       callback(models);
     });
   }
