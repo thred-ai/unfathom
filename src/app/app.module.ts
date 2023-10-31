@@ -152,10 +152,10 @@ import {
   bootstrapBoundingBox,
   bootstrapBoundingBoxCircles,
   bootstrapEasel,
-  bootstrapPlayBtnFill
+  bootstrapPlayBtnFill,
 } from '@ng-icons/bootstrap-icons';
 
-import { featherAirplay } from '@ng-icons/feather-icons';
+import { featherAirplay, featherCopy } from '@ng-icons/feather-icons';
 import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
 import { GroundEditComponent } from './ground-edit/ground-edit.component';
 import { SkyEditComponent } from './sky-edit/sky-edit.component';
@@ -251,7 +251,8 @@ import { ElementsComponent } from './elements/elements.component';
       heroLockClosed,
       heroLockOpen,
       bootstrapEasel,
-      bootstrapPlayBtnFill
+      bootstrapPlayBtnFill,
+      featherCopy
     }),
     AppRoutingModule,
     MatTooltipModule,

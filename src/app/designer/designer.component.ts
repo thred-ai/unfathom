@@ -8,6 +8,7 @@ import { DesignService } from '../design.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { FindStringPipe } from '../find-string.pipe';
 import { Developer } from '../models/user/developer.model';
+import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 
 @AutoUnsubscribe
 @Component({
@@ -22,7 +23,8 @@ export class DesignerComponent implements OnInit {
     private loadService: LoadService,
     private designerService: DesignService,
     private themeService: ThemeService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private clipboard: Clipboard
   ) {}
 
   world?: World;
@@ -84,6 +86,7 @@ export class DesignerComponent implements OnInit {
       if (this.projectService.workflow.value?.id != proj) {
         this.projectService.workflow.subscribe((w) => {
           this.world = w;
+          this.cdr.detectChanges()
         });
 
         this.loadService.loadedUser.subscribe((l) => {
@@ -118,7 +121,22 @@ export class DesignerComponent implements OnInit {
     this.projectService.save(this.world);
   }
 
-  presentScene(){
-    window.open(`https://unfathom.io/share/${this.world.id}`, '_blank');
+  get worldLink() {
+    return `https://unfathom.io/share/${this.world.id}`;
+  }
+
+  copy(){
+    this.clipboard.copy(this.worldLink)
+    this.copied = true
+
+    setTimeout(() => {
+      this.copied = false
+    }, 4000);
+  }
+
+  copied = false
+
+  presentScene() {
+    window.open(this.worldLink, '_blank');
   }
 }

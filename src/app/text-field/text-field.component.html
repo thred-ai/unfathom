@@ -4,7 +4,9 @@
 
 <ng-template #full>
   <div class="wrap-input1 w-full pt-3 m-0">
-    <p class="w-full mb-2 font-medium text-xs" [style.color]="textColor">{{ title }}</p>
+    <p class="w-full mb-2 font-medium text-xs" [style.color]="textColor">
+      {{ title }}
+    </p>
     <div class="px-0 w-full">
       <ng-container *ngTemplateOutlet="input"></ng-container>
     </div>
@@ -39,7 +41,7 @@
 
     <ng-template #textField>
       <ion-input
-        class="text-truncate"
+        class="text-truncate text-xs"
         fill="solid"
         [ngModel]="value"
         [type]="type"
@@ -51,14 +53,19 @@
 
     <div
       *ngIf="btn && btnIcon"
-      class="my-auto ms-2 flex justify-center content-center"
+      class="hover:opacity-50	 rounded-circle my-auto me-0 flex justify-center content-center"
       style="height: 27.5px; aspect-ratio: 1"
       [style.color]="btnColor"
       role="button"
       (click)="clickable ? null : btnPressed()"
       id="btn"
     >
-      <mat-icon class="m-auto"> {{ btnIcon }} </mat-icon>
+      <ng-icon
+        class="font-bold m-auto"
+        [name]="btnIcon"
+        [strokeWidth]="2.2"
+      >
+      </ng-icon>
     </div>
   </div>
 </ng-template>

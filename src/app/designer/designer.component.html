@@ -39,6 +39,10 @@
 
         <button
           class="btn rounded bg-cyan-50 text-slate-950 flex justify-between items-center h-full"
+          [mdbPopover]="world ? shareTemplate : null"
+          #shareMenuBtn
+          placement="bottom"
+          [trigger]="'click'"
         >
           <ng-icon
             class="font-bold me-2"
@@ -52,6 +56,35 @@
       </div>
     </div>
   </div>
+
+  <ng-template #shareTemplate>
+    <div
+      class="p-4 w-[425px] bg-white rounded shadow-2xl me-2"
+      (clickOutside)="shareMenuBtn.click()"
+    >
+      <p class="w-full text-start font-semibold text-lg">Share this design</p>
+
+      <div class="w-full mt-2">
+        <verticalai-text-field
+          [title]="'View-only link'"
+          [type]="'text'"
+          [disabled]="true"
+          [value]="worldLink"
+          [btn]="true"
+          [btnIcon]="'featherCopy'"
+          (btnClicked)="copy()"
+          [placeholder]="'Link'"
+        >
+        </verticalai-text-field>
+        <button
+          class="w-full btn rounded bg-violet-600 hover:bg-violet-500 text-slate-50 flex justify-center items-center py-3 mt-2"
+          (click)="copy()"
+        >
+          {{copied ? 'Copied' : 'Copy link'}}
+        </button>
+      </div>
+    </div>
+  </ng-template>
 
   <div class="layout-container flex justify-between shrink" *ngIf="world">
     <app-menu-sidebar
