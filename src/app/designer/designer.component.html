@@ -23,6 +23,17 @@
       <!--  -->
 
       <div class="flex h-full justify-end items-center">
+        <input
+          #input
+          (ngModelChange)="
+            $event.length > 0 && $event != '' ? saveName(world, $event) : null
+          "
+          [style.width.px]="
+            (world.name.length > 10 ? world.name.length * 12 : 10 * 8)
+          "
+          class="text-sm text-center rounded title-field h-full font-medium truncate cursor-text bg-transparent border-0 me-2 px-3 text-slate-50"
+          [ngModel]="world.name"
+        />
         <button
           class="btn rounded bg-indigo-400 text-slate-50 flex justify-between items-center me-2 h-full"
           (click)="presentScene()"
@@ -80,7 +91,7 @@
           class="w-full btn rounded bg-violet-600 hover:bg-violet-500 text-slate-50 flex justify-center items-center py-3 mt-2"
           (click)="copy()"
         >
-          {{copied ? 'Copied' : 'Copy link'}}
+          {{ copied ? "Copied" : "Copy link" }}
         </button>
       </div>
     </div>

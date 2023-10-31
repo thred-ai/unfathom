@@ -125,6 +125,11 @@ export class DesignerComponent implements OnInit {
     return `https://unfathom.io/share/${this.world.id}`;
   }
 
+  saveName(world: World, name: string){
+    world.name = name
+    this.loadService.updateName(world)
+  }
+
   copy(){
     this.clipboard.copy(this.worldLink)
     this.copied = true

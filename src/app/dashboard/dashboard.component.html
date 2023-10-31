@@ -55,7 +55,7 @@
               <input
                 #input
                 (ngModelChange)="
-                  $event.length > 0 && event != ''
+                  $event.length > 0 && $event != ''
                     ? saveName(world, $event)
                     : null
                 "
