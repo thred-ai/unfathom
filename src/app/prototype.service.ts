@@ -316,7 +316,7 @@ export class PrototypeService {
 
     //https://models.readyplayer.me/64fad33c902030ca061803ad.glb
 
-    const light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(world.width / 2, world.height, world.height / 2), scene);
+    const light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -1, 0), scene);
 
 
     light.intensity = world.lightingIntensity; //0.2;
