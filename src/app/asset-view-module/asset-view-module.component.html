@@ -28,7 +28,9 @@
           class="flex justify-between items-center flex-col bg-transparent shadow-hover"
           style="overflow: hidden"
           role="button"
-          (click)="addMeshToScene(asset)"
+          (click)="
+            loadingUploads[asset.id] == undefined ? addMeshToScene(asset) : null
+          "
         >
           <!-- <img
               class="w-full h-full"
