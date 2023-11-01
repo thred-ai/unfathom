@@ -38,6 +38,7 @@ export class MaterialsViewModuleComponent {
 
   addMeshToScene(asset: Material) {
     
+    this.designService.updateGroundScene(asset.texture)
   }
 
   // async fileChangeEvent(event: any, type = 1): Promise<void> {

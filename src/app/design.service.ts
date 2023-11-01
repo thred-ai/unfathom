@@ -108,6 +108,18 @@ export class DesignService {
     }
   }
 
+  async updateGroundScene(tex: Texture) {
+    let groundMesh = this.engine.scenes[0]?.getMeshById('ground');
+
+    if (groundMesh && tex.diffuse && this.engine && this.engine.scenes[0]) {
+      let mat = groundMesh.material as BABYLON.StandardMaterial;
+
+      const texture = new BABYLON.Texture(tex.diffuse, this.engine.scenes[0]);
+
+      mat.diffuseTexture = texture;
+    }
+  }
+
   // async changeSkyScene(asset: Material) {
 
   // }
@@ -235,7 +247,11 @@ export class DesignService {
       extraGround.material = extraGroundMaterial;
     }
 
-    const light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -1, 0), scene);
+    const light = new BABYLON.DirectionalLight(
+      'DirectionalLight',
+      new BABYLON.Vector3(0, -1, 0),
+      scene
+    );
 
     light.intensity = world.lightingIntensity; //0.2;
 
@@ -1028,8 +1044,7 @@ export class DesignService {
       if (world.ground) {
         let ground = scene.getMeshById('ground') as BABYLON.GroundMesh;
         if (world.ground.texture.id != ground.name) {
-          ground.dispose();
-          this.createGround(world, scene);
+          this.updateGroundScene(world.ground.texture);
         }
       }
     }
