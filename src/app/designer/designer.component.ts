@@ -30,7 +30,7 @@ export class DesignerComponent implements OnInit {
   world?: World;
   dev?: Developer;
 
-  editableMeshes = ['world', 'sky', 'ground', 'liquid'];
+  editableMeshes = ['world', 'sky', 'ground'];
 
   tools = [
     {

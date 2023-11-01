@@ -4,7 +4,6 @@ import {
   GLTFFileLoader,
   GLTFLoaderAnimationStartMode,
 } from 'babylonjs-loaders';
-import { LiquidType } from './models/workflow/liquid-type.enum';
 import { World } from './models/workflow/world.model';
 import * as BABYLON from 'babylonjs';
 import * as MATERIALS from 'babylonjs-materials';
@@ -189,25 +188,11 @@ export class DesignService {
 
       extraGroundMaterial.alpha = 0.0;
 
-      // if (world.ground.texture.diffuse) {
-      //   extraGroundMaterial.diffuseTexture = new BABYLON.Texture(
-      //     world.ground.texture.diffuse,
-      //     scene
-      //   );
-      // }
-
       extraGround.position.y = -2.05;
 
       extraGround.material = extraGroundMaterial;
 
-      // this.addLiquids(world, scene, [skybox], [ground, extraGround]);
     }
-
-    // .id == 'TgSTaxx8MZ1PFXVhS8V4'
-    //   ? 'assets/mustafarav2.glb'
-    //   : 'assets/sandyav.glb';
-
-    //https://models.readyplayer.me/64fad33c902030ca061803ad.glb
 
     var light = new BABYLON.DirectionalLight(
       'directionalLight',
@@ -306,7 +291,7 @@ export class DesignService {
         }
 
         if (pickResult.hit && object) {
-          var omitList = ['ground', 'liquid'];
+          var omitList = ['ground'];
 
           this.selected.next(object.id);
 
@@ -612,140 +597,6 @@ export class DesignService {
     }
   }
 
-  addLiquids(asset: ModelAsset, scene: BABYLON.Scene) {
-    // var lava = BABYLON.MeshBuilder.CreateGround(
-    //   asset.id,
-    //   {
-    //     width: asset.metadata['width'],
-    //     height: asset.metadata['height'],
-    //   },
-    //   scene
-    // );
-    // // water.metadata = {
-    // //   reflections: ['sky', 'ground'],
-    // //   refractions: ['ground'],
-    // // };
-    // // let sky = scene.getMeshById('sky') as BABYLON.Mesh;
-    // // let ground = scene.getMeshById('ground') as BABYLON.Mesh;
-    // // var waterMaterial = new MATERIALS.WaterMaterial('water_material', scene);
-    // // console.log(asset)
-    // // if (asset.metadata['texture'].bump) {
-    // //   waterMaterial.bumpTexture = new BABYLON.Texture(
-    // //     asset.metadata['texture'].bump,
-    // //     scene
-    // //   );
-    // //   // Set the bump texture
-    // // }
-    // // waterMaterial.windForce = -15;
-    // // waterMaterial.waveHeight = 1.3;
-    // // waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
-    // // waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
-    // // waterMaterial.colorBlendFactor = 0.3;
-    // // waterMaterial.bumpHeight = 0.01;
-    // // waterMaterial.waveLength = 0.1;
-    // // waterMaterial.reflectionTexture?.renderList?.push(sky);
-    // // waterMaterial.reflectionTexture?.renderList?.push(ground);
-    // // waterMaterial.refractionTexture?.renderList?.push(ground);
-    // // water.material = waterMaterial;
-    // // if (world.ground.liquid) {
-    // //   BABYLON.Engine.ShadersRepository = '';
-    // //   if (world.ground.liquid.liquid == LiquidType.water) {
-    // //     var water = BABYLON.MeshBuilder.CreateGround(
-    // //       'liquid',
-    // //       {
-    // //         width: world.width,
-    // //         height: world.height,
-    // //       },
-    // //       scene
-    // //     );
-    // //     water.position.y = world.ground.liquid.level;
-    // //     var waterMaterial = new MATERIALS.WaterMaterial(
-    // //       'water_material',
-    // //       scene
-    // //     );
-    // //     water.isPickable = !world.locked;
-    // //     if (world.ground.liquid.texture.bump) {
-    // //       waterMaterial.bumpTexture = new BABYLON.Texture(
-    // //         world.ground.liquid.texture.bump,
-    // //         scene
-    // //       ); // Set the bump texture
-    // //     }
-    // //     reflections.forEach((mesh) => {
-    // //       waterMaterial.reflectionTexture?.renderList?.push(mesh);
-    // //     });
-    // //     refractions.forEach((mesh) => {
-    // //       waterMaterial.refractionTexture?.renderList?.push(mesh);
-    // //     });
-    // //     waterMaterial.windForce = -15;
-    // //     waterMaterial.waveHeight = 1.3;
-    // //     waterMaterial.windDirection = new BABYLON.Vector2(1, 1);
-    // //     waterMaterial.waterColor = new BABYLON.Color3(0.1, 0.1, 0.6);
-    // //     waterMaterial.colorBlendFactor = 0.3;
-    // //     waterMaterial.bumpHeight = 0.01;
-    // //     waterMaterial.waveLength = 0.1;
-    // //     water.material = waterMaterial;
-    // //     // const sound = new BABYLON.Sound(
-    // //     //   'sound',
-    // //     //   'assets/sounds/water.wav',
-    // //     //   scene,
-    // //     //   null,
-    // //     //   {
-    // //     //     loop: true,
-    // //     //     autoplay: true,
-    // //     //     spatialSound: true,
-    // //     //   }
-    // //     // );
-    // //     // const music = new BABYLON.Sound(
-    // //     //   'music',
-    // //     //   'assets/sounds/music2.wav',
-    // //     //   scene,
-    // //     //   null,
-    // //     //   {
-    // //     //     loop: true,
-    // //     //     autoplay: true,
-    // //     //   }
-    // //     // );
-    // //     // let center = ground.getBoundingInfo().boundingBox.center;
-    // //     // sound.setPosition(
-    // //     //   new BABYLON.Vector3(center.x, world.size / 50, center.y)
-    // //     // );
-    // //   }
-    // //   if (world.ground.liquid.liquid == LiquidType.lava) {
-    // //     lava.position.y = world.ground.liquid.level;
-    // let lavaMaterial = new MATERIALS.LavaMaterial('lava_material', scene);
-    // //     lava.isPickable = !world.locked;
-    // lavaMaterial.noiseTexture = new BABYLON.Texture(
-    //   asset.metadata['texture'].noise,
-    //   scene
-    // );
-    // lavaMaterial.diffuseTexture = new BABYLON.Texture(
-    //   asset.metadata['texture'].diffuse,
-    //   scene
-    // );
-    // //     if (world.ground.liquid.texture.diffuse) {
-    // //       lavaMaterial.diffuseTexture = new BABYLON.Texture(
-    // //         world.ground.liquid.texture.diffuse,
-    // //         scene
-    // //       );
-    // //     }
-    // lavaMaterial.speed = 0.5;
-    // lavaMaterial.fogColor = new BABYLON.Color3(1, 0, 0);
-    // lavaMaterial.unlit = true;
-    // lava.material = lavaMaterial;
-    // //   }
-    // // }
-    // let options = {
-    //   shouldExportNode: function (node) {
-    //     return node === lava;
-    //   },
-    // };
-    // SERIALIZERS.GLTF2Export.GLBAsync(scene, asset.assetUrl, options).then(
-    //   (glb) => {
-    //     glb.downloadFiles();
-    //   }
-    // );
-  }
-
   updateGizmoSize(meshId = this.selected.value) {
     let sameMesh = this.engine?.scenes[0].getMeshById(meshId) as BABYLON.Mesh;
     if (sameMesh && meshId && meshId == sameMesh.id) {
@@ -786,6 +637,33 @@ export class DesignService {
         (data) => {},
         '.glb'
       );
+
+      if (asset.asset.id == 'castle') {
+        let d = result.meshes.find((m) => m.id == 'LAVAFALL');
+        let mat = new BABYLON.StandardMaterial('fount', scene);
+    
+        let tex = new AnimatedGifTexture('/assets/lava.gif', this.engine);
+  
+        mat.diffuseTexture = tex;
+        mat.emissiveTexture = tex;
+  
+        mat.disableLighting = true;
+  
+        (mat.diffuseTexture as BABYLON.Texture).uScale = 0.5;
+        (mat.diffuseTexture as BABYLON.Texture).vScale = 0.5;
+        (mat.emissiveTexture as BABYLON.Texture).uScale = 0.5;
+        (mat.emissiveTexture as BABYLON.Texture).vScale = 0.5;
+  
+        // mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
+  
+        // scene.beforeRender = () => {
+        //   (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
+        // };
+  
+        d.material = mat;
+      }
+
+
       importMesh = BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
         result.meshes[0] as BABYLON.Mesh
       );
@@ -1016,12 +894,8 @@ export class DesignService {
         this.hl?.removeAllMeshes();
       }
       let mesh = scene?.getMeshById('ground');
-      let liq = scene?.getMeshById('liquid');
       if (mesh) {
         mesh.isPickable = !world.locked;
-      }
-      if (liq) {
-        liq.isPickable = !world.locked;
       }
 
       this.world.assets.map(async (w) => {
@@ -1050,16 +924,13 @@ export class DesignService {
 
       //do check for meshes in scene that are not in 'world' object
 
-      //do sync for ground, sky, and liquids
+      //do sync for ground, sky
 
       if (world.ground) {
         let ground = scene.getMeshById('ground') as BABYLON.GroundMesh;
         if (world.ground.texture.id != ground.name) {
           ground.dispose();
           this.createGround(world, scene);
-        }
-        if (world.ground.liquid) {
-        } else {
         }
       }
     }
@@ -1186,25 +1057,6 @@ export class DesignService {
       false,
       BABYLON.SceneLoaderAnimationGroupLoadingMode.NoSync
     );
-  }
-
-  generateLiquidTexture(type: LiquidType) {
-    if (type == LiquidType.lava) {
-      let tex = new Texture('lava');
-      tex.diffuse = this.emulatorService.isEmulator
-        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/lava_lavatile.jpg?alt=media'
-        : 'https://storage.googleapis.com/verticalai.appspot.com/default/lava/lava_lavatile.jpg';
-      return tex;
-    } else {
-      let tex = new Texture('water');
-      tex.bump = this.emulatorService.isEmulator
-        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/bump2.png?alt=media'
-        : 'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
-      tex.diffuse = this.emulatorService.isEmulator
-        ? 'http://localhost:9199/v0/b/unfathom-ai.appspot.com/o/bump2.png?alt=media'
-        : 'https://storage.googleapis.com/verticalai.appspot.com/default/water/bump2.png';
-      return tex;
-    }
   }
 
   deinit() {

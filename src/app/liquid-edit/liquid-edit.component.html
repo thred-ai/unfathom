@@ -1,7 +1,7 @@
 <div
   class="w-full h-full p-3 pb-5 primary-background-light"
   style="overflow-y: scroll"
-  *ngIf="world.ground && world.ground.liquid"
+  *ngIf="world.ground"
 >
   <!-- <div class="w-full pb-3">
   <p class="w-full mb-3 font-medium primary-text">
@@ -16,20 +16,4 @@
   </div>
 </div> -->
 
-  <div class="wrap-input1 w-full py-3 px-0">
-    <div class="w-full pb-3">
-      <div class="px-1">
-        <verticalai-text-field
-          [title]="'Surface Level'"
-          [type]="'number'"
-          [range]="{ min: 10, max: 100000 }"
-          [value]="world.ground.liquid.level"
-          [placeholder]="'Level'"
-          [theme]="'light'"
-          (changed)="world.ground.liquid.level = $event; save()"
-        >
-        </verticalai-text-field>
-      </div>
-    </div>
-  </div>
 </div>

@@ -149,7 +149,6 @@
                 *ngIf="selected | findString : editableMeshes; else dynamicMenu"
               >
                 <app-sky-edit *ngIf="selected == 'sky'"></app-sky-edit>
-                <app-liquid-edit *ngIf="selected == 'liquid'"></app-liquid-edit>
                 <app-ground-edit *ngIf="selected == 'ground'"></app-ground-edit>
               </ng-container>
 

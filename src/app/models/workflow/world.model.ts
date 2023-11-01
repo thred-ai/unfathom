@@ -56,7 +56,6 @@ export class World {
         'ground',
         'https://storage.googleapis.com/verticalai.appspot.com/default/ground/texture.png'
       ),
-      undefined,
       1
     ),
     status: number = 0,
