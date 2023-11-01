@@ -95,11 +95,11 @@ export class AppComponent {
     let component = event;
     if (component && component.isAuth) {
       let user = await this.loadService.currentUser;
-      component.show = true//!user;
+      component.show = !user;
 
-      // if (user) {
-      //   this.loadService.openDash(user.uid);
-      // }
+      if (user) {
+        this.loadService.openDash(user.uid);
+      }
     } else {
       console.log('RESET');
       this.loadService.reset();
