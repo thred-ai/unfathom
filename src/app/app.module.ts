@@ -145,7 +145,8 @@ import {
   heroLockOpen,
   heroPencil,
   heroEye,
-  heroEyeSlash
+  heroEyeSlash,
+  heroTrash
 } from '@ng-icons/heroicons/outline';
 
 import {
@@ -156,6 +157,7 @@ import {
   bootstrapBoundingBoxCircles,
   bootstrapEasel,
   bootstrapPlayBtnFill,
+  bootstrapTrash
 } from '@ng-icons/bootstrap-icons';
 
 import { featherAirplay, featherCopy } from '@ng-icons/feather-icons';
@@ -260,12 +262,14 @@ import { BarLoaderComponent } from './bar-loader/bar-loader.component';
       bootstrapArrowRepeat,
       bootstrapBoundingBox,
       bootstrapBoundingBoxCircles,
+      bootstrapTrash,
       heroLockClosed,
       heroLockOpen,
       bootstrapEasel,
       bootstrapPlayBtnFill,
       featherCopy,
       heroEye,
+      heroTrash,
       heroEyeSlash
     }),
     AppRoutingModule,

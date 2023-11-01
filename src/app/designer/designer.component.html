@@ -175,7 +175,7 @@
       <div
         class="w-full shadow h-[50px] primary-background-light flex shrink-0 justify-between items-center p-1 px-2"
       >
-        <div class="bg-transparent flex justify-start items-center">
+        <div class="bg-transparent flex justify-start items-center h-full">
           <ng-container *ngIf="selected">
             <ng-container
               *ngIf="selected | findString : editableMeshes; else meshtools"
@@ -192,10 +192,10 @@
 
             <ng-template #meshtools>
               <div
-                class="rounded-full overflow-hidden border-table-light flex justify-between items-center space-x-1 p-1 me-2"
+                class="rounded-full overflow-hidden border-table-light flex justify-between items-center space-x-1 p-1 me-2 shrink-0"
               >
                 <button
-                  class="btn p-2 h-100 {{
+                  class="btn p-2 h-full {{
                     selectedTool == tool.id
                       ? 'bg-indigo-500 text-white'
                       : 'bg-transparent text-black hover:bg-indigo-300 hover:text-white'
@@ -206,6 +206,20 @@
                   <ng-icon
                     class="font-bold"
                     [name]="tool.icon"
+                    [strokeWidth]="2.2"
+                  >
+                  </ng-icon>
+                </button>
+              </div>
+
+              <div class="flex items-center justify-center">
+                <button
+                  class="btn p-2 h-100 bg-transparent text-black hover:bg-indigo-300 hover:text-white flex justify-between items-center rounded-full mx-2"
+                  (click)="deleteAsset(selected)"
+                >
+                  <ng-icon
+                    class="font-bold"
+                    [name]="'heroTrash'"
                     [strokeWidth]="2.2"
                   >
                   </ng-icon>

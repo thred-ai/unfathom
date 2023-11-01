@@ -136,6 +136,10 @@ export class DesignerComponent implements OnInit {
 
   copied = false
 
+  deleteAsset(id: string){
+    this.designerService.deleteAsset(id)
+  }
+
   saveName(world: World, name: string){
     world.name = name
     this.loadService.updateName(world)

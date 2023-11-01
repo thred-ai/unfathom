@@ -191,7 +191,6 @@ export class DesignService {
       extraGround.position.y = -2.05;
 
       extraGround.material = extraGroundMaterial;
-
     }
 
     var light = new BABYLON.DirectionalLight(
@@ -483,8 +482,7 @@ export class DesignService {
       {
         width: substance.metadata['width'],
         height: substance.metadata['height'],
-        subdivisions:
-         2,
+        subdivisions: 2,
       },
       scene
     );
@@ -608,11 +606,27 @@ export class DesignService {
         Math.abs(box.maximum.x - box.minimum.x) * sameMesh.scaling.x * ratio;
       // this.gizmoManager.gizmos.boundingBoxGizmo.fixedDragMeshBoundsSize = true
 
-      if (size >= 400){
-        size = 400
+      if (size >= 400) {
+        size = 400;
       }
       this.gizmoManager.gizmos.boundingBoxGizmo.rotationSphereSize = size;
       this.gizmoManager.gizmos.boundingBoxGizmo.scaleBoxSize = size;
+    }
+  }
+
+  async deleteAsset(id: string) {
+    if (window.confirm('Are you sure you want to delete this object?')) {
+      let index = this.world.assets.findIndex((f) => f.asset.id == id);
+
+      if (index > -1) {
+        this.world.assets.splice(0, 1);
+        if (this.selected.value == id){
+          this.selected.next(undefined)
+          this.gizmoManager.attachToMesh(null)
+        }
+        await this.save();
+
+      }
     }
   }
 
@@ -645,28 +659,27 @@ export class DesignService {
       if (asset.asset.id == 'castle') {
         let d = result.meshes.find((m) => m.id == 'LAVAFALL');
         let mat = new BABYLON.StandardMaterial('fount', scene);
-    
+
         let tex = new AnimatedGifTexture('/assets/lava.gif', this.engine);
-  
+
         mat.diffuseTexture = tex;
         mat.emissiveTexture = tex;
-  
+
         mat.disableLighting = true;
-  
+
         (mat.diffuseTexture as BABYLON.Texture).uScale = 0.5;
         (mat.diffuseTexture as BABYLON.Texture).vScale = 0.5;
         (mat.emissiveTexture as BABYLON.Texture).uScale = 0.5;
         (mat.emissiveTexture as BABYLON.Texture).vScale = 0.5;
-  
+
         // mat.emissiveTexture = new BABYLON.Texture(tex.diffuse, scene);
-  
+
         // scene.beforeRender = () => {
         //   (mat.diffuseTexture as BABYLON.Texture).uOffset += 0.0025;
         // };
-  
+
         d.material = mat;
       }
-
 
       importMesh = BABYLON.BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(
         result.meshes[0] as BABYLON.Mesh
@@ -702,6 +715,7 @@ export class DesignService {
       importMesh.isPickable = !world.locked;
 
       importMesh.id = asset.asset.id;
+      importMesh.metadata = { customMesh: true };
 
       newAsset.scale.x = importMesh.scaling.x;
       newAsset.scale.y = importMesh.scaling.y;
@@ -926,7 +940,13 @@ export class DesignService {
 
       // scene.meshes;
 
-      //do check for meshes in scene that are not in 'world' object
+      scene.meshes
+        .filter((v) => v.metadata && v.metadata['customMesh'] == true)
+        .map((m) => {
+          if (!this.world.assets.find((x) => x.asset.id == m.id)) {
+            scene.removeMesh(m, true);
+          }
+        });
 
       //do sync for ground, sky
 

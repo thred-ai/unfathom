@@ -50,6 +50,7 @@ export class WorldViewerComponent implements OnInit {
     //   this.scene = scene?.data?.ngArguments?.scene as Scene;
 
     // });
+
   }
 
   engine?: BABYLON.Engine;
