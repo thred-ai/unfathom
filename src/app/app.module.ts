@@ -160,7 +160,7 @@ import {
   bootstrapTrash
 } from '@ng-icons/bootstrap-icons';
 
-import { featherAirplay, featherCopy } from '@ng-icons/feather-icons';
+import { featherAirplay, featherCopy, featherClipboard } from '@ng-icons/feather-icons';
 import { MenuSidebarComponent } from './menu-sidebar/menu-sidebar.component';
 import { GroundEditComponent } from './ground-edit/ground-edit.component';
 import { SkyEditComponent } from './sky-edit/sky-edit.component';
@@ -270,7 +270,8 @@ import { BarLoaderComponent } from './bar-loader/bar-loader.component';
       featherCopy,
       heroEye,
       heroTrash,
-      heroEyeSlash
+      heroEyeSlash,
+      featherClipboard
     }),
     AppRoutingModule,
     MatTooltipModule,

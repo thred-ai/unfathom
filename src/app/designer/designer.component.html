@@ -202,6 +202,7 @@
                   }} flex justify-between items-center rounded-full"
                   *ngFor="let tool of tools"
                   (click)="selectTool(tool.id)"
+                  [matTooltip]="tool.name"
                 >
                   <ng-icon
                     class="font-bold"
@@ -211,20 +212,25 @@
                   </ng-icon>
                 </button>
               </div>
-
-              <div class="flex items-center justify-center">
-                <button
-                  class="btn p-2 h-100 bg-transparent text-black hover:bg-indigo-300 hover:text-white flex justify-between items-center rounded-full mx-2"
-                  (click)="deleteAsset(selected)"
-                >
-                  <ng-icon
-                    class="font-bold"
-                    [name]="'heroTrash'"
-                    [strokeWidth]="2.2"
-                  >
-                  </ng-icon>
-                </button>
+              <!-- featherClipboard -->
+              <div
+                class="rounded-full overflow-hidden flex justify-between items-center space-x-1 p-1 mx-2 shrink-0"
+              >
+              <button
+              class="btn p-2 h-full text-black hover:bg-indigo-300 hover:text-white flex justify-between items-center rounded-full"
+              *ngFor="let tool of assetTools"
+              (click)="selectAssetTool(tool.id, selected)"
+              [matTooltip]="tool.name"
+            >
+              <ng-icon
+                class="font-bold"
+                [name]="tool.icon"
+                [strokeWidth]="2.2"
+              >
+              </ng-icon>
+            </button>
               </div>
+     
             </ng-template>
           </ng-container>
 
@@ -235,6 +241,7 @@
             (click)="
               mode == 'position' ? (mode = defaultMode) : (mode = 'position')
             "
+            [matTooltip]="'Edit Dimensions'"
           >
             Position
           </button>
@@ -246,6 +253,7 @@
               : 'bg-transparent text-black hover:bg-indigo-300 hover:text-white'
           }} flex justify-between items-center rounded-full"
           (click)="world.locked = !world.locked; save()"
+          [matTooltip]="world.locked ? 'Design Locked' : 'Design Unlocked'"
         >
           <ng-icon
             class="font-bold"

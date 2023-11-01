@@ -35,7 +35,7 @@ export class DesignerComponent implements OnInit {
   tools = [
     {
       id: 'box',
-      name: 'Bounding Box',
+      name: 'Drag Box',
       icon: 'bootstrapBoundingBox',
     },
     {
@@ -55,7 +55,34 @@ export class DesignerComponent implements OnInit {
     },
   ];
 
+
+  assetTools = [
+    {
+      id: 'clone',
+      name: 'Clone Object',
+      icon: 'featherClipboard',
+    },
+    {
+      id: 'delete',
+      name: 'Delete Object',
+      icon: 'heroTrash',
+    },
+  ];
+
   selectedTool = 'box';
+
+  selectAssetTool(tool: string){
+    switch (tool){
+      case 'clone':
+        this.designerService.cloneAsset(this.selected)
+        return
+      case 'delete':
+        this.designerService.deleteAsset(this.selected)
+        return
+      default:
+        return
+    }
+  }
 
   selectTool(tool: string) {
     this.selectedTool = tool;

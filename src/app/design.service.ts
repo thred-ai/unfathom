@@ -17,6 +17,8 @@ import { AnimatedGifTexture } from './babylon-extenstions/animatedGifTexture';
 import { ModelAsset } from './models/workflow/model-asset.model';
 import * as SERIALIZERS from 'babylonjs-serializers';
 import { Substance } from './models/workflow/substance.model';
+import { Asset } from './models/workflow/asset.model';
+import * as uuid from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -88,29 +90,47 @@ export class DesignService {
     this.engine?.resize();
   }
 
-  async addMeshToScene(asset: SceneAsset) {
+  async addMeshToScene(asset: Asset, existingTransformFrom?: SceneAsset) {
     if (!this.world.locked) {
-      let newAsset = await this.importMeshToScene(
-        asset,
-        this.engine?.scenes[0]
-      );
+      let scene = this.engine?.scenes[0];
+      let cam = scene?.activeCamera as BABYLON.ArcRotateCamera;
+      if (scene && cam) {
+        let newAsset = JSON.parse(JSON.stringify(asset)) as ModelAsset;
+        let loc = cam.getFrontPosition(3);
+        loc.y = loc.y - 1;
 
-      this.world.assets.push(newAsset);
+        newAsset.id = uuid.v4();
 
-      console.log('moi');
-      this.save();
+        let sceneAsset = new SceneAsset(
+          newAsset,
+          {
+            x: existingTransformFrom?.spawn.x + 20 ?? loc.x,
+            y: existingTransformFrom?.spawn.y ?? loc.y,
+            z: existingTransformFrom?.spawn.z ?? loc.z,
+          },
+          {
+            x: existingTransformFrom?.direction.x ?? 0,
+            y: existingTransformFrom?.direction.y ?? 0,
+            z: existingTransformFrom?.direction.z ?? 0,
+          },
+          {
+            x: existingTransformFrom?.scale.x ?? NaN,
+            y: existingTransformFrom?.scale.y ?? NaN,
+            z: existingTransformFrom?.scale.z ?? NaN,
+          },
+          existingTransformFrom?.movement
+        );
 
-      setTimeout(() => {
-        let mesh = this.engine.scenes[0]?.getMeshById(asset.asset.id);
+        let newSceneAsset = await this.importMeshToScene(
+          sceneAsset,
+          this.engine?.scenes[0]
+        );
 
-        // if (mesh) {
-        //   this.engine.scenes[0]?.onPointerDown(
-        //     {} as any,
-        //     { pickedMesh: mesh } as any,
-        //     BABYLON.PointerEventTypes.POINTERDOWN
-        //   );
-        // }
-      }, 1000);
+        this.world.assets.push(newSceneAsset);
+
+        console.log('moi');
+        this.save();
+      }
     }
   }
 
@@ -618,14 +638,26 @@ export class DesignService {
     if (window.confirm('Are you sure you want to delete this object?')) {
       let index = this.world.assets.findIndex((f) => f.asset.id == id);
 
-      if (index > -1) {
-        this.world.assets.splice(0, 1);
-        if (this.selected.value == id){
-          this.selected.next(undefined)
-          this.gizmoManager.attachToMesh(null)
+      if (!this.world.locked) {
+        if (index > -1) {
+          this.world.assets.splice(index, 1);
+          if (this.selected.value == id) {
+            this.selected.next(undefined);
+            this.gizmoManager.attachToMesh(null);
+          }
+          await this.save();
         }
-        await this.save();
+      }
+    }
+  }
 
+  async cloneAsset(id: string) {
+    let asset = this.world.assets.find((f) => f.asset.id == id);
+
+    if (!this.world.locked) {
+      if (asset) {
+        await this.addMeshToScene(asset.asset, asset);
+        await this.save();
       }
     }
   }
@@ -639,13 +671,25 @@ export class DesignService {
 
     let importMesh: BABYLON.Mesh | undefined = undefined;
 
+    var size = world.width * 0.05;
+
+    if (size > 600) {
+      size = 600;
+    }
+
     if (asset.asset.metadata && asset.asset.metadata['customClass']) {
       importMesh = this.createLiquid(asset.asset as Substance, scene);
 
-      importMesh.scaling.x = asset.scale.x;
-      importMesh.scaling.y = asset.scale.y;
+      importMesh.scaling.x = !Number.isNaN(asset.scale.x)
+        ? asset.scale.x
+        : size;
+      importMesh.scaling.y = !Number.isNaN(asset.scale.y)
+        ? asset.scale.y
+        : 1;
 
-      importMesh.scaling.z = asset.scale.z;
+      importMesh.scaling.z = !Number.isNaN(asset.scale.z)
+        ? asset.scale.z
+        : size;
     } else {
       let result = await BABYLON.SceneLoader.ImportMeshAsync(
         '',
@@ -690,13 +734,21 @@ export class DesignService {
       let width = vectors.max.x - vectors.min.x;
       let height = vectors.max.y - vectors.min.y;
 
-      let ratio = height / width;
+      let length = vectors.max.z - vectors.min.z;
 
-      importMesh.scaling.x = !Number.isNaN(asset.scale.x) ? asset.scale.x : 1;
+      let ratio = height / width;
+      let ratio2 = length / width;
+
+      importMesh.scaling.x = !Number.isNaN(asset.scale.x)
+        ? asset.scale.x
+        : size;
       importMesh.scaling.y = !Number.isNaN(asset.scale.y)
         ? asset.scale.y
-        : 1 * ratio;
-      importMesh.scaling.z = !Number.isNaN(asset.scale.z) ? asset.scale.z : 1;
+        : size * ratio;
+
+      importMesh.scaling.z = !Number.isNaN(asset.scale.z)
+        ? asset.scale.z
+        : size * ratio2;
 
       if (asset.movement.canMount) {
         let box = importMesh.getHierarchyBoundingVectors();
