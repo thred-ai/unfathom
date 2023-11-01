@@ -1,16 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { World } from '../models/workflow/world.model';
 import * as BABYLON from 'babylonjs';
-import * as MATERIALS from 'babylonjs-materials';
-import { CharacterController } from 'babylonjs-charactercontroller';
-import 'babylonjs-loaders';
-import {
-  GLTFFileLoader,
-  GLTFLoaderAnimationStartMode,
-} from 'babylonjs-loaders';
 
-import { LiquidType } from '../models/workflow/liquid-type.enum';
-import { Character } from '../models/workflow/character.model';
+import 'babylonjs-loaders';
+
+
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { PrototypeService } from '../prototype.service';

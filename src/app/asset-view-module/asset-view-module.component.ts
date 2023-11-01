@@ -137,5 +137,20 @@ export class AssetViewModuleComponent implements OnInit {
     await this.loadService.saveModels(modelAsset);
   }
 
+  // async saveImg(asset: ModelAsset) {
+  //   let url = await this.loadService.saveImgString(
+  //     asset.img,
+  //     `users/${this.loadService.loadedUser.value!.id}/models/${asset.id}.png`
+  //   );
+
+  //   console.log(url)
+
+  //   if (url){
+  //     asset.img = url
+  //     await this.loadService.saveModels(asset);
+  //     // await this.save(asset)
+  //   }
+  // }
+
   loadingUploads: Dict<number> = {};
 }
