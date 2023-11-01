@@ -235,8 +235,7 @@ export class DesignService {
       extraGround.material = extraGroundMaterial;
     }
 
-    const light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(world.width / 2, world.height, world.height / 2), scene);
-
+    const light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -1, 0), scene);
 
     light.intensity = world.lightingIntensity; //0.2;
 
@@ -382,13 +381,13 @@ export class DesignService {
       })
     );
 
-    var generator = new BABYLON.ShadowGenerator(world.width, light);
-    generator.usePoissonSampling = false;
-    // generator.bias = 0.000001;
-    generator.useBlurExponentialShadowMap = true;
-    generator.useKernelBlur = true;
-    generator.blurKernel = 5;
-    generator.setTransparencyShadow(true);
+    // var generator = new BABYLON.ShadowGenerator(world.width, light);
+    // generator.usePoissonSampling = false;
+    // // generator.bias = 0.000001;
+    // generator.useBlurExponentialShadowMap = true;
+    // generator.useKernelBlur = true;
+    // generator.blurKernel = 5;
+    // generator.setTransparencyShadow(true);
 
     BABYLON.SceneLoader.OnPluginActivatedObservable.add(function (loader) {
       if (loader.name === 'gltf') {

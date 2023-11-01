@@ -39,7 +39,7 @@
           [title]="'Sunlight'"
           [type]="'number'"
           [theme]="'light'"
-          [range]="{ min: 0, max: 5 }"
+          [range]="{ min: 0, max: 500 }"
           [value]="world.lightingIntensity"
           [placeholder]="'Sunlight'"
           (changed)="world.lightingIntensity = $event; save()"
