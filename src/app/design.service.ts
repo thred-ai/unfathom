@@ -19,6 +19,7 @@ import * as SERIALIZERS from 'babylonjs-serializers';
 import { Substance } from './models/workflow/substance.model';
 import { Asset } from './models/workflow/asset.model';
 import * as uuid from 'uuid';
+import { Material } from './models/workflow/material.model';
 
 @Injectable({
   providedIn: 'root',
@@ -89,6 +90,27 @@ export class DesignService {
   resize() {
     this.engine?.resize();
   }
+
+  async changeSkyScene(asset: Material) {
+    this.world.sky.texture = asset.texture;
+    this.save();
+  }
+
+  async updateSkyScene(tex: Texture) {
+    let skyMesh = this.engine.scenes[0]?.getMeshById('sky');
+
+    if (skyMesh && tex.emissive && this.engine && this.engine.scenes[0]) {
+      let mat = skyMesh.material as BABYLON.StandardMaterial;
+
+      const texture = new BABYLON.Texture(tex.emissive, this.engine.scenes[0]);
+
+      mat.emissiveTexture = texture;
+    }
+  }
+
+  // async changeSkyScene(asset: Material) {
+
+  // }
 
   async addMeshToScene(asset: Asset, existingTransformFrom?: SceneAsset) {
     if (!this.world.locked) {
@@ -213,11 +235,8 @@ export class DesignService {
       extraGround.material = extraGroundMaterial;
     }
 
-    var light = new BABYLON.DirectionalLight(
-      'directionalLight',
-      new BABYLON.Vector3(-1, -2, 1),
-      scene
-    );
+    const light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(world.width / 2, world.height, world.height / 2), scene);
+
 
     light.intensity = world.lightingIntensity; //0.2;
 
@@ -683,9 +702,7 @@ export class DesignService {
       importMesh.scaling.x = !Number.isNaN(asset.scale.x)
         ? asset.scale.x
         : size;
-      importMesh.scaling.y = !Number.isNaN(asset.scale.y)
-        ? asset.scale.y
-        : 1;
+      importMesh.scaling.y = !Number.isNaN(asset.scale.y) ? asset.scale.y : 1;
 
       importMesh.scaling.z = !Number.isNaN(asset.scale.z)
         ? asset.scale.z
@@ -1001,6 +1018,13 @@ export class DesignService {
         });
 
       //do sync for ground, sky
+
+      if (world.sky) {
+        let sky = scene.getMeshById('sky') as BABYLON.GroundMesh;
+        if (world.sky.texture.id != sky.name) {
+          this.updateSkyScene(world.sky.texture);
+        }
+      }
 
       if (world.ground) {
         let ground = scene.getMeshById('ground') as BABYLON.GroundMesh;

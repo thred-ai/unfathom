@@ -37,6 +37,8 @@ export class SkyViewComponent implements OnInit {
   }
 
   addMeshToScene(asset: Material) {
+
+    this.designService.changeSkyScene(asset)
     // let scene = this.designService.engine?.scenes[0];
     // let cam = scene?.activeCamera as ArcRotateCamera;
     // console.log('joi');

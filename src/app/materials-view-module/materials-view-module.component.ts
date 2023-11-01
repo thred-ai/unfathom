@@ -37,28 +37,7 @@ export class MaterialsViewModuleComponent {
   }
 
   addMeshToScene(asset: Material) {
-    // let scene = this.designService.engine?.scenes[0];
-    // let cam = scene?.activeCamera as ArcRotateCamera;
-    // console.log('joi');
-    // if (scene && cam) {
-    //   let newAsset = JSON.parse(JSON.stringify(asset)) as ModelAsset;
-    //   let loc = cam.getFrontPosition(1);
-    //   newAsset.id = this.loadService.newUtilID;
-    //   let sceneAsset = new SceneAsset(newAsset, {
-    //     x: loc.x,
-    //     y: loc.y,
-    //     z: loc.z,
-    //   });
-    //   sceneAsset.scale.x = NaN;
-    //   sceneAsset.scale.y = NaN;
-    //   sceneAsset.scale.z = NaN;
-    //   // sceneAsset.scale = {
-    //   //   x: 2,
-    //   //   y: 2,
-    //   //   z: 2
-    //   // }
-    //   this.designService.addMeshToScene(sceneAsset);
-    // }
+    
   }
 
   // async fileChangeEvent(event: any, type = 1): Promise<void> {

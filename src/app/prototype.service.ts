@@ -145,6 +145,79 @@ export class PrototypeService {
     }
   }
 
+  createGroundMaterial(
+    world: World,
+    ground: BABYLON.Mesh,
+    scene: BABYLON.Scene
+  ) {
+    var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
+
+    var uvScaleConstant = new BABYLON.Vector2(
+      world.width / 166,
+      world.height / 166
+    );
+
+    if (world.ground.texture.displacement) {
+      ground.applyDisplacementMap(
+        world.ground.texture.displacement,
+        world.ground.minHeight,
+        world.ground.maxHeight,
+        undefined,
+        undefined,
+        uvScaleConstant,
+        true
+      );
+    }
+
+    if (world.ground.texture.diffuse) {
+      let groundTexture = new BABYLON.Texture(
+        world.ground.texture.diffuse,
+        scene
+      );
+      groundTexture.uScale = uvScaleConstant.x;
+      groundTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.diffuseTexture = groundTexture;
+    }
+
+    if (world.ground.texture.bump) {
+      let groundBumpTexture = new BABYLON.Texture(
+        world.ground.texture.bump,
+        scene
+      );
+      groundBumpTexture.uScale = uvScaleConstant.x;
+      groundBumpTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.bumpTexture = groundBumpTexture;
+    }
+
+    if (world.ground.texture.ambient) {
+      let groundAmbientTexture = new BABYLON.Texture(
+        world.ground.texture.ambient,
+        scene
+      );
+      groundAmbientTexture.uScale = uvScaleConstant.x;
+      groundAmbientTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.ambientTexture = groundAmbientTexture;
+    }
+
+    if (world.ground.texture.specular) {
+      let groundSpecularTexture = new BABYLON.Texture(
+        world.ground.texture.specular,
+        scene
+      );
+      groundSpecularTexture.uScale = uvScaleConstant.x;
+      groundSpecularTexture.vScale = uvScaleConstant.y;
+
+      groundMaterial.specularTexture = groundSpecularTexture;
+    }
+
+    groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+
+    return groundMaterial;
+  }
+
   async createScene2(engine: BABYLON.Engine, world: World) {
     if (!this.selectedCharacter.value) {
       console.log('po');
@@ -198,70 +271,8 @@ export class PrototypeService {
         scene
       );
 
-      var groundMaterial = new BABYLON.StandardMaterial('ground', scene);
+      let groundMaterial = this.createGroundMaterial(world, ground, scene);
 
-      var uvScaleConstant = new BABYLON.Vector2(
-        world.width / 166,
-        world.height / 166
-      );
-
-      if (world.ground.texture.displacement) {
-        ground.applyDisplacementMap(
-          world.ground.texture.displacement,
-          world.ground.minHeight,
-          world.ground.maxHeight,
-          undefined,
-          undefined,
-          uvScaleConstant,
-          true
-        );
-      }
-
-      if (world.ground.texture.diffuse) {
-        let groundTexture = new BABYLON.Texture(
-          world.ground.texture.diffuse,
-          scene
-        );
-        groundTexture.uScale = uvScaleConstant.x;
-        groundTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.diffuseTexture = groundTexture;
-      }
-
-      if (world.ground.texture.bump) {
-        let groundBumpTexture = new BABYLON.Texture(
-          world.ground.texture.bump,
-          scene
-        );
-        groundBumpTexture.uScale = uvScaleConstant.x;
-        groundBumpTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.bumpTexture = groundBumpTexture;
-      }
-
-      if (world.ground.texture.ambient) {
-        let groundAmbientTexture = new BABYLON.Texture(
-          world.ground.texture.ambient,
-          scene
-        );
-        groundAmbientTexture.uScale = uvScaleConstant.x;
-        groundAmbientTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.ambientTexture = groundAmbientTexture;
-      }
-
-      if (world.ground.texture.specular) {
-        let groundSpecularTexture = new BABYLON.Texture(
-          world.ground.texture.specular,
-          scene
-        );
-        groundSpecularTexture.uScale = uvScaleConstant.x;
-        groundSpecularTexture.vScale = uvScaleConstant.y;
-
-        groundMaterial.specularTexture = groundSpecularTexture;
-      }
-
-      groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
       ground.position.y = -2.0;
       ground.material = groundMaterial;
       ground.receiveShadows = true;
@@ -305,11 +316,8 @@ export class PrototypeService {
 
     //https://models.readyplayer.me/64fad33c902030ca061803ad.glb
 
-    var light = new BABYLON.DirectionalLight(
-      'directionalLight',
-      new BABYLON.Vector3(-1, -2, 1),
-      scene
-    );
+    const light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(world.width / 2, world.height, world.height / 2), scene);
+
 
     light.intensity = world.lightingIntensity; //0.2;
 
