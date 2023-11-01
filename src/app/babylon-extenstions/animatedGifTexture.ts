@@ -7,7 +7,7 @@ import '@babylonjs/core/Engines/Extensions/engine.rawTexture';
 import { AnimatedGifShaderConfiguration } from './animatedGifTextureShader';
 
 // Gifs external library to parse Gif datas
-import { parseGIF, decompressFrames } from 'Gifuct-js';
+import { parseGIF, decompressFrames } from 'gifuct-js';
 
 /**
  * Typings related to our Gif library as it does not includ a d ts file.
