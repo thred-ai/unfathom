@@ -2,7 +2,9 @@
   <model-viewer
     *ngIf="model"
     [attr.camera-controls]="camera"
-    class="h-full mx-auto"
+    class="h-full mx-auto {{
+      loaderColor != 'transparent' ? 'custom-loader' : 'no-loader'
+    }}"
     style="aspect-ratio: 1 !important"
     [attr.src]="model"
     [attr.autoplay]="animate"

@@ -1,56 +1,86 @@
-  <div class="w-full p-3 h-full flex flex-col justify-between items-center">
-    <div
-      class="w-full flex justify-between content-center pb-3 mb-3 mt-4 primary-text border-table-bottom-dark"
-      *ngIf="mode == 'uploads'"
+<div class="w-full p-3 h-full flex flex-col justify-between items-center">
+  <div
+    class="w-full flex justify-between content-center pb-3 mb-3 mt-4 primary-text border-table-bottom-dark"
+    *ngIf="mode == 'uploads'"
+  >
+    <button
+      class="btn rounded bg-violet-600 hover:bg-violet-500 text-slate-50 py-3 w-full flex justify-center text-center items-center"
+      (click)="aImgInput.click()"
     >
-      <button
-        class="btn rounded bg-violet-600 hover:bg-violet-500 text-slate-50 py-3 w-full flex justify-center text-center items-center"
-        (click)="aImgInput.click()"
-      >
-        Upload Files
-      </button>
-      <input
-        #aImgInput
-        type="file"
-        (change)="fileChangeEvent($event, 1)"
-        style="display: none"
-      />
-    </div>
+      Upload Files
+    </button>
+    <input
+      #aImgInput
+      type="file"
+      (change)="fileChangeEvent($event, 1)"
+      style="display: none"
+    />
+  </div>
 
-    <div class="h-full w-full overflow-scroll">
-      <div class="w-full grid grid-cols-2 justify-start g-0">
+  <div class="h-full w-full overflow-scroll">
+    <div class="w-full grid grid-cols-2 justify-start g-0">
+      <div
+        *ngFor="let asset of assets ?? []; index as i"
+        class="col p-1 relative"
+        style="aspect-ratio: 1"
+      >
         <div
-          *ngFor="let asset of assets ?? []; index as i"
-          class="col p-1 relative"
-          style="aspect-ratio: 1"
+          class="flex justify-between items-center flex-col bg-transparent shadow-hover"
+          style="overflow: hidden"
+          role="button"
+          (click)="addMeshToScene(asset)"
         >
-          <div
-            class="flex justify-between items-center flex-col bg-transparent shadow-hover"
-            style="overflow: hidden"
-            role="button"
-            (click)="addMeshToScene(asset)"
-          >
-            <!-- <img
+          <!-- <img
               class="w-full h-full"
               style="object-fit: cover; aspect-ratio: 1"
               [src]="asset.img"
             /> -->
 
-            <div class="w-full aspect-square pointer-events-none">
-              <app-model-viewer
-                [camera]="true"
-                [model]="asset.assetUrl"
-                [animate]="true"
-                [prompt]="false"
-                [poster]="'/assets/default.png'"
-                [id]="'viewer'"
-                [ar]="false"
-                [loaderColor]="'blue'"
+          <div class="w-full aspect-square pointer-events-none relative">
+            <ng-container
+              *ngIf="loadingUploads[asset.id] != undefined; else noImg"
+            >
+              <div class="w-full h-full absolute">
+                <app-model-viewer
+                  [camera]="true"
+                  [model]="asset.assetUrl"
+                  [animate]="true"
+                  [prompt]="false"
+                  [poster]="'/assets/default.png'"
+                  [id]="'viewer'"
+                  [ar]="false"
+                  [loaderColor]="'transparent'"
+                  (didScreenshot)="asset.img = $event"
+                >
+                </app-model-viewer>
+              </div>
+              <div
+                class="h-[7.5px] w-full absolute"
+                style="z-index: 100; bottom: 5px"
               >
-              </app-model-viewer>
-            </div>
+                <app-bar-loader
+                  [progress]="loadingUploads[asset.id]"
+                  [total]="100"
+                >
+                </app-bar-loader>
+              </div>
+            </ng-container>
 
-            <!-- 
+            <ng-template #noImg>
+              <div class="w-full h-full absolute">
+                <img
+                  class="w-full h-full object-cover"
+                  [src]="
+                    asset.img && asset.img != ''
+                      ? asset.img
+                      : 'assets/no_model.png'
+                  "
+                />
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- 
             <div
               class="w-full primary-background py-2 flex justify-center items-center"
             >
@@ -61,9 +91,9 @@
                 {{ asset.name }}
               </p>
             </div> -->
-          </div>
+        </div>
 
-          <!-- <div
+        <!-- <div
             class="rounded-full bg-orange absolute"
             style="z-index: 1; right: 0; top: 0; aspect-ratio: 1 !important"
             role="button"
@@ -76,7 +106,7 @@
               close
             </mat-icon>
           </div> -->
-        </div>
       </div>
     </div>
   </div>
+</div>

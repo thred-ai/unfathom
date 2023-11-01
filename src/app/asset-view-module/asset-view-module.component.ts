@@ -9,7 +9,7 @@ import {
 import { Character } from '../models/workflow/character.model';
 import { ModelAsset } from '../models/workflow/model-asset.model';
 
-import { LoadService } from '../load.service';
+import { Dict, LoadService } from '../load.service';
 import { ProjectService } from '../project.service';
 import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
 import { World } from '../models/workflow/world.model';
@@ -54,7 +54,6 @@ export class AssetViewModuleComponent implements OnInit {
   addMeshToScene(asset: ModelAsset) {
     let scene = this.designService.engine?.scenes[0];
     let cam = scene?.activeCamera as ArcRotateCamera;
-    console.log('joi');
     if (scene && cam) {
       let newAsset = JSON.parse(JSON.stringify(asset)) as ModelAsset;
       let loc = cam.getFrontPosition(1);
@@ -94,23 +93,40 @@ export class AssetViewModuleComponent implements OnInit {
         let asset = new ModelAsset(
           file.name,
           `${new Date().getTime()}`,
-          base64
+          base64,
+          ''
         );
 
         this.assets.unshift(asset);
 
+        this.loadingUploads[asset.id] = 0;
+
         this.cdr.detectChanges();
 
-        let url = await this.loadService.saveImg(
-          file,
-          `users/${this.loadService.loadedUser!.value.id}/models/${
-            asset.id
-          }.glb`
-        );
+        setTimeout(async () => {
+          await this.loadService.saveImgSync(
+            file,
+            `users/${this.loadService.loadedUser!.value.id}/models/${
+              asset.id
+            }.glb`,
+            async (data) => {
+              let progress = data?.progress;
+              let url = data?.url;
 
-        asset.assetUrl = url;
-
-        await this.save(asset);
+              if (data && progress) {
+                this.loadingUploads[asset.id] = progress;
+                if (progress >= 100 && url) {
+                  let index = this.assets.findIndex((d) => d.id == asset.id);
+                  if (index > -1) {
+                    this.assets[index].assetUrl = url;
+                    await this.save(this.assets[index]);
+                    delete this.loadingUploads[asset.id];
+                  }
+                }
+              }
+            }
+          );
+        }, 100);
       }
     };
 
@@ -120,4 +136,6 @@ export class AssetViewModuleComponent implements OnInit {
   async save(modelAsset: ModelAsset) {
     await this.loadService.saveModels(modelAsset);
   }
+
+  loadingUploads: Dict<number> = {};
 }

@@ -174,6 +174,7 @@ import { ElementsComponent } from './elements/elements.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MaterialsViewModuleComponent } from './materials-view-module/materials-view-module.component';
 import { SubstanceViewModuleComponent } from './substance-view-module/substance-view-module.component';
+import { BarLoaderComponent } from './bar-loader/bar-loader.component';
 
 @NgModule({
   declarations: [
@@ -238,6 +239,7 @@ import { SubstanceViewModuleComponent } from './substance-view-module/substance-
     SpinnerComponent,
     MaterialsViewModuleComponent,
     SubstanceViewModuleComponent,
+    BarLoaderComponent,
   ],
   imports: [
     CommonModule,

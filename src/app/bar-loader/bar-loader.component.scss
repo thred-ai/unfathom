@@ -1,0 +1,12 @@
+.loader {
+  animation: move 4s infinite linear;
+}
+
+@keyframes move {
+  from {
+    background-position: 0px 600px;
+  }
+  to {
+    background-position: 800px 600px;
+  }
+}

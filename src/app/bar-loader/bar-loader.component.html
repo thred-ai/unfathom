@@ -1,0 +1,10 @@
+<div class="w-full h-full rounded-full bg-transparent" #parent>
+  <div
+    class="h-full rounded-full overflow-hidden"
+    [style.width.px]="parent.clientWidth * (progress / total)"
+  >
+    <div
+      class="h-full w-[200px] loader bg-gradient-to-r from-cyan-300 to-indigo-500"
+    ></div>
+  </div>
+</div>

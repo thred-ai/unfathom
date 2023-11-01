@@ -19,7 +19,7 @@ export class ModelViewerComponent implements OnInit {
   @Input() prompt?: boolean = true;
   @Input() loaderColor: string = 'transparent';
 
-  @Output() finishedLoading = new EventEmitter<any>();
+  @Output() didScreenshot = new EventEmitter<string>();
 
   obj?: any = {
     detail: {
@@ -45,7 +45,7 @@ export class ModelViewerComponent implements OnInit {
     this.pro = (event.detail.totalProgress ?? 0) * 100;
     if (this.pro == 100){
       setTimeout(() => {
-        this.finishedLoading.emit()
+        this.didScreenshot.emit(this.screenshot())
       }, 500);
     }
   }

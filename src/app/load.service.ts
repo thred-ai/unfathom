@@ -18,6 +18,7 @@ import { ModelAsset } from './models/workflow/model-asset.model';
 import { DesignService } from './design.service';
 import { Material } from './models/workflow/material.model';
 import { Substance } from './models/workflow/substance.model';
+import { UploadTaskSnapshot } from '@angular/fire/compat/storage/interfaces';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -421,7 +422,45 @@ export class LoadService {
     try {
       let ref = this.storage.ref(path);
       await ref.put(file, { cacheControl: 'no-cache' });
+
       return ref.getDownloadURL().toPromise();
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  base64RegExp =
+    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/;
+
+  isBase64New(str: string) {
+    return this.base64RegExp.test(str);
+  }
+
+  saveImgSync(
+    file: File,
+    path: string,
+    callback: (data?: { progress: number; url?: string }) => any
+  ) {
+    try {
+      let ref = this.storage.ref(path);
+      let task = ref.put(file, { cacheControl: 'no-cache' });
+
+      if (callback) {
+        task.percentageChanges().subscribe(async (p) => {
+          callback({ progress: p });
+        });
+
+        task.snapshotChanges().subscribe(async (data) => {
+          if (data.bytesTransferred == data.totalBytes) {
+            setTimeout(async () => {
+              let url = await data.ref.getDownloadURL();
+              callback({ progress: 100, url });
+            }, 1000);
+          }
+        });
+      }
+
+      return;
     } catch (error) {
       return undefined;
     }
@@ -431,8 +470,10 @@ export class LoadService {
     try {
       let ref = this.storage.ref(path);
       await ref.putString(img, 'data_url', { cacheControl: 'no-cache' });
-      return ref.getDownloadURL().toPromise();
+      let upload = await ref.getDownloadURL().toPromise();
+      return upload
     } catch (error) {
+      console.log("UPLOAD ERROR")
       return undefined;
     }
   }
@@ -550,7 +591,7 @@ export class LoadService {
 
     query.valueChanges().subscribe(async (docs) => {
       let models =
-        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'])) ??
+        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'], d['img'], d['metadata'])) ??
         [];
 
       callback(models);
@@ -563,6 +604,24 @@ export class LoadService {
       .doc(uid)
       .collection('Models')
       .doc(model.id);
+
+
+      let img = model.img?.split(",")[1]
+
+    if (img && this.isBase64New(img)) {
+      console.log("IS BASE 64 NEW " + this.isBase64New(img))
+      console.log(img)
+
+      let url = await this.saveImgString(
+        model.img,
+        `users/${uid}/models/${model.id}.png`
+      );
+      if (url) {
+        model.img = url;
+      } else {
+        model.img = undefined;
+      }
+    }
 
     // var query = this.db.collection('Elements')
     // .doc(model.id);
