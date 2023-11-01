@@ -607,6 +607,10 @@ export class DesignService {
       let size =
         Math.abs(box.maximum.x - box.minimum.x) * sameMesh.scaling.x * ratio;
       // this.gizmoManager.gizmos.boundingBoxGizmo.fixedDragMeshBoundsSize = true
+
+      if (size >= 400){
+        size = 400
+      }
       this.gizmoManager.gizmos.boundingBoxGizmo.rotationSphereSize = size;
       this.gizmoManager.gizmos.boundingBoxGizmo.scaleBoxSize = size;
     }
