@@ -1,107 +1,94 @@
 <div
-  class="layout-container-full secondary-background-dark my-0 flex justify-between content-center flex-col"
+  class="layout-container-full secondary-background-light my-0 flex justify-between content-center flex-col"
 >
   <div
-    class="w-full flex justify-between items-center px-3 border-table-bottom-dark"
-    style="height: 50px !important; cursor: crosshair; flex-shrink: 0"
+    class="w-full h-[55px] shrink-0 py-2 pe-2 bg-gradient-to-r from-cyan-300 to-indigo-500 shadow-sm flex justify-center items-center"
   >
-    <div class="h-full flex justify-start content-center">
-      <!-- <button
-  class="btn bg-orange shadow-0 border-0 font-bold text-white flex justify-between content-center p-1 me-1 my-auto"
-  (click)="run()"
->
-  <mat-icon class="font-bold" style="aspect-ratio: 1">
-    play_arrow
-  </mat-icon>
-</button>
-<button
-  class="btn bg-orange shadow-0 border-0 font-bold text-white flex justify-between content-center p-1 ms-1 my-auto"
-  (click)="loadingMode = 0"
->
-
-  <mat-icon class="font-bold" style="aspect-ratio: 1">
-    stop
-  </mat-icon>
-</button> -->
-
-      <!-- <div
-    class="primary-text m-auto ms-0 me-2"
-    style="aspect-ratio: 1"
-    role="button"
-    (click)="restart()"
-  >
-    <mat-icon> restart_alt </mat-icon>
-  </div> -->
+    <div class="w-full h-full flex justify-between" *ngIf="world">
+      <!-- <img class="h-full" [src]="'assets/logo_full.png'" /> -->
 
       <div
-        class="h-full proj flex justify-center items-center"
+        class="h-full proj flex justify-center items-center w-[75px] px-2"
         role="button"
-        [matTooltip]="'Game Menu'"
-        [matTooltipPosition]="'below'"
       >
         <div
-          class="primary-text-dark flex justify-center items-center"
+          class="primary-text-dark h-full w-full flex justify-center items-center rounded hover:bg-cyan-200/25"
           role="button"
-          mat-button
           #menuToggle
         >
-        <!-- [matMenuTriggerFor]="mainMenu" -->
-
-          <mat-icon [svgIcon]="'unfathom_icon'"></mat-icon>
-          <!-- <mat-icon
-            class="my-auto"
-            style="
-              height: 14px;
-              font-size: 14px !important;
-              width: 14px !important;
-            "
-            >expand_more</mat-icon
-          > -->
+          <mat-icon class="scale-150" [svgIcon]="'unfathom_icon'"></mat-icon>
         </div>
       </div>
-    </div>
 
-    <div class="h-full flex justify-end content-center">
-      <a
-        class="btn rounded-10 shadow-0 w-full primary-text-dark flex justify-start px-0 content-center py-2"
-        style="cursor: pointer"
-      >
-        <div
-          class="text-center mx-auto secondary-text-dark flex justify-center items-center"
-          role="button"
-          *ngIf="world"
+      <!--  -->
+
+      <div class="flex h-full justify-end items-center">
+        <input
+          #input
+          [disabled]="true"
+          [style.width.px]="
+            world.name.length > 10 ? world.name.length * 12 : 10 * 8
+          "
+          class="text-sm text-center rounded title-field h-full font-medium truncate cursor-text bg-transparent border-0 px-3 me-2 text-slate-50"
+          [ngModel]="world.name"
+        />
+
+        <button
+          class="btn rounded bg-cyan-50 text-slate-950 flex justify-between items-center h-full"
+          [mdbPopover]="world ? shareTemplate : null"
+          #shareMenuBtn
+          placement="bottom"
+          [trigger]="'click'"
         >
-          <!-- <span class="secondary-text">world</span>
-    
-            <mat-icon> arrow_right_alt </mat-icon> -->
-          <!-- <img
-            class="border-table-dark me-2"
-            style="
-              height: 22.5px;
-              border-radius: 6px;
-              width: 22.5px !important;
-              object-fit: cover;
-            "
-            [src]="world.displayUrl"
-          /> -->
-          <div
-            class="primary-text-dark flex justify-center items-center"
+          <ng-icon
+            class="font-bold me-2"
+            name="heroArrowUpTray"
+            [strokeWidth]="2.2"
           >
-            {{ world.name }}
-            <ng-container *ngIf="scene">
-              <span class="secondary-text-dark mx-2" style="font-size: 20px"
-                >/</span
-              >
-              {{ scene.name }}
-            </ng-container>
-          </div>
-        </div>
-      </a>
+          </ng-icon>
+
+          Share
+        </button>
+      </div>
+
+
+
+
+
+<ng-template #shareTemplate>
+  <div
+    class="p-4 w-[425px] bg-white rounded shadow-2xl me-2"
+    (clickOutside)="shareMenuBtn.click()"
+  >
+    <p class="w-full text-start font-semibold text-lg">Share this design</p>
+
+    <div class="w-full mt-2">
+      <verticalai-text-field
+        [title]="'View-only link'"
+        [type]="'text'"
+        [disabled]="true"
+        [value]="worldLink"
+        [btn]="true"
+        [btnIcon]="'featherCopy'"
+        (btnClicked)="copy()"
+        [placeholder]="'Link'"
+      >
+      </verticalai-text-field>
+      <button
+        class="w-full btn rounded bg-violet-600 hover:bg-violet-500 text-slate-50 flex justify-center items-center py-3 mt-2"
+        (click)="copy()"
+      >
+        {{ copied ? "Copied" : "Copy link" }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
     </div>
   </div>
 
   <div
-    class="w-full h-full renderer primary-background-dark"
+    class="w-full h-full renderer primary-background-light"
     *ngIf="world && theme"
   >
     <app-world-designer
@@ -113,7 +100,7 @@
   </div>
 </div>
 <!-- 
-<mat-menu #mainMenu="matMenu" class="secondary-background-dark">
+<mat-menu #mainMenu="matMenu" class="secondary-background-light">
   <div style="min-width: 250px; max-height: 700px" *ngIf="world">
     <button mat-menu-item class="proj toolButton" (click)="restart()">
       <mat-icon
@@ -182,15 +169,15 @@
   </div>
 </mat-menu>
 
-<mat-menu #worlds="matMenu" class="secondary-background-dark">
+<mat-menu #worlds="matMenu" class="secondary-background-light">
   <ng-container *ngIf="world && scene && scene.assets">
     <div
-      class="secondary-background-dark text-start rounded flex justify-center items-center flex-col"
+      class="secondary-background-light text-start rounded flex justify-center items-center flex-col"
       id="profile-menu"
       style="min-width: 350px; max-height: 700px"
     >
       <div class="big-design-header p-3 pb-3">
-        <b class="font-bold primary-text-dark">Assets</b>
+        <b class="font-bold primary-text-light">Assets</b>
       </div>
 
       <div
@@ -207,7 +194,7 @@
          
           <button mat-menu-item class="toolButton">
             <img
-              class="rounded-icon me-4 border-table-dark"
+              class="rounded-icon me-4 border-table-light"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
               [src]="world.assets[n].img"
             />{{ world.assets[n].name }}
@@ -219,15 +206,15 @@
   </ng-container>
 </mat-menu>
 
-<mat-menu #characters="matMenu" class="secondary-background-dark">
+<mat-menu #characters="matMenu" class="secondary-background-light">
   <ng-container *ngIf="world && scene && scene.characters">
     <div
-      class="secondary-background-dark text-start rounded flex justify-center items-center flex-col"
+      class="secondary-background-light text-start rounded flex justify-center items-center flex-col"
       id="profile-menu"
       style="min-width: 350px; max-height: 700px"
     >
       <div class="big-design-header p-3 pb-3">
-        <b class="font-bold primary-text-dark">Characters</b>
+        <b class="font-bold primary-text-light">Characters</b>
       </div>
 
       <div
@@ -244,7 +231,7 @@
        
           <button mat-menu-item class="toolButton">
             <img
-              class="rounded-icon me-4 border-table-dark"
+              class="rounded-icon me-4 border-table-light"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
               [src]="world.characters[n.id].img"
             />{{ world.characters[n.id].name }}
@@ -256,10 +243,10 @@
   </ng-container>
 </mat-menu>
 
-<mat-menu #goto="matMenu" class="secondary-background-dark">
+<mat-menu #goto="matMenu" class="secondary-background-light">
   <ng-container *ngIf="world && scene && scene.assets && scene.characters">
     <div
-      class="secondary-background-dark text-start rounded flex justify-center items-center flex-col"
+      class="secondary-background-light text-start rounded flex justify-center items-center flex-col"
       id="profile-menu"
       style="min-width: 350px; max-height: 700px"
     >
@@ -273,7 +260,7 @@
       </button>
 
       <div class="big-design-header p-3 pb-3">
-        <b class="font-bold primary-text-dark">Characters</b>
+        <b class="font-bold primary-text-light">Characters</b>
       </div>
 
       <div
@@ -289,7 +276,7 @@
         >
           <button mat-menu-item class="toolButton">
             <img
-              class="rounded-icon me-4 border-table-dark"
+              class="rounded-icon me-4 border-table-light"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
               [src]="world.characters[n.id].img"
             />{{ world.characters[n.id].name }}
@@ -298,7 +285,7 @@
       </div>
 
       <div class="big-design-header p-3 pb-3">
-        <b class="font-bold primary-text-dark">Assets</b>
+        <b class="font-bold primary-text-light">Assets</b>
       </div>
 
       <div
@@ -314,7 +301,7 @@
         >
           <button mat-menu-item class="toolButton">
             <img
-              class="rounded-icon me-4 border-table-dark"
+              class="rounded-icon me-4 border-table-light"
               style="object-fit: cover; height: 30px; aspect-ratio: 1"
               [src]="world.assets[n.id].img"
             />{{ world.assets[n.id].name }}
@@ -324,3 +311,4 @@
     </div>
   </ng-container>
 </mat-menu> -->
+

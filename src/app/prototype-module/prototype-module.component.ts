@@ -6,6 +6,7 @@ import { ThemeService } from '../theme.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadService } from '../load.service';
 import { Meta } from '@angular/platform-browser';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-prototype-module',
@@ -27,7 +28,8 @@ export class PrototypeModuleComponent implements OnInit {
     private prototypeService: PrototypeService,
     private loadService: LoadService,
     private route: ActivatedRoute,
-    private metaService: Meta
+    private metaService: Meta,
+    private clipboard: Clipboard
   ) {}
 
   visible = true;
@@ -107,4 +109,19 @@ export class PrototypeModuleComponent implements OnInit {
   selectCharacter(id: string) {
     this.prototypeService.selectCharacter(id);
   }
+
+  get worldLink() {
+    return `https://unfathom.io/share/${this.world.id}`;
+  }
+
+  copy(){
+    this.clipboard.copy(this.worldLink)
+    this.copied = true
+
+    setTimeout(() => {
+      this.copied = false
+    }, 4000);
+  }
+
+  copied = false
 }
