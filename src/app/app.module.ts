@@ -146,7 +146,9 @@ import {
   heroPencil,
   heroEye,
   heroEyeSlash,
-  heroTrash
+  heroTrash,
+  heroMagnifyingGlass,
+  heroChevronRight
 } from '@ng-icons/heroicons/outline';
 
 import {
@@ -177,6 +179,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { MaterialsViewModuleComponent } from './materials-view-module/materials-view-module.component';
 import { SubstanceViewModuleComponent } from './substance-view-module/substance-view-module.component';
 import { BarLoaderComponent } from './bar-loader/bar-loader.component';
+import { SearchbarComponent } from './searchbar/searchbar.component';
+import { SkyViewComponent } from './sky-view/sky-view.component';
 
 @NgModule({
   declarations: [
@@ -242,6 +246,8 @@ import { BarLoaderComponent } from './bar-loader/bar-loader.component';
     MaterialsViewModuleComponent,
     SubstanceViewModuleComponent,
     BarLoaderComponent,
+    SearchbarComponent,
+    SkyViewComponent,
   ],
   imports: [
     CommonModule,
@@ -271,7 +277,9 @@ import { BarLoaderComponent } from './bar-loader/bar-loader.component';
       heroEye,
       heroTrash,
       heroEyeSlash,
-      featherClipboard
+      featherClipboard,
+      heroMagnifyingGlass,
+      heroChevronRight
     }),
     AppRoutingModule,
     MatTooltipModule,

@@ -1,0 +1,27 @@
+<div
+  class="w-full h-[40px] bg-white text-black rounded overflow-hidden flex justify-between items-center p-1 ps-3"
+>
+  <input
+    #input
+    (ngModelChange)="val = $event"
+    class="my-auto text-sm w-full rounded h-full font-medium truncate bg-transparent border-0 text-slate-500"
+    [ngModel]="val"
+    [placeholder]="placeholder"
+  />
+  <div
+    class="h-full aspect-square rounded bg-violet-600 hover:bg-violet-500 text-slate-50 flex justify-center items-center"
+    role="button"
+    (click)="loadingSearch ? null : beginSearch(val)"
+  >
+    <app-spinner *ngIf="loadingSearch; else noLoad"></app-spinner>
+
+    <ng-template #noLoad>
+      <ng-icon
+        class="font-heavy m-auto"
+        name="heroChevronRight"
+        [strokeWidth]="2.2"
+      >
+      </ng-icon>
+    </ng-template>
+  </div>
+</div>

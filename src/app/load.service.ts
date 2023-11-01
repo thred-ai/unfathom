@@ -130,6 +130,9 @@ export class LoadService {
   loadedUser = new BehaviorSubject<Developer | undefined>(undefined);
   loadedProducts = new BehaviorSubject<World[]>([]);
 
+  loadingSearchMaterial = new BehaviorSubject<string | undefined>(undefined);
+  loadingSearchSky = new BehaviorSubject<string | undefined>(undefined);
+
   finishPassReset(
     email: string,
     callback: (result: { status: boolean; msg: string }) => any
@@ -471,9 +474,9 @@ export class LoadService {
       let ref = this.storage.ref(path);
       await ref.putString(img, 'data_url', { cacheControl: 'no-cache' });
       let upload = await ref.getDownloadURL().toPromise();
-      return upload
+      return upload;
     } catch (error) {
-      console.log("UPLOAD ERROR")
+      console.log('UPLOAD ERROR');
       return undefined;
     }
   }
@@ -591,8 +594,16 @@ export class LoadService {
 
     query.valueChanges().subscribe(async (docs) => {
       let models =
-        docs.map((d) => new ModelAsset(d['name'], d['id'], d['assetUrl'], d['img'], d['metadata'])) ??
-        [];
+        docs.map(
+          (d) =>
+            new ModelAsset(
+              d['name'],
+              d['id'],
+              d['assetUrl'],
+              d['img'],
+              d['metadata']
+            )
+        ) ?? [];
 
       callback(models);
     });
@@ -605,12 +616,11 @@ export class LoadService {
       .collection('Models')
       .doc(model.id);
 
-
-      let img = model.img?.split(",")[1]
+    let img = model.img?.split(',')[1];
 
     if (img && this.isBase64New(img)) {
-      console.log("IS BASE 64 NEW " + this.isBase64New(img))
-      console.log(img)
+      console.log('IS BASE 64 NEW ' + this.isBase64New(img));
+      console.log(img);
 
       let url = await this.saveImgString(
         model.img,
@@ -701,6 +711,26 @@ export class LoadService {
               d['metadata']
             )
         ) ?? [];
+      callback(models);
+    });
+  }
+
+  getSkies(callback: (models: Material[]) => any) {
+    var query = this.db.collection('Skies');
+
+    query.valueChanges().subscribe(async (docs) => {
+      let models =
+        docs.map(
+          (d) =>
+            new Material(
+              d['id'],
+              d['name'],
+              d['texture'],
+              d['metadata'],
+              d['img']
+            )
+        ) ?? [];
+
       callback(models);
     });
   }
@@ -866,6 +896,58 @@ export class LoadService {
         );
     });
     return world;
+  }
+
+  async generateMaterial(prompt: string, type = 'diffuse') {
+    this.loadingSearchMaterial.next(prompt)
+    let material = await new Promise<Material | undefined>(
+      (resolve, reject) => {
+        this.functions
+          .httpsCallable('generateMaterial', { timeout: 180000 })({
+            input: prompt,
+            uid: this.loadedUser.value.id
+          })
+          .pipe(first())
+          .subscribe(
+            async (resp) => {
+              console.log(resp as Material);
+              resolve(resp);
+            },
+            (err) => {
+              console.error({ err });
+              resolve(undefined);
+            }
+          );
+      }
+    );
+    this.loadingSearchMaterial.next(undefined)
+    return material;
+  }
+
+  async generateSky(prompt: string) {
+    this.loadingSearchSky.next(prompt)
+    let material = await new Promise<Material | undefined>(
+      (resolve, reject) => {
+        this.functions
+          .httpsCallable('generateSky', { timeout: 180000 })({
+            input: prompt,
+            uid: this.loadedUser.value.id
+          })
+          .pipe(first())
+          .subscribe(
+            async (resp) => {
+              console.log(resp as Material);
+              resolve(resp);
+            },
+            (err) => {
+              console.error({ err });
+              resolve(undefined);
+            }
+          );
+      }
+    );
+    this.loadingSearchSky.next(undefined)
+    return material;
   }
 
   async saveCode(id: string, uid: string, codeId: string, file: World) {

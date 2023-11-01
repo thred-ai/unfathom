@@ -14,6 +14,8 @@ import { ProjectService } from '../project.service';
 export class MaterialsViewModuleComponent {
   assets: Material[] = [];
 
+  loadingSearch?: string
+
   constructor(
     private loadService: LoadService,
     private projectService: ProjectService,
@@ -29,6 +31,9 @@ export class MaterialsViewModuleComponent {
         });
       }
     });
+    this.loadService.loadingSearchMaterial.subscribe(s => {
+      this.loadingSearch = s
+    })
   }
 
   addMeshToScene(asset: Material) {
@@ -97,5 +102,12 @@ export class MaterialsViewModuleComponent {
 
   async save(modelAsset: Material) {
     await this.loadService.saveModels(modelAsset);
+  }
+
+  async runAI(prompt: string) {
+    let result = await this.loadService.generateMaterial(prompt);
+    // if (result){
+    //   this.assets.unshift(result);
+    // }
   }
 }

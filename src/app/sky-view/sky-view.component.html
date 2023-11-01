@@ -2,28 +2,25 @@
   <div class="w-full pb-3 mb-3 mt-4 primary-text border-table-bottom-dark">
     <app-searchbar
       [value]="loadingSearch"
-      [placeholder]="'Type to create with AI...'"
       [loadingSearch]="loadingSearch"
+      [placeholder]="'Type to create with AI...'"
       (search)="runAI($event)"
     ></app-searchbar>
   </div>
   <div class="h-full w-full overflow-scroll">
-    <div class="w-full grid grid-cols-3 justify-start g-0">
+    <div class="w-full grid grid-cols-2 justify-start g-0">
       <div
         *ngFor="let asset of assets ?? []; index as i"
         class="col p-1 relative"
-        style="aspect-ratio: 1"
       >
         <div
           class="flex justify-between items-center flex-col bg-transparent shadow-hover"
           style="overflow: hidden"
           role="button"
-          (click)="null"
+          (click)="(null)"
           [matTooltip]="asset.name"
         >
-          <div
-            class="w-full aspect-square pointer-events-none object-cover"
-          >
+          <div class="w-full aspect-video pointer-events-none object-cover">
             <img class="w-full h-full" [src]="asset.img" />
           </div>
         </div>
