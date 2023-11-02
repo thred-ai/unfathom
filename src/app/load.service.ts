@@ -627,8 +627,10 @@ export class LoadService {
         model.img,
         `users/${uid}/models/${model.id}.png`
       );
+
       if (url) {
         model.img = url;
+        model.thumb = url
       } else {
         model.img = undefined;
       }

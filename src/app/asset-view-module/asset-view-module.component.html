@@ -74,9 +74,9 @@
                 <img
                   class="w-full h-full object-cover"
                   [src]="
-                    asset.img && asset.img != ''
-                      ? asset.img
-                      : 'assets/no_model.png'
+                    asset.thumb && asset.thumb != ''
+                      ? asset.thumb
+                      : asset.img ?? 'assets/no_model.png'
                   "
                 />
               </div>
