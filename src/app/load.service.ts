@@ -601,6 +601,7 @@ export class LoadService {
               d['id'],
               d['assetUrl'],
               d['img'],
+              d['thumb'],
               d['metadata']
             )
         ) ?? [];
@@ -669,7 +670,8 @@ export class LoadService {
               d['name'],
               d['texture'],
               d['metadata'],
-              d['img']
+              d['img'],
+              d['thumb'],
             )
         ) ?? [];
 
@@ -689,7 +691,8 @@ export class LoadService {
               d['name'],
               d['texture'],
               d['metadata'],
-              d['img']
+              d['img'],
+              d['thumb']
             )
         ) ?? [];
       callback(models);
@@ -708,6 +711,7 @@ export class LoadService {
               d['id'],
               d['assetUrl'],
               d['img'],
+              d['thumb'],
               d['metadata']
             )
         ) ?? [];
@@ -727,7 +731,8 @@ export class LoadService {
               d['name'],
               d['texture'],
               d['metadata'],
-              d['img']
+              d['img'],
+              d['thumb'],
             )
         ) ?? [];
 

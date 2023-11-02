@@ -72,7 +72,6 @@ export class AssetViewModuleComponent implements OnInit {
           file.name,
           `${new Date().getTime()}`,
           base64,
-          ''
         );
 
         this.assets.unshift(asset);

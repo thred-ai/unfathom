@@ -10,9 +10,10 @@ export class Substance extends Asset {
     name: string,
     texture: Texture = new Texture(id),
     metadata: Dict<any> = {},
-    img?: string
+    img?: string,
+    thumb?: string
   ) {
-    super(name, id, img, metadata);
+    super(name, id, img, thumb, metadata);
 
     this.texture = texture;
   }

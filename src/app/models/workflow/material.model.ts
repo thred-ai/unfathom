@@ -1,24 +1,19 @@
 import { Dict } from 'src/app/load.service';
 import { Texture } from './texture.model';
+import { Asset } from './asset.model';
 
-export class Material {
-  id!: string;
-  name!: string;
+export class Material extends Asset {
   texture!: Texture;
-  metadata: Dict<any> = {};
-  img?: string
 
   constructor(
     id: string,
     name: string,
     texture: Texture = new Texture(id),
     metadata: Dict<any> = {},
-    img?: string
+    img?: string,
+    thumb?: string
   ) {
-    this.id = id;
-    this.name = name;
+    super(name, id, img, thumb, metadata);
     this.texture = texture;
-    this.metadata = metadata;
-    this.img = img
   }
 }

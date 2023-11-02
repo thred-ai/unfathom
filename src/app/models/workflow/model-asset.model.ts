@@ -9,9 +9,10 @@ export class ModelAsset extends Asset {
     id: string,
     assetUrl?: string,
     img?: string,
+    thumb?: string,
     metadata: Dict<any> = {}
   ) {
-    super(name, id, img, metadata);
+    super(name, id, img, thumb, metadata);
 
     this.assetUrl = assetUrl;
   }
