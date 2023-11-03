@@ -200,7 +200,10 @@ camera.rollCorrect = 1
 
 camera.angularSensibility = 200
 
-camera.speed = 50
+camera.speed = 15
+
+camera.inputs.attachInput(camera.inputs.attached['mouse']);
+
 
 
     camera.maxZ = this.world!.width * 2;
