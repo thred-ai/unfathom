@@ -127,7 +127,7 @@ export class DesignService {
   async addMeshToScene(asset: Asset, existingTransformFrom?: SceneAsset) {
     if (!this.world.locked) {
       let scene = this.engine?.scenes[0];
-      let cam = scene?.activeCamera as BABYLON.ArcRotateCamera;
+      let cam = scene?.activeCamera as BABYLON.FlyCamera;
       if (scene && cam) {
         let newAsset = JSON.parse(JSON.stringify(asset)) as ModelAsset;
         let loc = cam.getFrontPosition(3);
@@ -176,15 +176,32 @@ export class DesignService {
     const gl = new BABYLON.GlowLayer('glow', scene);
     gl.intensity = 0.5;
 
-    var camera = new BABYLON.ArcRotateCamera(
-      'Camera',
-      0,
-      0,
-      10,
-      BABYLON.Vector3.Zero(),
-      scene
-    );
-    camera.setPosition(new BABYLON.Vector3(0, (world.height * 2) / 4, 0));
+    // var camera = new BABYLON.ArcRotateCamera(
+    //   'Camera',
+    //   0,
+    //   0,
+    //   10,
+    //   BABYLON.Vector3.Zero(),
+    //   scene
+    // );
+
+
+    const camera = new BABYLON.FlyCamera("Camera", new BABYLON.Vector3(0, (world.height * 2) / 4, 0), scene);
+
+    // Airplane like rotation, with faster roll correction and banked-turns.
+// Default is 100. A higher number means slower correction.
+// Default is false.
+// Defaults to 90° in radians in how far banking will roll the camera.
+// camera.bankedTurnLimit = 180;
+// How much of the Yawing (turning) will affect the Rolling (banked-turn.)
+// Less than 1 will reduce the Rolling, and more than 1 will increase it.
+camera.noRotationConstraint = true
+camera.rollCorrect = 1
+
+camera.angularSensibility = 200
+
+camera.speed = 50
+
 
     camera.maxZ = this.world!.width * 2;
 
@@ -496,14 +513,14 @@ export class DesignService {
       // }
 
       // Camera
-      if (camera.beta < 0.1) camera.beta = 0.1;
-      else if (camera.beta > (Math.PI / 2) * 0.92)
-        camera.beta = (Math.PI / 2) * 0.92;
+      // if (camera.beta < 0.1) camera.beta = 0.1;
+      // else if (camera.beta > (Math.PI / 2) * 0.92)
+      //   camera.beta = (Math.PI / 2) * 0.92;
 
-      if (camera.radius > world.width / 1.05)
-        camera.radius = world.width / 1.05;
+      // if (camera.radius > world.width / 1.05)
+      //   camera.radius = world.width / 1.05;
 
-      if (camera.radius < 5) camera.radius = 5;
+      // if (camera.radius < 5) camera.radius = 5;
 
       // Render scene
       scene.render();
@@ -514,7 +531,7 @@ export class DesignService {
 
     var canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
-    camera.attachControl(canvas, true);
+    (camera as any)?.attachControl(canvas, true);
 
     this.engine.enableOfflineSupport = false;
     this.loaded.next('Launching Scene');
