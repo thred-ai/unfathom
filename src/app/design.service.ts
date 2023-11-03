@@ -200,7 +200,9 @@ camera.rollCorrect = 1
 
 camera.angularSensibility = 200
 
-camera.speed = 15
+camera.speed = 5
+
+// camera.cameraDirection
 
 camera.inputs.attachInput(camera.inputs.attached['mouse']);
 
