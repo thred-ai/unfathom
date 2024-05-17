@@ -224,10 +224,6 @@
                         id="continue"
                       >
                         Continue
-                        <!-- <div
-                          class="animate-spin h-[20px] ms-2 aspect-square"
-                        ></div> -->
-
                         <div class="ms-2" *ngIf="loading">
                           <app-spinner></app-spinner>
                         </div>
@@ -245,6 +241,41 @@
                         <b role="button" class="font-bold text-dark">Sign Up</b
                         >.
                       </p>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="mode == 10">
+                <div
+                  class="w-full h-full animate__animated animate__fadeIn"
+                  style="overflow-y: scroll"
+                >
+                  <div class="w-full big-design-header">
+                    <h4 class="w-full text-center text-dark">
+                      Welcome to Unfathom, the 3D Design Platform
+                    </h4>
+                  </div>
+                  <div class="w-full py-4">
+                    <div class="w-full py-1 mt-2 px-2" *ngIf="err">
+                      <p
+                        class="w-full text-center text-danger animate__animated animate__fadeIn"
+                        style="font-size: small"
+                      >
+                        {{ err }}
+                      </p>
+                    </div>
+                    <div class="w-full py-1 mt-3">
+                      <button
+                        class="btn bg-violet-600 hover:bg-violet-500 rounded text-white px-5 py-3 font-bold w-full mt-1 flex justify-center items-center"
+                        (click)="continue()"
+                        id="continue"
+                      >
+                        Enter
+                        <div class="ms-2" *ngIf="loading">
+                          <app-spinner></app-spinner>
+                        </div>
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -21,7 +21,7 @@ import { AutoUnsubscribe } from '../auto-unsubscibe.decorator';
   styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent implements OnInit, OnDestroy {
-  mode = 0;
+  mode = 10;
   loading = false;
   isAuth = true;
 
@@ -128,6 +128,11 @@ export class AuthComponent implements OnInit, OnDestroy {
           callback(isValid2);
         }
         return;
+      case 10:
+        this.handleAnon((result) => {
+          callback(result);
+        });
+        return;
       default:
         return;
     }
@@ -161,6 +166,14 @@ export class AuthComponent implements OnInit, OnDestroy {
     let password = form.controls['password'].value;
 
     this.loadService.finishSignUp(email, password, (result) => {
+      callback(result);
+    });
+  }
+
+  private handleAnon(
+    callback: (result: { status: boolean; msg: string }) => any
+  ) {
+    this.loadService.createAnon((result) => {
       callback(result);
     });
   }
@@ -200,25 +213,22 @@ export class AuthComponent implements OnInit, OnDestroy {
         }
       };
 
- 
       setTimeout(() => {
         let e = document.getElementById('authBackground');
 
         if (e) {
-          
-        (window as any).VANTA.WAVES({
-          el: e, // element selector string or DOM object reference
-          color: 0x5588,
-          // color: 0x6366f1,
-          // color: 0x67e8f9,
-          waveHeight: 20,
-          shininess: 50,
-          waveSpeed: 0.5,
-          zoom: 0.75,
-        });
+          (window as any).VANTA.WAVES({
+            el: e, // element selector string or DOM object reference
+            color: 0x5588,
+            // color: 0x6366f1,
+            // color: 0x67e8f9,
+            waveHeight: 20,
+            shininess: 50,
+            waveSpeed: 0.5,
+            zoom: 0.75,
+          });
         }
       }, 50);
-
 
       //     eval(`$.getScript("https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js", function(){
       //     particlesJS('particles-js',

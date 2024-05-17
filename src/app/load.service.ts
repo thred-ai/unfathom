@@ -111,6 +111,22 @@ export class LoadService {
       });
   }
 
+  createAnon(
+    callback: (result: { status: boolean; msg: string }) => any
+  ) {
+    this.auth
+      .signInAnonymously()
+      .then(async (user) => {
+        if (user.user) {
+          await this.setUserInfoInitial(user.user);
+        }
+        callback({ status: true, msg: 'success' });
+      })
+      .catch((err: Error) => {
+        callback({ status: false, msg: err.message });
+      });
+  }
+
   finishSignIn(
     email: string,
     password: string,
@@ -501,7 +517,7 @@ export class LoadService {
 
   async setUserInfoInitial(user: firebase.User) {
     let uid = user.uid;
-    let email = user.email;
+    let email = user.email ?? "ANON@anon.com";
 
     let name = email?.split('@')[0].toUpperCase();
     let search_name = name?.toLowerCase();
